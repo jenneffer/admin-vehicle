@@ -12,9 +12,9 @@
     <script src="../assets/js/chartist/chartist.min.js"></script>
     <script src="../assets/js/chartist/chartist-plugin-legend.min.js"></script>
 
-    <script src="../assets/js/chartist/jquery.flot.min.js"></script>
-    <script src="../assets/js/chartist/jquery.flot.pie.min.js"></script>
-    <script src="../assets/js/chartist/jquery.flot.spline.min.js"></script>
+<!--     <script src="../assets/js/chartist/jquery.flot.min.js"></script> -->
+<!--     <script src="../assets/js/chartist/jquery.flot.pie.min.js"></script> -->
+<!--     <script src="../assets/js/chartist/jquery.flot.spline.min.js"></script> -->
 
     <script src="../assets/js/chartist/jquery.simpleWeather.min.js"></script>
     <script src="../assets/js/init/weather-init.js"></script>

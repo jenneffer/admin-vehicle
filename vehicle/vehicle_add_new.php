@@ -93,11 +93,11 @@
                                 <div class="card-body card-block">
                                 	<div class="form-group row col-sm-12">
                                         <div class="col-sm-6">
-                                            <label for="vehicle_reg_no" class=" form-control-label">Vehicle Reg No.</label>
+                                            <label for="vehicle_reg_no" class=" form-control-label"><small class="form-text text-muted">Vehicle Reg No.</small></label>
                                             <input type="text" id="vehicle_reg_no" name="vehicle_reg_no" placeholder="Enter vehicle registration number" class="form-control col-sm-6">
                                         </div>
                                         <div class="col-sm-6">
-                                            <label for="category" class=" form-control-label">Vehicle Category</label>
+                                            <label for="category" class=" form-control-label"><small class="form-text text-muted">Vehicle Category</small></label>
                                             <?php
                                                 $cat = mysqli_query ( $conn_admin_db, "SELECT vc_id, vc_type FROM vehicle_category");
                                                 db_select ($cat, 'category', '','','-select-','form-control col-sm-6','');
@@ -106,34 +106,37 @@
                                     </div>
                                     <div class="form-group row col-sm-12">
                                         <div class="col-sm-6">
-                                            <label for="company" class=" form-control-label">Company</label>
+                                            <label for="company" class=" form-control-label"><small class="form-text text-muted">Company</small></label>
                                             <?php
                                                 $company = mysqli_query ( $conn_admin_db, "SELECT id, code FROM company");
                                                 db_select ($company, 'company', '','','-select-','form-control col-sm-6','');
                                             ?>
                                         </div>
                                         <div class="col-sm-6">
-                                            <label for="yearPurchased" class=" form-control-label">Year Purchased</label>
+                                            <label for="yearPurchased" class=" form-control-label"><small class="form-text text-muted">Year Purchased</small></label>
                                     		<input type="text" id="yearPurchased" name="yearPurchased" placeholder="e.g 2010" class="form-control col-sm-6">
                                         </div>
                                     </div>
                                     <div class="form-group row col-sm-12">
                                         <div class="col-sm-6">
-                                            <label for="brand" class=" form-control-label">Brand</label>
+                                            <label for="brand" class=" form-control-label"><small class="form-text text-muted">Brand</small></label>
                                             <input type="text" id="brand" name="brand" placeholder="Enter vehicle brand" class="form-control col-sm-6">
                                         </div>
                                         <div class="col-sm-6">
-                                            <label for="name" class=" form-control-label">Name</label>
+                                            <label for="name" class=" form-control-label"><small class="form-text text-muted">Name</small></label>
                                             <input type="text" id="name" name="name" placeholder="Enter vehicle name" class="form-control col-sm-6">
                                         </div>
                                     </div>
                                     
                                     <div class="form-group row col-sm-12">
-                                        <div class="col-sm-12">
-                                            <label for="description" class=" form-control-label">Description</label>                                             
+                                        <div class="col-sm-6">
+                                            <label for="description" class=" form-control-label"><small class="form-text text-muted">Description</small></label>                                             
                                             <textarea name="textarea-input" id="description" name="description" rows="3" placeholder="Description..." class="form-control col-sm-9"></textarea>
                                         </div>
-                                        
+                                        <div class="col-sm-6">
+                                            <label for="capacity" class=" form-control-label"><small class="form-text text-muted">Vehicle Capacity (CC)</small></label>
+                                            <input type="text" id="capacity" name="capacity" placeholder="Enter vehicle capacity" class="form-control col-sm-6">
+                                        </div>                                        
                                     </div>
                                     <div class="card-body">
                                         <button type="submit" id="save" name="save" class="btn btn-primary">Save</button>

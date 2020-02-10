@@ -96,56 +96,56 @@
                                             <label for="vehicle_reg_no" class=" form-control-label">Vehicle Reg No.</label>
                                             <?php
                                                 $vehicle = mysqli_query ( $conn_admin_db, "SELECT vv_id, vv_vehicleNo FROM vehicle_vehicle");
-                                                db_select ($vehicle, 'vehicle_reg_no', '','','-select-','form-control col-sm-6','');
+                                                db_select ($vehicle, 'vehicle_reg_no', '','','-select-','form-control','');
                                             ?>
                                         </div>
                                         <div class="col-sm-4">
                                         	<label for="driver_name" class=" form-control-label">Driver's Name</label>
-                                            <input type="text" id="driver_name" name="driver_name" placeholder="Enter driver's name" class="form-control col-sm-6">
+                                            <input type="text" id="driver_name" name="driver_name" placeholder="Enter driver's name" class="form-control">
                                             
                                         </div>                                        
                                     </div>
                                     <div class="form-group row col-sm-12">
                                         <div class="col-sm-4">
                                             <label for="summon_no" class=" form-control-label">Summon's No.</label>
-                                            <input type="text" id="summon_no" name="summon_no" placeholder="Enter summon number" class="form-control col-sm-6">
+                                            <input type="text" id="summon_no" name="summon_no" placeholder="Enter summon number" class="form-control">
                                         </div>
                                         <div class="col-sm-4">
                                             <label for="summon_type" class=" form-control-label">Summon's Type</label>                                             
                                             <?php
-                                                $summon_type = mysqli_query ( $conn_admin_db, "SELECT st_id, st_name FROM summon_type");
-                                                db_select ($summon_type, 'summon_type', '','','-select-','form-control col-sm-6','');
+                                                $summon_type = mysqli_query ( $conn_admin_db, "SELECT st_id, st_name FROM vehicle_summon_type");
+                                                db_select ($summon_type, 'summon_type', '','','-select-','form-control','');
                                             ?>
                                         </div>
                                         <!-- Only appear when summon type selected is others -->
                                         <div class="col-sm-4" id="desc">
                                             <label for="summon_desc" class=" form-control-label">Description</label>
-                                    		<textarea id="summon_desc" name="summon_desc" rows="5" class="form-control col-sm-6"></textarea>
+                                    		<textarea id="summon_desc" name="summon_desc" rows="5" class="form-control"></textarea>
                                         </div>
                                     </div>
                                     
                                     <div class="form-group row col-sm-12">
                                     	<div class="col-sm-4">
                                             <label for="pv_no" class=" form-control-label">PV No.</label>
-                                            <input type="text" id="pv_no" name="pv_no" placeholder="Enter PV number" class="form-control col-sm-6">
+                                            <input type="text" id="pv_no" name="pv_no" placeholder="Enter PV number" class="form-control">
                                         </div>
                                         <div class="col-sm-4">
                                             <label for="reimburse_amt" class=" form-control-label">Reimburse Amount(RM)</label>
-                                            <input type="text" id="reimburse_amt" name="reimburse_amt" placeholder="e.g 500.00" class="form-control col-sm-6">
+                                            <input type="text" id="reimburse_amt" name="reimburse_amt" placeholder="e.g 500.00" class="form-control">
                                         </div>                                        
                                     </div>
                                     <div class="form-group row col-sm-12">                                          
                                         <div class="col-sm-4">
                                             <label for="summon_date" class=" form-control-label">Summon's Date</label>
                                             <div class="input-group " data-provide="datepicker">
-                                                <input id="summon_date" name="summon_date" class="form-control col-sm-5">
+                                                <input id="summon_date" name="summon_date" class="form-control">
                                                 <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
                                             </div>
                                             <small class="form-text text-muted">ex. 99/99/9999</small>
                                         </div> 
                                         <div class="col-sm-6">
                                             <label for="offence_details" class=" form-control-label">Offense Details</label>                                             
-                                            <textarea name="offence_details" id="offence_details" name="offence_details" rows="5" placeholder="Offense details..." class="form-control col-sm-6"></textarea>
+                                            <textarea name="offence_details" id="offence_details" name="offence_details" rows="5" placeholder="Offense details..." class="form-control"></textarea>
                                         </div>                                     
                                     </div>
                                     <div class="card-body">

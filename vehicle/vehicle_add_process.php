@@ -11,6 +11,7 @@
         $name = $_POST['name'];
         $description = $_POST['description'];
         $yearPurchased = $_POST['yearPurchased'];
+        $capacity = $_POST['capacity'];
 
         $sql_insert = mysqli_query($conn_admin_db, "INSERT INTO vehicle_vehicle SET
 								   vv_vehicleNo = '".$vehicle_reg_no."',
@@ -20,6 +21,7 @@
 								   vv_name = '".$name."',
 								   vv_description = '".$description."',
 								   vv_yearPurchased = '".$yearPurchased."',
+                                   vv_capacity = '".$capacity."',
                                    date_added = now()");
                                    
         alert ("Added successfully","vehicle.php");

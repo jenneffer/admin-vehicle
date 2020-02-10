@@ -156,13 +156,13 @@
                         <input type="hidden" id="vv_id" name="vv_id" value="">
                         <div class="form-group row col-sm-12">
                             <div class="col-sm-6">
-                                <label for="vehicle_reg_no" class=" form-control-label">Vehicle Reg No.</label>
+                                <label for="vehicle_reg_no" class=" form-control-label"><small class="form-text text-muted">Vehicle Reg No.</small></label>
                                 <div>
                                 	<input type="text" id="vehicle_reg_no" name="vehicle_reg_no" placeholder="Enter vehicle registration number" class="form-control">
                             	</div>
                             </div>
                             <div class="col-sm-6">
-                                <label for="category" class=" form-control-label">Vehicle Category</label>
+                                <label for="category" class=" form-control-label"><small class="form-text text-muted">Vehicle Category</small></label>
                                 <div>
                                 <?php
                                     $cat = mysqli_query ( $conn_admin_db, "SELECT vc_id, vc_type FROM vehicle_category");
@@ -173,7 +173,7 @@
                         </div>    
                         <div class="form-group row col-sm-12">
                             <div class="col-sm-6">
-                                <label class="control-label">Company</label>
+                                <label class="control-label"><small class="form-text text-muted">Company</small></label>
                                 <div>
                                     <?php
                                         $company = mysqli_query ( $conn_admin_db, "SELECT id, code FROM company");
@@ -182,7 +182,7 @@
                                 </div>
                             </div>
                             <div class="col-sm-6">
-                                <label class="control-label">Year Purchased</label>
+                                <label class="control-label"><small class="form-text text-muted">Year Purchased</small></label>
                                 <div>
                                 	<input type="text" id="yearPurchased" name="yearPurchased" value="" class="form-control">                               
                                 </div>
@@ -190,13 +190,13 @@
                         </div>                    
                         <div class="form-group row col-sm-12">
                             <div class="col-sm-6">
-                                <label class="control-label">Brand</label>
+                                <label class="control-label"><small class="form-text text-muted">Brand</small></label>
                                 <div>
                                 	<input type="text" id="brand" name="brand" value="" class="form-control">                               
                                 </div>
                             </div>
                             <div class="col-sm-6">
-                                <label class="control-label">Name</label>
+                                <label class="control-label"><small class="form-text text-muted">Name</small></label>
                                 <div>
                                 	<input type="text" id="name" name="name" value="" class="form-control">                               
                                 </div>
@@ -204,9 +204,15 @@
                         </div>
                         <div class="form-group row col-sm-12">
                         	<div class="col-sm-6">
-                                <label class="control-label">Description</label>
+                                <label class="control-label"><small class="form-text text-muted">Description</small></label>
                                 <div>
                                 	<textarea id="description" name="description" class="form-control"></textarea>                               
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="control-label"><small class="form-text text-muted">Vehicle Capacity(CC)</small></label>
+                                <div>
+                                	<input type="text" id="capacity" name="capacity" class="form-control">                               
                                 </div>
                             </div>
                         </div>

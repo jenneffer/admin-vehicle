@@ -12,6 +12,7 @@
         $name = $_POST['name'];
         $description = $_POST['description'];
         $yearPurchased = $_POST['yearPurchased'];
+        $capacity = $_POST['capacity'];
         
         $query = "
             UPDATE vehicle_vehicle
@@ -22,6 +23,7 @@
             vv_name = '$name',
             vv_description = '$description',
             vv_yearPurchased = '$yearPurchased',
+            vv_capacity = '$capacity',
             date_added =  now()
             WHERE vv_id='".$vv_id."'";  
       

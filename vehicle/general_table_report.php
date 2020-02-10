@@ -86,39 +86,49 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header">
-                                <strong class="card-title">Road Tax Summary</strong>
+                                <strong class="card-title">Road Tax</strong>
                             </div>
                             <div class="card-body">
-                                <table id="roadtax_summary" class="table table-striped table-bordered">
+                                <table id="bootstrap-data-table" class="table table-striped table-bordered">
                                     <thead>
                                         <tr>
                                         	<th rowspan="2">No.</th>
-											<th rowspan="2">Vehicle No.</th>
-                                            <th>Use Under</th>
-											<th>LPKP Permit</th>
-											<th>Fitness Test</th>
-											<th colspan="2">Insuranse</th>
-											<th colspan="3">Road Tax</th>
-                                            <th>Road Tax</th>
+											<th rowspan="2">Company</th>
+                                            <th rowspan="2">Plat No.</th>
+											<th rowspan="2">LPKP (date)</th>											
+											<th colspan="2">Period of Insuranse</th>
+											<th rowspan="2">Premium (RM)</th>
+											<th rowspan="2">NCD (%)</th>
+											<th rowspan="2">Sum Insured (RM)</th>
+											<th rowspan="2">Excess</th>
+											<th rowspan="2">Capacity</th>
+											<th rowspan="2">Puspakom</th>
+                                            <th colspan="2">Road Tax</th>
+                                            <th rowspan="2">Amount(RM)</th>
+                                            <th rowspan="2">Period</th>
                                         </tr>
                                         <tr>
-                                            <th>Company</th>
-											<th>Due Date</th>
-											<th>Due Date</th>
-											<th>Due</th>
-											<th>Status</th>
                                             <th>From</th>
-                                            <th>To</th>
-                                            <th>Period</th>
-                                            <th class="sum">Amount(RM)</th>
+											<th>To</th>
+											<th>From</th>
+											<th>To</th>
                                         </tr>
                                     </thead>
-                                    <tbody>            
+                                    <tbody>                                                    
                                     </tbody>
                                     <tfoot>
                                         <tr>
-                                            <td colspan="10" class="text-right font-weight-bold">TOTAL</td>
-                                            <td class="text-right font-weight-bold"></td>
+                                            <td colspan="6" class="text-right font-weight-bold">Total</td>
+                                            <td class="text-right font-weight-bold">Premium Total</td>
+                                            <td>&nbsp;</td>
+                                            <td>&nbsp;</td>                                            
+                                            <td class="text-right font-weight-bold">Excess Total</td>
+                                            <td>&nbsp;</td>
+                                            <td>&nbsp;</td>
+                                            <td>&nbsp;</td>
+                                            <td>&nbsp;</td>
+                                            <td class="text-right font-weight-bold">Amount Total</td>
+                                            <td>&nbsp;</td>
                                         </tr>
                                     </tfoot>
                                 </table>
@@ -133,6 +143,7 @@
         <!-- Footer -->
         <?PHP include('../footer.php')?>
         <!-- /.site-footer -->
+    </div> <!-- from right panel page -->
     <!-- /#right-panel -->
 
     <!-- link to the script-->
@@ -151,37 +162,8 @@
 	
 	<script type="text/javascript">
         $(document).ready(function() {
-            $('#roadtax_summary').DataTable({
-                "processing": true,
-                "serverSide": true,
-                "ajax":{
-                 "url": "roadtax.summary.ajax.php",           	
-                 "data" : function ( data ){}
-                },
-                "footerCallback": function( tfoot, data, start, end, display ) {
-    				var api = this.api(), data;
-
-    				for( var i=10; i < 11; i++ ){
-    					api.columns(i, { page: 'current'}).every(function() {
-    							var sum = this
-    						    .data()
-    						    .reduce(function(a, b) {
-    						    var x = parseFloat(a) || 0;
-    						    var y = parseFloat(b) || 0;
-    						    	return x + y;
-    						    }, 0);			
-    						       
-    						    $(this.footer()).html(parseFloat(sum).toFixed(2));
-    					}); 
-    				} 
-    			},
-                'columnDefs': [
-                	  {
-                	      "targets": 10, // your case first column
-                	      "className": "text-right",                	     
-                	 }],
-            });
-        });
+          $('#bootstrap-data-table-export').DataTable();
+      } );
   </script>
 </body>
 </html>

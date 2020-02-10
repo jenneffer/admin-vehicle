@@ -163,33 +163,33 @@
                         <input type="hidden" id="summon_id" name="summon_id" value="">
                     	<div class="form-group row col-sm-12">
                             <div class="col-sm-6">
-                                <label for="vehicle_reg_no" class=" form-control-label">Vehicle Reg No.</label>
+                                <label for="vehicle_reg_no" class=" form-control-label"><small class="form-text text-muted">Vehicle Reg No.</small></label>
                                 <?php
                                     $vehicle = mysqli_query ( $conn_admin_db, "SELECT vv_id, vv_vehicleNo FROM vehicle_vehicle");
                                     db_select ($vehicle, 'vehicle_reg_no', '','','-select-','form-control','');
                                 ?>
                             </div>
                             <div class="col-sm-6">
-                            	<label for="driver_name" class=" form-control-label">Driver's Name</label>
+                            	<label for="driver_name" class=" form-control-label"><small class="form-text text-muted">Driver's Name</small></label>
                                 <input type="text" id="driver_name" name="driver_name" placeholder="Enter driver's name" class="form-control">
                                 
                             </div>                                        
                         </div>
                         <div class="form-group row col-sm-12">
                             <div class="col-sm-6">
-                                <label for="summon_no" class=" form-control-label">Summon's No.</label>
+                                <label for="summon_no" class=" form-control-label"><small class="form-text text-muted">Summon's No.</small></label>
                                 <input type="text" id="summon_no" name="summon_no" placeholder="Enter summon number" class="form-control">
                             </div>
                             <div class="col-sm-6">
                                 <div>
-                                	<label for="summon_type" class=" form-control-label">Summon's Type</label>                                             
+                                	<label for="summon_type" class=" form-control-label"><small class="form-text text-muted">Summon's Type</small></label>                                             
                                     <?php
                                         $summon_type = mysqli_query ( $conn_admin_db, "SELECT st_id, st_name FROM vehicle_summon_type");
                                         db_select ($summon_type, 'summon_type', '','','-select-','form-control','');
                                     ?>
                                 </div>
                                 <div id="desc">
-                                    <label for="summon_desc" class=" form-control-label">Description</label>
+                                    <label for="summon_desc" class=" form-control-label"><small class="form-text text-muted">Description</small></label>
                             		<textarea id="summon_desc" name="summon_desc" rows="3" class="form-control"></textarea>
                                 </div>
                             </div>
@@ -203,20 +203,20 @@
                                 <input type="text" id="pv_no" name="pv_no" placeholder="Enter PV number" class="form-control">
                             </div>
                             <div class="col-sm-6">
-                                <label for="reimburse_amt" class=" form-control-label">Reimburse Amount(RM)</label>
+                                <label for="reimburse_amt" class=" form-control-label"><small class="form-text text-muted">Reimburse Amount(RM)</small></label>
                                 <input type="text" id="reimburse_amt" name="reimburse_amt" placeholder="e.g 500.00" class="form-control">
                             </div>                                        
                         </div>
                         <div class="form-group row col-sm-12">                                          
                             <div class="form-group col-sm-6">
-                                <label class="form-control-label">Summon's Date</label>
+                                <label class="form-control-label"><small class="form-text text-muted">Summon's Date</small></label>
                                 <div class="input-group input-inline">
                                     <input class="form-control" id="summon_date" name="summon_date" value="">
                                     <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
                                 </div>                                
                             </div> 
                             <div class="col-sm-6">
-                                <label for="offence_details" class=" form-control-label">Offense Details</label>                                             
+                                <label for="offence_details" class=" form-control-label"><small class="form-text text-muted">Offense Details</small></label>                                             
                                 <textarea name="offence_details" id="offence_details" name="offence_details" rows="5" placeholder="Offense details..." class="form-control"></textarea>
                             </div>                                     
                         </div>
@@ -245,58 +245,58 @@
                         <input type="hidden" id="vs_id" name="vs_id" value="">
                         <input type="hidden" id="reimburseAmount" name="reimburseAmount" value="">
                     	<div class="row form-group col-sm-12">
-                            <div class="col col-md-4"><label class=" form-control-label">Vehicle No.</label></div>
+                            <div class="col col-md-4"><label class=" form-control-label"><small class="form-text text-muted">Vehicle No.</small></label></div>
                             <div class="col-12 col-md-8">
                                 <p class="form-control-static"><span id="vehicleNo"></span></p>
                             </div>
                         </div>
                         <div class="row form-group col-sm-12">
-                            <div class="col col-md-4"><label class=" form-control-label">Summon No.</label></div>
+                            <div class="col col-md-4"><label class=" form-control-label"><small class="form-text text-muted">Summon No.</small></label></div>
                             <div class="col-12 col-md-8">
                                 <p class="form-control-static"><span id="summonNo"></span></p>
                             </div>
                         </div>
                         <div class="row form-group col-sm-12">
-                            <div class="col col-md-4"><label class=" form-control-label">Driver Name</label></div>
+                            <div class="col col-md-4"><label class=" form-control-label"><small class="form-text text-muted">Driver Name</small></label></div>
                             <div class="col-12 col-md-8">
                                 <p class="form-control-static"><span id="driverName"></span></p>
                             </div>
                         </div>
                         <div class="row form-group col-sm-12">
-                            <div class="col col-md-4"><label class=" form-control-label">Reimburse Amount (RM)</label></div>
+                            <div class="col col-md-4"><label class=" form-control-label"><small class="form-text text-muted">Reimburse Amount (RM)</small></label></div>
                             <div class="col-12 col-md-8">
                                 <p class="form-control-static"><span id="reimburseAmt"></span></p>
                             </div>
                         </div>
                         <div class="row form-group col-sm-12">
-                            <div class="col col-md-4"><label class=" form-control-label">Balance (RM)</label></div>
+                            <div class="col col-md-4"><label class=" form-control-label"><small class="form-text text-muted">Balance (RM)</small></label></div>
                             <div class="col-12 col-md-8">
                                 <p class="form-control-static"><span id="balance"></span></p>
                             </div>
                         </div>
                         <div class="form-group row col-sm-12">
                         	<div class="col-sm-6">
-                                <label class=" form-control-label">Payment Date</label>
+                                <label class=" form-control-label"><small class="form-text text-muted">Payment Date</small></label>
                                 <div class="input-group input-inline">
                                     <input class="form-control" id="payment_date" name="payment_date" value="">
                                     <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
                                 </div>
                             </div>
                             <div class="col-sm-6">
-                                <label class=" form-control-label">Payment Amount(RM)</label>
+                                <label class=" form-control-label"><small class="form-text text-muted">Payment Amount(RM)</small></label>
                                 <input type="text" id="payment_amount" name="payment_amount" placeholder="e.g 500.00" class="form-control">
                             </div>                                        
                         </div>
 						<div class="form-group row col-sm-12">
                         	<div class="col-sm-6">
-                                <label class=" form-control-label">Bank-in Date</label>
+                                <label class=" form-control-label"><small class="form-text text-muted">Bank-in Date</small></label>
                                 <div class="input-group input-inline">
                                     <input class="form-control" id="bankin_date" name="bankin_date" value="">
                                     <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
                                 </div>
                             </div>
                             <div class="col-sm-6">
-                                <label class=" form-control-label">Bank-in Amount(RM)</label>
+                                <label class=" form-control-label"><small class="form-text text-muted">Bank-in Amount(RM)</small></label>
                                 <input type="text" id="bankin_amount" name="bankin_amount" placeholder="e.g 500.00" class="form-control">
                             </div>                                        
                         </div>

@@ -19,6 +19,13 @@
 		$PrevURL= $url;
 		header("Location: ../login.php?RecLock=".$PrevURL);
 	}
+	
+	
+	$company_id = isset( $_POST['company'] ) ? $_POST['company'] : "";
+	$month = isset( $_POST['month'] ) ? $_POST['month'] : date('m');	
+	ob_start();
+	selectMonth('month',$month,'','-Select Month-','form-control col-sm-6','','');
+	$html_month_select = ob_get_clean();
 ?>
 
 <!doctype html>
@@ -33,7 +40,7 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	<!-- link to css -->
-	<?php include('../allCSS1.php')?>
+	<?php include('../allCSS1.php')?>	
    <style>
     #weatherWidget .currentDesc {
         color: #ffffff!important;
@@ -68,6 +75,11 @@
         #cellPaiChart{
             height: 160px;
         }
+        .button_search{
+            position: absolute;
+            left:    0;
+            bottom:   0;
+        }
 
     </style>
 </head>
@@ -83,14 +95,36 @@
         <div class="content">
             <div class="animated fadeIn">
                 <div class="row">
-
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header">
                                 <strong class="card-title">Puspakom</strong>
                             </div>
+                            <!-- Filter -->
+                            <div>
+                            <form id="myform" enctype="multipart/form-data" method="post" action="">                	                   
+                	            <div class="form-group row col-sm-12">
+                                    <div class="col-sm-4">
+                                        <label for="month" class="form-control-label"><small class="form-text text-muted">Select Month</small></label>
+                                        <div>
+                                            <?=$html_month_select?>
+                                          </div>                            
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <label for="company" class="form-control-label"><small class="form-text text-muted">Select Company</small></label>
+                                        <?php
+                                            $company = mysqli_query ( $conn_admin_db, "SELECT id, code FROM company");
+                                            db_select ($company, 'company', $company_id,'','-Select Company-','form-control col-sm-6','');
+                                        ?>                             
+                                    </div>
+                                    <div class="col-sm-4">                                    	
+                                    	<button type="submit" class="btn btn-primary button_search ">Submit</button>
+                                    </div>
+                                 </div>    
+                            </form>
+                            </div>
                             <div class="card-body">
-                                <table id="bootstrap-data-table" class="table table-striped table-bordered">
+                                <table id="puspakom_datatable" class="table table-striped table-bordered">
                                     <thead>
                                         <tr>
                                             <th rowspan="2">No.</th>
@@ -106,33 +140,6 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                    <?php 
-                                        $sql_query = "SELECT * FROM vehicle_puspakom
-                                                INNER JOIN vehicle_vehicle ON vehicle_vehicle.vv_id = vehicle_puspakom.vv_id
-                                                INNER JOIN company ON company.id = vehicle_vehicle.company_id";
-                                        if(mysqli_num_rows(mysqli_query($conn_admin_db,$sql_query)) > 0){
-                                            $count = 0;
-                                            $sql_result = mysqli_query($conn_admin_db, $sql_query)or die(mysqli_error());
-                                                while($row = mysqli_fetch_array($sql_result)){ 
-                                                    $count++;
-                                                    ?>
-                                                    <tr>
-                                                        <td><?=$count?></td>
-                                                        <td><?=$row['vv_vehicleNo']?></td>
-                                                        <td><?=$row['code']?></td>
-                                                        <td><?=dateFormatRev($row['vp_fitnessDate'])?></td>
-                                                        <td><?=dateFormatRev($row['vp_roadtaxDueDate'])?></td>
-                                                        <td><?=$row['vp_runner']?></td>                                                        
-                                                        <td>
-                                                        	<span id="<?=$row['vp_id']?>" data-toggle="modal" class="edit_data" data-target="#editItem"><i class="menu-icon fa fa-pencil"></i></span>&nbsp;&nbsp;&nbsp;&nbsp;
-                                                        	<span id="<?=$row['vp_id']?>" data-toggle="modal" class="delete_data" data-target="#deleteItem"><i class="menu-icon fa fa-trash"></i></span>
-                                                        </td>
-                                                    </tr>
-                                    <?php
-                                                }
-                                            }
-                                    ?>
-										
                                     </tbody>
                                 </table>
                             </div>
@@ -221,7 +228,6 @@
 
     <!-- link to the script-->
 	<?php include ('../allScript2.php')?>
-	
 	<script src="../assets/js/lib/data-table/datatables.min.js"></script>
     <script src="../assets/js/lib/data-table/dataTables.bootstrap.min.js"></script>
     <script src="../assets/js/lib/data-table/dataTables.buttons.min.js"></script>
@@ -232,10 +238,32 @@
     <script src="../assets/js/lib/data-table/buttons.print.min.js"></script>
     <script src="../assets/js/lib/data-table/buttons.colVis.min.js"></script>
     <script src="../assets/js/init/datatables-init.js"></script>
-	
+
 	<script type="text/javascript">
     $(document).ready(function() {
-        $('#bootstrap-data-table-export').DataTable();
+
+        $("#month").change(function () {
+            var month = this.value;           
+            $('#month').val(month);
+        });
+
+        $("#company").change(function () {
+            var company = this.value;
+            $('#company').val(company);
+        });
+        
+    	var table = $('#puspakom_datatable').DataTable({
+         	"processing": true,
+         	"serverSide": true,
+            "ajax":{
+           	 "url": "puspakom.ajax.php",           	
+           	 "data" : function ( data ) {
+   				data.company = $('#company').val();
+   				data.month = $('#month').val();   				
+   	        }
+   	      },
+   	     });
+  	     
 
       	//retrieve data
         $(document).on('click', '.edit_data', function(){
@@ -303,6 +331,12 @@
                });  
           }  
      }); 
+
+     $( ".button_search" ).click(function( event ) {
+  		table.clear();
+  		table.ajax.reload();
+  		table.draw();  		
+  		});	
     });
   </script>
 </body>

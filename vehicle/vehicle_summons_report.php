@@ -1,5 +1,6 @@
 <?php
 	require_once('../assets/config/database.php');
+	require_once('./function.php');
 	
 	session_start();
 	if(isset($_SESSION['cr_id'])) {
@@ -109,63 +110,7 @@
                                             <th>2nd</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        <tr>
-                                        	<td>1</td>
-                                            <td>19FKKK0000336-00</td>
-                                            <td>Fire</td>
-                                            <td>Topokon</td>
-                                            <td>$320,800</td>
-                                            <td>$31,220</td>
-                                            <td>IMPIAN INTERAKTIF SDN BHD</td>
-                                            <td>Topokon</td>
-                                            <td>Topokon</td>
-                                            <td>$320,800</td>
-                                            <td>$31,220</td>
-                                            <td>IMPIAN INTERAKTIF SDN BHD</td>
-                                        </tr>
-										<tr>
-											<td>2</td>
-                                            <td>19FKSD5489536-66</td>
-                                            <td>Water</td>
-                                            <td>Bundung, Topokon</td>
-                                            <td>$150,800</td>
-                                            <td>$76,220</td>
-                                            <td>Topokon</td>
-                                            <td>IMPIAN INTERAKTIF SDN BHD</td>
-                                            <td>Topokon</td>
-                                            <td>$320,800</td>
-                                            <td>$31,220</td>
-                                            <td>IMPIAN INTERAKTIF SDN BHD</td>
-                                        </tr>
-										<tr>
-											<td>3</td>
-                                            <td>RE55E6W800336-87</td>
-                                            <td>Electricity</td>
-                                            <td>Tambulaung</td>
-                                            <td>$10,800</td>
-                                            <td>Topokon</td>
-                                            <td>$1,220</td>
-                                            <td>IMPIAN INTERAKTIF SDN BHD</td>
-                                            <td>Topokon</td>
-                                            <td>$320,800</td>
-                                            <td>$31,220</td>
-                                            <td>IMPIAN INTERAKTIF SDN BHD</td>
-                                        </tr>
-										<tr>
-											<td>4</td>
-                                            <td>154545456SDSZZ-00</td>
-                                            <td>Fire</td>
-                                            <td>Salut C</td>
-                                            <td>$3,000</td>
-                                            <td>$220</td>
-                                            <td>Topokon</td>
-                                            <td>IMPIAN INTERAKTIF SDN BHD</td>
-                                            <td>Topokon</td>
-                                            <td>$320,800</td>
-                                            <td>$31,220</td>
-                                            <td>IMPIAN INTERAKTIF SDN BHD</td>
-                                        </tr>             
+                                    <tbody>                                                    
                                     </tbody>                                    
                                 </table>
                             </div>

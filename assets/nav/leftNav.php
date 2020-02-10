@@ -75,7 +75,7 @@
                         <a href="renewing_vehicle_schedule_report.php"><i class="menu-icon fa fa-list-alt"></i>Renewing Schedule</a>
                     </li>
                     <li>
-                        <a href="renewing_vehicle_schedule_report.php"><i class="menu-icon fa fa-table"></i>General Table</a>
+                        <a href="general_table_report.php"><i class="menu-icon fa fa-table"></i>General Table</a>
                     </li>
                     
                     <li class="menu-title">Extras</li><!-- /.menu-title -->
