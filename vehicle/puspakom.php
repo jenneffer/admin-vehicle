@@ -176,17 +176,25 @@
                         <div class="form-group row col-sm-12">
                             <div class="col-sm-6">
                                 <label for="fitness_date" class="form-control-label"><small class="form-text text-muted">Fitness due date</small></label>
-                                <div class="input-group " data-provide="datepicker">
-                                    <input id="fitness_date" name="fitness_date" class="form-control">
-                                    <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
-                                </div>                                
+<!--                                 <div class="input-group " data-provide="datepicker"> -->
+<!--                                     <input id="fitness_date" name="fitness_date" class="form-control"> -->
+<!--                                     <div class="input-group-addon"><i class="fa fa-calendar"></i></div> -->
+<!--                                 </div>          -->
+                                <div class="input-group">
+                                  <input type="text" id="fitness_date" name="fitness_date" class="form-control">
+                                  <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+                                </div>                       
                             </div>
                             <div class="col-sm-6">
                                 <label for="roadtax_due_date" class="form-control-label"><small class="form-text text-muted">Roadtax due date</small></label>
-                                <div class="input-group " data-provide="datepicker">
-                                    <input id="roadtax_due_date" name="roadtax_due_date" class="form-control">
-                                    <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
-                                </div>                                
+<!--                                 <div class="input-group " data-provide="datepicker"> -->
+<!--                                     <input id="roadtax_due_date" name="roadtax_due_date" class="form-control"> -->
+<!--                                     <div class="input-group-addon"><i class="fa fa-calendar"></i></div> -->
+<!--                                 </div>                                 -->
+                                <div class="input-group">
+                                  <input type="text" id="roadtax_due_date" name="roadtax_due_date" class="form-control">
+                                  <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+                                </div> 
                             </div>
                          </div>
                     <div class="modal-footer">
@@ -238,6 +246,7 @@
     <script src="../assets/js/lib/data-table/buttons.print.min.js"></script>
     <script src="../assets/js/lib/data-table/buttons.colVis.min.js"></script>
     <script src="../assets/js/init/datatables-init.js"></script>
+    <script src="../assets/js/script/bootstrap-datepicker.min.js"></script>
 
 	<script type="text/javascript">
     $(document).ready(function() {
@@ -251,6 +260,7 @@
             var company = this.value;
             $('#company').val(company);
         });
+
         
     	var table = $('#puspakom_datatable').DataTable({
          	"processing": true,
@@ -331,6 +341,20 @@
                });  
           }  
      }); 
+      
+     $('#fitness_date').datepicker({
+    	 startDate: "0d",
+         autoclose: true,
+         orientation: "top left",
+         todayHighlight: true
+         });
+
+      $('#roadtax_due_date').datepicker({
+     	 startDate: "0d",
+          autoclose: true,
+          orientation: "top left",
+          todayHighlight: true
+          });
 
      $( ".button_search" ).click(function( event ) {
   		table.clear();

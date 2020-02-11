@@ -186,43 +186,43 @@
                             </div>
                             <div class="col-sm-6">
                                 <label for="lpkp_date" class="form-control-label"><small class="form-text text-muted">LPKP Permit due date</small></label>
-                                <div class="input-group " data-provide="datepicker">
-                                    <input id="lpkp_date" name="lpkp_date" class="form-control">
-                                    <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
-                                </div>                               
+                                <div class="input-group">
+                                  <input type="text" id="lpkp_date" name="lpkp_date" class="form-control">
+                                  <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+                                </div>                            
                             </div>
                         </div>    
 
                         <div class="form-group row col-sm-12">
                             <div class="col-sm-6">
-                                <label for="insurance_from_date" class="form-control-label"><small class="form-text text-muted">Insurance from date</small></label>
-                                <div class="input-group " data-provide="datepicker">
-                                    <input id="insurance_from_date" name="insurance_from_date" class="form-control">
-                                    <div class="input-group-addon"><i class="fa fa-calendar"></i></div>                                                
-                                </div>                                                                           
+                                <label for="insurance_from_date" class="form-control-label"><small class="form-text text-muted">Insurance from date</small></label>    
+                                <div class="input-group">
+                                  <input type="text" id="insurance_from_date" name="insurance_from_date" class="form-control">
+                                  <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+                                </div>                                                                        
                             </div>
                             <div class="col-sm-6">
-                                <label for="insurance_due_date" class="form-control-label"><small class="form-text text-muted">Insurance due date</small></label>
-                                <div class="input-group " data-provide="datepicker">
-                                    <input id="insurance_due_date" name="insurance_due_date" class="form-control">
-                                    <div class="input-group-addon"><i class="fa fa-calendar"></i></div>                                                
-                                </div>                                                                            
+                                <label for="insurance_due_date" class="form-control-label"><small class="form-text text-muted">Insurance due date</small></label> 
+                                <div class="input-group">
+                                  <input type="text" id="insurance_due_date" name="insurance_due_date" class="form-control">
+                                  <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+                                </div>                                                                           
                             </div>
                         </div>
                         <div class="form-group row col-sm-12">
                             <div class="col-sm-6">
-                                <label for="roadtax_from_date" class="form-control-label"><small class="form-text text-muted">Roadtax from date</small></label>
-                                <div class="input-group " data-provide="datepicker">
-                                    <input id="roadtax_from_date" name="roadtax_from_date" class="form-control">
-                                    <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
-                                </div>                                
+                                <label for="roadtax_from_date" class="form-control-label"><small class="form-text text-muted">Roadtax from date</small></label>  
+                                <div class="input-group">
+                                  <input type="text" id="roadtax_from_date" name="roadtax_from_date" class="form-control">
+                                  <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+                                </div>                               
                             </div>
                             <div class="col-sm-6">
                                 <label for="roadtax_due_date" class="form-control-label"><small class="form-text text-muted">Roadtax due date</small></label>
-                                <div class="input-group " data-provide="datepicker">
-                                    <input id="roadtax_due_date" name="roadtax_due_date" class="form-control">
-                                    <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
-                                </div>                                
+                                <div class="input-group">
+                                  <input type="text" id="roadtax_due_date" name="roadtax_due_date" class="form-control">
+                                  <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+                                </div>                               
                             </div>
                         </div>
 
@@ -311,6 +311,7 @@
     <script src="../assets/js/lib/data-table/buttons.print.min.js"></script>
     <script src="../assets/js/lib/data-table/buttons.colVis.min.js"></script>
     <script src="../assets/js/init/datatables-init.js"></script>
+    <script src="../assets/js/script/bootstrap-datepicker.min.js"></script>
 	
 	<script type="text/javascript">
         $(document).ready(function() {
@@ -411,7 +412,12 @@
                  });  
             }  
        }); 
-        
+
+       $('#lpkp_date').datepicker();
+       $('#insurance_from_date').datepicker();
+       $('#insurance_due_date').datepicker();
+       $('#roadtax_from_date').datepicker();
+       $('#roadtax_due_date').datepicker();
         	  
       });
   </script>

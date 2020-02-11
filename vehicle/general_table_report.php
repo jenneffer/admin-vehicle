@@ -89,7 +89,7 @@
                                 <strong class="card-title">Road Tax</strong>
                             </div>
                             <div class="card-body">
-                                <table id="bootstrap-data-table" class="table table-striped table-bordered">
+                                <table id="general_table" class="table table-striped table-bordered">
                                     <thead>
                                         <tr>
                                         	<th rowspan="2">No.</th>
@@ -162,8 +162,40 @@
 	
 	<script type="text/javascript">
         $(document).ready(function() {
-          $('#bootstrap-data-table-export').DataTable();
-      } );
+            $('#general_table').DataTable({
+                "processing": true,
+                "serverSide": true,
+                "ajax":{
+                 "url": "general.table.ajax.php",           	
+                 "data" : function ( data ){}
+                },
+                "footerCallback": function( tfoot, data, start, end, display ) {
+    				var api = this.api(), data;
+    				var numFormat = $.fn.dataTable.render.number( '\,', '.', 2, '' ).display;
+
+					api.columns([6,9,14], { page: 'current'}).every(function() {
+							var sum = this
+						    .data()
+						    .reduce(function(a, b) {
+						    var x = parseFloat(a) || 0;
+						    var y = parseFloat(b) || 0;
+						    	return x + y;
+						    }, 0);			
+						       
+						    $(this.footer()).html(numFormat(sum));
+					});
+ 
+    			},
+    			'columnDefs': [
+                	  {
+                	      "targets": [6,8,9,14], // your case first column
+                	      "className": "text-right", 
+                	      "render": $.fn.dataTable.render.number(',', '.', 2, '')               	                      	        	     
+                	 }],
+
+            	
+            });
+      });
   </script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 <?php
 	require_once('../assets/config/database.php');
 	require_once('./function.php');
-	
+	global $conn_admin_db;
 	session_start();
 	if(isset($_SESSION['cr_id'])) {
 		$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
@@ -18,6 +18,92 @@
 		$url = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 		$PrevURL= $url;
 		header("Location: ../login.php?RecLock=".$PrevURL);
+	}
+	
+	//vehicle summon query
+	$sql_query = "SELECT * FROM vehicle_summons
+                INNER JOIN vehicle_summon_type ON vehicle_summon_type.st_id = vehicle_summons.vs_summon_type
+                INNER JOIN vehicle_vehicle ON vehicle_vehicle.vv_id = vehicle_summons.vv_id
+                INNER JOIN company ON company.id = vehicle_vehicle.company_id";
+	
+	$rst  = mysqli_query($conn_admin_db, $sql_query)or die(mysqli_error($conn_admin_db));
+	$arr_data = array();
+	if ( mysqli_num_rows($rst) ){
+	    $count = 0;
+	    while( $row = mysqli_fetch_assoc( $rst ) ){	        
+	        $arr_payment = arr_payment($row['vs_id']);
+	        $count++;
+	        
+	        $summon_type = $row['vs_summon_type'] == 3 ? $row['st_name'] ."(".$row['vs_summon_type_desc'] .")" : $row['st_name'];
+	        
+	        $arr_data[] = array(
+	            'count' => $count,
+	            'vs_id' => $row['vs_id'],
+	            'vv_id' => $row['vv_id'],
+	            'vehicle_no' => $row['vv_vehicleNo'],
+	            'vs_summon_no' => $row['vs_summon_no'],
+	            'vs_pv_no' => $row['vs_pv_no'],
+	            'vs_reimbursement_amt' => $row['vs_reimbursement_amt'],
+	            'vs_balance' => $row['vs_balance'],
+	            'vs_remarks' => $row['vs_remarks'],
+	            'vs_summon_type' => $row['vs_summon_type'],
+	            'vs_summon_type_desc' => $row['vs_summon_type_desc'],
+	            'vs_driver_name' => $row['vs_driver_name'],
+	            'vs_summon_date' => $row['vs_summon_date'],
+	            'vs_description' => $row['vs_description'],
+	            'vs_remarks' => $row['vs_remarks'],
+	            'vs_summon_type' => $summon_type,
+	            'st_name' => $row['st_name'],
+	            'vs_summon_type_desc' => $row['vs_summon_type_desc'],
+	            'id' => $row['id'],
+	            'code' => $row['code'],
+	            'name' => $row['name'],
+	            'payment_data' => $arr_payment
+	        );
+	        
+	    }
+	    
+	}
+	
+	$payment_count = [];
+	$payment_datas = [];
+	foreach ($arr_data as $data){
+	    $payment_datas[$data['vs_id']] = $data['payment_data'];
+	    $payment_count[] = count($data['payment_data']);
+	}
+	$max_value = max($payment_count);
+	
+	$html_th = "<tr>";
+	for ($i = 1; $i <= $max_value; $i++) {
+	    $html_th .= "<td><strong>".addOrdinalNumberSuffix($i)."</strong></td>";
+	}
+	
+
+	function arr_payment($summon_id){
+	    global $conn_admin_db;
+	    $query = "SELECT * FROM vehicle_summon_payment WHERE summon_id='".$summon_id."'";
+	    $result  = mysqli_query($conn_admin_db, $query)or die(mysqli_error($conn_admin_db));
+	    
+	    $data_payment = array();
+	    if ( mysqli_num_rows($result) ){
+	        while( $row = mysqli_fetch_assoc( $result ) ){
+	            $data_payment[] = $row;
+	        }
+	    }
+	    
+	    return $data_payment;
+	}
+	
+	function addOrdinalNumberSuffix($num) {
+	    if (!in_array(($num % 100),array(11,12,13))){
+	        switch ($num % 10) {
+	            // Handle 1st, 2nd, 3rd
+	            case 1:  return $num.'st';
+	            case 2:  return $num.'nd';
+	            case 3:  return $num.'rd';
+	        }
+	    }
+	    return $num.'th';
 	}
 ?>
 
@@ -68,6 +154,9 @@
         #cellPaiChart{
             height: 160px;
         }
+        .hide{
+            display:none
+        }
 
     </style>
 </head>
@@ -90,7 +179,7 @@
                                 <strong class="card-title">Vehicle Summons</strong>
                             </div>
                             <div class="card-body">
-                                <table id="bootstrap-data-table" class="table table-striped table-bordered">
+                                <table id="vehicle_summon" class="table table-striped table-bordered">
                                     <thead>
                                         <tr>
                                         	<th rowspan="2">No.</th>
@@ -101,16 +190,55 @@
 											<th rowspan="2">Summon Type</th>
 											<th rowspan="2">PV No</th>
 											<th rowspan="2">Reimburse Amount (RM)</th>
-											<th colspan="2">Payment Records</th>											
+											<th id="payment_records" colspan='<?=$max_value?>'>Payment Records</th>											
                                             <th rowspan="2">Balance</th>
                                             <th rowspan="2">Remarks</th>
                                         </tr>
-                                        <tr>
-                                            <th>1st</th>
-                                            <th>2nd</th>
-                                        </tr>
+<!--                                         <tr> -->
+<!--                                             <th class="hide">1st</th> -->
+<!--                                             <th class="hide">2nd</th> -->
+<!--                                             <th class="hide">3rd</th> -->
+<!--                                             <th class="hide">4th</th> -->
+<!--                                             <th class="hide">5th</th> -->
+<!--                                             <th class="hide">6th</th> -->
+<!--                                             <th class="hide">7th</th> -->
+<!--                                             <th class="hide">8th</th> -->
+<!--                                             <th class="hide">9th</th> -->
+<!--                                             <th class="hide">10th</th> -->
+<!--                                         </tr> -->
+										<?=$html_th;?>
                                     </thead>
-                                    <tbody>                                                    
+                                    <tbody>  
+                                    <?php 
+                                    
+                                    foreach ($arr_data as $summon_data){
+                                        echo "<tr>";
+                                        echo "<td>".$summon_data['count']."</td>";
+                                        echo "<td>".$summon_data['vehicle_no']."</td>";
+                                        echo "<td>".$summon_data['vs_summon_no']."</td>";
+                                        echo "<td>".$summon_data['vs_driver_name']."</td>";
+                                        echo "<td>".$summon_data['code']."</td>";
+                                        echo "<td>".$summon_data['vs_summon_type']."</td>";
+                                        echo "<td>".$summon_data['vs_pv_no']."</td>";
+                                        echo "<td class='text-right'>".number_format($summon_data['vs_reimbursement_amt'],2)."</td>";
+                                        
+                                        //itterate summon payment
+                                        $html_td = "";                                        
+                                        foreach ($summon_data['payment_data'] as $payment){
+                                            $html_td .= "<td>".$payment['payment_amount']."</td>";
+                                        }
+                                        
+                                        //itterating empty td
+                                        for ($i = 0; $i < ($max_value - count($summon_data['payment_data'])); $i++) {
+                                            $html_td .= "<td>&nbsp;</td>";
+                                        }
+                                        
+                                        echo $html_td;
+                                        echo "<td class='text-right'>".number_format($summon_data['vs_balance'],2)."</td>";
+                                        echo "<td>".$summon_data['vs_remarks']."</td>";
+                                        echo "</tr>";
+                                    }
+                                    ?>                                                  
                                     </tbody>                                    
                                 </table>
                             </div>
@@ -124,7 +252,7 @@
         <!-- Footer -->
         <?PHP include('../footer.php')?>
         <!-- /.site-footer -->
-    </div> <!-- from right panel page -->
+    <!-- from right panel page -->
     <!-- /#right-panel -->
 
     <!-- link to the script-->
@@ -142,9 +270,9 @@
     <script src="../assets/js/init/datatables-init.js"></script>
 	
 	<script type="text/javascript">
-        $(document).ready(function() {
-          $('#bootstrap-data-table-export').DataTable();
-      } );
+      $(document).ready(function() {
+          
+      });
   </script>
 </body>
 </html>

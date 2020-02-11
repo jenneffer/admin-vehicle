@@ -86,88 +86,23 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header">
-                                <strong class="card-title">Road Tax</strong>
+                                <strong class="card-title">Renewing Vehicle Schedule</strong>
                             </div>
                             <div class="card-body">
                                 <table id="bootstrap-data-table" class="table table-striped table-bordered">
                                     <thead>
                                         <tr>
-											<th rowspan="2">Vehicle No.</th>
-                                            <th>Use Under</th>
-											<th>LPKP Permit</th>
-											<th>Fitness Test</th>
-											<th colspan="2">Insuranse</th>
-											<th colspan="3">Road Tax</th>
-                                            <th>Road Tax</th>
-                                        </tr>
-                                        <tr>
                                             <th>Company</th>
-											<th>Due Date</th>
-											<th>Due Date</th>
-											<th>Due</th>
-											<th>Status</th>
-                                            <th>From</th>
-                                            <th>To</th>
-                                            <th>Period</th>
-                                            <th>Amount(RM)</th>
+											<th>Vehicle No.</th>
+											<th>R-Tax, Sum & NCD</th>
+											<th>Task</th>
+											<th>Date</th>
+                                            <th>Next Due Date</th>            
+                                            <th>Remark</th>                                
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>19FKKK0000336-00</td>
-                                            <td>Fire</td>
-                                            <td>Topokon</td>
-                                            <td>$320,800</td>
-                                            <td>$31,220</td>
-                                            <td>IMPIAN INTERAKTIF SDN BHD</td>
-                                            <td>Topokon</td>
-                                            <td>$320,800</td>
-                                            <td>$31,220</td>
-                                            <td>IMPIAN INTERAKTIF SDN BHD</td>
-                                        </tr>
-										<tr>
-                                            <td>19FKSD5489536-66</td>
-                                            <td>Water</td>
-                                            <td>Bundung, Topokon</td>
-                                            <td>$150,800</td>
-                                            <td>$76,220</td>
-                                            <td>IMPIAN INTERAKTIF SDN BHD</td>
-                                            <td>Topokon</td>
-                                            <td>$320,800</td>
-                                            <td>$31,220</td>
-                                            <td>IMPIAN INTERAKTIF SDN BHD</td>
-                                        </tr>
-										<tr>
-                                            <td>RE55E6W800336-87</td>
-                                            <td>Electricity</td>
-                                            <td>Tambulaung</td>
-                                            <td>$10,800</td>
-                                            <td>$1,220</td>
-                                            <td>IMPIAN INTERAKTIF SDN BHD</td>
-                                            <td>Topokon</td>
-                                            <td>$320,800</td>
-                                            <td>$31,220</td>
-                                            <td>IMPIAN INTERAKTIF SDN BHD</td>
-                                        </tr>
-										<tr>
-                                            <td>154545456SDSZZ-00</td>
-                                            <td>Fire</td>
-                                            <td>Salut C</td>
-                                            <td>$3,000</td>
-                                            <td>$220</td>
-                                            <td>IMPIAN INTERAKTIF SDN BHD</td>
-                                            <td>Topokon</td>
-                                            <td>$320,800</td>
-                                            <td>$31,220</td>
-                                            <td>IMPIAN INTERAKTIF SDN BHD</td>
-                                        </tr>             
-                                    </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <td colspan="9" class="text-right font-weight-bold">Total</td>
-                                            <td class="text-right font-weight-bold">3304.00</td>
-                                        </tr>
-                                    </tfoot>
+                                    <tbody>									           
+                                    </tbody>                                    
                                 </table>
                             </div>
                         </div>
@@ -180,7 +115,6 @@
         <!-- Footer -->
         <?PHP include('../footer.php')?>
         <!-- /.site-footer -->
-    </div> <!-- from right panel page -->
     <!-- /#right-panel -->
 
     <!-- link to the script-->
@@ -198,9 +132,9 @@
     <script src="../assets/js/init/datatables-init.js"></script>
 	
 	<script type="text/javascript">
-        $(document).ready(function() {
+      $(document).ready(function() {
           $('#bootstrap-data-table-export').DataTable();
-      } );
+      });
   </script>
 </body>
 </html>

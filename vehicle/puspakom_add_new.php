@@ -92,7 +92,7 @@
                                 <div class="card-body card-block">
                                 	<div class="form-group row col-sm-12">
                                         <div class="form-group col-6">
-                                            <label for="vehicle_reg_no" class=" form-control-label">Vehicle Reg No.</label>
+                                            <label for="vehicle_reg_no" class=" form-control-label"><small class="form-text text-muted">Vehicle Reg No.</small></label>
                                             <?php
                                                 $vehicle = mysqli_query ( $conn_admin_db, "SELECT vv_id, vv_vehicleNo FROM vehicle_vehicle");
                                                 db_select ($vehicle, 'vehicle_reg_no', '','','-select-','form-control col-sm-6','');
@@ -101,25 +101,23 @@
                                     </div>
                                     <div class="form-group row col-sm-12">
                                         <div class="col-sm-6">
-                                            <label for="fitness_date" class="form-control-label">Fitness due date</label>
+                                            <label for="fitness_date" class="form-control-label"><small class="form-text text-muted">Fitness due date</small></label>
                                             <div class="input-group " data-provide="datepicker">
                                                 <input id="fitness_date" name="fitness_date" class="form-control col-sm-5">
                                                 <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
-                                            </div>
-                                            <small class="form-text text-muted">ex. 99/99/9999</small>
+                                            </div>                                            
                                         </div>
                                         <div class="col-sm-6">
-                                            <label for="roadtax_due_date" class="form-control-label">Roadtax due date</label>
+                                            <label for="roadtax_due_date" class="form-control-label"><small class="form-text text-muted">Roadtax due date</small></label>
                                             <div class="input-group " data-provide="datepicker">
                                                 <input id="roadtax_due_date" name="roadtax_due_date" class="form-control col-sm-5">
                                                 <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
                                             </div>
-                                            <small class="form-text text-muted">ex. 99/99/9999</small>
                                         </div>
                                      </div>
                                     
                                     <div class="form-group col-6">
-                                        <label for="runner" class=" form-control-label">Runner</label>
+                                        <label for="runner" class=" form-control-label"><small class="form-text text-muted">Runner</small></label>
                                         <input type="text" id="runner" name="runner" placeholder="Enter runner's name" class="form-control col-sm-6">
                                     </div>
                                     <div class="card-body">

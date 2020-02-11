@@ -92,51 +92,47 @@
                                 <div class="card-body card-block">
                                     <div class="form-group row col-sm-12">
                                         <div class="col-sm-6">
-                                            <label for="vehicle_reg_no" class=" form-control-label">Vehicle Reg No.</label>
+                                            <label for="vehicle_reg_no" class=" form-control-label"><small class="form-text text-muted">Vehicle Reg No.</small></label>
                                             <?php
                                                 $vehicle = mysqli_query ( $conn_admin_db, "SELECT vv_id, vv_vehicleNo FROM vehicle_vehicle");
                                                 db_select ($vehicle, 'vehicle_reg_no', '','','-select-','form-control col-sm-6','');
                                             ?>
                                         </div>
                                         <div class="col-sm-6">
-                                            <label for="lpkp_date" class="form-control-label">LPKP Permit due date</label>
+                                            <label for="lpkp_date" class="form-control-label"><small class="form-text text-muted">LPKP Permit due date</small></label>
                                             <div class="input-group " data-provide="datepicker">
                                                 <input id="lpkp_date" name="lpkp_date" class="form-control col-sm-5">
                                                 <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
-                                            </div>
-                                            <small class="form-text text-muted">ex. 99/99/9999</small>
+                                            </div>                                            
                                         </div>
                                     </div>    
 
                                     <div class="form-group row col-sm-12">
                                         <div class="col-sm-6">
-                                            <label for="insurance_from_date" class="form-control-label">Insurance from date</label>
+                                            <label for="insurance_from_date" class="form-control-label"><small class="form-text text-muted">Insurance from date</small></label>
                                             <div class="input-group " data-provide="datepicker">
                                                 <input id="insurance_from_date" name="insurance_from_date" class="form-control col-sm-5">
                                                 <div class="input-group-addon"><i class="fa fa-calendar"></i></div>                                                
-                                            </div>                                            
-                                            <small class="form-text text-muted">ex. 99/99/9999</small>
+                                            </div>                                                                                        
                                         </div>
                                         <div class="col-sm-6">
-                                            <label for="insurance_due_date" class="form-control-label">Insurance due date</label>
+                                            <label for="insurance_due_date" class="form-control-label"><small class="form-text text-muted">Insurance due date</small></label>
                                             <div class="input-group " data-provide="datepicker">
                                                 <input id="insurance_due_date" name="insurance_due_date" class="form-control col-sm-5">
                                                 <div class="input-group-addon"><i class="fa fa-calendar"></i></div>                                                
-                                            </div>                                            
-                                            <small class="form-text text-muted">ex. 99/99/9999</small>
+                                            </div>                                           
                                         </div>
                                     </div>
                                     <div class="form-group row col-sm-12">
                                         <div class="col-sm-6">
-                                            <label for="roadtax_from_date" class="form-control-label">Roadtax from date</label>
+                                            <label for="roadtax_from_date" class="form-control-label"><small class="form-text text-muted">Roadtax from date</small></label>
                                             <div class="input-group " data-provide="datepicker">
                                                 <input id="roadtax_from_date" name="roadtax_from_date" class="form-control col-sm-5">
                                                 <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
                                             </div>
-                                            <small class="form-text text-muted">ex. 99/99/9999</small>
                                         </div>
                                         <div class="col-sm-6">
-                                            <label for="roadtax_due_date" class="form-control-label">Roadtax due date</label>
+                                            <label for="roadtax_due_date" class="form-control-label"><small class="form-text text-muted">Roadtax due date</small></label>
                                             <div class="input-group " data-provide="datepicker">
                                                 <input id="roadtax_due_date" name="roadtax_due_date" class="form-control col-sm-5">
                                                 <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
@@ -147,33 +143,33 @@
 
                                     <div class="form-group row col-sm-12">
                                         <div class="col-sm-6">
-                                            <label for="premium_amount" class=" form-control-label">Premium (RM)</label>
+                                            <label for="premium_amount" class=" form-control-label"><small class="form-text text-muted">Premium (RM)</small></label>
                                             <input type="text" id="premium_amount" name="premium_amount" placeholder="e.g 1000.00" class="form-control col-sm-6">
                                         </div>
                                         <div class="col-sm-6">
-                                            <label for="ncd" class=" form-control-label">NCD (%)</label>
+                                            <label for="ncd" class=" form-control-label"><small class="form-text text-muted">NCD (%)</small></label>
                                             <input type="text" id="ncd" name="ncd" placeholder="e.g 25" class="form-control col-sm-6">
                                         </div>
                                     </div>
 
                                     <div class="form-group row col-sm-12">
                                         <div class="col-sm-6">
-                                            <label for="sum_insured" class=" form-control-label">Sum Insured (RM)</label>
+                                            <label for="sum_insured" class=" form-control-label"><small class="form-text text-muted">Sum Insured (RM)</small></label>
                                             <input type="text" id="sum_insured" name="sum_insured" placeholder="e.g 750.00" class="form-control col-sm-6">
                                         </div>
                                         <div class="col-sm-6">
-                                            <label for="excess_paid" class=" form-control-label">Excess Paid (RM)</label>
+                                            <label for="excess_paid" class=" form-control-label"><small class="form-text text-muted">Excess Paid (RM)</small></label>
                                             <input type="text" id="excess_paid" name="excess_paid" placeholder="e.g 750.00" class="form-control col-sm-6">
                                         </div>
                                     </div>
                                     
                                     <div class="form-group row col-sm-12">
                                         <div class="col-sm-6">
-                                            <label for="roadtax_amount" class=" form-control-label">Roadtax Amount(RM)</label>
+                                            <label for="roadtax_amount" class=" form-control-label"><small class="form-text text-muted">Roadtax Amount(RM)</small></label>
                                             <input type="text" id="roadtax_amount" name="roadtax_amount" placeholder="e.g 50.00" class="form-control col-sm-6">
                                         </div>
                                         <div class="col-sm-6 ">
-                                            <label for="insurance_status" class=" form-control-label">Insurance Status</label>
+                                            <label for="insurance_status" class=" form-control-label"><small class="form-text text-muted">Insurance Status</small></label>
                                             <select name="insurance_status" id="insurance_status" class="form-control col-sm-6">
                                                 <option value="1">Active</option>
                                                 <option value="0">Inactive</option>
