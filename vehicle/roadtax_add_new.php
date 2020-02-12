@@ -100,8 +100,8 @@
                                         </div>
                                         <div class="col-sm-6">
                                             <label for="lpkp_date" class="form-control-label"><small class="form-text text-muted">LPKP Permit due date</small></label>
-                                            <div class="input-group " data-provide="datepicker">
-                                                <input id="lpkp_date" name="lpkp_date" class="form-control col-sm-5">
+                                            <div class="input-group">
+                                                <input id="lpkp_date" name="lpkp_date" class="form-control col-sm-5" autocomplete="off">
                                                 <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
                                             </div>                                            
                                         </div>
@@ -110,15 +110,15 @@
                                     <div class="form-group row col-sm-12">
                                         <div class="col-sm-6">
                                             <label for="insurance_from_date" class="form-control-label"><small class="form-text text-muted">Insurance from date</small></label>
-                                            <div class="input-group " data-provide="datepicker">
-                                                <input id="insurance_from_date" name="insurance_from_date" class="form-control col-sm-5">
+                                            <div class="input-group">
+                                                <input id="insurance_from_date" name="insurance_from_date" class="form-control col-sm-5" autocomplete="off">
                                                 <div class="input-group-addon"><i class="fa fa-calendar"></i></div>                                                
                                             </div>                                                                                        
                                         </div>
                                         <div class="col-sm-6">
                                             <label for="insurance_due_date" class="form-control-label"><small class="form-text text-muted">Insurance due date</small></label>
-                                            <div class="input-group " data-provide="datepicker">
-                                                <input id="insurance_due_date" name="insurance_due_date" class="form-control col-sm-5">
+                                            <div class="input-group">
+                                                <input id="insurance_due_date" name="insurance_due_date" class="form-control col-sm-5" autocomplete="off">
                                                 <div class="input-group-addon"><i class="fa fa-calendar"></i></div>                                                
                                             </div>                                           
                                         </div>
@@ -126,47 +126,46 @@
                                     <div class="form-group row col-sm-12">
                                         <div class="col-sm-6">
                                             <label for="roadtax_from_date" class="form-control-label"><small class="form-text text-muted">Roadtax from date</small></label>
-                                            <div class="input-group " data-provide="datepicker">
-                                                <input id="roadtax_from_date" name="roadtax_from_date" class="form-control col-sm-5">
+                                            <div class="input-group">
+                                                <input id="roadtax_from_date" name="roadtax_from_date" class="form-control col-sm-5" autocomplete="off">
                                                 <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
                                             </div>
                                         </div>
                                         <div class="col-sm-6">
                                             <label for="roadtax_due_date" class="form-control-label"><small class="form-text text-muted">Roadtax due date</small></label>
-                                            <div class="input-group " data-provide="datepicker">
-                                                <input id="roadtax_due_date" name="roadtax_due_date" class="form-control col-sm-5">
+                                            <div class="input-group">
+                                                <input id="roadtax_due_date" name="roadtax_due_date" class="form-control col-sm-5" autocomplete="off">
                                                 <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
                                             </div>
-                                            <small class="form-text text-muted">ex. 99/99/9999</small>
                                         </div>
                                     </div>
 
                                     <div class="form-group row col-sm-12">
                                         <div class="col-sm-6">
                                             <label for="premium_amount" class=" form-control-label"><small class="form-text text-muted">Premium (RM)</small></label>
-                                            <input type="text" id="premium_amount" name="premium_amount" placeholder="e.g 1000.00" class="form-control col-sm-6">
+                                            <input type="text" id="premium_amount" name="premium_amount" onkeypress="return isNumberKey(event)" placeholder="e.g 1000.00" class="form-control col-sm-6">
                                         </div>
                                         <div class="col-sm-6">
                                             <label for="ncd" class=" form-control-label"><small class="form-text text-muted">NCD (%)</small></label>
-                                            <input type="text" id="ncd" name="ncd" placeholder="e.g 25" class="form-control col-sm-6">
+                                            <input type="text" id="ncd" name="ncd" onkeypress="return isNumberKey(event)" placeholder="e.g 25" class="form-control col-sm-6">
                                         </div>
                                     </div>
 
                                     <div class="form-group row col-sm-12">
                                         <div class="col-sm-6">
                                             <label for="sum_insured" class=" form-control-label"><small class="form-text text-muted">Sum Insured (RM)</small></label>
-                                            <input type="text" id="sum_insured" name="sum_insured" placeholder="e.g 750.00" class="form-control col-sm-6">
+                                            <input type="text" id="sum_insured" name="sum_insured" onkeypress="return isNumberKey(event)" placeholder="e.g 750.00" class="form-control col-sm-6">
                                         </div>
                                         <div class="col-sm-6">
                                             <label for="excess_paid" class=" form-control-label"><small class="form-text text-muted">Excess Paid (RM)</small></label>
-                                            <input type="text" id="excess_paid" name="excess_paid" placeholder="e.g 750.00" class="form-control col-sm-6">
+                                            <input type="text" id="excess_paid" name="excess_paid" onkeypress="return isNumberKey(event)" placeholder="e.g 750.00" class="form-control col-sm-6">
                                         </div>
                                     </div>
                                     
                                     <div class="form-group row col-sm-12">
                                         <div class="col-sm-6">
                                             <label for="roadtax_amount" class=" form-control-label"><small class="form-text text-muted">Roadtax Amount(RM)</small></label>
-                                            <input type="text" id="roadtax_amount" name="roadtax_amount" placeholder="e.g 50.00" class="form-control col-sm-6">
+                                            <input type="text" id="roadtax_amount" name="roadtax_amount" onkeypress="return isNumberKey(event)" placeholder="e.g 50.00" class="form-control col-sm-6">
                                         </div>
                                         <div class="col-sm-6 ">
                                             <label for="insurance_status" class=" form-control-label"><small class="form-text text-muted">Insurance Status</small></label>
@@ -199,43 +198,70 @@
 
     <!-- link to the script-->
 	<?php include ('../allScript2.php')?>
-<!-- 	<script src="../assets/js/lib/data-table/datatables.min.js"></script> -->
-<!--     <script src="../assets/js/lib/data-table/dataTables.bootstrap.min.js"></script> -->
-<!--     <script src="../assets/js/lib/data-table/dataTables.buttons.min.js"></script> -->
-<!--     <script src="../assets/js/lib/data-table/buttons.bootstrap.min.js"></script> -->
-<!--     <script src="../assets/js/lib/data-table/jszip.min.js"></script> -->
-<!--     <script src="../assets/js/lib/data-table/vfs_fonts.js"></script> -->
-<!--     <script src="../assets/js/lib/data-table/buttons.html5.min.js"></script> -->
-<!--     <script src="../assets/js/lib/data-table/buttons.print.min.js"></script> -->
-<!--     <script src="../assets/js/lib/data-table/buttons.colVis.min.js"></script> -->
-<!--     <script src="../assets/js/init/datatables-init.js"></script> -->
+	<script src="../assets/js/lib/data-table/datatables.min.js"></script>
+    <script src="../assets/js/lib/data-table/dataTables.bootstrap.min.js"></script>
+    <script src="../assets/js/lib/data-table/dataTables.buttons.min.js"></script>
+    <script src="../assets/js/lib/data-table/buttons.bootstrap.min.js"></script>
+    <script src="../assets/js/lib/data-table/jszip.min.js"></script>
+    <script src="../assets/js/lib/data-table/vfs_fonts.js"></script>
+    <script src="../assets/js/lib/data-table/buttons.html5.min.js"></script>
+    <script src="../assets/js/lib/data-table/buttons.print.min.js"></script>
+    <script src="../assets/js/lib/data-table/buttons.colVis.min.js"></script>
+    <script src="../assets/js/init/datatables-init.js"></script>
+    <script src="../assets/js/script/bootstrap-datepicker.min.js"></script>
 
     <!-- Datepicker JQuery UI -->
-    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<!--     <script src="https://code.jquery.com/jquery-1.12.4.js"></script> -->
+<!--     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script> -->
 	
 	<script type="text/javascript">
         $(document).ready(function() {
 //             $('#bootstrap-data-table-export').DataTable();
 
         	$('#lpkp_date').datepicker({
-            	dateFormat: 'dd-mm-yy'
+            	format: 'dd-mm-yyyy',
+            	autoclose: true,
+            	todayHighlight: true,
              });
             
             $('#insurance_from_date').datepicker({
-            	dateFormat: 'dd-mm-yy'
+            	format: 'dd-mm-yyyy',
+            	autoclose: true,
+            	todayHighlight: true,
              });
             $('#insurance_due_date').datepicker({
-            	dateFormat: 'dd-mm-yy'
+            	format: 'dd-mm-yyyy',
+            	autoclose: true,
+            	todayHighlight: true,
              });
             
             $('#roadtax_from_date').datepicker({
-            	dateFormat: 'dd-mm-yy'
+            	format: 'dd-mm-yyyy',
+            	autoclose: true,
+            	todayHighlight: true,
              });
             $('#roadtax_due_date').datepicker({
-            	dateFormat: 'dd-mm-yy'
+            	format: 'dd-mm-yyyy',
+            	autoclose: true,
+            	todayHighlight: true,
              });                       
         });
+
+        function isNumberKey(evt){
+			var charCode = (evt.which) ? evt.which : evt.keyCode;
+			if (charCode != 46 && charCode > 31 
+			&& (charCode < 48 || charCode > 57))
+			return false;
+			return true;
+		}  
+		
+		function isNumericKey(evt){
+			var charCode = (evt.which) ? evt.which : evt.keyCode;
+			if (charCode != 46 && charCode > 31 
+			&& (charCode < 48 || charCode > 57))
+			return true;
+			return false;
+		} 
   </script>
 </body>
 </html>

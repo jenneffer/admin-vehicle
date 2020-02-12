@@ -4,6 +4,11 @@
 
     <link rel="stylesheet" href="../assets/css/normalize.min.css">
     <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/css/bootstrap-datepicker3.css">
+<!--     <link rel="stylesheet" href="../assets/css/flag-icon.min.css"> -->
+<!--     <link rel="stylesheet" href="../assets/css/pe-icon-7-stroke.min.css"> -->
+<!--     <link rel="stylesheet" href="../assets/css/themify-icons.css"> -->
+<!--     <link rel="stylesheet" href="../assets/css/lib/fontawesome-free-5.12.1-web/css/fontawesome.min.css"> -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
     <!-- (font-awesome) <link rel="stylesheet" href="assets/css/font-awesome.min.css"> -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lykmapipo/themify-icons@0.1.2/css/themify-icons.css">

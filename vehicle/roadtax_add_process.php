@@ -24,24 +24,34 @@
         $months = floor(($diff - $years * 365*60*60*24) / (30*60*60*24));
         $days = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24)/ (60*60*24));
 
+        //insert into roadtax table
         $sql_insert = mysqli_query($conn_admin_db, "INSERT INTO vehicle_roadtax SET
                             vv_id = '".$vehicle_reg_no."',
-                            vrt_lpkpPermit_dueDate = '".$lpkp_date."',
-                            vrt_insurance_fromDate = '".$insurance_from_date."',
-                            vrt_insurance_dueDate = '".$insurance_due_date."',
-                            vrt_insuranceStatus = '".$insurance_status."',
+                            vrt_lpkpPermit_dueDate = '".$lpkp_date."',                            
                             vrt_roadTax_fromDate = '".$roadtax_from_date."',
                             vrt_roadTax_dueDate = '".$roadtax_due_date."',
                             vrt_roadtaxPeriodYear = '".$years."',
                             vrt_roadtaxPeriodMonth = '".$months."',
                             vrt_roadtaxPeriodDay = '".$days."',
-                            vrt_amount = '".$roadtax_amount."',
-                            premium_amount='".$premium_amount."',
-                            ncd='".$ncd."',
-                            sum_insured='".$sum_insured."',
-                            excess_paid='".$excess_paid."',
-                            vrt_lastUpdated = now()");
-
-        alert ("Added successfully","roadtax.php");
+                            vrt_amount = '".$roadtax_amount."', 
+                            vrt_updatedBy = '".$_SESSION['cr_id']."',                        
+                            vrt_lastUpdated = now()") or  die(mysqli_error($conn_admin_db));
+        
+        //insert into insurance table
+        $sql_insert_ins = mysqli_query($conn_admin_db,"INSERT INTO vehicle_insurance SET
+                            vv_id = '".$vehicle_reg_no."',
+                            vi_insurance_fromDate = '".$insurance_from_date."',
+                            vi_insurance_dueDate = '".$insurance_due_date."',
+                            vi_insuranceStatus = '".$insurance_status."',
+                            vi_premium_amount='".$premium_amount."',
+                            vi_ncd='".$ncd."',
+                            vi_sum_insured='".$sum_insured."',
+                            vi_excess_paid='".$excess_paid."',
+                            vi_lastUpdated = now(),
+                            vi_updatedBy = '".$_SESSION['cr_id']."'") or die(mysqli_error($conn_admin_db));;
+        
+        if ($sql_insert && $sql_insert_ins) {
+            alert ("Added successfully","roadtax.php");
+        }
     }
 ?>

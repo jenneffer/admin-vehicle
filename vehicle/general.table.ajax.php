@@ -4,10 +4,14 @@
     global $conn_admin_db;
     session_start();
 
+    $date_start = isset($_POST['date_start']) ? $_POST['date_start'] : date('01-m-Y');
+    $date_end = isset($_POST['date_end']) ? $_POST['date_end'] : date('t-m-Y');
+    
 	$sql_query = "SELECT * FROM vehicle_vehicle  vv
                 INNER JOIN vehicle_roadtax vrt ON vv.vv_id = vrt.vv_id
                 INNER JOIN company c ON c.id = vv.company_id
-                LEFT JOIN vehicle_puspakom vp ON vp.vv_id = vv.vv_id";
+                LEFT JOIN vehicle_puspakom vp ON vp.vv_id = vv.vv_id
+                LEFT JOIN vehicle_insurance vi ON vi.vv_id = vv.vv_id";
 	
 	$rst  = mysqli_query($conn_admin_db, $sql_query)or die(mysqli_error($conn_admin_db));
 	
@@ -35,12 +39,12 @@
 					$row['code'],
 					$row['vv_vehicleNo'],					
 			        dateFormatRev($row['vrt_lpkpPermit_dueDate']),
-			        dateFormatRev($row['vrt_insurance_fromDate']),
-    			    dateFormatRev($row['vrt_insurance_dueDate']),
-			        $row['premium_amount'],
-    			    $row['ncd'],
-			        $row['sum_insured'],
-			        $row['excess_paid'],
+			        dateFormatRev($row['vi_insurance_fromDate']),
+    			    dateFormatRev($row['vi_insurance_dueDate']),
+			        $row['vi_premium_amount'],
+    			    $row['vi_ncd'],
+			        $row['vi_sum_insured'],
+			        $row['vi_excess_paid'],
     			    $row['vv_capacity'],
 			        dateFormatRev($row['vp_fitnessDate']),
     			    dateFormatRev($row['vrt_roadTax_fromDate']),

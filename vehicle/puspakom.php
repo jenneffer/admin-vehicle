@@ -21,11 +21,8 @@
 	}
 	
 	
-	$company_id = isset( $_POST['company'] ) ? $_POST['company'] : "";
-	$month = isset( $_POST['month'] ) ? $_POST['month'] : date('m');	
-	ob_start();
-	selectMonth('month',$month,'','-Select Month-','form-control col-sm-6','','');
-	$html_month_select = ob_get_clean();
+	$date_start = isset($_POST['date_start']) ? $_POST['date_start'] : date('01-m-Y');
+	$date_end = isset($_POST['date_end']) ? $_POST['date_end'] : date('t-m-Y');
 ?>
 
 <!doctype html>
@@ -101,21 +98,22 @@
                                 <strong class="card-title">Puspakom</strong>
                             </div>
                             <!-- Filter -->
-                            <div>
+                            <div class="card-body">
                             <form id="myform" enctype="multipart/form-data" method="post" action="">                	                   
                 	            <div class="form-group row col-sm-12">
-                                    <div class="col-sm-4">
-                                        <label for="month" class="form-control-label"><small class="form-text text-muted">Select Month</small></label>
-                                        <div>
-                                            <?=$html_month_select?>
-                                          </div>                            
+                                    <div class="col-sm-3">
+                                        <label for="date_start" class="form-control-label"><small class="form-text text-muted">Date Start</small></label>
+                                        <div class="input-group">
+                                          <input type="text" id="date_start" name="date_start" class="form-control" value="<?=$date_start?>" autocomplete="off">
+                                          <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+                                        </div>                            
                                     </div>
-                                    <div class="col-sm-4">
-                                        <label for="company" class="form-control-label"><small class="form-text text-muted">Select Company</small></label>
-                                        <?php
-                                            $company = mysqli_query ( $conn_admin_db, "SELECT id, code FROM company");
-                                            db_select ($company, 'company', $company_id,'','-Select Company-','form-control col-sm-6','');
-                                        ?>                             
+                                    <div class="col-sm-3">
+                                        <label for="date_end" class="form-control-label"><small class="form-text text-muted">Date End</small></label>
+                                        <div class="input-group">
+                                          <input type="text" id="date_end" name="date_end" class="form-control" value="<?=$date_end?>" autocomplete="off">
+                                          <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+                                        </div>                             
                                     </div>
                                     <div class="col-sm-4">                                    	
                                     	<button type="submit" class="btn btn-primary button_search ">Submit</button>
@@ -123,6 +121,7 @@
                                  </div>    
                             </form>
                             </div>
+                            <hr>
                             <div class="card-body">
                                 <table id="puspakom_datatable" class="table table-striped table-bordered">
                                     <thead>
@@ -149,7 +148,7 @@
             </div><!-- .animated -->
         </div><!-- .content -->
         </div>
-        <!-- Modal edit Roadtax  -->
+        <!-- Modal edit puspakom  -->
         <div id="editItem" class="modal fade">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
@@ -176,23 +175,15 @@
                         <div class="form-group row col-sm-12">
                             <div class="col-sm-6">
                                 <label for="fitness_date" class="form-control-label"><small class="form-text text-muted">Fitness due date</small></label>
-<!--                                 <div class="input-group " data-provide="datepicker"> -->
-<!--                                     <input id="fitness_date" name="fitness_date" class="form-control"> -->
-<!--                                     <div class="input-group-addon"><i class="fa fa-calendar"></i></div> -->
-<!--                                 </div>          -->
                                 <div class="input-group">
-                                  <input type="text" id="fitness_date" name="fitness_date" class="form-control">
+                                  <input type="text" id="fitness_date" name="fitness_date" class="form-control" autocomplete="off">
                                   <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
                                 </div>                       
                             </div>
                             <div class="col-sm-6">
                                 <label for="roadtax_due_date" class="form-control-label"><small class="form-text text-muted">Roadtax due date</small></label>
-<!--                                 <div class="input-group " data-provide="datepicker"> -->
-<!--                                     <input id="roadtax_due_date" name="roadtax_due_date" class="form-control"> -->
-<!--                                     <div class="input-group-addon"><i class="fa fa-calendar"></i></div> -->
-<!--                                 </div>                                 -->
                                 <div class="input-group">
-                                  <input type="text" id="roadtax_due_date" name="roadtax_due_date" class="form-control">
+                                  <input type="text" id="roadtax_due_date" name="roadtax_due_date" class="form-control" autocomplete="off">
                                   <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
                                 </div> 
                             </div>
@@ -343,6 +334,7 @@
      }); 
       
      $('#fitness_date').datepicker({
+         format: "dd-mm-yyyy",
     	 startDate: "0d",
          autoclose: true,
          orientation: "top left",
@@ -350,7 +342,8 @@
          });
 
       $('#roadtax_due_date').datepicker({
-     	 startDate: "0d",
+    	  format: "dd-mm-yyyy",
+     	  startDate: "0d",
           autoclose: true,
           orientation: "top left",
           todayHighlight: true
@@ -361,6 +354,13 @@
   		table.ajax.reload();
   		table.draw();  		
   		});	
+
+     $('#date_start, #date_end').datepicker({
+         format: "dd-mm-yyyy",
+         autoclose: true,
+         orientation: "top left",
+         todayHighlight: true
+     });
     });
   </script>
 </body>

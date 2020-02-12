@@ -19,6 +19,9 @@
 		$PrevURL= $url;
 		header("Location: ../login.php?RecLock=".$PrevURL);
 	}
+	
+	$date_start = isset($_POST['date_start']) ? $_POST['date_start'] : date('01-m-Y');
+	$date_end = isset($_POST['date_end']) ? $_POST['date_end'] : date('t-m-Y');
 ?>
 
 <!doctype html>
@@ -68,6 +71,11 @@
         #cellPaiChart{
             height: 160px;
         }
+        .button_search{
+            position: absolute;
+            left:    0;
+            bottom:   0;
+        }
 
     </style>
 </head>
@@ -89,6 +97,31 @@
                             <div class="card-header">
                                 <strong class="card-title">Road Tax</strong>
                             </div>
+                            <!-- Filter -->
+                            <div class="card-body">
+                            <form id="myform" enctype="multipart/form-data" method="post" action="">                	                   
+                	            <div class="form-group row col-sm-12">
+                                    <div class="col-sm-3">
+                                        <label for="date_start" class="form-control-label"><small class="form-text text-muted">Date Start</small></label>
+                                        <div class="input-group">
+                                          <input type="text" id="date_start" name="date_start" class="form-control" value="<?=$date_start?>" autocomplete="off">
+                                          <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+                                        </div>                            
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <label for="date_end" class="form-control-label"><small class="form-text text-muted">Date End</small></label>
+                                        <div class="input-group">
+                                          <input type="text" id="date_end" name="date_end" class="form-control" value="<?=$date_end?>" autocomplete="off">
+                                          <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+                                        </div>                             
+                                    </div>
+                                    <div class="col-sm-4">                                    	
+                                    	<button type="submit" class="btn btn-primary button_search ">Submit</button>
+                                    </div>
+                                 </div>    
+                            </form>
+                            </div>
+                            <hr>
                             <div class="card-body">
                                 <table id="bootstrap-data-table" class="table table-striped table-bordered">
                                     <thead>
@@ -119,6 +152,7 @@
                                     <?php 
                                         $sql_query = "SELECT * FROM vehicle_roadtax
                                                 INNER JOIN vehicle_vehicle ON vehicle_vehicle.vv_id = vehicle_roadtax.vv_id
+                                                LEFT JOIN vehicle_insurance ON vehicle_insurance.vv_id = vehicle_vehicle.vv_id
                                                 INNER JOIN company ON company.id = vehicle_vehicle.company_id";
                                         if(mysqli_num_rows(mysqli_query($conn_admin_db,$sql_query)) > 0){
                                             $count = 0;
@@ -135,8 +169,8 @@
                                                         <td><?=$row['vv_vehicleNo']?></td>
                                                         <td><?=$row['code']?></td>
                                                         <td><?=dateFormatRev($row['vrt_lpkpPermit_dueDate'])?></td>                                                        
-                                                        <td><?=dateFormatRev($row['vrt_insurance_dueDate'])?></td>
-                                                        <td><?=$row['vrt_insuranceStatus'] == 1 ? "Active" : "Inactive"?></td>  
+                                                        <td><?=dateFormatRev($row['vi_insurance_dueDate'])?></td>
+                                                        <td><?=$row['vi_insuranceStatus'] == 1 ? "Active" : "Inactive"?></td>  
                                                         <td><?=dateFormatRev($row['vrt_roadTax_fromDate'])?></td>
                                                         <td><?=dateFormatRev($row['vrt_roadTax_dueDate'])?></td>     
                                                         <td><?=$period?></td>  
@@ -187,7 +221,7 @@
                             <div class="col-sm-6">
                                 <label for="lpkp_date" class="form-control-label"><small class="form-text text-muted">LPKP Permit due date</small></label>
                                 <div class="input-group">
-                                  <input type="text" id="lpkp_date" name="lpkp_date" class="form-control">
+                                  <input type="text" id="lpkp_date" name="lpkp_date" class="form-control" autocomplete="off">
                                   <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
                                 </div>                            
                             </div>
@@ -197,14 +231,14 @@
                             <div class="col-sm-6">
                                 <label for="insurance_from_date" class="form-control-label"><small class="form-text text-muted">Insurance from date</small></label>    
                                 <div class="input-group">
-                                  <input type="text" id="insurance_from_date" name="insurance_from_date" class="form-control">
+                                  <input type="text" id="insurance_from_date" name="insurance_from_date" class="form-control" autocomplete="off">
                                   <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
                                 </div>                                                                        
                             </div>
                             <div class="col-sm-6">
                                 <label for="insurance_due_date" class="form-control-label"><small class="form-text text-muted">Insurance due date</small></label> 
                                 <div class="input-group">
-                                  <input type="text" id="insurance_due_date" name="insurance_due_date" class="form-control">
+                                  <input type="text" id="insurance_due_date" name="insurance_due_date" class="form-control" autocomplete="off">
                                   <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
                                 </div>                                                                           
                             </div>
@@ -213,14 +247,14 @@
                             <div class="col-sm-6">
                                 <label for="roadtax_from_date" class="form-control-label"><small class="form-text text-muted">Roadtax from date</small></label>  
                                 <div class="input-group">
-                                  <input type="text" id="roadtax_from_date" name="roadtax_from_date" class="form-control">
+                                  <input type="text" id="roadtax_from_date" name="roadtax_from_date" class="form-control" autocomplete="off">
                                   <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
                                 </div>                               
                             </div>
                             <div class="col-sm-6">
                                 <label for="roadtax_due_date" class="form-control-label"><small class="form-text text-muted">Roadtax due date</small></label>
                                 <div class="input-group">
-                                  <input type="text" id="roadtax_due_date" name="roadtax_due_date" class="form-control">
+                                  <input type="text" id="roadtax_due_date" name="roadtax_due_date" class="form-control" autocomplete="off">
                                   <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
                                 </div>                               
                             </div>
@@ -413,11 +447,47 @@
             }  
        }); 
 
-       $('#lpkp_date').datepicker();
-       $('#insurance_from_date').datepicker();
-       $('#insurance_due_date').datepicker();
-       $('#roadtax_from_date').datepicker();
-       $('#roadtax_due_date').datepicker();
+       $('#lpkp_date').datepicker({
+    	   format: "dd-mm-yyyy",          
+           autoclose: true,
+           orientation: "top left",
+           todayHighlight: true
+       });
+       
+       $('#insurance_from_date').datepicker({
+            format: "dd-mm-yyyy",
+            autoclose: true,
+            orientation: "top left",
+            todayHighlight: true
+        });
+       
+       $('#insurance_due_date').datepicker({
+    	   format: "dd-mm-yyyy",
+           autoclose: true,
+           orientation: "top left",
+           todayHighlight: true
+        });
+       
+       $('#roadtax_from_date').datepicker({
+    	   format: "dd-mm-yyyy",
+           autoclose: true,
+           orientation: "top left",
+           todayHighlight: true
+        });
+       
+       $('#roadtax_due_date').datepicker({
+    	   format: "dd-mm-yyyy",
+           autoclose: true,
+           orientation: "top left",
+           todayHighlight: true
+        });
+
+       $('#date_start, #date_end').datepicker({
+           format: "dd-mm-yyyy",
+           autoclose: true,
+           orientation: "top left",
+           todayHighlight: true
+       });
         	  
       });
   </script>

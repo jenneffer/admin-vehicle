@@ -18,6 +18,10 @@
 		$PrevURL= $url;
 		header("Location: ../login.php?RecLock=".$PrevURL);
 	}
+	
+	$date_start = isset($_POST['date_start']) ? $_POST['date_start'] : date('01-m-Y');
+	$date_end = isset($_POST['date_end']) ? $_POST['date_end'] : date('t-m-Y');
+	
 ?>
 
 <!doctype html>
@@ -34,9 +38,9 @@
 	<!-- link to css -->
 	<?php include('../allCSS1.php')?>
    <style>
-    #weatherWidget .currentDesc {
-        color: #ffffff!important;
-    }
+        #weatherWidget .currentDesc {
+            color: #ffffff!important;
+        }
         .traffic-chart {
             min-height: 335px;
         }
@@ -60,15 +64,20 @@
         #flotLine5  {
              height: 105px;
         }
-
+        
         #flotBarChart {
             height: 150px;
         }
         #cellPaiChart{
             height: 160px;
         }
+        .button_search{
+            position: absolute;
+            left:    0;
+            bottom:   0;
+        }
 
-    </style>
+   </style>
 </head>
 
 <body>
@@ -86,8 +95,32 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header">
-                                <strong class="card-title">Road Tax</strong>
+                                <strong class="card-title">General Table</strong>
                             </div>
+                            <div class="card-body">
+                            <form id="myform" enctype="multipart/form-data" method="post" action="">                	                   
+                	            <div class="form-group row col-sm-12">
+                                    <div class="col-sm-3">
+                                        <label for="date_start" class="form-control-label"><small class="form-text text-muted">Date Start</small></label>
+                                        <div class="input-group">
+                                          <input type="text" id="date_start" name="date_start" class="form-control" value="<?=$date_start?>" autocomplete="off">
+                                          <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+                                        </div>                            
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <label for="date_end" class="form-control-label"><small class="form-text text-muted">Date End</small></label>
+                                        <div class="input-group">
+                                          <input type="text" id="date_end" name="date_end" class="form-control" value="<?=$date_end?>" autocomplete="off">
+                                          <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+                                        </div>                             
+                                    </div>
+                                    <div class="col-sm-4">                                    	
+                                    	<button type="submit" class="btn btn-primary button_search ">Submit</button>
+                                    </div>
+                                 </div>    
+                            </form>
+                            </div>
+                            <hr>
                             <div class="card-body">
                                 <table id="general_table" class="table table-striped table-bordered">
                                     <thead>
@@ -159,6 +192,7 @@
     <script src="../assets/js/lib/data-table/buttons.print.min.js"></script>
     <script src="../assets/js/lib/data-table/buttons.colVis.min.js"></script>
     <script src="../assets/js/init/datatables-init.js"></script>
+        <script src="../assets/js/script/bootstrap-datepicker.min.js"></script>
 	
 	<script type="text/javascript">
         $(document).ready(function() {
@@ -194,6 +228,33 @@
                 	 }],
 
             	
+            });
+
+    		//get filtered report
+            $('#myform').on("submit", function(event){  
+              event.preventDefault();  
+              if($('#date_start').val() == ""){  
+                   alert("Date start is required");  
+              }  
+              else if($('#date_end').val() == ''){  
+                   alert("End date is required");  
+              }                         
+              else{  
+                   $.ajax({  
+                        url:"general.table.ajax.php",  
+                        method:"POST",  
+                        data:$('#myform').serialize(),  
+                        success:function(data){   
+                             $('#general_table').html(data);  
+                        }  
+                   });  
+              }  
+            }); 
+            $('#date_start, #date_end').datepicker({
+                format: "dd-mm-yyyy",
+                autoclose: true,
+                orientation: "top left",
+                todayHighlight: true
             });
       });
   </script>

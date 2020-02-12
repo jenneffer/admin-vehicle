@@ -278,7 +278,7 @@
                         	<div class="col-sm-6">
                                 <label class=" form-control-label"><small class="form-text text-muted">Payment Date</small></label>
                                 <div class="input-group input-inline">
-                                    <input class="form-control" id="payment_date" name="payment_date" value="">
+                                    <input class="form-control" id="payment_date" name="payment_date" value="" autocomplete="off">
                                     <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
                                 </div>
                             </div>
@@ -291,7 +291,7 @@
                         	<div class="col-sm-6">
                                 <label class=" form-control-label"><small class="form-text text-muted">Bank-in Date</small></label>
                                 <div class="input-group input-inline">
-                                    <input class="form-control" id="bankin_date" name="bankin_date" value="">
+                                    <input class="form-control" id="bankin_date" name="bankin_date" value="" autocomplete="off">
                                     <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
                                 </div>
                             </div>
@@ -353,7 +353,8 @@
     <script src="../assets/js/lib/data-table/buttons.print.min.js"></script>
     <script src="../assets/js/lib/data-table/buttons.colVis.min.js"></script>
     <script src="../assets/js/init/datatables-init.js"></script>
-
+	<script src="../assets/js/script/bootstrap-datepicker.min.js"></script>
+	
 	
 	<script type="text/javascript">
         $(document).ready(function() {
@@ -515,6 +516,28 @@
                  });  
             }  
        });
+
+        $('#summon_date').datepicker({
+        	format: "dd-mm-yyyy",
+            startDate: "0d",
+            autoclose: true,
+            orientation: "top left",
+            todayHighlight: true
+        });
+        $('#payment_date').datepicker({
+        	format: "dd-mm-yyyy",
+            startDate: "0d",
+            autoclose: true,
+            orientation: "top left",
+            todayHighlight: true
+        });
+        $('#bankin_date').datepicker({
+        	format: "dd-mm-yyyy",
+            startDate: "0d",
+            autoclose: true,
+            orientation: "top left",
+            todayHighlight: true
+        });
       });
   </script>
 </body>

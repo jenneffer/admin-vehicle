@@ -9,10 +9,9 @@
         $category = $_POST['category'];
         $brand = $_POST['brand'];
         $name = $_POST['name'];
-        $description = $_POST['description'];
+        $description = $_POST['v_description'];
         $yearPurchased = $_POST['yearPurchased'];
         $capacity = $_POST['capacity'];
-
         $sql_insert = mysqli_query($conn_admin_db, "INSERT INTO vehicle_vehicle SET
 								   vv_vehicleNo = '".$vehicle_reg_no."',
 								   company_id = '".$company_id."',
@@ -23,7 +22,7 @@
 								   vv_yearPurchased = '".$yearPurchased."',
                                    vv_capacity = '".$capacity."',
                                    date_added = now()");
-                                   
+                   
         alert ("Added successfully","vehicle.php");
     }
 ?>

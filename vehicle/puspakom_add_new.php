@@ -34,6 +34,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	<!-- link to css -->
 	<?php include('../allCSS1.php')?>
+	
    <style>
     #weatherWidget .currentDesc {
         color: #ffffff!important;
@@ -102,15 +103,15 @@
                                     <div class="form-group row col-sm-12">
                                         <div class="col-sm-6">
                                             <label for="fitness_date" class="form-control-label"><small class="form-text text-muted">Fitness due date</small></label>
-                                            <div class="input-group " data-provide="datepicker">
-                                                <input id="fitness_date" name="fitness_date" class="form-control col-sm-5">
+                                            <div class="input-group">
+                                                <input id="fitness_date" name="fitness_date" class="form-control col-sm-5" autocomplete="off" >
                                                 <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
                                             </div>                                            
                                         </div>
                                         <div class="col-sm-6">
                                             <label for="roadtax_due_date" class="form-control-label"><small class="form-text text-muted">Roadtax due date</small></label>
-                                            <div class="input-group " data-provide="datepicker">
-                                                <input id="roadtax_due_date" name="roadtax_due_date" class="form-control col-sm-5">
+                                            <div class="input-group">
+                                                <input id="roadtax_due_date" name="roadtax_due_date" class="form-control col-sm-5" autocomplete="off" >
                                                 <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
                                             </div>
                                         </div>
@@ -150,16 +151,21 @@
     <script src="../assets/js/lib/data-table/buttons.print.min.js"></script>
     <script src="../assets/js/lib/data-table/buttons.colVis.min.js"></script>
     <script src="../assets/js/init/datatables-init.js"></script>
+    <script src="../assets/js/script/bootstrap-datepicker.min.js"></script>
+    
 	<script type="text/javascript">
         $(document).ready(function() {
 //             $('#bootstrap-data-table-export').DataTable();
-
             $('#fitness_date').datepicker({
-            	dateFormat: 'dd-mm-yy'
+            	format: 'dd-mm-yyyy',
+            	autoclose: true,
+            	todayHighlight: true,
              });
             
             $('#roadtax_due_date').datepicker({
-            	dateFormat: 'dd-mm-yy'
+            	format: 'dd-mm-yyyy',
+            	autoclose: true,
+            	todayHighlight: true,
              });
         });
   </script>

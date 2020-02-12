@@ -89,9 +89,10 @@
                                 <strong class="card-title">Renewing Vehicle Schedule</strong>
                             </div>
                             <div class="card-body">
-                                <table id="bootstrap-data-table" class="table table-striped table-bordered">
+                                <table id="vehicle_schedule" class="table table-striped table-bordered">
                                     <thead>
                                         <tr>
+                                        	<th>No.</th>
                                             <th>Company</th>
 											<th>Vehicle No.</th>
 											<th>R-Tax, Sum & NCD</th>
@@ -110,6 +111,34 @@
                 </div>
             </div><!-- .animated -->
         </div><!-- .content -->
+        <!-- Modal edit next due date  -->
+        <div id="editItem" class="modal fade">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Edit Schedule</h4>
+                </div>
+                <div class="modal-body">
+                    <form role="form" method="POST" action="" id="update_form">
+                        <input type="hidden" name="_token" value="">
+                        <input type="hidden" id="id" name="id" value="">
+                        <input type="hidden" id="task" name="task" value="">
+                        <div class="form-group row col-sm-12">
+                            <label for="next_due_date" class="form-control-label"><small class="form-text text-muted">Next due date</small></label>  
+                            <div class="input-group">
+                              <input type="text" id="next_due_date" name="next_due_date" class="form-control" autocomplete="off">
+                              <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+                            </div>                            
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary update_data ">Update</button>
+                        </div>
+                    </form>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    	</div><!-- /.modal -->
         </div>
         <div class="clearfix"></div>
         <!-- Footer -->
@@ -130,11 +159,64 @@
     <script src="../assets/js/lib/data-table/buttons.print.min.js"></script>
     <script src="../assets/js/lib/data-table/buttons.colVis.min.js"></script>
     <script src="../assets/js/init/datatables-init.js"></script>
+    <script src="../assets/js/script/bootstrap-datepicker.min.js"></script>
 	
 	<script type="text/javascript">
       $(document).ready(function() {
-          $('#bootstrap-data-table-export').DataTable();
+    	  $('#vehicle_schedule').DataTable({
+              "processing": true,
+              "serverSide": true,
+              "ajax":{
+               "url": "renewing.vehicle.schedule.ajax.php",           	
+               "data" : function ( data ){}
+              },
+          });
+
+          //retrieve data
+          $(document).on('click', '.edit_data', function(){
+  			var id = $(this).attr("id");
+
+        	});
+        //update form
+          $('#update_form').on("submit", function(event){  
+              event.preventDefault();  
+              if($('#next_due_date').val() == ""){  
+                   alert("Date is required");  
+              }                 
+              else{  
+                   $.ajax({  
+                        url:"renewing_next_due_date.php",  
+                        method:"POST",  
+                        data:$('#update_form').serialize(),  
+                        success:function(data){   
+                             $('#editItem').modal('hide');  
+                             $('#vehicle_schedule').html(data);  
+                        }  
+                   });  
+              }  
+         });
+      	$('#next_due_date').datepicker({
+      		format: "dd-mm-yyyy",
+            autoclose: true,
+            orientation: "top left",
+            todayHighlight: true
+            });
       });
+
+      function myFunction(id, task){	
+    		$.ajax({
+    				url:"renewing.vehicle.schedule.ajax.php",
+    				method:"POST",
+    				data:{id:id, task: task},
+    				dataType:"json",
+    				success:function(data){	  	  					
+      					$('#next_due_date').val(data.aaData[0][6]);	
+      					$('#id').val(id);	
+      					$('#task').val(data.aaData[0][4]);	
+                    	$('#editItem').modal('show');
+    			}
+    		});
+      }
   </script>
 </body>
 </html>

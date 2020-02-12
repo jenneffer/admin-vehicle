@@ -114,7 +114,7 @@
                                         </div>
                                         <div class="col-sm-6">
                                             <label for="yearPurchased" class=" form-control-label"><small class="form-text text-muted">Year Purchased</small></label>
-                                    		<input type="text" id="yearPurchased" name="yearPurchased" placeholder="e.g 2010" class="form-control col-sm-6">
+                                    		<input type="text" id="yearPurchased" name="yearPurchased" onkeypress="return isNumberKey(event)" placeholder="e.g 2010" class="form-control col-sm-6">
                                         </div>
                                     </div>
                                     <div class="form-group row col-sm-12">
@@ -130,8 +130,8 @@
                                     
                                     <div class="form-group row col-sm-12">
                                         <div class="col-sm-6">
-                                            <label for="description" class=" form-control-label"><small class="form-text text-muted">Description</small></label>                                             
-                                            <textarea name="textarea-input" id="description" name="description" rows="3" placeholder="Description..." class="form-control col-sm-9"></textarea>
+                                            <label for="v_description" class=" form-control-label"><small class="form-text text-muted">Description</small></label>                                             
+                                            <textarea id="v_description" name="v_description" rows="3" placeholder="Description..." class="form-control col-sm-9"></textarea>
                                         </div>
                                         <div class="col-sm-6">
                                             <label for="capacity" class=" form-control-label"><small class="form-text text-muted">Vehicle Capacity (CC)</small></label>
@@ -176,9 +176,23 @@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 	
 	<script type="text/javascript">
-        $(document).ready(function() {
-//           $('#bootstrap-data-table-export').DataTable();
-      } );
+    $(document).ready(function() {});
+    
+    function isNumberKey(evt){
+    	var charCode = (evt.which) ? evt.which : evt.keyCode;
+    	if (charCode != 46 && charCode > 31 
+    	&& (charCode < 48 || charCode > 57))
+    	return false;
+    	return true;
+    }  
+    
+    function isNumericKey(evt){
+    	var charCode = (evt.which) ? evt.which : evt.keyCode;
+    	if (charCode != 46 && charCode > 31 
+    	&& (charCode < 48 || charCode > 57))
+    	return true;
+    	return false;
+    } 
   </script>
 </body>
 </html>

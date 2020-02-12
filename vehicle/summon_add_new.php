@@ -131,14 +131,14 @@
                                         </div>
                                         <div class="col-sm-4">
                                             <label for="reimburse_amt" class=" form-control-label"><small class="form-text text-muted">Reimburse Amount(RM)</small></label>
-                                            <input type="text" id="reimburse_amt" name="reimburse_amt" placeholder="e.g 500.00" class="form-control">
+                                            <input type="text" id="reimburse_amt" name="reimburse_amt" onkeypress="return isNumberKey(event)" placeholder="e.g 500.00" class="form-control">
                                         </div>                                        
                                     </div>
                                     <div class="form-group row col-sm-12">                                          
                                         <div class="col-sm-4">
                                             <label for="summon_date" class=" form-control-label"><small class="form-text text-muted">Summon's Date</small></label>
-                                            <div class="input-group " data-provide="datepicker">
-                                                <input id="summon_date" name="summon_date" class="form-control">
+                                            <div class="input-group">
+                                                <input id="summon_date" name="summon_date" class="form-control" autocomplete="off">
                                                 <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
                                             </div>
                                         </div> 
@@ -169,20 +169,21 @@
     <!-- link to the script-->
 	<?php include ('../allScript2.php')?>
 
-<!-- 	<script src="../assets/js/lib/data-table/datatables.min.js"></script> -->
-<!--     <script src="../assets/js/lib/data-table/dataTables.bootstrap.min.js"></script> -->
-<!--     <script src="../assets/js/lib/data-table/dataTables.buttons.min.js"></script> -->
-<!--     <script src="../assets/js/lib/data-table/buttons.bootstrap.min.js"></script> -->
-<!--     <script src="../assets/js/lib/data-table/jszip.min.js"></script> -->
-<!--     <script src="../assets/js/lib/data-table/vfs_fonts.js"></script> -->
-<!--     <script src="../assets/js/lib/data-table/buttons.html5.min.js"></script> -->
-<!--     <script src="../assets/js/lib/data-table/buttons.print.min.js"></script> -->
-<!--     <script src="../assets/js/lib/data-table/buttons.colVis.min.js"></script> -->
-<!--     <script src="../assets/js/init/datatables-init.js"></script> -->
+	<script src="../assets/js/lib/data-table/datatables.min.js"></script>
+    <script src="../assets/js/lib/data-table/dataTables.bootstrap.min.js"></script>
+    <script src="../assets/js/lib/data-table/dataTables.buttons.min.js"></script>
+    <script src="../assets/js/lib/data-table/buttons.bootstrap.min.js"></script>
+    <script src="../assets/js/lib/data-table/jszip.min.js"></script>
+    <script src="../assets/js/lib/data-table/vfs_fonts.js"></script>
+    <script src="../assets/js/lib/data-table/buttons.html5.min.js"></script>
+    <script src="../assets/js/lib/data-table/buttons.print.min.js"></script>
+    <script src="../assets/js/lib/data-table/buttons.colVis.min.js"></script>
+    <script src="../assets/js/init/datatables-init.js"></script>
+    <script src="../assets/js/script/bootstrap-datepicker.min.js"></script>
    	
    	<!-- Datepicker JQuery UI -->
-    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<!--     <script src="https://code.jquery.com/jquery-1.12.4.js"></script> -->
+<!--     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script> -->
 
 	
 	<script type="text/javascript">
@@ -198,10 +199,28 @@
           });
 
           $('#summon_date').datepicker({
-          	dateFormat: 'dd-mm-yy'
+        	  	format: 'dd-mm-yyyy',
+              	autoclose: true,
+              	todayHighlight: true,       
            });
           
-      } );
+      });
+
+    function isNumberKey(evt){
+		var charCode = (evt.which) ? evt.which : evt.keyCode;
+		if (charCode != 46 && charCode > 31 
+		&& (charCode < 48 || charCode > 57))
+		return false;
+		return true;
+	}  
+	
+	function isNumericKey(evt){
+		var charCode = (evt.which) ? evt.which : evt.keyCode;
+		if (charCode != 46 && charCode > 31 
+		&& (charCode < 48 || charCode > 57))
+		return true;
+		return false;
+	} 
   </script>
 </body>
 </html>

@@ -279,16 +279,16 @@
 	
 	<script type="text/javascript">
     $(document).ready(function() {
-      $('#bootstrap-data-table-export').DataTable();
-      $(document).on('click', '.edit_data', function(){
-			var vehicle_id = $(this).attr("id");
-			$.ajax({
-					url:"vehicle_fetch.php",
-					method:"POST",
-					data:{vehicle_id:vehicle_id},
-					dataType:"json",
-					success:function(data){	
-						$('#vv_id').val(data.vv_id);					
+        $('#bootstrap-data-table-export').DataTable();
+        $(document).on('click', '.edit_data', function(){
+        	var vehicle_id = $(this).attr("id");
+        	$.ajax({
+        			url:"vehicle_fetch.php",
+        			method:"POST",
+        			data:{vehicle_id:vehicle_id},
+        			dataType:"json",
+        			success:function(data){	
+        				$('#vv_id').val(data.vv_id);					
                         $('#vehicle_reg_no').val(data.vv_vehicleNo);  
                         $('#category').val(data.vv_category);  
                         $('#company').val(data.company_id);  
@@ -297,32 +297,30 @@
                         $('#description').val(data.vv_description);  
                         $('#yearPurchased').val(data.vv_yearPurchased);    
                         $('#editItem').modal('show');
-					}
-				});
-      });
-
-      $(document).on('click', '.delete_data', function(){
-			var vehicle_id = $(this).attr("id");
-			$('#delete_record').data('id', vehicle_id); //set the data attribute on the modal button
-
-    	});
-  	
-	$( "#delete_record" ).click( function() {
-		var ID = $(this).data('id');
-		$.ajax({
-			url:"delete.php",
-			method:"POST",    
-			data:{id:ID, table_name : 'vehicle_vehicle', col_identifier:'vv_id'},
-			success:function(data){	  						
-				$('#deleteItem').modal('hide');		
-				location.reload();		
-			}
-		});
-	});
-      
+        			}
+        		});
+        });
     
-
-      $('#update_form').on("submit", function(event){  
+        $(document).on('click', '.delete_data', function(){
+        	var vehicle_id = $(this).attr("id");
+        	$('#delete_record').data('id', vehicle_id); //set the data attribute on the modal button
+        
+        });
+      	
+    	$( "#delete_record" ).click( function() {
+    		var ID = $(this).data('id');
+    		$.ajax({
+    			url:"delete.php",
+    			method:"POST",    
+    			data:{id:ID, table_name : 'vehicle_vehicle', col_identifier:'vv_id'},
+    			success:function(data){	  						
+    				$('#deleteItem').modal('hide');		
+    				location.reload();		
+    			}
+    		});
+    	});
+    
+        $('#update_form').on("submit", function(event){  
           event.preventDefault();  
           if($('#vehicle_reg_no').val() == "")  
           {  
@@ -360,7 +358,23 @@
                     }  
                });  
           }  
-     }); 
+        }); 
+        
+        function isNumberKey(evt){
+        	var charCode = (evt.which) ? evt.which : evt.keyCode;
+        	if (charCode != 46 && charCode > 31 
+        	&& (charCode < 48 || charCode > 57))
+        	return false;
+        	return true;
+        }  
+        
+        function isNumericKey(evt){
+        	var charCode = (evt.which) ? evt.which : evt.keyCode;
+        	if (charCode != 46 && charCode > 31 
+        	&& (charCode < 48 || charCode > 57))
+        	return true;
+        	return false;
+        } 
     });
   </script>
 </body>
