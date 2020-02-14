@@ -105,14 +105,14 @@
                                         <label for="date_start" class="form-control-label"><small class="form-text text-muted">Date Start</small></label>
                                         <div class="input-group">
                                           <input type="text" id="date_start" name="date_start" class="form-control" value="<?=$date_start?>" autocomplete="off">
-                                          <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+                                          <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></i></div>
                                         </div>                            
                                     </div>
                                     <div class="col-sm-3">
                                         <label for="date_end" class="form-control-label"><small class="form-text text-muted">Date End</small></label>
                                         <div class="input-group">
                                           <input type="text" id="date_end" name="date_end" class="form-control" value="<?=$date_end?>" autocomplete="off">
-                                          <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+                                          <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></i></div>
                                         </div>                             
                                     </div>
                                     <div class="col-sm-4">                                    	
@@ -123,7 +123,7 @@
                             </div>
                             <hr>
                             <div class="card-body">
-                                <table id="bootstrap-data-table" class="table table-striped table-bordered">
+                                <table id="roadtax_datatable" class="table table-striped table-bordered">
                                     <thead>
                                         <tr>
                                         	<th rowspan="2">No.</th>
@@ -131,8 +131,8 @@
                                             <th>Use Under</th>
 											<th>LPKP Permit</th>
 <!-- 											<th>Fitness Test</th> -->
-											<th colspan="2">Insuranse</th>
-											<th colspan="3">Road Tax</th>
+											<th colspan="2" style="text-align: center">Insurance</th>
+											<th colspan="3" style="text-align: center">Road Tax</th>
                                             <th>Road Tax</th>
                                             <th rowspan="2">&nbsp;</th>
                                         </tr>
@@ -148,42 +148,7 @@
                                             <th>Amount(RM)</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                    <?php 
-                                        $sql_query = "SELECT * FROM vehicle_roadtax
-                                                INNER JOIN vehicle_vehicle ON vehicle_vehicle.vv_id = vehicle_roadtax.vv_id
-                                                LEFT JOIN vehicle_insurance ON vehicle_insurance.vv_id = vehicle_vehicle.vv_id
-                                                INNER JOIN company ON company.id = vehicle_vehicle.company_id";
-                                        if(mysqli_num_rows(mysqli_query($conn_admin_db,$sql_query)) > 0){
-                                            $count = 0;
-                                            $sql_result = mysqli_query($conn_admin_db, $sql_query)or die(mysqli_error());
-                                                while($row = mysqli_fetch_array($sql_result)){ 
-                                                    $count++;
-                                                    $year = !empty($row['vrt_roadtaxPeriodYear']) ? $row['vrt_roadtaxPeriodYear'] ."Year(s)" : "";
-                                                    $month = !empty($row['vrt_roadtaxPeriodMonth']) ? $row['vrt_roadtaxPeriodMonth'] ."Month(s)" : "";
-                                                    $days = !empty($row['vrt_roadtaxPeriodDay']) ? $row['vrt_roadtaxPeriodDay'] ."Day(s)" : "";
-                                                    $period = $year ." ". $month ." ".$days;
-                                                    ?>
-                                                    <tr>
-                                                        <td><?=$count?></td>
-                                                        <td><?=$row['vv_vehicleNo']?></td>
-                                                        <td><?=$row['code']?></td>
-                                                        <td><?=dateFormatRev($row['vrt_lpkpPermit_dueDate'])?></td>                                                        
-                                                        <td><?=dateFormatRev($row['vi_insurance_dueDate'])?></td>
-                                                        <td><?=$row['vi_insuranceStatus'] == 1 ? "Active" : "Inactive"?></td>  
-                                                        <td><?=dateFormatRev($row['vrt_roadTax_fromDate'])?></td>
-                                                        <td><?=dateFormatRev($row['vrt_roadTax_dueDate'])?></td>     
-                                                        <td><?=$period?></td>  
-                                                        <td class="text-right"><?=number_format($row['vrt_amount'], 2)?></td>                                               
-                                                        <td>
-                                                        	<span id="<?=$row['vrt_id']?>" data-toggle="modal" class="edit_data" data-target="#editItem"><i class="menu-icon fa fa-pencil"></i></span>&nbsp;&nbsp;&nbsp;&nbsp;
-                                                        	<span id="<?=$row['vrt_id']?>" data-toggle="modal" class="delete_data" data-target="#deleteItem"><i class="menu-icon fa fa-trash"></i></span>
-                                                        </td>
-                                                    </tr>
-                                    <?php
-                                                }
-                                            }
-                                    ?>                                        										            
+                                    <tbody>                                                              										            
                                     </tbody>
 <!--                                     <tfoot> -->
 <!--                                         <tr> -->
@@ -214,7 +179,7 @@
                             <div class="col-sm-6">
                                 <label for="vehicle_reg_no" class=" form-control-label"><small class="form-text text-muted">Vehicle Reg No.</small></label>
                                 <?php
-                                    $vehicle = mysqli_query ( $conn_admin_db, "SELECT vv_id, vv_vehicleNo FROM vehicle_vehicle");
+                                    $vehicle = mysqli_query ( $conn_admin_db, "SELECT vv_id, vv_vehicleNo FROM vehicle_vehicle WHERE status='1'");
                                     db_select ($vehicle, 'vehicle_reg_no', '','','-select-','form-control','');
                                 ?>
                             </div>
@@ -222,7 +187,7 @@
                                 <label for="lpkp_date" class="form-control-label"><small class="form-text text-muted">LPKP Permit due date</small></label>
                                 <div class="input-group">
                                   <input type="text" id="lpkp_date" name="lpkp_date" class="form-control" autocomplete="off">
-                                  <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+                                  <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
                                 </div>                            
                             </div>
                         </div>    
@@ -232,14 +197,14 @@
                                 <label for="insurance_from_date" class="form-control-label"><small class="form-text text-muted">Insurance from date</small></label>    
                                 <div class="input-group">
                                   <input type="text" id="insurance_from_date" name="insurance_from_date" class="form-control" autocomplete="off">
-                                  <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+                                  <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
                                 </div>                                                                        
                             </div>
                             <div class="col-sm-6">
                                 <label for="insurance_due_date" class="form-control-label"><small class="form-text text-muted">Insurance due date</small></label> 
                                 <div class="input-group">
                                   <input type="text" id="insurance_due_date" name="insurance_due_date" class="form-control" autocomplete="off">
-                                  <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+                                  <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
                                 </div>                                                                           
                             </div>
                         </div>
@@ -248,14 +213,14 @@
                                 <label for="roadtax_from_date" class="form-control-label"><small class="form-text text-muted">Roadtax from date</small></label>  
                                 <div class="input-group">
                                   <input type="text" id="roadtax_from_date" name="roadtax_from_date" class="form-control" autocomplete="off">
-                                  <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+                                  <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
                                 </div>                               
                             </div>
                             <div class="col-sm-6">
                                 <label for="roadtax_due_date" class="form-control-label"><small class="form-text text-muted">Roadtax due date</small></label>
                                 <div class="input-group">
                                   <input type="text" id="roadtax_due_date" name="roadtax_due_date" class="form-control" autocomplete="off">
-                                  <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+                                  <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
                                 </div>                               
                             </div>
                         </div>
@@ -287,14 +252,20 @@
                                 <label for="roadtax_amount" class=" form-control-label"><small class="form-text text-muted">Roadtax Amount(RM)</small></label>
                                 <input type="text" id="roadtax_amount" name="roadtax_amount" placeholder="e.g 50.00" class="form-control">
                             </div>
-                            <div class="col-sm-6 ">
+                            <div class="col-sm-6">
+                                <label for="insurance_amount" class=" form-control-label"><small class="form-text text-muted">Insurance Amount(RM)</small></label>
+                                <input type="text" id="insurance_amount" name="insurance_amount" placeholder="e.g 50.00" class="form-control">
+                            </div>                            
+                        </div>
+                        <div class="form-group row col-sm-12">
+                        <div class="col-sm-6 ">
                                 <label for="insurance_status" class=" form-control-label"><small class="form-text text-muted">Insurance Status</small></label>
-                                <select name="insurance_status" id="insurance_status" class="form-control">
+                                <select name="insurance_status" id="insurance_status" class="form-control col-sm-4">
                                     <option value="1">Active</option>
                                     <option value="0">Inactive</option>
                                 </select>
                             </div>
-                        </div>
+                         </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                         <button type="submit" class="btn btn-primary update_data ">Update</button>
@@ -334,7 +305,7 @@
 
     <!-- link to the script-->
 	<?php include ('../allScript2.php')?>
-	
+	<!-- Datatables -->
 	<script src="../assets/js/lib/data-table/datatables.min.js"></script>
     <script src="../assets/js/lib/data-table/dataTables.bootstrap.min.js"></script>
     <script src="../assets/js/lib/data-table/dataTables.buttons.min.js"></script>
@@ -346,10 +317,30 @@
     <script src="../assets/js/lib/data-table/buttons.colVis.min.js"></script>
     <script src="../assets/js/init/datatables-init.js"></script>
     <script src="../assets/js/script/bootstrap-datepicker.min.js"></script>
-	
 	<script type="text/javascript">
         $(document).ready(function() {
-          $('#bootstrap-data-table-export').DataTable();
+        	var table = $('#roadtax_datatable').DataTable({
+             	"processing": true,
+             	"serverSide": true,
+             	"searching": false,
+                "ajax":{
+               	 	"url": "roadtax.ajax.php",           	
+               	 	"data" : function ( data ) {
+                   		data.date_start = '<?=$date_start?>';
+        				data.date_end = '<?=$date_end?>';  				
+           	        }
+       	      },
+      			'columnDefs': [
+              	  {
+              	      "targets": [9], // your case first column
+              	      "className": "text-right", 
+              	      "render": $.fn.dataTable.render.number(',', '.', 2, '')               	                      	        	     
+              	  },
+              	  {
+                  	  "targets":[1,2,5,10],
+                  	  "className": "text-center",
+                  }],
+       	     });
 
           //retrieve data
           $(document).on('click', '.edit_data', function(){
@@ -360,19 +351,21 @@
   					data:{vrt_id:vrt_id},
   					dataType:"json",
   					success:function(data){	
+  	  					console.log(data);
                         $('#vrt_id').val(data.vrt_id);					
                         $('#vehicle_reg_no').val(data.vv_id);  
                         $('#lpkp_date').val(data.vrt_lpkpPermit_dueDate);  
-                        $('#insurance_from_date').val(data.vrt_insurance_fromDate);  
-                        $('#insurance_due_date').val(data.vrt_insurance_dueDate);  
+                        $('#insurance_from_date').val(data.vi_insurance_fromDate);  
+                        $('#insurance_due_date').val(data.vi_insurance_dueDate);  
                         $('#roadtax_from_date').val(data.vrt_roadTax_fromDate);  
                         $('#roadtax_due_date').val(data.vrt_roadTax_dueDate);  
-                        $('#premium_amount').val(data.premium_amount);   
-                        $('#ncd').val(data.ncd);  
-                        $('#sum_insured').val(data.sum_insured);  
-                        $('#excess_paid').val(data.excess_paid);  
+                        $('#premium_amount').val(data.vi_premium_amount);   
+                        $('#insurance_amount').val(data.vi_insurance_amount);   
+                        $('#ncd').val(data.vi_ncd);  
+                        $('#sum_insured').val(data.vi_sum_insured);  
+                        $('#excess_paid').val(data.vi_excess_paid);  
                         $('#roadtax_amount').val(data.vrt_amount);  
-                        $('#insurance_status').val(data.vrt_insuranceStatus); 
+                        $('#insurance_status').val(data.vi_insuranceStatus); 
                         $('#editItem').modal('show');
 	  				}
   				});
@@ -447,49 +440,20 @@
             }  
        }); 
 
-       $('#lpkp_date').datepicker({
+       $('#lpkp_date,#insurance_from_date,#insurance_due_date,#roadtax_from_date,#roadtax_due_date,#date_start, #date_end').datepicker({
     	   format: "dd-mm-yyyy",          
            autoclose: true,
            orientation: "top left",
            todayHighlight: true
        });
        
-       $('#insurance_from_date').datepicker({
-            format: "dd-mm-yyyy",
-            autoclose: true,
-            orientation: "top left",
-            todayHighlight: true
-        });
-       
-       $('#insurance_due_date').datepicker({
-    	   format: "dd-mm-yyyy",
-           autoclose: true,
-           orientation: "top left",
-           todayHighlight: true
-        });
-       
-       $('#roadtax_from_date').datepicker({
-    	   format: "dd-mm-yyyy",
-           autoclose: true,
-           orientation: "top left",
-           todayHighlight: true
-        });
-       
-       $('#roadtax_due_date').datepicker({
-    	   format: "dd-mm-yyyy",
-           autoclose: true,
-           orientation: "top left",
-           todayHighlight: true
-        });
-
-       $('#date_start, #date_end').datepicker({
-           format: "dd-mm-yyyy",
-           autoclose: true,
-           orientation: "top left",
-           todayHighlight: true
-       });
+       $( ".button_search" ).click(function( event ) {
+     		table.clear();
+     		table.ajax.reload();
+     		table.draw();  		
+		});	
         	  
-      });
+    });
   </script>
 </body>
 </html>

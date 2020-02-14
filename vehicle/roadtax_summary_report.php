@@ -18,6 +18,9 @@
 		$PrevURL= $url;
 		header("Location: ../login.php?RecLock=".$PrevURL);
 	}
+	
+	$date_start = isset($_POST['date_start']) ? $_POST['date_start'] : date('01-m-Y');
+	$date_end = isset($_POST['date_end']) ? $_POST['date_end'] : date('t-m-Y');
 ?>
 
 <!doctype html>
@@ -67,6 +70,11 @@
         #cellPaiChart{
             height: 160px;
         }
+        .button_search{
+            position: absolute;
+            left:    0;
+            bottom:   0;
+        }
 
     </style>
 </head>
@@ -89,6 +97,30 @@
                                 <strong class="card-title">Road Tax Summary</strong>
                             </div>
                             <div class="card-body">
+                                <form id="myform" enctype="multipart/form-data" method="post" action="">                	                   
+                    	            <div class="form-group row col-sm-12">
+                                        <div class="col-sm-3">
+                                            <label for="date_start" class="form-control-label"><small class="form-text text-muted">Date Start</small></label>
+                                            <div class="input-group">
+                                              <input type="text" id="date_start" name="date_start" class="form-control" value="<?=$date_start?>" autocomplete="off">
+                                              <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></i></div>
+                                            </div>                            
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <label for="date_end" class="form-control-label"><small class="form-text text-muted">Date End</small></label>
+                                            <div class="input-group">
+                                              <input type="text" id="date_end" name="date_end" class="form-control" value="<?=$date_end?>" autocomplete="off">
+                                              <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></i></div>
+                                            </div>                             
+                                        </div>
+                                        <div class="col-sm-4">                                    	
+                                        	<button type="submit" class="btn btn-primary button_search ">Submit</button>
+                                        </div>
+                                     </div>    
+                                </form>
+                            </div>
+                            <hr>
+                            <div class="card-body">
                                 <table id="roadtax_summary" class="table table-striped table-bordered">
                                     <thead>
                                         <tr>
@@ -97,9 +129,8 @@
                                             <th>Use Under</th>
 											<th>LPKP Permit</th>
 											<th>Fitness Test</th>
-											<th colspan="2">Insuranse</th>
-											<th colspan="3">Road Tax</th>
-                                            <th>Road Tax</th>
+											<th colspan="2" style="text-align: center">Insurance</th>
+											<th colspan="4" style="text-align: center">Road Tax</th>
                                         </tr>
                                         <tr>
                                             <th>Company</th>
@@ -137,7 +168,7 @@
 
     <!-- link to the script-->
 	<?php include ('../allScript2.php')?>
-	
+	<!-- Datatables -->
 	<script src="../assets/js/lib/data-table/datatables.min.js"></script>
     <script src="../assets/js/lib/data-table/dataTables.bootstrap.min.js"></script>
     <script src="../assets/js/lib/data-table/dataTables.buttons.min.js"></script>
@@ -148,15 +179,19 @@
     <script src="../assets/js/lib/data-table/buttons.print.min.js"></script>
     <script src="../assets/js/lib/data-table/buttons.colVis.min.js"></script>
     <script src="../assets/js/init/datatables-init.js"></script>
-	
+    <script src="../assets/js/script/bootstrap-datepicker.min.js"></script>
 	<script type="text/javascript">
         $(document).ready(function() {
-            $('#roadtax_summary').DataTable({
+            var table = $('#roadtax_summary').DataTable({
                 "processing": true,
                 "serverSide": true,
+                "searching": false,
                 "ajax":{
                  "url": "roadtax.summary.ajax.php",           	
-                 "data" : function ( data ){}
+                 "data" : function ( data ){
+                	 	data.date_start = '<?=$date_start?>';
+						data.date_end = '<?=$date_end?>';
+					}
                 },
                 "footerCallback": function( tfoot, data, start, end, display ) {
     				var api = this.api(), data;
@@ -175,11 +210,45 @@
     					}); 
     				} 
     			},
-                'columnDefs': [
+                "columnDefs": [
                 	  {
                 	      "targets": 10, // your case first column
                 	      "className": "text-right",                	     
                 	 }],
+            	 "dom": 'Bfrtip',
+                 "buttons": [ 
+                	 { 
+        				extend: 'excelHtml5', 
+        				messageTop: 'Road Tax Summary',
+        				footer: true 
+        			 },
+                     {
+        				extend: 'print',
+        				messageTop: 'Road Tax Summary',
+        				footer: true,
+        				customize: function ( win ) {
+                            $(win.document.body)
+                                .css( 'font-size', '10pt' );
+
+                            $(win.document.body).find( 'table' )
+                                .addClass( 'compact' )
+                                .css( 'font-size', 'inherit' );
+                        }
+                     }
+                  ],         	 
+            });
+            
+            $('#myform').on("submit", function(event){  
+        	   	table.clear();
+      			table.ajax.reload();
+      			table.draw();      
+           	});
+           	
+            $('#date_start, #date_end').datepicker({
+                format: "dd-mm-yyyy",
+                autoclose: true,
+                orientation: "top left",
+                todayHighlight: true
             });
         });
   </script>

@@ -21,11 +21,7 @@
 	}
 ?>
 
-<!doctype html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang=""> <!--<![endif]-->
+<!doctype html><html class="no-js" lang="">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -109,7 +105,7 @@
 
                                     <?php 
                                         $sql_query = "SELECT * FROM vehicle_vehicle
-                                        INNER JOIN company ON company.id = vehicle_vehicle.company_id";
+                                        INNER JOIN company ON company.id = vehicle_vehicle.company_id WHERE vehicle_vehicle.status='1'"; //only show active vehicle 
                                         if(mysqli_num_rows(mysqli_query($conn_admin_db,$sql_query)) > 0){
                                             $count = 0;
                                             $sql_result = mysqli_query($conn_admin_db, $sql_query)or die(mysqli_error());
@@ -125,8 +121,8 @@
                                                         <td><?=$row['vv_description']?></td>
                                                         <td><?=$row['vv_yearPurchased']?></td>
                                                         <td>
-                                                        	<span id="<?=$row['vv_id']?>" data-toggle="modal" class="edit_data" data-target="#editItem"><i class="menu-icon fa fa-pencil"></i></span>&nbsp;&nbsp;&nbsp;&nbsp;
-                                                        	<span id="<?=$row['vv_id']?>" data-toggle="modal" class="delete_data" data-target="#deleteItem"><i class="menu-icon fa fa-trash"></i></span>
+                                                        	<span id="<?=$row['vv_id']?>" data-toggle="modal" class="edit_data" data-target="#editItem"><i class="fa fa-edit"></i></span>
+                                                        	<span id="<?=$row['vv_id']?>" data-toggle="modal" class="delete_data" data-target="#deleteItem"><i class="fas fa-trash-alt"></i></span>
                                                         </td>
                                                     </tr>
                                     <?php
@@ -265,7 +261,7 @@
 
     <!-- link to the script-->
 	<?php include ('../allScript2.php')?>
-	
+	<!-- Datatables -->
 	<script src="../assets/js/lib/data-table/datatables.min.js"></script>
     <script src="../assets/js/lib/data-table/dataTables.bootstrap.min.js"></script>
     <script src="../assets/js/lib/data-table/dataTables.buttons.min.js"></script>
@@ -276,10 +272,12 @@
     <script src="../assets/js/lib/data-table/buttons.print.min.js"></script>
     <script src="../assets/js/lib/data-table/buttons.colVis.min.js"></script>
     <script src="../assets/js/init/datatables-init.js"></script>
+    <script src="../assets/js/script/bootstrap-datepicker.min.js"></script>
 	
 	<script type="text/javascript">
     $(document).ready(function() {
         $('#bootstrap-data-table-export').DataTable();
+        
         $(document).on('click', '.edit_data', function(){
         	var vehicle_id = $(this).attr("id");
         	$.ajax({
@@ -296,6 +294,7 @@
                         $('#name').val(data.vv_name);  
                         $('#description').val(data.vv_description);  
                         $('#yearPurchased').val(data.vv_yearPurchased);    
+                        $('#capacity').val(data.vv_capacity);  
                         $('#editItem').modal('show');
         			}
         		});
@@ -312,7 +311,7 @@
     		$.ajax({
     			url:"delete.php",
     			method:"POST",    
-    			data:{id:ID, table_name : 'vehicle_vehicle', col_identifier:'vv_id'},
+    			data:{id:ID, table_name : 'vehicle_vehicle', col_identifier:'vv_id', reload_location:'vehicle.php'},
     			success:function(data){	  						
     				$('#deleteItem').modal('hide');		
     				location.reload();		

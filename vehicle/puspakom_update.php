@@ -24,9 +24,7 @@
         
         $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db)); 
       
-      if ($result) {
-          alert ("Updated successfully","puspakom.php");
-      }
+        alert ("Updated successfully","puspakom.php");
       
     }  
  ?>

@@ -6,14 +6,14 @@
     
     $date_start = isset($_GET['date_start']) ? $_GET['date_start'] : date('01-m-Y');
     $date_end = isset($_GET['date_end']) ? $_GET['date_end'] : date('t-m-Y');
-
-	$sql_query = "SELECT * FROM vehicle_roadtax
-                INNER JOIN vehicle_vehicle ON vehicle_vehicle.vv_id = vehicle_roadtax.vv_id
-                INNER JOIN company ON company.id = vehicle_vehicle.company_id
-                LEFT JOIN vehicle_puspakom ON vehicle_puspakom.vv_id = vehicle_vehicle.vv_id
-                LEFT JOIN vehicle_insurance ON vehicle_insurance.vv_id = vehicle_vehicle.vv_id
-                WHERE vrt_roadTax_dueDate BETWEEN '".dateFormat($date_start)."' AND '".dateFormat($date_end)."' ";
-	
+    
+    $sql_query = "SELECT * FROM vehicle_roadtax
+            INNER JOIN vehicle_vehicle ON vehicle_vehicle.vv_id = vehicle_roadtax.vv_id
+            LEFT JOIN vehicle_insurance ON vehicle_insurance.vi_vrt_id = vehicle_roadtax.vrt_id
+            INNER JOIN company ON company.id = vehicle_vehicle.company_id
+            WHERE vehicle_roadtax.vrt_roadTax_dueDate BETWEEN '".dateFormat($date_start)."' AND '".dateFormat($date_end)."'
+            AND vehicle_roadtax.status='1'";
+    
 	$rst  = mysqli_query($conn_admin_db, $sql_query)or die(mysqli_error($conn_admin_db));
 	
 	$arr_result = array(
@@ -30,26 +30,28 @@
 		    $row_found = mysqli_fetch_row(mysqli_query($conn_admin_db,"SELECT FOUND_ROWS()"));
 			$total_found_rows = $row_found[0];
 			$count++;
-			$insurance_status = $row['vi_insuranceStatus'] == 1 ? "Active" : "Inactive";
-			$year = !empty($row['vrt_roadtaxPeriodYear']) ? $row['vrt_roadtaxPeriodYear'] ." Year(s)" : "";
-			$month = !empty($row['vrt_roadtaxPeriodMonth']) ? $row['vrt_roadtaxPeriodMonth'] ." Month(s)" : "";
-			$days = !empty($row['vrt_roadtaxPeriodDay']) ? $row['vrt_roadtaxPeriodDay'] ." Day(s)" : "";
+			$year = !empty($row['vrt_roadtaxPeriodYear']) ? $row['vrt_roadtaxPeriodYear'] ."Year(s)" : "";
+			$month = !empty($row['vrt_roadtaxPeriodMonth']) ? $row['vrt_roadtaxPeriodMonth'] ."Month(s)" : "";
+			$days = !empty($row['vrt_roadtaxPeriodDay']) ? $row['vrt_roadtaxPeriodDay'] ."Day(s)" : "";
 			$period = $year ." ". $month ." ".$days;
+			$insurance_status = $row['vi_insuranceStatus'] == 1 ? "Active" : "Inactive";
 			
-			$fitness_date = !empty($row['vp_fitnessDate']) ? dateFormatRev($row['vp_fitnessDate']) : '-';
+			$action = '<span id='.$row['vrt_id'].' data-toggle="modal" class="edit_data" data-target="#editItem"><i class="menu-icon fa fa-edit"></i>
+                        </span><br><span id='.$row['vrt_id'].' data-toggle="modal" class="delete_data" data-target="#deleteItem"><i class="menu-icon fa fa-trash-alt"></i>
+                        </span>';
 			
 			$data = array(
 			        $count,
 					$row['vv_vehicleNo'],
 					$row['code'],					
 			        dateFormatRev($row['vrt_lpkpPermit_dueDate']),
-			        $fitness_date,
-			        dateFormatRev($row['vi_insurance_dueDate']),
+    			    dateFormatRev($row['vi_insurance_dueDate']),
 			        $insurance_status,
     			    dateFormatRev($row['vrt_roadTax_fromDate']),
     			    dateFormatRev($row['vrt_roadTax_dueDate']),
-			        $period,
-			        number_format($row['vrt_amount'],2),
+    			    $period,
+    			    number_format($row['vrt_amount'], 2),
+    				$action
 		
 			);
 			$arr_data[] = $data;

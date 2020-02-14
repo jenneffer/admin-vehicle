@@ -17,6 +17,7 @@
         $sum_insured = $_POST['sum_insured'];
         $excess_paid = $_POST['excess_paid'];
         $roadtax_amount = $_POST['roadtax_amount'];
+        $insurance_amount = $_POST['insurance_amount'];
         
         //calculate the roadtax period
         $diff = abs(strtotime($roadtax_due_date) - strtotime($roadtax_from_date));
@@ -37,18 +38,22 @@
                             vrt_updatedBy = '".$_SESSION['cr_id']."',                        
                             vrt_lastUpdated = now()") or  die(mysqli_error($conn_admin_db));
         
-        //insert into insurance table
+        // get the vrt_id from roadtax table and insert into insurance table
+        $last_insert_id = mysqli_insert_id($conn_admin_db);
+        
         $sql_insert_ins = mysqli_query($conn_admin_db,"INSERT INTO vehicle_insurance SET
                             vv_id = '".$vehicle_reg_no."',
+                            vrt_id ='".$last_insert_id."',
                             vi_insurance_fromDate = '".$insurance_from_date."',
                             vi_insurance_dueDate = '".$insurance_due_date."',
                             vi_insuranceStatus = '".$insurance_status."',
+                            vi_amount = '".$insurance_amount."',
                             vi_premium_amount='".$premium_amount."',
                             vi_ncd='".$ncd."',
                             vi_sum_insured='".$sum_insured."',
                             vi_excess_paid='".$excess_paid."',
                             vi_lastUpdated = now(),
-                            vi_updatedBy = '".$_SESSION['cr_id']."'") or die(mysqli_error($conn_admin_db));;
+                            vi_updatedBy = '".$_SESSION['cr_id']."'") or die(mysqli_error($conn_admin_db));
         
         if ($sql_insert && $sql_insert_ins) {
             alert ("Added successfully","roadtax.php");

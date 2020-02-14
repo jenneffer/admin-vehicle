@@ -95,7 +95,7 @@
                                         <div class="form-group col-6">
                                             <label for="vehicle_reg_no" class=" form-control-label"><small class="form-text text-muted">Vehicle Reg No.</small></label>
                                             <?php
-                                                $vehicle = mysqli_query ( $conn_admin_db, "SELECT vv_id, vv_vehicleNo FROM vehicle_vehicle");
+                                                $vehicle = mysqli_query ( $conn_admin_db, "SELECT vv_id, vv_vehicleNo FROM vehicle_vehicle WHERE status='1'");
                                                 db_select ($vehicle, 'vehicle_reg_no', '','','-select-','form-control col-sm-6','');
                                             ?>
                                         </div>                                        
@@ -105,14 +105,14 @@
                                             <label for="fitness_date" class="form-control-label"><small class="form-text text-muted">Fitness due date</small></label>
                                             <div class="input-group">
                                                 <input id="fitness_date" name="fitness_date" class="form-control col-sm-5" autocomplete="off" >
-                                                <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+                                                <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
                                             </div>                                            
                                         </div>
                                         <div class="col-sm-6">
                                             <label for="roadtax_due_date" class="form-control-label"><small class="form-text text-muted">Roadtax due date</small></label>
                                             <div class="input-group">
                                                 <input id="roadtax_due_date" name="roadtax_due_date" class="form-control col-sm-5" autocomplete="off" >
-                                                <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+                                                <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
                                             </div>
                                         </div>
                                      </div>
@@ -141,6 +141,7 @@
 
     <!-- link to the script-->
 	<?php include ('../allScript2.php')?>
+	<!-- Datatables -->
 	<script src="../assets/js/lib/data-table/datatables.min.js"></script>
     <script src="../assets/js/lib/data-table/dataTables.bootstrap.min.js"></script>
     <script src="../assets/js/lib/data-table/dataTables.buttons.min.js"></script>
@@ -152,7 +153,6 @@
     <script src="../assets/js/lib/data-table/buttons.colVis.min.js"></script>
     <script src="../assets/js/init/datatables-init.js"></script>
     <script src="../assets/js/script/bootstrap-datepicker.min.js"></script>
-    
 	<script type="text/javascript">
         $(document).ready(function() {
 //             $('#bootstrap-data-table-export').DataTable();

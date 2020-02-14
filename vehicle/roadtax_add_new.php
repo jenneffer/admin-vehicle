@@ -94,7 +94,7 @@
                                         <div class="col-sm-6">
                                             <label for="vehicle_reg_no" class=" form-control-label"><small class="form-text text-muted">Vehicle Reg No.</small></label>
                                             <?php
-                                                $vehicle = mysqli_query ( $conn_admin_db, "SELECT vv_id, vv_vehicleNo FROM vehicle_vehicle");
+                                                $vehicle = mysqli_query ( $conn_admin_db, "SELECT vv_id, vv_vehicleNo FROM vehicle_vehicle WHERE status='1'");
                                                 db_select ($vehicle, 'vehicle_reg_no', '','','-select-','form-control col-sm-6','');
                                             ?>
                                         </div>
@@ -102,7 +102,7 @@
                                             <label for="lpkp_date" class="form-control-label"><small class="form-text text-muted">LPKP Permit due date</small></label>
                                             <div class="input-group">
                                                 <input id="lpkp_date" name="lpkp_date" class="form-control col-sm-5" autocomplete="off">
-                                                <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+                                                <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></i></div>
                                             </div>                                            
                                         </div>
                                     </div>    
@@ -112,14 +112,14 @@
                                             <label for="insurance_from_date" class="form-control-label"><small class="form-text text-muted">Insurance from date</small></label>
                                             <div class="input-group">
                                                 <input id="insurance_from_date" name="insurance_from_date" class="form-control col-sm-5" autocomplete="off">
-                                                <div class="input-group-addon"><i class="fa fa-calendar"></i></div>                                                
+                                                <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></i></div>                                                
                                             </div>                                                                                        
                                         </div>
                                         <div class="col-sm-6">
                                             <label for="insurance_due_date" class="form-control-label"><small class="form-text text-muted">Insurance due date</small></label>
                                             <div class="input-group">
                                                 <input id="insurance_due_date" name="insurance_due_date" class="form-control col-sm-5" autocomplete="off">
-                                                <div class="input-group-addon"><i class="fa fa-calendar"></i></div>                                                
+                                                <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></i></div>                                                
                                             </div>                                           
                                         </div>
                                     </div>
@@ -128,14 +128,14 @@
                                             <label for="roadtax_from_date" class="form-control-label"><small class="form-text text-muted">Roadtax from date</small></label>
                                             <div class="input-group">
                                                 <input id="roadtax_from_date" name="roadtax_from_date" class="form-control col-sm-5" autocomplete="off">
-                                                <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+                                                <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></i></div>
                                             </div>
                                         </div>
                                         <div class="col-sm-6">
                                             <label for="roadtax_due_date" class="form-control-label"><small class="form-text text-muted">Roadtax due date</small></label>
                                             <div class="input-group">
                                                 <input id="roadtax_due_date" name="roadtax_due_date" class="form-control col-sm-5" autocomplete="off">
-                                                <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+                                                <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></i></div>
                                             </div>
                                         </div>
                                     </div>
@@ -164,16 +164,22 @@
                                     
                                     <div class="form-group row col-sm-12">
                                         <div class="col-sm-6">
+                                            <label for="insurance_amount" class=" form-control-label"><small class="form-text text-muted">Insurance Amount(RM)</small></label>
+                                            <input type="text" id="insurance_amount" name="insurance_amount" onkeypress="return isNumberKey(event)" placeholder="e.g 150.00" class="form-control col-sm-6">
+                                        </div>
+                                        <div class="col-sm-6">
                                             <label for="roadtax_amount" class=" form-control-label"><small class="form-text text-muted">Roadtax Amount(RM)</small></label>
                                             <input type="text" id="roadtax_amount" name="roadtax_amount" onkeypress="return isNumberKey(event)" placeholder="e.g 50.00" class="form-control col-sm-6">
-                                        </div>
-                                        <div class="col-sm-6 ">
-                                            <label for="insurance_status" class=" form-control-label"><small class="form-text text-muted">Insurance Status</small></label>
-                                            <select name="insurance_status" id="insurance_status" class="form-control col-sm-6">
-                                                <option value="1">Active</option>
-                                                <option value="0">Inactive</option>
-                                            </select>
-                                        </div>
+                                        </div>                                        
+                                    </div>
+                                    <div>
+                                    <div class="col-sm-4 ">
+                                        <label for="insurance_status" class=" form-control-label"><small class="form-text text-muted">Insurance Status</small></label>
+                                        <select name="insurance_status" id="insurance_status" class="form-control col-sm-4">
+                                            <option value="1">Active</option>
+                                            <option value="0">Inactive</option>
+                                        </select>
+                                    </div>
                                     </div>
 
                                     
@@ -198,6 +204,7 @@
 
     <!-- link to the script-->
 	<?php include ('../allScript2.php')?>
+    <!-- Datatables -->
 	<script src="../assets/js/lib/data-table/datatables.min.js"></script>
     <script src="../assets/js/lib/data-table/dataTables.bootstrap.min.js"></script>
     <script src="../assets/js/lib/data-table/dataTables.buttons.min.js"></script>
@@ -209,10 +216,6 @@
     <script src="../assets/js/lib/data-table/buttons.colVis.min.js"></script>
     <script src="../assets/js/init/datatables-init.js"></script>
     <script src="../assets/js/script/bootstrap-datepicker.min.js"></script>
-
-    <!-- Datepicker JQuery UI -->
-<!--     <script src="https://code.jquery.com/jquery-1.12.4.js"></script> -->
-<!--     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script> -->
 	
 	<script type="text/javascript">
         $(document).ready(function() {

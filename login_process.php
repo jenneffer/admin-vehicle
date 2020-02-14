@@ -1,10 +1,11 @@
 <?php
 	include('assets/config/database.php');
 	session_start();
+	global $conn_admin_db;
 // get reclock and redirect to it!
 	if(isset($_POST['submit'])) {
 		$username = $_POST['username'];
-		$pass = $_POST['password'];
+		$pass = md5($_POST['password']);
 		
 		$checksql = "SELECT * FROM credential WHERE BINARY cr_username = '$username' AND cr_password = '$pass' ";
 		$rchecksql = mysqli_query($conn_admin_db, $checksql);

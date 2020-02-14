@@ -132,12 +132,11 @@
         <!-- Footer -->
         <?PHP include('../footer.php')?>
         <!-- /.site-footer -->
-    </div> <!-- from right panel page -->
     <!-- /#right-panel -->
 
     <!-- link to the script-->
 	<?php include ('../allScript2.php')?>
-	
+	<!-- Datatables -->
 	<script src="../assets/js/lib/data-table/datatables.min.js"></script>
     <script src="../assets/js/lib/data-table/dataTables.bootstrap.min.js"></script>
     <script src="../assets/js/lib/data-table/dataTables.buttons.min.js"></script>
@@ -148,7 +147,7 @@
     <script src="../assets/js/lib/data-table/buttons.print.min.js"></script>
     <script src="../assets/js/lib/data-table/buttons.colVis.min.js"></script>
     <script src="../assets/js/init/datatables-init.js"></script>
-	
+    <script src="../assets/js/script/bootstrap-datepicker.min.js"></script>
 	<script type="text/javascript">
         $(document).ready(function() {
           $('#bootstrap-data-table-export').DataTable({

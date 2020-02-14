@@ -3,12 +3,10 @@
     require_once('./function.php');
     global $conn_admin_db;
     session_start();
-
-    $date_start = isset($_POST['date_start']) ? $_POST['date_start'] : date('01-m-Y');
-    $date_end = isset($_POST['date_end']) ? $_POST['date_end'] : date('t-m-Y');
+    $date_start = isset($_GET['date_start']) ? $_GET['date_start'] : date('01-m-Y');
+    $date_end = isset($_GET['date_end']) ? $_GET['date_end'] : date('t-m-Y');
     $id = isset($_POST['id']) ? $_POST['id'] : "";
     $task = isset($_POST['task']) ? $_POST['task'] : "";
-    
 
 	$sql_query = "SELECT * FROM (SELECT vrt.vrt_id AS id, c.code AS company_code, vv.vv_vehicleNo AS vehicle_no, 
                 vrt.vrt_amount AS var1, vrt.vrt_roadTax_fromDate AS var2, vrt.vrt_roadTax_dueDate AS var3, 'Road Tax' AS task, 
@@ -50,6 +48,7 @@
 			'aaData' => array()
 	);
 	$arr_data = array();
+	$total_found_rows = 0;
 	if ( mysqli_num_rows($rst) ){
 	    $count = 0;
 		while( $row = mysqli_fetch_assoc( $rst ) ){
@@ -84,9 +83,7 @@
 			
 			$remark = $variable1 .$variable2;
 			
-			$action = '<span id='.$row['id'].' data-toggle="modal"  class="edit_data" data-target="#editItem" onclick="myFunction('.$row['id'].', '."'".$row['task']."'".')"><i class="menu-icon fa fa-pencil"></i>
-                        </span>&nbsp;&nbsp;&nbsp;&nbsp;
-                        <span id='.$row['id'].' data-toggle="modal" class="delete_data" data-target="#deleteItem"><i class="menu-icon fa fa-trash"></i>
+			$action = '<span id='.$row['id'].' data-toggle="modal"  class="edit_data" data-target="#editItem" onclick="editFunction('.$row['id'].', '."'".$row['task']."'".')"><i class="menu-icon fa fa-edit"></i>
                         </span>';
 			$data = array(
 			        $count,

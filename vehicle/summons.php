@@ -68,7 +68,7 @@
         #cellPaiChart{
             height: 160px;
         }
-
+        
     </style>
 </head>
 
@@ -111,7 +111,8 @@
                                                 vs_pv_no, vs_reimbursement_amt, vs_balance  FROM vehicle_summons
                                                 INNER JOIN vehicle_vehicle ON vehicle_vehicle.vv_id = vehicle_summons.vv_id
                                                 INNER JOIN company ON company.id = vehicle_vehicle.company_id
-                                                INNER JOIN vehicle_summon_type ON vehicle_summon_type.st_id = vehicle_summons.vs_summon_type";
+                                                INNER JOIN vehicle_summon_type ON vehicle_summon_type.st_id = vehicle_summons.vs_summon_type
+                                                WHERE vehicle_summons.status='1'";
                                         
                                         if(mysqli_num_rows(mysqli_query($conn_admin_db,$sql_query)) > 0){
                                             $count = 0;
@@ -128,12 +129,12 @@
                                                         <td><?=$row['vs_code']?></td>
                                                         <td><?=$summon_type?></td>
                                                         <td><?=$row['vs_pv_no']?></td>
-                                                        <td><?=$row['vs_reimbursement_amt']?></td>
-                                                        <td><?=$row['vs_balance']?></td>
+                                                        <td><?=number_format($row['vs_reimbursement_amt'], 2)?></td>
+                                                        <td><?=number_format($row['vs_balance'], 2)?></td>
                                                         <td>
-                                                        	<span id="<?=$row['vs_id']?>" data-toggle="modal" class="add_payment" data-target="#addPayment"><i class="menu-icon fa fa-money"></i></span>&nbsp;&nbsp;&nbsp;&nbsp;
-                                                        	<span id="<?=$row['vs_id']?>" data-toggle="modal" class="edit_data" data-target="#editItem"><i class="menu-icon fa fa-pencil"></i></span>&nbsp;&nbsp;&nbsp;&nbsp;
-                                                        	<span id="<?=$row['vs_id']?>" data-toggle="modal" class="delete_data" data-target="#deleteItem"><i class="menu-icon fa fa-trash"></i></span>
+                                                        	<span id="<?=$row['vs_id']?>" data-toggle="modal" class="add_payment" data-target="#addPayment"><i class="menu-icon fas fa-money-check-alt"></i></span><br>
+                                                        	<span id="<?=$row['vs_id']?>" data-toggle="modal" class="edit_data" data-target="#editItem"><i class="menu-icon fa fa-edit"></i></span><br>
+                                                        	<span id="<?=$row['vs_id']?>" data-toggle="modal" class="delete_data" data-target="#deleteItem"><i class="menu-icon fa fa-trash-alt"></i></span>
                                                         </td>
                                                     </tr>
                                     <?php
@@ -165,7 +166,7 @@
                             <div class="col-sm-6">
                                 <label for="vehicle_reg_no" class=" form-control-label"><small class="form-text text-muted">Vehicle Reg No.</small></label>
                                 <?php
-                                    $vehicle = mysqli_query ( $conn_admin_db, "SELECT vv_id, vv_vehicleNo FROM vehicle_vehicle");
+                                    $vehicle = mysqli_query ( $conn_admin_db, "SELECT vv_id, vv_vehicleNo FROM vehicle_vehicle WHERE status='1'");
                                     db_select ($vehicle, 'vehicle_reg_no', '','','-select-','form-control','');
                                 ?>
                             </div>
@@ -212,7 +213,7 @@
                                 <label class="form-control-label"><small class="form-text text-muted">Summon's Date</small></label>
                                 <div class="input-group input-inline">
                                     <input class="form-control" id="summon_date" name="summon_date" value="">
-                                    <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+                                    <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></i></div>
                                 </div>                                
                             </div> 
                             <div class="col-sm-6">
@@ -274,12 +275,13 @@
                                 <p class="form-control-static"><span id="balance"></span></p>
                             </div>
                         </div>
+                        <div id="payment_section">
                         <div class="form-group row col-sm-12">
                         	<div class="col-sm-6">
                                 <label class=" form-control-label"><small class="form-text text-muted">Payment Date</small></label>
                                 <div class="input-group input-inline">
                                     <input class="form-control" id="payment_date" name="payment_date" value="" autocomplete="off">
-                                    <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+                                    <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
                                 </div>
                             </div>
                             <div class="col-sm-6">
@@ -292,13 +294,14 @@
                                 <label class=" form-control-label"><small class="form-text text-muted">Bank-in Date</small></label>
                                 <div class="input-group input-inline">
                                     <input class="form-control" id="bankin_date" name="bankin_date" value="" autocomplete="off">
-                                    <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+                                    <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <label class=" form-control-label"><small class="form-text text-muted">Bank-in Amount(RM)</small></label>
                                 <input type="text" id="bankin_amount" name="bankin_amount" placeholder="e.g 500.00" class="form-control">
                             </div>                                        
+                        </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
@@ -339,10 +342,7 @@
 
     <!-- link to the script-->
 	<?php include ('../allScript2.php')?>
-	<!-- Datepicker JQuery UI -->
-    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    
+    <!-- Datatables -->
 	<script src="../assets/js/lib/data-table/datatables.min.js"></script>
     <script src="../assets/js/lib/data-table/dataTables.bootstrap.min.js"></script>
     <script src="../assets/js/lib/data-table/dataTables.buttons.min.js"></script>
@@ -353,8 +353,7 @@
     <script src="../assets/js/lib/data-table/buttons.print.min.js"></script>
     <script src="../assets/js/lib/data-table/buttons.colVis.min.js"></script>
     <script src="../assets/js/init/datatables-init.js"></script>
-	<script src="../assets/js/script/bootstrap-datepicker.min.js"></script>
-	
+    <script src="../assets/js/script/bootstrap-datepicker.min.js"></script>
 	
 	<script type="text/javascript">
         $(document).ready(function() {
@@ -368,6 +367,8 @@
               } 
           });
 
+          
+
 //           $('#summon_date').datepicker({
 //           	dateFormat: 'dd-mm-yy'
 //            });
@@ -379,7 +380,10 @@
   					method:"POST",
   					data:{ summon_id:summon_id },
   					dataType:"json",
-  					success:function(data){	   	
+  					success:function(data){	   	  	  					
+  						var reimburse_amt = parseFloat(data.vs_reimbursement_amt).toFixed(2);
+  						var summon_date = dateFormat(data.vs_summon_date);
+						
   	  					var summon_desc = "";	
       	  				if(data.vs_summon_type == 3) {
       	                	$('#desc').show();
@@ -395,9 +399,9 @@
                         $('#summon_type').val(data.vs_summon_type);  
                         $('#summon_desc').val(summon_desc);  
                         $('#pv_no').val(data.vs_pv_no);  
-                        $('#reimburse_amt').val(data.vs_reimbursement_amt);   
+                        $('#reimburse_amt').val(reimburse_amt);   
                         $('#offence_details').val(data.vs_description);  
-                        $('#summon_date').val(data.vs_summon_date);  
+                        $('#summon_date').val(summon_date);  
                         $('#editItem').modal('show');
   					}
   				});
@@ -412,15 +416,27 @@
 					method:"POST",
 					data:{ summon_id:summon_id },
 					dataType:"json",
-					success:function(data){	  	
+					success:function(data){	 
+						var reimburse_amt = parseFloat(data.vs_reimbursement_amt).toFixed(2);
+						var balance = parseFloat(data.vs_balance).toFixed(2);						
                         $('#vs_id').val(data.vs_id);
                         $('#reimburseAmount').val(data.vs_reimbursement_amt);    				
                         $('#vehicleNo').html(data.vv_vehicleNo);  
                         $('#summonNo').html(data.vs_summon_no);   
                         $('#driverName').html(data.vs_driver_name);                         
-                        $('#reimburseAmt').html(data.vs_reimbursement_amt);    
-                        $('#balance').html(data.vs_balance);                           
+                        $('#reimburseAmt').html(reimburse_amt);    
+                        $('#balance').html(balance);                           
                         $('#addPayment').modal('show');
+
+                      //hide payment section if balance is 0
+                        if(data.vs_balance == null || data.vs_balance == 0){
+                			$('#payment_section').hide();
+                			$('.modal-footer').hide();
+                        }
+                        else{
+                        	$('#payment_section').show();
+                        	$('.modal-footer').show();
+                        }
 					}
 				});
           });
@@ -516,29 +532,36 @@
                  });  
             }  
        });
-
+        
         $('#summon_date').datepicker({
-        	format: "dd-mm-yyyy",
-            startDate: "0d",
+        	format: "dd-mm-yyyy",            
             autoclose: true,
             orientation: "top left",
             todayHighlight: true
         });
         $('#payment_date').datepicker({
         	format: "dd-mm-yyyy",
-            startDate: "0d",
             autoclose: true,
             orientation: "top left",
             todayHighlight: true
         });
         $('#bankin_date').datepicker({
         	format: "dd-mm-yyyy",
-            startDate: "0d",
             autoclose: true,
             orientation: "top left",
             todayHighlight: true
         });
       });
+
+
+    function dateFormat(dates){
+        var date = new Date(dates);
+    	var day = date.getDate();
+	  	var monthIndex = date.getMonth()+1;
+	  	var year = date.getFullYear();
+
+	  	return (day <= 9 ? '0' + day : day) + '-' + (monthIndex<=9 ? '0' + monthIndex : monthIndex) + '-' + year ;
+    }
   </script>
 </body>
 </html>

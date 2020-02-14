@@ -95,7 +95,7 @@
                                         <div class="col-sm-4">
                                             <label for="vehicle_reg_no" class=" form-control-label"><small class="form-text text-muted">Vehicle Reg No.</small></label>
                                             <?php
-                                                $vehicle = mysqli_query ( $conn_admin_db, "SELECT vv_id, vv_vehicleNo FROM vehicle_vehicle");
+                                                $vehicle = mysqli_query ( $conn_admin_db, "SELECT vv_id, vv_vehicleNo FROM vehicle_vehicle WHERE status='1'");
                                                 db_select ($vehicle, 'vehicle_reg_no', '','','-select-','form-control','');
                                             ?>
                                         </div>
@@ -139,7 +139,7 @@
                                             <label for="summon_date" class=" form-control-label"><small class="form-text text-muted">Summon's Date</small></label>
                                             <div class="input-group">
                                                 <input id="summon_date" name="summon_date" class="form-control" autocomplete="off">
-                                                <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+                                                <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></i></div>
                                             </div>
                                         </div> 
                                         <div class="col-sm-6">
@@ -168,7 +168,7 @@
 
     <!-- link to the script-->
 	<?php include ('../allScript2.php')?>
-
+	<!-- Datatables -->
 	<script src="../assets/js/lib/data-table/datatables.min.js"></script>
     <script src="../assets/js/lib/data-table/dataTables.bootstrap.min.js"></script>
     <script src="../assets/js/lib/data-table/dataTables.buttons.min.js"></script>
@@ -180,12 +180,7 @@
     <script src="../assets/js/lib/data-table/buttons.colVis.min.js"></script>
     <script src="../assets/js/init/datatables-init.js"></script>
     <script src="../assets/js/script/bootstrap-datepicker.min.js"></script>
-   	
-   	<!-- Datepicker JQuery UI -->
-<!--     <script src="https://code.jquery.com/jquery-1.12.4.js"></script> -->
-<!--     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script> -->
-
-	
+    
 	<script type="text/javascript">
         $(document).ready(function() {
           

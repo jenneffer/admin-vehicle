@@ -1,7 +1,6 @@
 <?php
     require_once('../assets/config/database.php');
     require_once('./function.php');
-	
 	session_start();
 	global $conn_admin_db;
 	if(isset($_SESSION['cr_id'])) {
@@ -159,22 +158,18 @@
 
     <!-- link to the script-->
 	<?php include ('../allScript2.php')?>
-	
-<!-- 	<script src="../assets/js/lib/data-table/datatables.min.js"></script> -->
-<!--     <script src="../assets/js/lib/data-table/dataTables.bootstrap.min.js"></script> -->
-<!--     <script src="../assets/js/lib/data-table/dataTables.buttons.min.js"></script> -->
-<!--     <script src="../assets/js/lib/data-table/buttons.bootstrap.min.js"></script> -->
-<!--     <script src="../assets/js/lib/data-table/jszip.min.js"></script> -->
-<!--     <script src="../assets/js/lib/data-table/vfs_fonts.js"></script> -->
-<!--     <script src="../assets/js/lib/data-table/buttons.html5.min.js"></script> -->
-<!--     <script src="../assets/js/lib/data-table/buttons.print.min.js"></script> -->
-<!--     <script src="../assets/js/lib/data-table/buttons.colVis.min.js"></script> -->
-<!--     <script src="../assets/js/init/datatables-init.js"></script> -->
-
-    <!-- Datepicker JQuery UI -->
-    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-	
+	<!-- Datatables -->
+	<script src="../assets/js/lib/data-table/datatables.min.js"></script>
+    <script src="../assets/js/lib/data-table/dataTables.bootstrap.min.js"></script>
+    <script src="../assets/js/lib/data-table/dataTables.buttons.min.js"></script>
+    <script src="../assets/js/lib/data-table/buttons.bootstrap.min.js"></script>
+    <script src="../assets/js/lib/data-table/jszip.min.js"></script>
+    <script src="../assets/js/lib/data-table/vfs_fonts.js"></script>
+    <script src="../assets/js/lib/data-table/buttons.html5.min.js"></script>
+    <script src="../assets/js/lib/data-table/buttons.print.min.js"></script>
+    <script src="../assets/js/lib/data-table/buttons.colVis.min.js"></script>
+    <script src="../assets/js/init/datatables-init.js"></script>
+    <script src="../assets/js/script/bootstrap-datepicker.min.js"></script>
 	<script type="text/javascript">
     $(document).ready(function() {});
     

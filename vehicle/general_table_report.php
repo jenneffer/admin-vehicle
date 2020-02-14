@@ -104,14 +104,14 @@
                                         <label for="date_start" class="form-control-label"><small class="form-text text-muted">Date Start</small></label>
                                         <div class="input-group">
                                           <input type="text" id="date_start" name="date_start" class="form-control" value="<?=$date_start?>" autocomplete="off">
-                                          <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+                                          <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></i></div>
                                         </div>                            
                                     </div>
                                     <div class="col-sm-3">
                                         <label for="date_end" class="form-control-label"><small class="form-text text-muted">Date End</small></label>
                                         <div class="input-group">
                                           <input type="text" id="date_end" name="date_end" class="form-control" value="<?=$date_end?>" autocomplete="off">
-                                          <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+                                          <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></i></div>
                                         </div>                             
                                     </div>
                                     <div class="col-sm-4">                                    	
@@ -121,7 +121,7 @@
                             </form>
                             </div>
                             <hr>
-                            <div class="card-body">
+                            <div class="card-body">                            	
                                 <table id="general_table" class="table table-striped table-bordered">
                                     <thead>
                                         <tr>
@@ -129,14 +129,14 @@
 											<th rowspan="2">Company</th>
                                             <th rowspan="2">Plat No.</th>
 											<th rowspan="2">LPKP (date)</th>											
-											<th colspan="2">Period of Insuranse</th>
+											<th colspan="2" style="text-align: center">Period of Insurance</th>
 											<th rowspan="2">Premium (RM)</th>
 											<th rowspan="2">NCD (%)</th>
 											<th rowspan="2">Sum Insured (RM)</th>
 											<th rowspan="2">Excess</th>
 											<th rowspan="2">Capacity</th>
 											<th rowspan="2">Puspakom</th>
-                                            <th colspan="2">Road Tax</th>
+                                            <th colspan="2" style="text-align: center">Road Tax</th>
                                             <th rowspan="2">Amount(RM)</th>
                                             <th rowspan="2">Period</th>
                                         </tr>
@@ -181,7 +181,7 @@
 
     <!-- link to the script-->
 	<?php include ('../allScript2.php')?>
-	
+	<!-- Datatables -->
 	<script src="../assets/js/lib/data-table/datatables.min.js"></script>
     <script src="../assets/js/lib/data-table/dataTables.bootstrap.min.js"></script>
     <script src="../assets/js/lib/data-table/dataTables.buttons.min.js"></script>
@@ -192,16 +192,19 @@
     <script src="../assets/js/lib/data-table/buttons.print.min.js"></script>
     <script src="../assets/js/lib/data-table/buttons.colVis.min.js"></script>
     <script src="../assets/js/init/datatables-init.js"></script>
-        <script src="../assets/js/script/bootstrap-datepicker.min.js"></script>
-	
+    <script src="../assets/js/script/bootstrap-datepicker.min.js"></script>
 	<script type="text/javascript">
         $(document).ready(function() {
-            $('#general_table').DataTable({
+            var table = $('#general_table').DataTable({
                 "processing": true,
                 "serverSide": true,
+                "searching": false,
                 "ajax":{
                  "url": "general.table.ajax.php",           	
-                 "data" : function ( data ){}
+                 "data" : function ( data ){	
+                	 	data.date_start = '<?=$date_start?>';
+						data.date_end = '<?=$date_end?>';						
+                     }
                 },
                 "footerCallback": function( tfoot, data, start, end, display ) {
     				var api = this.api(), data;
@@ -225,30 +228,40 @@
                 	      "targets": [6,8,9,14], // your case first column
                 	      "className": "text-right", 
                 	      "render": $.fn.dataTable.render.number(',', '.', 2, '')               	                      	        	     
-                	 }],
-
-            	
+                	 },
+                	 {
+               	      "targets": [1,7,10,11], // your case first column
+               	      "className": "text-center",                	                  	                      	        	     
+               	 	}
+				],
+				"dom": 'Bfrtip',
+	            "buttons": [ 
+	             { 
+	            	extend: 'excelHtml5', 
+	            	messageTop: 'General Table',
+	            	footer: true 
+	             },
+	             {
+	            	extend: 'print',
+	            	messageTop: 'General Table',
+	            	footer: true,
+	            	customize: function ( win ) {
+	                    $(win.document.body)
+	                        .css( 'font-size', '10pt' );
+	            
+	                    $(win.document.body).find( 'table' )
+	                        .addClass( 'compact' )
+	                        .css( 'font-size', 'inherit' );
+	                }
+	             }
+	            ],
             });
 
     		//get filtered report
             $('#myform').on("submit", function(event){  
-              event.preventDefault();  
-              if($('#date_start').val() == ""){  
-                   alert("Date start is required");  
-              }  
-              else if($('#date_end').val() == ''){  
-                   alert("End date is required");  
-              }                         
-              else{  
-                   $.ajax({  
-                        url:"general.table.ajax.php",  
-                        method:"POST",  
-                        data:$('#myform').serialize(),  
-                        success:function(data){   
-                             $('#general_table').html(data);  
-                        }  
-                   });  
-              }  
+            	table.clear();
+      			table.ajax.reload();
+      			table.draw();     
             }); 
             $('#date_start, #date_end').datepicker({
                 format: "dd-mm-yyyy",

@@ -10,19 +10,22 @@
         $bankin_date = $_POST['bankin_date'];
         $bankin_amount = $_POST['bankin_amount'];
         $reimburse_amt = $_POST['reimburseAmount'];
-        $payment_balance = $reimburse_amt - $payment_amount;
-
+        
         //insert the payment details into table - 1 summon id can have many payment
         $query = "INSERT INTO vehicle_summon_payment
             SET summon_id = '$vs_id',
             payment_amount = '$payment_amount',
             bankin_amount = '$bankin_amount',
-            payment_date = '$payment_date',
-            bankin_date = '$bankin_date',            
-            payment_balance = '$payment_balance',
+            payment_date = '".dateFormat($payment_date)."',
+            bankin_date = '".dateFormat($bankin_date)."',                       
             date_added = now()";   
-      
+
         $result = mysqli_query($conn_admin_db, $query);  
+        
+        //get the total paid in the vehicle_summon_payment table
+        $paid_amount = itemName("SELECT SUM(payment_amount) FROM vehicle_summon_payment WHERE summon_id='".$vs_id."'");
+        $payment_balance = $reimburse_amt - $paid_amount;
+        
         
         //update the balance in vehicle_summons
         $update_query = "UPDATE vehicle_summons SET vs_balance = '".$payment_balance."' WHERE vs_id='".$vs_id."' ";

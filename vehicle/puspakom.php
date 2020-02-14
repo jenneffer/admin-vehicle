@@ -105,14 +105,14 @@
                                         <label for="date_start" class="form-control-label"><small class="form-text text-muted">Date Start</small></label>
                                         <div class="input-group">
                                           <input type="text" id="date_start" name="date_start" class="form-control" value="<?=$date_start?>" autocomplete="off">
-                                          <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+                                          <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></i></div>
                                         </div>                            
                                     </div>
                                     <div class="col-sm-3">
                                         <label for="date_end" class="form-control-label"><small class="form-text text-muted">Date End</small></label>
                                         <div class="input-group">
                                           <input type="text" id="date_end" name="date_end" class="form-control" value="<?=$date_end?>" autocomplete="off">
-                                          <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+                                          <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></i></div>
                                         </div>                             
                                     </div>
                                     <div class="col-sm-4">                                    	
@@ -163,7 +163,7 @@
                             <div class="form-group col-6">
                                 <label for="vehicle_reg_no" class=" form-control-label"><small class="form-text text-muted">Vehicle Reg No.</small></label>
                                 <?php
-                                    $vehicle = mysqli_query ( $conn_admin_db, "SELECT vv_id, vv_vehicleNo FROM vehicle_vehicle");
+                                    $vehicle = mysqli_query ( $conn_admin_db, "SELECT vv_id, vv_vehicleNo FROM vehicle_vehicle WHERE status='1'");
                                     db_select ($vehicle, 'vehicle_reg_no', '','','-select-','form-control','');
                                 ?>
                             </div>   
@@ -177,14 +177,14 @@
                                 <label for="fitness_date" class="form-control-label"><small class="form-text text-muted">Fitness due date</small></label>
                                 <div class="input-group">
                                   <input type="text" id="fitness_date" name="fitness_date" class="form-control" autocomplete="off">
-                                  <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+                                  <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></i></div>
                                 </div>                       
                             </div>
                             <div class="col-sm-6">
                                 <label for="roadtax_due_date" class="form-control-label"><small class="form-text text-muted">Roadtax due date</small></label>
                                 <div class="input-group">
                                   <input type="text" id="roadtax_due_date" name="roadtax_due_date" class="form-control" autocomplete="off">
-                                  <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+                                  <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></i></div>
                                 </div> 
                             </div>
                          </div>
@@ -227,6 +227,7 @@
 
     <!-- link to the script-->
 	<?php include ('../allScript2.php')?>
+	<!-- Datatables -->
 	<script src="../assets/js/lib/data-table/datatables.min.js"></script>
     <script src="../assets/js/lib/data-table/dataTables.bootstrap.min.js"></script>
     <script src="../assets/js/lib/data-table/dataTables.buttons.min.js"></script>
@@ -256,11 +257,12 @@
     	var table = $('#puspakom_datatable').DataTable({
          	"processing": true,
          	"serverSide": true,
+         	"searching": false,
             "ajax":{
            	 "url": "puspakom.ajax.php",           	
            	 "data" : function ( data ) {
-   				data.company = $('#company').val();
-   				data.month = $('#month').val();   				
+           		data.date_start = '<?=$date_start?>';
+				data.date_end = '<?=$date_end?>';  				
    	        }
    	      },
    	     });
@@ -297,7 +299,7 @@
       	$.ajax({
       		url:"delete.php",
       		method:"POST",    
-      		data:{id:ID, table_name : 'vehicle_puspakom', col_identifier:'vp_id'},
+      		data:{id:ID, table_name : 'vehicle_puspakom', col_identifier:'vp_id', reload_location:'puspakom.php'},
       		success:function(data){	  						
       			$('#deleteItem').modal('hide');		
       			location.reload();		
@@ -327,35 +329,20 @@
                     data:$('#update_form').serialize(),  
                     success:function(data){   
                          $('#editItem').modal('hide');  
-                         $('#bootstrap-data-table').html(data);  
+                         $('#bootstrap-data-table').html(data); 
+                         location.reload();		 
                     }  
                });  
           }  
      }); 
       
-     $('#fitness_date').datepicker({
-         format: "dd-mm-yyyy",
-    	 startDate: "0d",
-         autoclose: true,
-         orientation: "top left",
-         todayHighlight: true
-         });
-
-      $('#roadtax_due_date').datepicker({
-    	  format: "dd-mm-yyyy",
-     	  startDate: "0d",
-          autoclose: true,
-          orientation: "top left",
-          todayHighlight: true
-          });
-
      $( ".button_search" ).click(function( event ) {
   		table.clear();
   		table.ajax.reload();
   		table.draw();  		
   		});	
 
-     $('#date_start, #date_end').datepicker({
+     $('#date_start, #date_end, #roadtax_due_date, #fitness_date').datepicker({
          format: "dd-mm-yyyy",
          autoclose: true,
          orientation: "top left",
