@@ -1,6 +1,6 @@
 
     <link rel="apple-touch-icon" href="../images/QRAUqs9.png">
-    <link rel="shortcut icon" href="../images/QRAUqs9(1).png">
+    <link rel="shortcut icon" href="../images/QRAUqs9.png">
     <link rel="stylesheet" href="../assets/css/normalize.min.css">
     <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="../assets/css/bootstrap-datepicker3.css">

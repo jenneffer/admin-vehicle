@@ -82,6 +82,7 @@
 			
 			
 			$remark = $variable1 .$variable2;
+			$next_due_date = !empty($row['next_due_date']) ? dateFormatRev($row['next_due_date']) : "-";
 			
 			$action = '<span id='.$row['id'].' data-toggle="modal"  class="edit_data" data-target="#editItem" onclick="editFunction('.$row['id'].', '."'".$row['task']."'".')"><i class="menu-icon fa fa-edit"></i>
                         </span>';
@@ -92,7 +93,7 @@
 			        $remark,
     			    $row['task'],
 			        dateFormatRev($row['n_date']),	
-			        dateFormatRev($row['next_due_date']),	
+			        $next_due_date,	
 					$action
 		
 			);

@@ -84,7 +84,7 @@
     <!--Left Panel -->
 	<?php //include('assets/nav/leftNav.php')?>
     <!-- Right Panel -->
-    <?php include('assets/nav/rightNav.php')?>
+    <?php include('assets/nav/indexRightNav.php')?>
         <!-- /#header -->
         <!-- Content -->
 		<div class="content">
@@ -100,7 +100,7 @@
 									<div class="typo-articles">
 										<h3 style="color:#f7c208; text-decoration: underline; text-align:center"><b>Categories</b></h3><br>
 										<div class="row">
-											<div class="homeHover col-lg-3 offset-lg-1" style="height:250px; border:1px solid black; "  onclick="location.href = 'vehicle/home.php';"><center><img src="images/car.png" style="height:200px;"></center></div>
+											<div class="homeHover col-lg-3 offset-lg-1" style="height:250px; border:1px solid black; "  onclick="location.href = 'vehicle/vehicle.php';"><center><img src="images/car.png" style="height:200px;"></center></div>
 										
 											<div class="homeHover col-lg-3 offset-lg-1" style="height:250px; border:1px solid black"><center><img src="images/car.png" style="height:250px;"></center></div>
 										

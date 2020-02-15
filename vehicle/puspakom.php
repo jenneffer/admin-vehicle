@@ -33,7 +33,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Eng Peng Insurance</title>
+    <title>Eng Peng Vehicle</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	<!-- link to css -->
@@ -277,12 +277,14 @@
 					data:{vp_id:vp_id},
 					dataType:"json",
 					success:function(data){	
-                      $('#vp_id').val(data.vp_id);					
-                      $('#vehicle_reg_no').val(data.vv_id);  
-                      $('#fitness_date').val(data.vp_fitnessDate);  
-                      $('#roadtax_due_date').val(data.vp_roadtaxDueDate);  
-                      $('#runner').val(data.vp_runner);                        
-                      $('#editItem').modal('show');
+                        var fitnessDate = dateFormat(data.vp_fitnessDate);
+                        var rTaxdueDate = dateFormat(data.vp_roadtaxDueDate);
+                        $('#vp_id').val(data.vp_id);					
+                        $('#vehicle_reg_no').val(data.vv_id);  
+                        $('#fitness_date').val(fitnessDate);  
+                        $('#roadtax_due_date').val(rTaxdueDate);  
+                        $('#runner').val(data.vp_runner);                        
+                        $('#editItem').modal('show');
 	  				}
 				});
       });
@@ -349,6 +351,14 @@
          todayHighlight: true
      });
     });
+    function dateFormat(dates){
+        var date = new Date(dates);
+    	var day = date.getDate();
+	  	var monthIndex = date.getMonth()+1;
+	  	var year = date.getFullYear();
+
+	  	return (day <= 9 ? '0' + day : day) + '-' + (monthIndex<=9 ? '0' + monthIndex : monthIndex) + '-' + year ;
+    }
   </script>
 </body>
 </html>

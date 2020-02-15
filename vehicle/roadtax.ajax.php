@@ -4,15 +4,18 @@
     global $conn_admin_db;
     session_start();
     
-    $date_start = isset($_GET['date_start']) ? $_GET['date_start'] : date('01-m-Y');
-    $date_end = isset($_GET['date_end']) ? $_GET['date_end'] : date('t-m-Y');
+    $date_start = isset($_GET['date_start']) ? $_GET['date_start'] : '';
+    $date_end = isset($_GET['date_end']) ? $_GET['date_end'] : '';
     
     $sql_query = "SELECT * FROM vehicle_roadtax
             INNER JOIN vehicle_vehicle ON vehicle_vehicle.vv_id = vehicle_roadtax.vv_id
             LEFT JOIN vehicle_insurance ON vehicle_insurance.vi_vrt_id = vehicle_roadtax.vrt_id
             INNER JOIN company ON company.id = vehicle_vehicle.company_id
-            WHERE vehicle_roadtax.vrt_roadTax_dueDate BETWEEN '".dateFormat($date_start)."' AND '".dateFormat($date_end)."'
-            AND vehicle_roadtax.status='1'";
+            WHERE vehicle_roadtax.status='1' ";
+    
+    if (!empty($date_start) && !empty($date_end)) {
+        $sql_query .= " AND vehicle_roadtax.vrt_roadTax_dueDate BETWEEN '".dateFormat($date_start)."' AND '".dateFormat($date_end)."'" ;
+    }
     
 	$rst  = mysqli_query($conn_admin_db, $sql_query)or die(mysqli_error($conn_admin_db));
 	

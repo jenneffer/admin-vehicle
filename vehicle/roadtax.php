@@ -20,8 +20,8 @@
 		header("Location: ../login.php?RecLock=".$PrevURL);
 	}
 	
-	$date_start = isset($_POST['date_start']) ? $_POST['date_start'] : date('01-m-Y');
-	$date_end = isset($_POST['date_end']) ? $_POST['date_end'] : date('t-m-Y');
+	$date_start = isset($_POST['date_start']) ? $_POST['date_start'] : '';
+	$date_end = isset($_POST['date_end']) ? $_POST['date_end'] : '';
 ?>
 
 <!doctype html>
@@ -32,7 +32,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Eng Peng Insurance</title>
+    <title>Eng Peng Vehicle</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	<!-- link to css -->
@@ -98,30 +98,30 @@
                                 <strong class="card-title">Road Tax</strong>
                             </div>
                             <!-- Filter -->
-                            <div class="card-body">
-                            <form id="myform" enctype="multipart/form-data" method="post" action="">                	                   
-                	            <div class="form-group row col-sm-12">
-                                    <div class="col-sm-3">
-                                        <label for="date_start" class="form-control-label"><small class="form-text text-muted">Date Start</small></label>
-                                        <div class="input-group">
-                                          <input type="text" id="date_start" name="date_start" class="form-control" value="<?=$date_start?>" autocomplete="off">
-                                          <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></i></div>
-                                        </div>                            
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <label for="date_end" class="form-control-label"><small class="form-text text-muted">Date End</small></label>
-                                        <div class="input-group">
-                                          <input type="text" id="date_end" name="date_end" class="form-control" value="<?=$date_end?>" autocomplete="off">
-                                          <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></i></div>
-                                        </div>                             
-                                    </div>
-                                    <div class="col-sm-4">                                    	
-                                    	<button type="submit" class="btn btn-primary button_search ">Submit</button>
-                                    </div>
-                                 </div>    
-                            </form>
-                            </div>
-                            <hr>
+<!--                             <div class="card-body"> -->
+<!--                             <form id="myform" enctype="multipart/form-data" method="post" action="">                	                    -->
+<!--                 	            <div class="form-group row col-sm-12"> -->
+<!--                                     <div class="col-sm-3"> -->
+<!--                                         <label for="date_start" class="form-control-label"><small class="form-text text-muted">Date Start</small></label> -->
+<!--                                         <div class="input-group"> -->
+<!--                                         <input type="text" id="date_start" name="date_start" class="form-control" value="<?=$date_start?>" autocomplete="off">
+<!--                                           <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></i></div> -->
+<!--                                         </div>                             -->
+<!--                                     </div> -->
+<!--                                     <div class="col-sm-3"> -->
+<!--                                         <label for="date_end" class="form-control-label"><small class="form-text text-muted">Date End</small></label> -->
+<!--                                         <div class="input-group"> -->
+<!--                                          <input type="text" id="date_end" name="date_end" class="form-control" value="<?=$date_end?>" autocomplete="off">
+<!--                                           <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></i></div> -->
+<!--                                         </div>                              -->
+<!--                                     </div> -->
+<!--                                     <div class="col-sm-4">                                    	 -->
+<!--                                     	<button type="submit" class="btn btn-primary button_search ">Submit</button> -->
+<!--                                     </div> -->
+<!--                                  </div>     -->
+<!--                             </form> -->
+<!--                             </div> -->
+<!--                             <hr> -->
                             <div class="card-body">
                                 <table id="roadtax_datatable" class="table table-striped table-bordered">
                                     <thead>
@@ -228,33 +228,33 @@
                         <div class="form-group row col-sm-12">
                             <div class="col-sm-6">
                                 <label for="premium_amount" class=" form-control-label"><small class="form-text text-muted">Premium (RM)</small></label>
-                                <input type="text" id="premium_amount" name="premium_amount" placeholder="e.g 1000.00" class="form-control">
+                                <input type="text" id="premium_amount" name="premium_amount" onkeypress="return isNumberKey(event)" placeholder="e.g 1000.00" class="form-control">
                             </div>
                             <div class="col-sm-6">
                                 <label for="ncd" class=" form-control-label"><small class="form-text text-muted">NCD (%)</small></label>
-                                <input type="text" id="ncd" name="ncd" placeholder="e.g 25" class="form-control">
+                                <input type="text" id="ncd" name="ncd" onkeypress="return isNumberKey(event)" placeholder="e.g 25" class="form-control">
                             </div>
                         </div>
 
                         <div class="form-group row col-sm-12">
                             <div class="col-sm-6">
                                 <label for="sum_insured" class=" form-control-label"><small class="form-text text-muted">Sum Insured (RM)</small></label>
-                                <input type="text" id="sum_insured" name="sum_insured" placeholder="e.g 750.00" class="form-control">
+                                <input type="text" id="sum_insured" name="sum_insured" onkeypress="return isNumberKey(event)" placeholder="e.g 750.00" class="form-control">
                             </div>
                             <div class="col-sm-6">
                                 <label for="excess_paid" class=" form-control-label"><small class="form-text text-muted">Excess Paid (RM)</small></label>
-                                <input type="text" id="excess_paid" name="excess_paid" placeholder="e.g 750.00" class="form-control">
+                                <input type="text" id="excess_paid" name="excess_paid" onkeypress="return isNumberKey(event)" placeholder="e.g 750.00" class="form-control">
                             </div>
                         </div>
                         
                         <div class="form-group row col-sm-12">
                             <div class="col-sm-6">
                                 <label for="roadtax_amount" class=" form-control-label"><small class="form-text text-muted">Roadtax Amount(RM)</small></label>
-                                <input type="text" id="roadtax_amount" name="roadtax_amount" placeholder="e.g 50.00" class="form-control">
+                                <input type="text" id="roadtax_amount" name="roadtax_amount" onkeypress="return isNumberKey(event)" placeholder="e.g 50.00" class="form-control">
                             </div>
                             <div class="col-sm-6">
                                 <label for="insurance_amount" class=" form-control-label"><small class="form-text text-muted">Insurance Amount(RM)</small></label>
-                                <input type="text" id="insurance_amount" name="insurance_amount" placeholder="e.g 50.00" class="form-control">
+                                <input type="text" id="insurance_amount" name="insurance_amount" onkeypress="return isNumberKey(event)" placeholder="e.g 50.00" class="form-control">
                             </div>                            
                         </div>
                         <div class="form-group row col-sm-12">
@@ -351,16 +351,21 @@
   					data:{vrt_id:vrt_id},
   					dataType:"json",
   					success:function(data){	
-  	  					console.log(data);
+  	  					var lpkp_date = dateFormat(data.vrt_lpkpPermit_dueDate);
+  	  					var insurance_from_date = dateFormat(data.vi_insurance_fromDate);
+  	  					var insurance_due_date = dateFormat(data.vi_insurance_dueDate);
+  	  					var roadtax_from_date = dateFormat(data.vrt_roadTax_fromDate);
+  	  					var roadtax_due_date = dateFormat(data.vrt_roadTax_dueDate);
+  	  					
                         $('#vrt_id').val(data.vrt_id);					
                         $('#vehicle_reg_no').val(data.vv_id);  
-                        $('#lpkp_date').val(data.vrt_lpkpPermit_dueDate);  
-                        $('#insurance_from_date').val(data.vi_insurance_fromDate);  
-                        $('#insurance_due_date').val(data.vi_insurance_dueDate);  
-                        $('#roadtax_from_date').val(data.vrt_roadTax_fromDate);  
-                        $('#roadtax_due_date').val(data.vrt_roadTax_dueDate);  
+                        $('#lpkp_date').val(lpkp_date);  
+                        $('#insurance_from_date').val(insurance_from_date);  
+                        $('#insurance_due_date').val(insurance_due_date);  
+                        $('#roadtax_from_date').val(roadtax_from_date);  
+                        $('#roadtax_due_date').val(roadtax_due_date);  
                         $('#premium_amount').val(data.vi_premium_amount);   
-                        $('#insurance_amount').val(data.vi_insurance_amount);   
+                        $('#insurance_amount').val(data.vi_amount);   
                         $('#ncd').val(data.vi_ncd);  
                         $('#sum_insured').val(data.vi_sum_insured);  
                         $('#excess_paid').val(data.vi_excess_paid);  
@@ -454,6 +459,29 @@
 		});	
         	  
     });
+    function isNumberKey(evt){
+    	var charCode = (evt.which) ? evt.which : evt.keyCode;
+    	if (charCode != 46 && charCode > 31 
+    	&& (charCode < 48 || charCode > 57))
+    	return false;
+    	return true;
+    }  
+    
+    function isNumericKey(evt){
+    	var charCode = (evt.which) ? evt.which : evt.keyCode;
+    	if (charCode != 46 && charCode > 31 
+    	&& (charCode < 48 || charCode > 57))
+    	return true;
+    	return false;
+    } 
+    function dateFormat(dates){
+        var date = new Date(dates);
+    	var day = date.getDate();
+	  	var monthIndex = date.getMonth()+1;
+	  	var year = date.getFullYear();
+
+	  	return (day <= 9 ? '0' + day : day) + '-' + (monthIndex<=9 ? '0' + monthIndex : monthIndex) + '-' + year ;
+    }
   </script>
 </body>
 </html>
