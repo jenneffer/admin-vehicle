@@ -20,6 +20,7 @@
                     $fitness_due_date = isset($params['fitness_date']) ? dateFormat($params['fitness_date']) : "";
                     $roadtax_due_date = isset($params['roadtax_due_date']) ? dateFormat($params['roadtax_due_date']) : "";
                     $runner = isset($params['runner']) ? $params['runner'] : "";
+
                     
                     
                     $query = "UPDATE vehicle_puspakom

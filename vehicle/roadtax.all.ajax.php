@@ -32,6 +32,7 @@
                     $roadtax_amount = $params['roadtax_amount'];
                     $insurance_status = $params['insurance_status'];
                     $insurance_amount = $params['insurance_amount'];
+
                     
                     //calculate the roadtax period
                     $diff = abs(strtotime($roadtax_due_date) - strtotime($roadtax_from_date));
@@ -69,6 +70,7 @@
                             vi_lastUpdated = now(),
                             vi_updatedBy = '".$_SESSION['cr_id']."'
                             WHERE vi_vrt_id='".$vrt_id."'";
+
                     
                     $result2 = mysqli_query($conn_admin_db, $query2) or die(mysqli_error($conn_admin_db));
                     
@@ -91,6 +93,7 @@
                     
                     if ($result && $result_ins) {
                         alert ("Deleted successfully", "roadtax.php");
+
                     }
                     
                 }
