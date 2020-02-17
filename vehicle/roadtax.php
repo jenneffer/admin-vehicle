@@ -324,10 +324,12 @@
              	"serverSide": true,
              	"searching": false,
                 "ajax":{
-               	 	"url": "roadtax.ajax.php",           	
+               	 	"url": "roadtax.all.ajax.php",   
+               	 	"type":"POST",       	        	
                	 	"data" : function ( data ) {
                    		data.date_start = '<?=$date_start?>';
-        				data.date_end = '<?=$date_end?>';  				
+        				data.date_end = '<?=$date_end?>';  
+        				data.action = 'display_roadtax';				
            	        }
        	      },
       			'columnDefs': [
@@ -346,9 +348,9 @@
           $(document).on('click', '.edit_data', function(){
   			var vrt_id = $(this).attr("id");
   			$.ajax({
-  					url:"roadtax_fetch.php",
+  					url:"roadtax.all.ajax.php",
   					method:"POST",
-  					data:{vrt_id:vrt_id},
+  					data:{action:'retrive_roadtax', vrt_id:vrt_id},
   					dataType:"json",
   					success:function(data){	
   	  					var lpkp_date = dateFormat(data.vrt_lpkpPermit_dueDate);
@@ -386,9 +388,9 @@
         $( "#delete_record" ).click( function() {
         	var ID = $(this).data('id');
         	$.ajax({
-        		url:"delete.php",
+        		url:"roadtax.all.ajax.php",
         		method:"POST",    
-        		data:{id:ID, table_name : 'vehicle_roadtax', col_identifier:'vrt_id'},
+        		data:{action:'delete_roadtax', id:ID},
         		success:function(data){	  						
         			$('#deleteItem').modal('hide');		
         			location.reload();		
@@ -434,12 +436,13 @@
             } 
             else{  
                  $.ajax({  
-                      url:"roadtax_update.php",  
+                      url:"roadtax.all.ajax.php",  
                       method:"POST",  
-                      data:$('#update_form').serialize(),  
+                      data:{action:'update_roadtax', data: $('#update_form').serialize()},
                       success:function(data){   
                            $('#editItem').modal('hide');  
                            $('#bootstrap-data-table').html(data);  
+                           location.reload();		 
                       }  
                  });  
             }  

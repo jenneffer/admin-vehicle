@@ -111,31 +111,35 @@
 									<div class="typo-articles">
 										<h3 style="color:#f7c208; text-decoration: underline; text-align:center"><b>Categories</b></h3><br>
 										<div class="row">
-											<div class="homeHover offset-lg-1 btn" onclick="location.href = 'vehicle/vehicle.php';"><i class="fas fa-taxi fa-10x"></i><br><span><strong>VEHICLE</strong></span></div>
+											<div class="homeHover offset-lg-1 btn" onclick="location.href = 'vehicle/vehicle.php';"><i class="fas fa-taxi fa-10x"></i><br><span><strong>V E H I C L E</strong></span></div>
 										
-											<div class="homeHover offset-lg-1 btn" onclick="location.href = 'vehicle/vehicle.php';"><i class="fas fa-briefcase fa-10x"></i><br><span><strong>OFFICE MANAGEMENT</strong></span></div>
+											<div class="homeHover offset-lg-1 btn"><img src="images/car.png" style="height:250px;"></div>
 										
-											<div class="homeHover offset-lg-1 btn" onclick="location.href = 'vehicle/vehicle.php';"><i class="fas fa-taxi fa-10x"></i><br><span><strong>SECURITY</strong></span></div>
-										
-											<div class="homeHover offset-lg-1 btn" onclick="location.href = 'vehicle/vehicle.php';"><i class="fas fa-fire-extinguisher fa-10x"></i><br><span><strong>FIRE EXTINGUISHER</strong></span></div>
-										
+											<div class="homeHover offset-lg-1 btn"></div>
 										</div>
 										&nbsp;
 										<div class="row">
 										
-											<div class="homeHover offset-lg-1 btn" onclick="location.href = 'vehicle/vehicle.php';"><i class="fas fa-taxi fa-10x"></i><br><span><strong>STATIONARY</strong></span></div>
+											<div class="homeHover col-lg-3 offset-lg-1" style="height:250px; border:1px solid black"></div>
 											
-											<div class="homeHover offset-lg-1 btn" onclick="location.href = 'vehicle/vehicle.php';"><i class="fas fa-taxi fa-10x"></i><br><span><strong>ABX</strong></span></div>
+											<div class="homeHover col-lg-3 offset-lg-1" style="height:250px; border:1px solid black"></div>
 											
-											<div class="homeHover offset-lg-1 btn" onclick="location.href = 'vehicle/vehicle.php';"><i class="fas fa-home fa-10x"></i><br><span><strong>QUARTERS</strong></span></div>
-										
-											<div class="homeHover offset-lg-1 btn" onclick="location.href = 'vehicle/vehicle.php';"><i class="fas fa-taxi fa-10x"></i><br><span><strong>UTILITIES</strong></span></div>
-										
+											<div class="homeHover col-lg-3 offset-lg-1" style="height:250px; border:1px solid black"></div>
 										</div>
 										<div class="row">
-											<div class="homeHover offset-lg-1 btn" onclick="location.href = 'vehicle/vehicle.php';"><i class="fas fa-file-invoice-dollar fa-10x"></i><br><span><strong>BILL</strong></span></div>
 										
-										</div>										
+											<div class="col-lg-3 offset-lg-1" style="display: flex; justify-content: center; align-items: center; ">
+												<br><center><a href="#" style="color:green">Security</a><center>
+											</div>
+											
+											<div class="col-lg-3 offset-lg-1" style="display: flex; justify-content: center; align-items: center; ">
+												<br><center><a href="#" style="color:green">Farm Maintenance</a><center>
+											</div>
+											
+											<div class="col-lg-3 offset-lg-1" style="display: flex; justify-content: center; align-items: center; ">
+												<br><center><a href="#" style="color:green">Asset Management</a><center>
+											</div>
+										</div>
 									</div> <!-- End of typo-articles -->
                                 </div> <!-- End of card-body -->
 								

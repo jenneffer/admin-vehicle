@@ -376,9 +376,9 @@
           $(document).on('click', '.edit_data', function(){
   			var summon_id = $(this).attr("id");
   			$.ajax({
-  					url:"summon_fetch.php",
+  					url:"summon.all.ajax.php",
   					method:"POST",
-  					data:{ summon_id:summon_id },
+  					data:{ action:'retrive_summon', summon_id:summon_id },
   					dataType:"json",
   					success:function(data){	   	  	  					
   						var reimburse_amt = parseFloat(data.vs_reimbursement_amt).toFixed(2);
@@ -412,9 +412,9 @@
         $(document).on('click', '.add_payment', function(){
 			var summon_id = $(this).attr("id");
 			$.ajax({
-					url:"summon_fetch.php",
+					url:"summon.all.ajax.php",
 					method:"POST",
-					data:{ summon_id:summon_id },
+					data:{ action:'retrive_summon', summon_id:summon_id },
 					dataType:"json",
 					success:function(data){	 
 						var reimburse_amt = parseFloat(data.vs_reimbursement_amt).toFixed(2);
@@ -452,9 +452,9 @@
         $( "#delete_record" ).click( function() {
     		var ID = $(this).data('id');
     		$.ajax({
-    			url:"delete.php",
+    			url:"summon.all.ajax.php",
     			method:"POST",    
-    			data:{id:ID, table_name : 'vehicle_summons', col_identifier:'vs_id'},
+    			data:{action:'delete_summon', id:ID},
     			success:function(data){	  						
     				$('#deleteItem').modal('hide');		
     				location.reload();		
@@ -492,12 +492,13 @@
             else  
             {  
                  $.ajax({  
-                      url:"summons_update.php",  
+                      url:"summon.all.ajax.php",  
                       method:"POST",  
-                      data:$('#update_form').serialize(),  
+                      data:{action:'update_summon', data:$('#update_form').serialize()},  
                       success:function(data){   
                            $('#editItem').modal('hide');  
                            $('#bootstrap-data-table').html(data);  
+                           location.reload();	
                       }  
                  });  
             }  
@@ -525,12 +526,13 @@
             else  
             {  
                  $.ajax({  
-                      url:"summons_add_payment.php",  
+                      url:"summon.all.ajax.php",  
                       method:"POST",  
-                      data:$('#update_payment_form').serialize(),  
+                      data:{action:'add_payment', data:$('#update_payment_form').serialize()},  
                       success:function(data){   
                            $('#editItem').modal('hide');  
-                           $('#bootstrap-data-table').html(data);  
+                           $('#bootstrap-data-table').html(data); 
+                           location.reload(); 
                       }  
                  });  
             }  
