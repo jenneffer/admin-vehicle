@@ -259,10 +259,12 @@
          	"serverSide": true,
          	"searching": false,
             "ajax":{
-           	 "url": "puspakom.ajax.php",           	
+           	 "url": "puspakom.all.ajax.php",    
+           	 "type":"POST",       	
            	 "data" : function ( data ) {
            		data.date_start = '<?=$date_start?>';
-				data.date_end = '<?=$date_end?>';  				
+				data.date_end = '<?=$date_end?>';  
+				data.action = 'display_puspakom';				
    	        }
    	      },
    	     });
@@ -272,9 +274,9 @@
         $(document).on('click', '.edit_data', function(){
 			var vp_id = $(this).attr("id");
 			$.ajax({
-					url:"puspakom_fetch.php",
+					url:"puspakom.all.ajax.php",
 					method:"POST",
-					data:{vp_id:vp_id},
+					data:{action:'retrive_puspakom', vp_id:vp_id},
 					dataType:"json",
 					success:function(data){	
                         var fitnessDate = dateFormat(data.vp_fitnessDate);
@@ -299,9 +301,9 @@
       $( "#delete_record" ).click( function() {
       	var ID = $(this).data('id');
       	$.ajax({
-      		url:"delete.php",
+      		url:"puspakom.all.ajax.php",
       		method:"POST",    
-      		data:{id:ID, table_name : 'vehicle_puspakom', col_identifier:'vp_id', reload_location:'puspakom.php'},
+      		data:{action:'delete_puspakom', id:ID},
       		success:function(data){	  						
       			$('#deleteItem').modal('hide');		
       			location.reload();		
@@ -326,13 +328,13 @@
           }          
           else{  
                $.ajax({  
-                    url:"puspakom_update.php",  
+                    url:"puspakom.all.ajax.php",  
                     method:"POST",  
-                    data:$('#update_form').serialize(),  
+                    data:{action:'update_puspakom', data : $('#update_form').serialize()},  
                     success:function(data){   
                          $('#editItem').modal('hide');  
                          $('#bootstrap-data-table').html(data); 
-                         location.reload();		 
+//                          location.reload();		 
                     }  
                });  
           }  

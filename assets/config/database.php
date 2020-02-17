@@ -1,6 +1,6 @@
 <?php
 //=============== FILE HOST ====================
-
+$Server_Host = '192.168.9.149';
 //============== Local DB (For test purpose only) =============
 $db_hqost = 'localhost'; // Server Name
 $db_uqser = 'root'; // Username
