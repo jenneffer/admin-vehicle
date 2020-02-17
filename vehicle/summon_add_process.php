@@ -21,6 +21,7 @@
                             vs_summon_no = '".$summon_no."',
                             vs_pv_no = '".$pv_no."',
                             vs_reimbursement_amt = '".$reimburse_amt."',
+                            vs_balance = '".$reimburse_amt."',
                             vs_summon_type_desc = '".$summon_desc."',
                             vs_driver_name = '".$driver_name."',
                             vs_summon_date = '".$summon_date."',

@@ -123,7 +123,7 @@
                                                     ?>
                                                     <tr>
                                                     	<td><?=$count?></td>
-                                                        <td><?=$row['vv_vehicleNo']?></td>
+                                                        <td><?=strtoupper($row['vv_vehicleNo'])?></td>
                                                         <td><?=$row['vs_summon_no']?></td>
                                                         <td><?=$row['vs_driver_name']?></td>
                                                         <td><?=$row['vs_code']?></td>
@@ -166,7 +166,7 @@
                             <div class="col-sm-6">
                                 <label for="vehicle_reg_no" class=" form-control-label"><small class="form-text text-muted">Vehicle Reg No.</small></label>
                                 <?php
-                                    $vehicle = mysqli_query ( $conn_admin_db, "SELECT vv_id, vv_vehicleNo FROM vehicle_vehicle WHERE status='1'");
+                                    $vehicle = mysqli_query ( $conn_admin_db, "SELECT vv_id, UPPER(vv_vehicleNo) FROM vehicle_vehicle WHERE status='1'");
                                     db_select ($vehicle, 'vehicle_reg_no', '','','-select-','form-control','');
                                 ?>
                             </div>
@@ -418,12 +418,15 @@
 					dataType:"json",
 					success:function(data){	 
 						var reimburse_amt = parseFloat(data.vs_reimbursement_amt).toFixed(2);
-						var balance = parseFloat(data.vs_balance).toFixed(2);						
+						var balance = parseFloat(data.vs_balance).toFixed(2);	
+						var vehicle_no = data.vv_vehicleNo.toUpperCase();	
+						var driver_name = data.vs_driver_name.toUpperCase();
+										
                         $('#vs_id').val(data.vs_id);
                         $('#reimburseAmount').val(data.vs_reimbursement_amt);    				
-                        $('#vehicleNo').html(data.vv_vehicleNo);  
+                        $('#vehicleNo').html(vehicle_no);  
                         $('#summonNo').html(data.vs_summon_no);   
-                        $('#driverName').html(data.vs_driver_name);                         
+                        $('#driverName').html(driver_name);                         
                         $('#reimburseAmt').html(reimburse_amt);    
                         $('#balance').html(balance);                           
                         $('#addPayment').modal('show');

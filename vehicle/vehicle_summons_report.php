@@ -218,11 +218,11 @@
                                         <tr>
                                         	<th rowspan="2">No.</th>
 											<th rowspan="2">Vehicle No.</th>
-                                            <th rowspan="2">Summons No</th>
-											<th rowspan="2">Driver name</th>
+                                            <th rowspan="2">Summon's No.</th>
+											<th rowspan="2">Driver's name</th>
 											<th rowspan="2">Company</th>
 											<th rowspan="2">Summon Type</th>
-											<th rowspan="2">PV No</th>
+											<th rowspan="2">PV No.</th>
 											<th rowspan="2">Reimburse Amount (RM)</th>
 											<th id="payment_records" style="text-align: center" colspan='<?=$max_value?>'>Payment Records</th>											
                                             <th rowspan="2">Balance</th>

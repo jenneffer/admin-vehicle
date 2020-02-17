@@ -97,7 +97,7 @@
     						      	<div class="col-sm-6">
                                         <label for="vehicle_reg_no" class=" form-control-label"><small class="form-text text-muted">Vehicle Reg No.</small></label>
                                         <?php
-                                            $vehicle = mysqli_query ( $conn_admin_db, "SELECT vv_id, vv_vehicleNo FROM vehicle_vehicle WHERE status='1'");
+                                            $vehicle = mysqli_query ( $conn_admin_db, "SELECT vv_id, UPPER(vv_vehicleNo) FROM vehicle_vehicle WHERE status='1'");
                                             db_select ($vehicle, 'vehicle_reg_no', '','','-select-','form-control','');
                                         ?>
                                     </div> 
