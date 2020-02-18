@@ -281,9 +281,9 @@
         $(document).on('click', '.edit_data', function(){
         	var vehicle_id = $(this).attr("id");
         	$.ajax({
-        			url:"vehicle_fetch.php",
+        			url:"vehicle.all.ajax.php",
         			method:"POST",
-        			data:{vehicle_id:vehicle_id},
+        			data:{action:'retrive_vehicle', vehicle_id:vehicle_id},
         			dataType:"json",
         			success:function(data){	
         				$('#vv_id').val(data.vv_id);					
@@ -309,9 +309,9 @@
     	$( "#delete_record" ).click( function() {
     		var ID = $(this).data('id');
     		$.ajax({
-    			url:"delete.php",
+    			url:"vehicle.all.ajax.php",
     			method:"POST",    
-    			data:{id:ID, table_name : 'vehicle_vehicle', col_identifier:'vv_id', reload_location:'vehicle.php'},
+    			data:{action:'delete_vehicle', id:ID},
     			success:function(data){	  						
     				$('#deleteItem').modal('hide');		
     				location.reload();		
@@ -348,12 +348,13 @@
           else  
           {  
                $.ajax({  
-                    url:"vehicle_update.php",  
+                    url:"vehicle.all.ajax.php",  
                     method:"POST",  
-                    data:$('#update_form').serialize(),  
+                    data:{action:'update_vehicle', data: $('#update_form').serialize()},  
                     success:function(data){   
                          $('#editItem').modal('hide');  
-                         $('#bootstrap-data-table').html(data);  
+                         $('#bootstrap-data-table').html(data);
+                         location.reload();  
                     }  
                });  
           }  

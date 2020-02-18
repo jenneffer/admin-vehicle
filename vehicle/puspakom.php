@@ -334,7 +334,7 @@
                     success:function(data){   
                          $('#editItem').modal('hide');  
                          $('#bootstrap-data-table').html(data); 
-//                          location.reload();		 
+                         location.reload();		 
                     }  
                });  
           }  

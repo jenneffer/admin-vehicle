@@ -195,14 +195,14 @@
                                             <label for="date_start" class="form-control-label"><small class="form-text text-muted">Date Start</small></label>
                                             <div class="input-group">
                                               <input type="text" id="date_start" name="date_start" class="form-control" value="<?=$date_start?>" autocomplete="off">
-                                              <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></i></div>
+                                              <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
                                             </div>                            
                                         </div>
                                         <div class="col-sm-3">
                                             <label for="date_end" class="form-control-label"><small class="form-text text-muted">Date End</small></label>
                                             <div class="input-group">
                                               <input type="text" id="date_end" name="date_end" class="form-control" value="<?=$date_end?>" autocomplete="off">
-                                              <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></i></div>
+                                              <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
                                             </div>                             
                                         </div>
                                         <div class="col-sm-4">                                    	
@@ -228,18 +228,6 @@
                                             <th rowspan="2">Balance</th>
                                             <th rowspan="2">Remarks</th>
                                         </tr>
-<!--                                         <tr> -->
-<!--                                             <th class="hide">1st</th> -->
-<!--                                             <th class="hide">2nd</th> -->
-<!--                                             <th class="hide">3rd</th> -->
-<!--                                             <th class="hide">4th</th> -->
-<!--                                             <th class="hide">5th</th> -->
-<!--                                             <th class="hide">6th</th> -->
-<!--                                             <th class="hide">7th</th> -->
-<!--                                             <th class="hide">8th</th> -->
-<!--                                             <th class="hide">9th</th> -->
-<!--                                             <th class="hide">10th</th> -->
-<!--                                         </tr> -->
 										<?=$html_th;?>
                                     </thead>
                                     <tbody>  

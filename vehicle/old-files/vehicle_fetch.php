@@ -1,6 +1,6 @@
   <?php  
-    require_once('../assets/config/database.php');
-    require_once('./function.php');
+    require_once('../../assets/config/database.php');
+    require_once('../function.php');
     global $conn_admin_db;
     if(isset($_POST["vehicle_id"])){  
       $query = "SELECT vv_id, company_id, vv_category,vc_type, vv_vehicleNo, vv_brand, vv_name, vv_description, 

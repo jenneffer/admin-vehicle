@@ -30,7 +30,7 @@
                     <li class="menu-item-has-children dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-th"></i>Reports</a>
                         <ul class="sub-menu children dropdown-menu">
-                            <li><a href="vehicle_summons_report.php"><i class="menu-icon fas fa-file-alt"></i>Vehicle Summons</a></li>
+                            <li><a href="summons_vehicle_report.php"><i class="menu-icon fas fa-file-alt"></i>Vehicle Summons</a></li>
                             <li><a href="roadtax_summary_report.php"><i class="menu-icon fas fa-book"></i>Road Tax Summary</a></li>
                             <li><a href="renewing_vehicle_schedule_report.php"><i class="menu-icon fa fa-list-alt"></i>Renewing Schedule</a></li>
                             <li><a href="general_table_report.php"><i class="menu-icon fa fa-table"></i>General Table</a></li>

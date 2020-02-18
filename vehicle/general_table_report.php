@@ -203,7 +203,7 @@
                  "url": "general.table.ajax.php",           	
                  "data" : function ( data ){	
                 	 	data.date_start = '<?=$date_start?>';
-						data.date_end = '<?=$date_end?>';						
+						data.date_end = '<?=$date_end?>';									
                      }
                 },
                 "footerCallback": function( tfoot, data, start, end, display ) {

@@ -199,10 +199,12 @@
               "serverSide": true,
               "searching":false,
               "ajax":{
-               "url": "renewing.vehicle.schedule.ajax.php",           	
+               "url": "renewing.vehicle.schedule.ajax.php",  
+               "type": "POST",         	
                "data" : function ( data ){
 						data.date_start = '<?=$date_start?>';
 						data.date_end = '<?=$date_end?>';
+						data.action = 'renewing_vehicle_schedule';
                    }
               },
               "columnDefs": [
@@ -246,12 +248,13 @@
               }                 
               else{  
                    $.ajax({  
-                        url:"renewing_next_due_date.php",  
+                        url:"renewing.vehicle.schedule.ajax.php",  
                         method:"POST",  
-                        data:$('#update_form').serialize(),  
+                        data:{action:'renewing_next_due_date', data:$('#update_form').serialize()},  
                         success:function(data){   
                              $('#editItem').modal('hide');  
-                             $('#vehicle_schedule').html(data);  
+                             $('#vehicle_schedule').html(data);
+                             location.reload();  
                         }  
                    });  
               }  
@@ -280,7 +283,7 @@
     		$.ajax({
     				url:"renewing.vehicle.schedule.ajax.php",
     				method:"POST",
-    				data:{id:id, task: task},
+    				data:{action :'renewing_vehicle_schedule', id:id, task: task},
     				dataType:"json",
     				success:function(data){	  	  					
       					$('#next_due_date').val(data.aaData[0][6]);	

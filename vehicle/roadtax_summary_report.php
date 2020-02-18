@@ -187,10 +187,12 @@
                 "serverSide": true,
                 "searching": false,
                 "ajax":{
-                 "url": "roadtax.summary.ajax.php",           	
+                 "url": "roadtax.all.ajax.php",  
+                 "type": "POST",         	
                  "data" : function ( data ){
                 	 	data.date_start = '<?=$date_start?>';
 						data.date_end = '<?=$date_end?>';
+						data.action = 'roadtax_summary';
 					}
                 },
                 "footerCallback": function( tfoot, data, start, end, display ) {
