@@ -1,6 +1,6 @@
 <?php
     require_once('../assets/config/database.php');
-    require_once('./function.php');
+    require_once('../function.php');
     session_start();
     global $conn_admin_db;
     if(isset($_POST['save'])){

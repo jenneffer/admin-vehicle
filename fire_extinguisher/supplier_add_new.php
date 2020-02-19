@@ -74,7 +74,7 @@
 
 <body>
     <!--Left Panel -->
-	<?php  include('../assets/nav/leftNav.php')?>
+	<?php  //include('../assets/nav/leftNav.php')?>
     <!-- Right Panel -->
     <?php include('../assets/nav/rightNav.php')?>
     <!-- /#header -->
@@ -86,57 +86,34 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header">
-                                <strong class="card-title">Add New Vehicle</strong>
+                                <strong class="card-title">Add Supplier</strong>
                             </div>
-                            <form action="vehicle_add_process.php" method="post">
+                            <form id="supplier_form" role="form" action="" method="post">
                                 <div class="card-body card-block">
                                 	<div class="form-group row col-sm-12">
                                         <div class="col-sm-6">
-                                            <label for="vehicle_reg_no" class=" form-control-label"><small class="form-text text-muted">Vehicle Reg No.</small></label>
-                                            <input type="text" id="vehicle_reg_no" name="vehicle_reg_no" placeholder="Enter vehicle registration number" class="form-control col-sm-6">
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <label for="category" class=" form-control-label"><small class="form-text text-muted">Vehicle Category</small></label>
-                                            <?php
-                                                $cat = mysqli_query ( $conn_admin_db, "SELECT vc_id, vc_type FROM vehicle_category");
-                                                db_select ($cat, 'category', '','','-select-','form-control col-sm-6','');
-                                            ?>
+                                            <label for="supplier_name" class=" form-control-label"><small class="form-text text-muted">Supplier Name</small></label>
+                                            <input type="text" id="supplier_name" name="supplier_name" placeholder="Enter supplier name" class="form-control">
                                         </div>
                                     </div>
                                     <div class="form-group row col-sm-12">
                                         <div class="col-sm-6">
-                                            <label for="company" class=" form-control-label"><small class="form-text text-muted">Company</small></label>
-                                            <?php
-                                                $company = mysqli_query ( $conn_admin_db, "SELECT id, code FROM company");
-                                                db_select ($company, 'company', '','','-select-','form-control col-sm-6','');
-                                            ?>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <label for="yearPurchased" class=" form-control-label"><small class="form-text text-muted">Year Purchased</small></label>
-                                    		<input type="text" id="yearPurchased" name="yearPurchased" onkeypress="return isNumberKey(event)" placeholder="e.g 2010" class="form-control col-sm-6">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row col-sm-12">
-                                        <div class="col-sm-6">
-                                            <label for="brand" class=" form-control-label"><small class="form-text text-muted">Brand</small></label>
-                                            <input type="text" id="brand" name="brand" placeholder="Enter vehicle brand" class="form-control col-sm-6">
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <label for="name" class=" form-control-label"><small class="form-text text-muted">Name</small></label>
-                                            <input type="text" id="name" name="name" placeholder="Enter vehicle name" class="form-control col-sm-6">
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="form-group row col-sm-12">
-                                        <div class="col-sm-6">
-                                            <label for="v_description" class=" form-control-label"><small class="form-text text-muted">Description</small></label>                                             
-                                            <textarea id="v_description" name="v_description" rows="3" placeholder="Description..." class="form-control col-sm-9"></textarea>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <label for="capacity" class=" form-control-label"><small class="form-text text-muted">Vehicle Capacity (CC)</small></label>
-                                            <input type="text" id="capacity" name="capacity" placeholder="Enter vehicle capacity" class="form-control col-sm-6">
+                                            <label for="supplier_contact_no" class=" form-control-label"><small class="form-text text-muted">Supplier Contact Name</small></label>
+                                            <input type="text" id="supplier_contact_person" name="supplier_contact_person" placeholder="Enter supplier contact name" class="form-control">
                                         </div>                                        
                                     </div>
+                                    <div class="form-group row col-sm-12">
+                                    	<div class="col-sm-6">
+                                            <label for="supplier_contact_person" class=" form-control-label"><small class="form-text text-muted">Supplier Contact Number</small></label>
+                                            <input type="text" id="supplier_contact_no" name="supplier_contact_no" placeholder="Enter supplier contact number" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row col-sm-12">
+                                        <div class="col-sm-6">
+                                            <label for="supplier_address" class=" form-control-label"><small class="form-text text-muted">Address</small></label>
+                                            <textarea id="supplier_address" name="supplier_address" placeholder="Enter supplier address" class="form-control" rows="3"></textarea>
+                                        </div>                                        
+                                    </div>                                    
                                     <div class="card-body">
                                         <button type="submit" id="save" name="save" class="btn btn-primary">Save</button>
                                         <button type="button" id="cancel" name="cancel" class="btn btn-secondary">Cancel</button>
@@ -171,7 +148,34 @@
     <script src="../assets/js/init/datatables-init.js"></script>
     <script src="../assets/js/script/bootstrap-datepicker.min.js"></script>
 	<script type="text/javascript">
-    $(document).ready(function() {});
+    $(document).ready(function() {
+    	//insert data
+        $('#supplier_form').on("submit", function(event){  
+            event.preventDefault();  
+            if($('#supplier_name').val() == ""){  
+                 alert("Supplier name is required");  
+            }  
+            else if($('#supplier_contact_person').val() == ''){  
+                 alert("Supplier contact person is required");  
+            }  
+            else if($('#supplier_contact_no').val() == ''){  
+                 alert("Supplier contact number is required");  
+            }  
+            else if($('#supplier_address').val() == ''){  
+                 alert("Supplier address is required");  
+            }          
+            else{  
+                 $.ajax({  
+                      url:"function.ajax.php",  
+                      method:"POST",  
+                      data:{action:'add_new_supplier', data : $('#supplier_form').serialize()},  
+                      success:function(data){ 
+                          location.reload();                                                        	 
+                      }  
+                 });  
+            }  
+       });
+    });
     
     function isNumberKey(evt){
     	var charCode = (evt.which) ? evt.which : evt.keyCode;

@@ -1,6 +1,6 @@
 <?php 
     require_once('../assets/config/database.php');
-    require_once('./function.php');
+    require_once('../function.php');
     global $conn_admin_db;
     session_start();
     $date_start = isset($_GET['date_start']) ? $_GET['date_start'] : date('01-m-Y');

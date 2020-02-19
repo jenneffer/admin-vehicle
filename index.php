@@ -84,7 +84,6 @@
             color: #f7c208;
             width: 250px;
             height: 250px;
-            border-radius: 50%;
             text-align: center;
             
         }
@@ -115,7 +114,7 @@
 										
 											<div class="homeHover offset-lg-1 btn" onclick="location.href = 'vehicle/vehicle.php';"><i class="fas fa-briefcase fa-10x"></i><br><span><strong>OFFICE MANAGEMENT</strong></span></div>
 										
-											<div class="homeHover offset-lg-1 btn" onclick="location.href = 'vehicle/vehicle.php';"><i class="fas fa-taxi fa-10x"></i><br><span><strong>SECURITY</strong></span></div>
+											<div class="homeHover offset-lg-1 btn" onclick="location.href = 'vehicle/vehicle.php';"><i class="fas fa-user-lock fa-10x"></i><br><span><strong>SECURITY</strong></span></div>
 										
 											<div class="homeHover offset-lg-1 btn" onclick="location.href = 'vehicle/vehicle.php';"><i class="fas fa-fire-extinguisher fa-10x"></i><br><span><strong>FIRE EXTINGUISHER</strong></span></div>
 										
@@ -123,13 +122,13 @@
 										&nbsp;
 										<div class="row">
 										
-											<div class="homeHover offset-lg-1 btn" onclick="location.href = 'vehicle/vehicle.php';"><i class="fas fa-taxi fa-10x"></i><br><span><strong>STATIONARY</strong></span></div>
+											<div class="homeHover offset-lg-1 btn" onclick="location.href = 'vehicle/vehicle.php';"><i class="fas fa-pen-alt fa-10x"></i><br><span><strong>STATIONARY</strong></span></div>
 											
-											<div class="homeHover offset-lg-1 btn" onclick="location.href = 'vehicle/vehicle.php';"><i class="fas fa-taxi fa-10x"></i><br><span><strong>ABX</strong></span></div>
+											<div class="homeHover offset-lg-1 btn" onclick="location.href = 'vehicle/vehicle.php';"><i class="fas fa-file-invoice fa-10x"></i><br><span><strong>ABX</strong></span></div>
 											
 											<div class="homeHover offset-lg-1 btn" onclick="location.href = 'vehicle/vehicle.php';"><i class="fas fa-home fa-10x"></i><br><span><strong>QUARTERS</strong></span></div>
 										
-											<div class="homeHover offset-lg-1 btn" onclick="location.href = 'vehicle/vehicle.php';"><i class="fas fa-taxi fa-10x"></i><br><span><strong>UTILITIES</strong></span></div>
+											<div class="homeHover offset-lg-1 btn" onclick="location.href = 'vehicle/vehicle.php';"><i class="fas fa-tools fa-10x"></i><br><span><strong>UTILITIES</strong></span></div>
 										
 										</div>
 										<div class="row">
