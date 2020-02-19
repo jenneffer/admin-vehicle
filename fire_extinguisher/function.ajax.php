@@ -20,10 +20,35 @@
             case 'supplier_listing':
                 supplier_listing();
                 break;
+            case 'add_new_location':
+                add_new_location($data);
+                break;
                 
             default:
                 break;
         }
+    }
+    
+    function add_new_location($data){
+        global $conn_admin_db;
+        if (!empty($data)) {
+            $param = array();
+            parse_str($_POST['data'], $param); //unserialize jquery string data
+            
+            $location_code = $param['location_code'];
+            $location_name = $param['location_name'];
+            
+            $query = "INSERT INTO fireextinguisher_location SET
+                location_code = '".$location_code."',
+                location_name = '".$location_name."',
+                date_added = now(),
+                added_by = '".$_SESSION['cr_id']."'";
+            
+            $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
+            if ($result) {
+                alert("Successfully added!", "location_add_new.php");
+            }
+        }        
     }
     
     function add_new_listing($data){
