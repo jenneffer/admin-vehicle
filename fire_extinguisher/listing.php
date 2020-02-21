@@ -3,6 +3,7 @@
 	require_once('../function.php');
 	require_once('../check_login.php');
 	global $conn_admin_db;
+// 	session_start();
 // 	if(isset($_SESSION['cr_id'])) {
 // 		$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
 // 		$url = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
@@ -21,8 +22,8 @@
 // 	}
 	
 	
-	$date_start = isset($_POST['date_start']) ? $_POST['date_start'] : date('01-m-Y');
-	$date_end = isset($_POST['date_end']) ? $_POST['date_end'] : date('t-m-Y');
+// 	$date_start = isset($_POST['date_start']) ? $_POST['date_start'] : date('01-m-Y');
+// 	$date_end = isset($_POST['date_end']) ? $_POST['date_end'] : date('t-m-Y');
 ?>
 
 <!doctype html>
@@ -95,48 +96,45 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header">
-                                <strong class="card-title">Puspakom</strong>
+                                <strong class="card-title">Fire Extinguisher Master Listing</strong>
                             </div>
                             <!-- Filter -->
+<!--                             <div class="card-body"> -->
+<!--                             <form id="myform" enctype="multipart/form-data" method="post" action="">                	                    -->
+<!--                 	            <div class="form-group row col-sm-12"> -->
+<!--                                     <div class="col-sm-3"> -->
+<!--                                         <label for="date_start" class="form-control-label"><small class="form-text text-muted">Date Start</small></label> -->
+<!--                                         <div class="input-group"> -->
+<!--                                          <input type="text" id="date_start" name="date_start" class="form-control" value="<?=$date_start?>" autocomplete="off">
+<!--                                           <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div> -->
+<!--                                         </div>                             -->
+<!--                                     </div> -->
+<!--                                     <div class="col-sm-3"> -->
+<!--                                         <label for="date_end" class="form-control-label"><small class="form-text text-muted">Date End</small></label> -->
+<!--                                         <div class="input-group"> -->
+<!--                                         <input type="text" id="date_end" name="date_end" class="form-control" value="<?=$date_end?>" autocomplete="off">
+<!--                                           <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div> -->
+<!--                                         </div>                              -->
+<!--                                     </div> -->
+<!--                                     <div class="col-sm-4">                                    	 -->
+<!--                                     	<button type="submit" class="btn btn-primary button_search ">Submit</button> -->
+<!--                                     </div> -->
+<!--                                  </div>     -->
+<!--                             </form> -->
+<!--                             </div> -->
+<!--                             <hr> -->
                             <div class="card-body">
-                            <form id="myform" enctype="multipart/form-data" method="post" action="">                	                   
-                	            <div class="form-group row col-sm-12">
-                                    <div class="col-sm-3">
-                                        <label for="date_start" class="form-control-label"><small class="form-text text-muted">Date Start</small></label>
-                                        <div class="input-group">
-                                          <input type="text" id="date_start" name="date_start" class="form-control" value="<?=$date_start?>" autocomplete="off">
-                                          <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></i></div>
-                                        </div>                            
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <label for="date_end" class="form-control-label"><small class="form-text text-muted">Date End</small></label>
-                                        <div class="input-group">
-                                          <input type="text" id="date_end" name="date_end" class="form-control" value="<?=$date_end?>" autocomplete="off">
-                                          <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></i></div>
-                                        </div>                             
-                                    </div>
-                                    <div class="col-sm-4">                                    	
-                                    	<button type="submit" class="btn btn-primary button_search ">Submit</button>
-                                    </div>
-                                 </div>    
-                            </form>
-                            </div>
-                            <hr>
-                            <div class="card-body">
-                                <table id="puspakom_datatable" class="table table-striped table-bordered">
+                                <table id="master_listing" class="table table-striped table-bordered">
                                     <thead>
                                         <tr>
-                                            <th rowspan="2">No.</th>
-											<th rowspan="2">Vehicle Reg No.</th>
-                                            <th rowspan="2">Company</th>
-											<th colspan="2">Task</th>
-											<th rowspan="2">Runner</th>
-											<th rowspan="2">&nbsp;</th>
-                                        </tr>
-                                        <tr>
-											<th>Puspakom</th>
-                                            <th>Roadtax</th>
-                                        </tr>
+                                            <th>No.</th>
+											<th>Serial No.</th>
+                                            <th>Company</th>
+                                            <th>Supplier</th>
+											<th>Location</th>
+											<th>Expiry Date</th>
+											<th>&nbsp;</th>
+                                        </tr>                                        
                                     </thead>
                                     <tbody>
                                     </tbody>
@@ -153,41 +151,70 @@
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Edit Puspakom</h4>
+                    <h4 class="modal-title">Edit Master Listing</h4>
                 </div>
                 <div class="modal-body">
                     <form role="form" method="POST" action="" id="update_form">
                         <input type="hidden" name="_token" value="">
-                        <input type="hidden" id="vp_id" name="vp_id" value="">
+                        <input type="hidden" id="id" name="id" value="">
                         <div class="form-group row col-sm-12">
-                            <div class="form-group col-6">
-                                <label for="vehicle_reg_no" class=" form-control-label"><small class="form-text text-muted">Vehicle Reg No.</small></label>
-                                <?php
-                                    $vehicle = mysqli_query ( $conn_admin_db, "SELECT vv_id, UPPER(vv_vehicleNo) FROM vehicle_vehicle WHERE status='1'");
-                                    db_select ($vehicle, 'vehicle_reg_no', '','','-select-','form-control','');
-                                ?>
-                            </div>   
-                            <div class="form-group col-6">
-                                <label for="runner" class=" form-control-label"><small class="form-text text-muted">Runner</small></label>
-                                <input type="text" id="runner" name="runner" class="form-control">
-                            </div>                                     
+                        <div class="col-sm-6">
+                            <label for="serial_no" class=" form-control-label"><small class="form-text text-muted">Serial No.</small></label>
+                            <input type="text" id="serial_no" name="serial_no" placeholder="Enter serial number" class="form-control">
                         </div>
-                        <div class="form-group row col-sm-12">
-                            <div class="col-sm-6">
-                                <label for="fitness_date" class="form-control-label"><small class="form-text text-muted">Fitness due date</small></label>
-                                <div class="input-group">
-                                  <input type="text" id="fitness_date" name="fitness_date" class="form-control" autocomplete="off">
-                                  <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></i></div>
-                                </div>                       
+                        <div class="col-sm-6">
+                            <label for="expiry_date" class="form-control-label"><small class="form-text text-muted">Expiry date</small></label>
+                            <div class="input-group">
+                                <input id="expiry_date" name="expiry_date" class="form-control" autocomplete="off">
+                                <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
+                            </div>                                            
+                        </div>                                        
+                    </div>
+                    <div class="form-group row col-sm-12">
+                        <div class="col-sm-6">
+                            <label class="control-label"><small class="form-text text-muted">Company</small></label>
+                            <div>
+                                <?php
+                                    $company = mysqli_query ( $conn_admin_db, "SELECT id, code FROM company");
+                                    db_select ($company, 'company', '','','-select-','form-control','');
+                                ?>
                             </div>
-                            <div class="col-sm-6">
-                                <label for="roadtax_due_date" class="form-control-label"><small class="form-text text-muted">Roadtax due date</small></label>
-                                <div class="input-group">
-                                  <input type="text" id="roadtax_due_date" name="roadtax_due_date" class="form-control" autocomplete="off">
-                                  <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></i></div>
-                                </div> 
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="control-label"><small class="form-text text-muted">Supplier</small></label>
+                            <div>
+                                <?php
+                                    $supplier = mysqli_query ( $conn_admin_db, "SELECT supplier_id, supplier_name FROM fireextinguisher_supplier");
+                                    db_select ($supplier, 'supplier', '','','-select-','form-control','');
+                                ?>
                             </div>
-                         </div>
+                        </div>                                         
+                    </div>
+                    <div class="form-group row col-sm-12">
+                        <div class="col-sm-6">
+                            <label for="requisition_no" class="form-control-label"><small class="form-text text-muted">Requisition No.</small></label>
+                            <input type="text" id="requisition_no" name="requisition_no" placeholder="Enter requisition number" class="form-control">                                           
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="invoice_no" class="form-control-label"><small class="form-text text-muted">Invoice No.</small></label>
+                            <input type="text" id="invoice_no" name="invoice_no" placeholder="Enter invoice number" class="form-control">                                           
+                        </div>
+                    </div>                                    
+                    <div class="form-group row col-sm-12">
+                    	<div class="col-sm-6">
+                            <label for="remark" class=" form-control-label"><small class="form-text text-muted">Remark</small></label>
+                            <textarea id="remark" name="remark" placeholder="Enter remark" class="form-control" rows="3"></textarea>
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="control-label"><small class="form-text text-muted">Location</small></label>
+                            <div>
+                                <?php
+                                    $location = mysqli_query ( $conn_admin_db, "SELECT location_id, location_name FROM fireextinguisher_location");
+                                    db_select ($location, 'location', '','','-select-','form-control','');
+                                ?>
+                            </div>
+                        </div> 
+                    </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                         <button type="submit" class="btn btn-primary update_data ">Update</button>
@@ -254,17 +281,15 @@
         });
 
         
-    	var table = $('#puspakom_datatable').DataTable({
+    	var table = $('#master_listing').DataTable({
          	"processing": true,
          	"serverSide": true,
          	"searching": false,
             "ajax":{
-           	 "url": "puspakom.all.ajax.php",    
+           	 "url": "function.ajax.php",    
            	 "type":"POST",       	
-           	 "data" : function ( data ) {
-           		data.date_start = '<?=$date_start?>';
-				data.date_end = '<?=$date_end?>';  
-				data.action = 'display_puspakom';				
+           	 "data" : function ( data ) {  
+				data.action = 'master_listing';				
    	        }
    	      },
    	     });
@@ -340,11 +365,11 @@
           }  
      }); 
       
-     $( ".button_search" ).click(function( event ) {
-  		table.clear();
-  		table.ajax.reload();
-  		table.draw();  		
-  		});	
+//      $( ".button_search" ).click(function( event ) {
+//   		table.clear();
+//   		table.ajax.reload();
+//   		table.draw();  		
+//   		});	
 
      $('#date_start, #date_end, #roadtax_due_date, #fitness_date').datepicker({
          format: "dd-mm-yyyy",

@@ -18,6 +18,16 @@
 		$PrevURL= $url;
 		header("Location: login.php?RecLock=".$PrevURL);
 	}
+	
+	//get the system list
+	$query = "SELECT * FROM system_admin";
+	$rst  = mysqli_query($conn_admin_db, $query)or die(mysqli_error($conn_admin_db));
+	if ( mysqli_num_rows($rst) > 0 ){
+	    $data = array();
+	    while( $row = mysqli_fetch_assoc( $rst ) ){
+	        $data[] = $row;
+	    }
+	}
 ?>
 
 <!doctype html>
@@ -104,37 +114,15 @@
                     <div class="row">
                         <div class="col-md-12">
 							<div class="card">
-                                
-
 								<div class="card-body"><!-- Aaron HERE -->
 									<div class="typo-articles">
 										<h3 style="color:#f7c208; text-decoration: underline; text-align:center"><b>Categories</b></h3><br>
 										<div class="row">
-											<div class="homeHover offset-lg-1 btn" onclick="location.href = 'vehicle/vehicle.php';"><i class="fas fa-taxi fa-10x"></i><br><span><strong>VEHICLE</strong></span></div>
-										
-											<div class="homeHover offset-lg-1 btn" onclick="location.href = 'vehicle/vehicle.php';"><i class="fas fa-briefcase fa-10x"></i><br><span><strong>OFFICE MANAGEMENT</strong></span></div>
-										
-											<div class="homeHover offset-lg-1 btn" onclick="location.href = 'vehicle/vehicle.php';"><i class="fas fa-user-lock fa-10x"></i><br><span><strong>SECURITY</strong></span></div>
-										
-											<div class="homeHover offset-lg-1 btn" onclick="location.href = 'vehicle/vehicle.php';"><i class="fas fa-fire-extinguisher fa-10x"></i><br><span><strong>FIRE EXTINGUISHER</strong></span></div>
-										
+										<?php foreach ($data as $item){?>
+										    <div class="homeHover offset-lg-1 btn" onclick="onClickSystem('<?=$item['sid']?>', '<?=$item['first_page_url']?>')"><i class="<?=$item['icon']?>"></i><br><span><strong><?=$item['sname']?></strong></span></div>
+										<?php }?>										
 										</div>
-										&nbsp;
-										<div class="row">
-										
-											<div class="homeHover offset-lg-1 btn" onclick="location.href = 'vehicle/vehicle.php';"><i class="fas fa-pen-alt fa-10x"></i><br><span><strong>STATIONARY</strong></span></div>
-											
-											<div class="homeHover offset-lg-1 btn" onclick="location.href = 'vehicle/vehicle.php';"><i class="fas fa-file-invoice fa-10x"></i><br><span><strong>ABX</strong></span></div>
-											
-											<div class="homeHover offset-lg-1 btn" onclick="location.href = 'vehicle/vehicle.php';"><i class="fas fa-home fa-10x"></i><br><span><strong>QUARTERS</strong></span></div>
-										
-											<div class="homeHover offset-lg-1 btn" onclick="location.href = 'vehicle/vehicle.php';"><i class="fas fa-tools fa-10x"></i><br><span><strong>UTILITIES</strong></span></div>
-										
-										</div>
-										<div class="row">
-											<div class="homeHover offset-lg-1 btn" onclick="location.href = 'vehicle/vehicle.php';"><i class="fas fa-file-invoice-dollar fa-10x"></i><br><span><strong>BILL</strong></span></div>
-										
-										</div>										
+																			 
 									</div> <!-- End of typo-articles -->
                                 </div> <!-- End of card-body -->
 								
@@ -158,5 +146,37 @@
 
     <!-- link to the script-->
 	<?php include ('allScript.php')?>
+	<script src="assets/js/lib/data-table/datatables.min.js"></script>
+    <script src="assets/js/lib/data-table/dataTables.bootstrap.min.js"></script>
+    <script src="assets/js/lib/data-table/dataTables.buttons.min.js"></script>
+    <script src="assets/js/lib/data-table/buttons.bootstrap.min.js"></script>
+    <script src="assets/js/lib/data-table/jszip.min.js"></script>
+    <script src="assets/js/lib/data-table/vfs_fonts.js"></script>
+    <script src="assets/js/lib/data-table/buttons.html5.min.js"></script>
+    <script src="assets/js/lib/data-table/buttons.print.min.js"></script>
+    <script src="assets/js/lib/data-table/buttons.colVis.min.js"></script>
+    <script src="assets/js/init/datatables-init.js"></script>
+    <script src="assets/js/script/bootstrap-datepicker.min.js"></script>
+	<script type="text/javascript">
+
+    $(document).ready(function() {
+			
+    });
+
+    function onClickSystem(system_id, first_page){
+	    $.ajax({
+	        url: 'set_var.php',
+	        type: 'POST',
+	        dataType: 'json',
+	        data: {
+	            id: system_id
+	        }
+	    }).done(function(res) {
+            if (res.valid) {
+                document.location.href = first_page;                
+            }
+        });
+    }
+    </script>
 </body>
 </html>

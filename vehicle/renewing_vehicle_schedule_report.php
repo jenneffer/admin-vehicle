@@ -1,23 +1,22 @@
 <?php
 	require_once('../assets/config/database.php');
-	
-	session_start();
-	if(isset($_SESSION['cr_id'])) {
-		$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-		$url = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-		$query = parse_url($url, PHP_URL_QUERY);
-		parse_str($query, $params);
+	require_once('../check_login.php');
+// 	if(isset($_SESSION['cr_id'])) {
+// 		$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+// 		$url = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+// 		$query = parse_url($url, PHP_URL_QUERY);
+// 		parse_str($query, $params);
 		
-		// get id
-		$userId = $_SESSION['cr_id'];
-		$name = $_SESSION['cr_name'];
+// 		// get id
+// 		$userId = $_SESSION['cr_id'];
+// 		$name = $_SESSION['cr_name'];
 		
-	} else {
-		$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-		$url = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-		$PrevURL= $url;
-		header("Location: ../login.php?RecLock=".$PrevURL);
-	}
+// 	} else {
+// 		$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+// 		$url = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+// 		$PrevURL= $url;
+// 		header("Location: ../login.php?RecLock=".$PrevURL);
+// 	}
 	
 	$date_start = isset($_POST['date_start']) ? $_POST['date_start'] : date('01-m-Y');
 	$date_end = isset($_POST['date_end']) ? $_POST['date_end'] : date('t-m-Y');
