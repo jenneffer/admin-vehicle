@@ -105,14 +105,14 @@
                                         <label for="date_start" class="form-control-label"><small class="form-text text-muted">Date Start</small></label>
                                         <div class="input-group">
                                           <input type="text" id="date_start" name="date_start" class="form-control" value="<?=$date_start?>" autocomplete="off">
-                                          <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></i></div>
+                                          <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
                                         </div>                            
                                     </div>
                                     <div class="col-sm-3">
                                         <label for="date_end" class="form-control-label"><small class="form-text text-muted">Date End</small></label>
                                         <div class="input-group">
                                           <input type="text" id="date_end" name="date_end" class="form-control" value="<?=$date_end?>" autocomplete="off">
-                                          <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></i></div>
+                                          <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
                                         </div>                             
                                     </div>
                                     <div class="col-sm-4">                                    	
@@ -177,14 +177,14 @@
                                 <label for="fitness_date" class="form-control-label"><small class="form-text text-muted">Fitness due date</small></label>
                                 <div class="input-group">
                                   <input type="text" id="fitness_date" name="fitness_date" class="form-control" autocomplete="off">
-                                  <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></i></div>
+                                  <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
                                 </div>                       
                             </div>
                             <div class="col-sm-6">
                                 <label for="roadtax_due_date" class="form-control-label"><small class="form-text text-muted">Roadtax due date</small></label>
                                 <div class="input-group">
                                   <input type="text" id="roadtax_due_date" name="roadtax_due_date" class="form-control" autocomplete="off">
-                                  <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></i></div>
+                                  <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
                                 </div> 
                             </div>
                          </div>

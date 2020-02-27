@@ -11,6 +11,7 @@
                 INNER JOIN company c ON c.id = vv.company_id
                 LEFT JOIN vehicle_puspakom vp ON vp.vv_id = vv.vv_id
                 LEFT JOIN vehicle_insurance vi ON vi.vv_id = vv.vv_id
+                LEFT JOIN vehicle_permit vpr ON vv.vv_id = vpr.vv_id
                 WHERE vi.vi_insurance_dueDate BETWEEN '".dateFormat($date_start)."' AND '".dateFormat($date_end)."'";
 	
 	$rst  = mysqli_query($conn_admin_db, $sql_query)or die(mysqli_error($conn_admin_db));
@@ -40,7 +41,7 @@
 			        $count,
 					$row['code'],
 					$row['vv_vehicleNo'],					
-			        dateFormatRev($row['vrt_lpkpPermit_dueDate']),
+			        dateFormatRev($row['vpr_due_date']),
 			        dateFormatRev($row['vi_insurance_fromDate']),
     			    dateFormatRev($row['vi_insurance_dueDate']),
 			        $row['vi_premium_amount'],

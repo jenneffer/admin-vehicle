@@ -20,10 +20,22 @@
 // 		$PrevURL= $url;
 // 		header("Location: ../login.php?RecLock=".$PrevURL);
 // 	}
+	$date_start = isset($_POST['date_start']) ? $_POST['date_start'] : date('01-m-Y');
+	$date_end = isset($_POST['date_end']) ? $_POST['date_end'] : date('31-12-Y');
+	$status = isset($_POST['status']) ? $_POST['status'] : "";
+	
+	$arr_status = array(
+	    '0' => 'All',
+	    '1' => 'Pending',
+	    '2' => 'Active',
+	    '3' => 'Reject',
+	    '4' => 'Hold',
+	    '5' => 'Expired',
+	);
 	
 	
-// 	$date_start = isset($_POST['date_start']) ? $_POST['date_start'] : date('01-m-Y');
-// 	$date_end = isset($_POST['date_end']) ? $_POST['date_end'] : date('t-m-Y');
+	
+
 ?>
 
 <!doctype html>
@@ -78,6 +90,12 @@
             left:    0;
             bottom:   0;
         }
+        .select2-selection__rendered {
+          margin: 5px;
+        }
+        .select2-selection__arrow {
+          margin: 5px;
+        }
 
     </style>
 </head>
@@ -99,40 +117,55 @@
                                 <strong class="card-title">Fire Extinguisher Master Listing</strong>
                             </div>
                             <!-- Filter -->
-<!--                             <div class="card-body"> -->
-<!--                             <form id="myform" enctype="multipart/form-data" method="post" action="">                	                    -->
-<!--                 	            <div class="form-group row col-sm-12"> -->
-<!--                                     <div class="col-sm-3"> -->
-<!--                                         <label for="date_start" class="form-control-label"><small class="form-text text-muted">Date Start</small></label> -->
-<!--                                         <div class="input-group"> -->
-<!--                                          <input type="text" id="date_start" name="date_start" class="form-control" value="<?=$date_start?>" autocomplete="off">
-<!--                                           <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div> -->
-<!--                                         </div>                             -->
-<!--                                     </div> -->
-<!--                                     <div class="col-sm-3"> -->
-<!--                                         <label for="date_end" class="form-control-label"><small class="form-text text-muted">Date End</small></label> -->
-<!--                                         <div class="input-group"> -->
-<!--                                         <input type="text" id="date_end" name="date_end" class="form-control" value="<?=$date_end?>" autocomplete="off">
-<!--                                           <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div> -->
-<!--                                         </div>                              -->
-<!--                                     </div> -->
-<!--                                     <div class="col-sm-4">                                    	 -->
-<!--                                     	<button type="submit" class="btn btn-primary button_search ">Submit</button> -->
-<!--                                     </div> -->
-<!--                                  </div>     -->
-<!--                             </form> -->
-<!--                             </div> -->
-<!--                             <hr> -->
+                            <div class="card-body">
+                            <form id="myform" enctype="multipart/form-data" method="post" action="">                	                   
+                	            <div class="form-group row col-sm-12">
+                                    <div class="col-sm-3">
+                                        <label for="date_start" class="form-control-label"><small class="form-text text-muted">Date Start</small></label>
+                                        <div class="input-group">
+                                          <input type="text" id="date_start" name="date_start" class="form-control" value="<?=$date_start?>" autocomplete="off">
+                                          <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
+                                        </div>                            
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <label for="date_end" class="form-control-label"><small class="form-text text-muted">Date End</small></label>
+                                        <div class="input-group">
+                                        <input type="text" id="date_end" name="date_end" class="form-control" value="<?=$date_end?>" autocomplete="off">
+                                          <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
+                                        </div>                             
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <label for="status" class="form-control-label"><small class="form-text text-muted">Status</small></label>
+                                        <select name="status" id="status" class="form-control">
+                                        	<?php foreach($arr_status as $key => $value) {
+                                        	    
+                                        	    $selected = ($status == $key) ? 'selected' : '';
+                                        	    echo "<option value='$key' $selected>$value</option>";
+                                        	}?>
+                                        </select>                              
+                                    </div>
+                                    <div class="col-sm-3">                                    	
+                                    	<button type="submit" class="btn btn-primary button_search ">Submit</button>
+                                    </div>
+                                 </div>  
+                                  
+                            </form>
+                            </div>
+                            <hr>
                             <div class="card-body">
                                 <table id="master_listing" class="table table-striped table-bordered">
                                     <thead>
                                         <tr>
                                             <th>No.</th>
-											<th>Serial No.</th>
-                                            <th>Company</th>
-                                            <th>Supplier</th>
+                                            <th>Model</th>
+											<th>Company</th>
 											<th>Location</th>
+											<th>Person incharge</th>                                            
+                                            <th>Serial No.</th>											
 											<th>Expiry Date</th>
+											<th>Status</th>
+											<th>Remark</th>
+											<th>Tel No.</th>
 											<th>&nbsp;</th>
                                         </tr>                                        
                                     </thead>
@@ -146,7 +179,7 @@
             </div><!-- .animated -->
         </div><!-- .content -->
         </div>
-        <!-- Modal edit puspakom  -->
+        <!-- Modal edit master listing  -->
         <div id="editItem" class="modal fade">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
@@ -158,67 +191,74 @@
                         <input type="hidden" name="_token" value="">
                         <input type="hidden" id="id" name="id" value="">
                         <div class="form-group row col-sm-12">
-                        <div class="col-sm-6">
-                            <label for="serial_no" class=" form-control-label"><small class="form-text text-muted">Serial No.</small></label>
-                            <input type="text" id="serial_no" name="serial_no" placeholder="Enter serial number" class="form-control">
+                            <div class="col-sm-6">
+                                <label for="serial_no" class=" form-control-label"><small class="form-text text-muted">Serial No.</small></label>
+                                <input type="text" id="serial_no" name="serial_no" placeholder="Enter serial number" class="form-control">
+                            </div>
+                            <div class="col-sm-6">
+                                <label for="expiry_date" class="form-control-label"><small class="form-text text-muted">Expiry date</small></label>
+                                <div class="input-group">
+                                    <input id="expiry_date" name="expiry_date" class="form-control" autocomplete="off">
+                                    <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
+                                </div>                                            
+                            </div>                                        
                         </div>
-                        <div class="col-sm-6">
-                            <label for="expiry_date" class="form-control-label"><small class="form-text text-muted">Expiry date</small></label>
-                            <div class="input-group">
-                                <input id="expiry_date" name="expiry_date" class="form-control" autocomplete="off">
-                                <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
-                            </div>                                            
-                        </div>                                        
-                    </div>
-                    <div class="form-group row col-sm-12">
-                        <div class="col-sm-6">
-                            <label class="control-label"><small class="form-text text-muted">Company</small></label>
-                            <div>
-                                <?php
-                                    $company = mysqli_query ( $conn_admin_db, "SELECT id, code FROM company");
-                                    db_select ($company, 'company', '','','-select-','form-control','');
-                                ?>
+                        <div class="form-group row col-sm-12">
+                        	<div class="col-sm-6">
+                                <label for="model" class=" form-control-label"><small class="form-text text-muted">Model</small></label>
+                                <input type="text" id="model" name="model" class="form-control">
+                            </div>
+                            <div class="col-sm-6">
+                                <label for="insurance_status" class=" form-control-label"><small class="form-text text-muted">Status</small></label>
+                                <select name="fe_status" id="fe_status" class="form-control">
+                                    <option value="1">Pending</option>
+                                    <option value="2">Active</option>
+                                    <option value="3">Reject</option>
+                                    <option value="4">Hold</option>
+                                    <option value="5">Expired</option>
+                                </select>
                             </div>
                         </div>
-                        <div class="col-sm-6">
-                            <label class="control-label"><small class="form-text text-muted">Supplier</small></label>
-                            <div>
-                                <?php
-                                    $supplier = mysqli_query ( $conn_admin_db, "SELECT supplier_id, supplier_name FROM fireextinguisher_supplier");
-                                    db_select ($supplier, 'supplier', '','','-select-','form-control','');
+                        <div class="form-group row col-sm-12">
+                            <div class="col-sm-6">
+                                <label class="control-label"><small class="form-text text-muted">Company</small></label>
+                                <div>
+                                    <?php
+                                        $company = mysqli_query ( $conn_admin_db, "SELECT id, code FROM company");
+                                        db_select ($company, 'company', '','','-select-','form-control','');
+                                    ?>
+                                </div>
+                            </div> 
+                            <div class="col-sm-6">
+                                <label class="control-label"><small class="form-text text-muted">Person in charge</small></label>
+                                 <div class="input-group">
+                                    <?php
+                                    $pic = mysqli_query ( $conn_admin_db, "SELECT pic_id, pic_name FROM fireextinguisher_person_incharge");
+                                    db_select ($pic, 'pic', '','','-select-','form-control','');
                                 ?>
+                                </div>
+                            </div>                                                                
+                        </div>                                    
+                        <div class="form-group row col-sm-12">
+                        	<div class="col-sm-6">
+                                <label for="remark" class=" form-control-label"><small class="form-text text-muted">Remark</small></label>
+                                <textarea id="remark" name="remark" placeholder="Enter remark" class="form-control" rows="3"></textarea>
                             </div>
-                        </div>                                         
-                    </div>
-                    <div class="form-group row col-sm-12">
-                        <div class="col-sm-6">
-                            <label for="requisition_no" class="form-control-label"><small class="form-text text-muted">Requisition No.</small></label>
-                            <input type="text" id="requisition_no" name="requisition_no" placeholder="Enter requisition number" class="form-control">                                           
+                            <div class="col-sm-6">
+                                <label class="control-label"><small class="form-text text-muted">Location</small></label>
+                                <div>
+                                    <?php
+                                        $location = mysqli_query ( $conn_admin_db, "SELECT location_id, location_name FROM fireextinguisher_location");
+                                        db_select ($location, 'location', '','','-select-','form-control','');
+                                    ?>
+                                </div>
+                            </div> 
                         </div>
-                        <div class="col-sm-6">
-                            <label for="invoice_no" class="form-control-label"><small class="form-text text-muted">Invoice No.</small></label>
-                            <input type="text" id="invoice_no" name="invoice_no" placeholder="Enter invoice number" class="form-control">                                           
+                        
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary update_data ">Update</button>
                         </div>
-                    </div>                                    
-                    <div class="form-group row col-sm-12">
-                    	<div class="col-sm-6">
-                            <label for="remark" class=" form-control-label"><small class="form-text text-muted">Remark</small></label>
-                            <textarea id="remark" name="remark" placeholder="Enter remark" class="form-control" rows="3"></textarea>
-                        </div>
-                        <div class="col-sm-6">
-                            <label class="control-label"><small class="form-text text-muted">Location</small></label>
-                            <div>
-                                <?php
-                                    $location = mysqli_query ( $conn_admin_db, "SELECT location_id, location_name FROM fireextinguisher_location");
-                                    db_select ($location, 'location', '','','-select-','form-control','');
-                                ?>
-                            </div>
-                        </div> 
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary update_data ">Update</button>
-                    </div>
                     </form>
                 </div>
             </div><!-- /.modal-content -->
@@ -266,6 +306,7 @@
     <script src="../assets/js/lib/data-table/buttons.colVis.min.js"></script>
     <script src="../assets/js/init/datatables-init.js"></script>
     <script src="../assets/js/script/bootstrap-datepicker.min.js"></script>
+    <script src="../assets/js/select2.min.js"></script>
 
 	<script type="text/javascript">
     $(document).ready(function() {
@@ -280,37 +321,76 @@
             $('#company').val(company);
         });
 
-        
     	var table = $('#master_listing').DataTable({
          	"processing": true,
          	"serverSide": true,
          	"searching": false,
             "ajax":{
-           	 "url": "function.ajax.php",    
-           	 "type":"POST",       	
-           	 "data" : function ( data ) {  
-				data.action = 'master_listing';				
-   	        }
-   	      },
+                "url": "function.ajax.php",    
+                "type":"POST",       	
+                "data" : function ( data ) {  
+                    data.action = 'master_listing';	
+                    data.date_start = '<?=$date_start?>';
+                    data.date_end = '<?=$date_end?>';		
+                    data.fe_status = '<?=$status?>';	
+       	        }
+       	    },
+            "dom": 'Bfrtip',
+            "buttons": [ 
+                { 
+                    extend: 'excelHtml5', 
+                    messageTop: 'Vehicle Summon ',
+                    footer: true 
+                },
+                {
+                    extend: 'print',
+                    messageTop: 'Vehicle Summon ',
+                    footer: true,
+                    customize: function ( win ) {
+                         $(win.document.body)
+                             .css( 'font-size', '10pt' );
+                    
+                         $(win.document.body).find( 'table' )
+                             .addClass( 'compact' )
+                             .css( 'font-size', 'inherit' );
+                     }
+                 }
+            ],
+       		"rowCallback": function(row, data, index){
+       			var new_date = dateFormatRev(data[6]);
+       			var numDays = calcDay( new Date(), new_date);
+       		    if(numDays <= 30){
+       		    	$(row).css('background-color', '#f4bebe');
+//        		    	$(row).css('color', 'white');       		    	
+       		    }
+//        		    if(data[7] == "Active"){
+//        		    	$(row).css('background-color', 'green');
+//        		    	$(row).css('color', 'white');
+//            		}
+       		  }
    	     });
-  	     
 
       	//retrieve data
         $(document).on('click', '.edit_data', function(){
-			var vp_id = $(this).attr("id");
+			var id = $(this).attr("id");
 			$.ajax({
-					url:"puspakom.all.ajax.php",
+					url:"function.ajax.php",
 					method:"POST",
-					data:{action:'retrive_puspakom', vp_id:vp_id},
+					data:{action:'retrieve_listing', id:id},
 					dataType:"json",
 					success:function(data){	
-                        var fitnessDate = dateFormat(data.vp_fitnessDate);
-                        var rTaxdueDate = dateFormat(data.vp_roadtaxDueDate);
-                        $('#vp_id').val(data.vp_id);					
-                        $('#vehicle_reg_no').val(data.vv_id);  
-                        $('#fitness_date').val(fitnessDate);  
-                        $('#roadtax_due_date').val(rTaxdueDate);  
-                        $('#runner').val(data.vp_runner);                        
+						console.log(data);
+                        var expiryDate = dateFormat(data.expiry_date);                       
+                        $('#id').val(id);					
+                        $('#model').val(data.model);  
+                        $('#expiry_date').val(expiryDate);   
+                        $('#serial_no').val(data.serial_no);    
+                        $('#remark').val(data.remark); 
+                        $('#status').val(data.status); 
+                        $('#location').val(data.location); 
+                        $('#company').val(data.company_id); 
+                        $('#pic').val(data.person_incharge);   
+                        $('#fe_status').val(data.fe_status);                       
                         $('#editItem').modal('show');
 	  				}
 				});
@@ -325,10 +405,11 @@
   	
       $( "#delete_record" ).click( function() {
       	var ID = $(this).data('id');
+      	alert(ID);
       	$.ajax({
-      		url:"puspakom.all.ajax.php",
+      		url:"function.ajax.php",
       		method:"POST",    
-      		data:{action:'delete_puspakom', id:ID},
+      		data:{action:'delete_listing', id:ID},
       		success:function(data){	  						
       			$('#deleteItem').modal('hide');		
       			location.reload();		
@@ -339,23 +420,26 @@
 		//update form
       $('#update_form').on("submit", function(event){  
           event.preventDefault();  
-          if($('#vehicle_reg_no').val() == ""){  
-               alert("Vehicle number is required");  
+          if($('#serial_no').val() == ""){  
+               alert("Serial number is required");  
           }  
-          else if($('#fitness_date').val() == ''){  
-               alert("Fitness due date is required");  
+          else if($('#expiry_date').val() == ''){  
+               alert("Expiry date is required");  
           }  
-          else if($('#roadtax_due_date').val() == ''){  
-               alert("Road tax due date is required");  
+          else if($('#company').val() == ''){  
+               alert("Company is required");  
           }  
-          else if($('#runner').val() == ''){  
-               alert("Runner name is required");  
-          }          
+          else if($('#pic').val() == ''){  
+               alert("Person in charge is required");  
+          }  
+          else if($('#location').val() == ''){  
+              alert("Location is required");  
+          }         
           else{  
                $.ajax({  
-                    url:"puspakom.all.ajax.php",  
+                    url:"function.ajax.php",  
                     method:"POST",  
-                    data:{action:'update_puspakom', data : $('#update_form').serialize()},  
+                    data:{action:'update_master_listing', data : $('#update_form').serialize()},  
                     success:function(data){   
                          $('#editItem').modal('hide');  
                          $('#bootstrap-data-table').html(data); 
@@ -365,19 +449,21 @@
           }  
      }); 
       
-//      $( ".button_search" ).click(function( event ) {
-//   		table.clear();
-//   		table.ajax.reload();
-//   		table.draw();  		
-//   		});	
+     $( ".button_search" ).click(function( event ) {
+  		table.clear();
+  		table.ajax.reload();
+  		table.draw();  		
+  		});	
 
-     $('#date_start, #date_end, #roadtax_due_date, #fitness_date').datepicker({
+     $('#expiry_date, #date_start, #date_end').datepicker({
          format: "dd-mm-yyyy",
          autoclose: true,
          orientation: "top left",
          todayHighlight: true
      });
     });
+
+    //format to dd-mm-yy
     function dateFormat(dates){
         var date = new Date(dates);
     	var day = date.getDate();
@@ -386,6 +472,27 @@
 
 	  	return (day <= 9 ? '0' + day : day) + '-' + (monthIndex<=9 ? '0' + monthIndex : monthIndex) + '-' + year ;
     }
+    //yy-mm-dd
+    function dateFormatRev(dates){
+        var date = dates.split("-");
+        var day = date[0];
+        var month = date[1];
+        var year = date[2];
+
+        return year + '-' + month + '-' + day ;
+    }
+
+    //calculate date  difference between current date and renewal date
+	function calcDay( current_date, renewal_date ){
+        var renewal_date = new Date(renewal_date);
+        var millisecondsPerDay = 1000 * 60 * 60 * 24;
+
+        var millisBetween = renewal_date.getTime() - current_date.getTime();
+        var days = Math.floor(millisBetween / millisecondsPerDay);
+
+        return days;
+    }
+	
   </script>
 </body>
 </html>

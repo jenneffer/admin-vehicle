@@ -94,35 +94,63 @@
                                 <table id="bootstrap-data-table" class="table table-striped table-bordered">
                                     <thead>
                                         <tr>
-                                            <th>No.</th>
-											<th>Vehicle No.</th>
-                                            <th>Company</th>
-                                            <th>Brand</th>
-											<th>Name</th>
-											<th>Description</th>
-											<th>Purchased Year</th>
-											<th>&nbsp;</th>
+                                            <th rowspan="2">No.</th>
+											<th rowspan="2">Reg No.</th>
+                                            <th rowspan="2">Company</th>
+                                            <th rowspan="2">Category</th>
+											<th rowspan="2">Make</th>
+											<th rowspan="2">Model</th>
+											<th rowspan="2">Engine No.</th>
+											<th rowspan="2">Chasis No.</th>
+											<th rowspan="2">B.D.M/B.G.K</th>
+											<th rowspan="2">B.T.M</th>
+											<th rowspan="2">Goods Capacity</th>
+											<th rowspan="2">Year Made</th>
+											<th rowspan="2">Finance</th>		
+											<th colspan="4" style="text-align: center;">LPKP Permit</th>
+											<th rowspan="2">Remarks</th>
+											<th rowspan="2">&nbsp;</th>
+                                        </tr>
+                                        <tr>
+                                        	<th>Type</th>
+                                        	<th>No.</th>
+                                        	<th>License Ref No.</th>
+                                        	<th>Due Date</th>
                                         </tr>
                                     </thead>
                                     <tbody>
 
                                     <?php 
-                                        $sql_query = "SELECT * FROM vehicle_vehicle
-                                        INNER JOIN company ON company.id = vehicle_vehicle.company_id WHERE vehicle_vehicle.status='1'"; //only show active vehicle 
+                                        $sql_query = "SELECT * FROM vehicle_vehicle vv
+                                                    INNER JOIN company ON company.id = vv.company_id 
+                                                    LEFT JOIN vehicle_permit vp ON vp.vv_id = vv.vv_id
+                                                    WHERE vv.status='1'"; //only show active vehicle 
                                         if(mysqli_num_rows(mysqli_query($conn_admin_db,$sql_query)) > 0){
                                             $count = 0;
                                             $sql_result = mysqli_query($conn_admin_db, $sql_query)or die(mysqli_error());
                                                 while($row = mysqli_fetch_array($sql_result)){ 
                                                     $count++;
+                                                    $category = itemName("SELECT vc_type FROM vehicle_category WHERE vc_id='".$row['vv_category']."'");
                                                     ?>
                                                     <tr>
                                                         <td><?=$count?></td>
                                                         <td><?=$row['vv_vehicleNo']?></td>
                                                         <td><?=$row['code']?></td>
+                                                        <td><?=$category?></td>
                                                         <td><?=$row['vv_brand']?></td>
-                                                        <td><?=$row['vv_name']?></td>
-                                                        <td><?=$row['vv_description']?></td>
-                                                        <td><?=$row['vv_yearPurchased']?></td>
+                                                        <td><?=$row['vv_model']?></td>
+                                                        <td><?=$row['vv_engine_no']?></td>
+                                                        <td><?=$row['vv_chasis_no']?></td>
+                                                        <td><?=$row['vv_bdm']?></td>
+                                                        <td><?=$row['vv_btm']?></td>
+                                                        <td><?=$row['vv_capacity']?></td>
+                                                        <td><?=$row['vv_yearMade']?></td>
+                                                        <td><?=$row['vv_finance']?></td>
+                                                        <td><?=$row['vpr_type']?></td>
+                                                        <td><?=$row['vpr_no']?></td>
+                                                        <td><?=$row['vpr_license_ref_no']?></td>
+                                                        <td><?=$row['vpr_due_date']?></td>
+                                                        <td><?=$row['vv_remark']?></td>
                                                         <td>
                                                         	<span id="<?=$row['vv_id']?>" data-toggle="modal" class="edit_data" data-target="#editItem"><i class="fa fa-edit"></i></span>
                                                         	<span id="<?=$row['vv_id']?>" data-toggle="modal" class="delete_data" data-target="#deleteItem"><i class="fas fa-trash-alt"></i></span>
@@ -143,78 +171,98 @@
         </div>
 
         <!-- Modal edit vehicle  -->
-        <div id="editItem" class="modal fade">
+        <div id="editItem" class="modal fade" tabindex="-1">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Edit Vehicle</h4>
-                </div>
+<!--                 <div class="modal-header"> -->
+<!--                     <h4 class="modal-title">Edit Vehicle</h4> -->
+<!--                 </div> -->
                 <div class="modal-body">
                     <form role="form" method="POST" action="" id="update_form">
                         <input type="hidden" name="_token" value="">
                         <input type="hidden" id="vv_id" name="vv_id" value="">
-                        <div class="form-group row col-sm-12">
-                            <div class="col-sm-6">
-                                <label for="vehicle_reg_no" class=" form-control-label"><small class="form-text text-muted">Vehicle Reg No.</small></label>
-                                <div>
-                                	<input type="text" id="vehicle_reg_no" name="vehicle_reg_no" placeholder="Enter vehicle registration number" class="form-control">
-                            	</div>
-                            </div>
-                            <div class="col-sm-6">
-                                <label for="category" class=" form-control-label"><small class="form-text text-muted">Vehicle Category</small></label>
-                                <div>
-                                <?php
-                                    $cat = mysqli_query ( $conn_admin_db, "SELECT vc_id, vc_type FROM vehicle_category");
-                                    db_select ($cat, 'category', '','','-select-','form-control','');
-                                ?>
-                                </div>                                
-                            </div>
-                        </div>    
-                        <div class="form-group row col-sm-12">
-                            <div class="col-sm-6">
-                                <label class="control-label"><small class="form-text text-muted">Company</small></label>
-                                <div>
-                                    <?php
-                                        $company = mysqli_query ( $conn_admin_db, "SELECT id, code FROM company");
-                                        db_select ($company, 'company', '','','-select-','form-control','');
-                                    ?>
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <label class="control-label"><small class="form-text text-muted">Year Purchased</small></label>
-                                <div>
-                                	<input type="text" id="yearPurchased" name="yearPurchased" value="" class="form-control">                               
-                                </div>
-                            </div>
-                        </div>                    
-                        <div class="form-group row col-sm-12">
-                            <div class="col-sm-6">
-                                <label class="control-label"><small class="form-text text-muted">Brand</small></label>
-                                <div>
-                                	<input type="text" id="brand" name="brand" value="" class="form-control">                               
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <label class="control-label"><small class="form-text text-muted">Name</small></label>
-                                <div>
-                                	<input type="text" id="name" name="name" value="" class="form-control">                               
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group row col-sm-12">
-                        	<div class="col-sm-6">
-                                <label class="control-label"><small class="form-text text-muted">Description</small></label>
-                                <div>
-                                	<textarea id="description" name="description" class="form-control"></textarea>                               
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <label class="control-label"><small class="form-text text-muted">Vehicle Capacity(CC)</small></label>
-                                <div>
-                                	<input type="text" id="capacity" name="capacity" class="form-control">                               
-                                </div>
-                            </div>
-                        </div>
+                        <hr>
+                        <h5 style="text-align: center"><strong>Vehicle</strong></h5>
+                        <hr>
+                            <div class="form-group row col-sm-12">
+                                        <div class="col-sm-4">
+                                            <label for="vehicle_reg_no" class=" form-control-label"><small class="form-text text-muted">Vehicle Reg No.</small></label>
+                                            <input type="text" id="vehicle_reg_no" name="vehicle_reg_no" placeholder="Enter vehicle registration no." class="form-control">
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <label for="category" class=" form-control-label"><small class="form-text text-muted">Vehicle Category</small></label>
+                                            <?php
+                                                $cat = mysqli_query ( $conn_admin_db, "SELECT vc_id, vc_type FROM vehicle_category");
+                                                db_select ($cat, 'category', '','','-select-','form-control','');
+                                            ?>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <label for="company" class=" form-control-label"><small class="form-text text-muted">Company</small></label>
+                                            <?php
+                                                $company = mysqli_query ( $conn_admin_db, "SELECT id, code FROM company");
+                                                db_select ($company, 'company', '','','-select-','form-control','');
+                                            ?>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row col-sm-12">
+                                        <div class="col-sm-4">
+                                            <label for="brand" class=" form-control-label"><small class="form-text text-muted">Make</small></label>
+                                            <input type="text" id="brand" name="brand" placeholder="Enter vehicle brand" class="form-control">
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <label for="model" class=" form-control-label"><small class="form-text text-muted">Model</small></label>
+                                            <input type="text" id="model" name="model" placeholder="Enter vehicle model" class="form-control">
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <label for="yearMade" class=" form-control-label"><small class="form-text text-muted">Year Made</small></label>
+                                    		<input type="text" id="yearMade" name="yearMade" onkeypress="return isNumberKey(event)" placeholder="e.g 2010" class="form-control">
+                                        </div>
+                                    </div>                                    
+                                    <div class="form-group row col-sm-12">
+                                        <div class="col-sm-4">
+                                            <label for="engine_no" class=" form-control-label"><small class="form-text text-muted">Engine No.</small></label>
+                                            <input type="text" id="engine_no" name="engine_no" placeholder="Enter engine no." class="form-control">
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <label for="chasis_no" class=" form-control-label"><small class="form-text text-muted">Chasis No.</small></label>
+                                            <input type="text" id="chasis_no" name="chasis_no" placeholder="Enter chasis no." class="form-control">
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <label for="capacity" class=" form-control-label"><small class="form-text text-muted">Goods Capacity (CC)</small></label>
+                                            <input type="text" id="capacity" name="capacity" class="form-control">
+                                        </div>
+                                    </div>      
+                                    <div class="form-group row col-sm-12">
+                                        <div class="col-sm-4">
+                                            <label for="bdm" class=" form-control-label"><small class="form-text text-muted">B.D.M/B.G.K</small></label>
+                                            <input type="text" id="bdm" name="bdm" class="form-control">
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <label for="btm" class=" form-control-label"><small class="form-text text-muted">B.T.M</small></label>
+                                            <input type="text" id="btm" name="btm" class="form-control">
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <label for="dispose" class=" form-control-label"><small class="form-text text-muted">Dispose</small></label>
+                                            <input type="text" id="dispose" name="dispose" class="form-control">
+                                        </div> 
+                                    </div>  
+                                    <div class="form-group row col-sm-12">
+                                        <div class="col-sm-4">
+                                            <label for="driver" class=" form-control-label"><small class="form-text text-muted">Driver</small></label>
+                                            <input type="text" id="driver" name="driver" class="form-control">
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <label for="finance" class=" form-control-label"><small class="form-text text-muted">Finance</small></label>
+                                            <input type="text" id="finance" name="finance" class="form-control">
+                                        </div>
+                                         
+                                    </div>                              
+                                    <div class="form-group row col-sm-12">
+                                        <div class="col-sm-8">
+                                            <label for="v_remark" class=" form-control-label"><small class="form-text text-muted">Remark</small></label>                                             
+                                            <textarea id="v_remark" name="v_remark" rows="3" class="form-control"></textarea>
+                                        </div>                                                                              
+                                    </div>
 <!--                         <div class="form-group"> -->
 <!--                             <div> -->
 <!--                                 <div class="checkbox"> -->
@@ -224,6 +272,34 @@
 <!--                                 </div> -->
 <!--                             </div> -->
 <!--                         </div> -->
+						<hr>
+                        <h5 style="text-align: center"><strong>LPKP Permit</strong></h5>
+                        <hr>
+                        <div class="form-group row col-sm-12">
+                    		<div class="col-sm-6"> 
+                                <label for="permit_type" class=" form-control-label"><small class="form-text text-muted">Type</small></label>
+                                <input type="text" id="permit_type" name="permit_type" placeholder="Enter permit type" class="form-control">
+                            </div>
+							<div class="col-sm-6">                                        
+                                <label for="permit_no" class=" form-control-label"><small class="form-text text-muted">No.</small></label>
+                        		<input type="text" id="permit_no" name="permit_no" onkeypress="return isNumberKey(event)" class="form-control">
+                        	</div>
+                        </div>
+                        
+                        <div class="form-group row col-sm-12">
+                        	<div class="col-sm-6"> 
+                                <label for="license_ref_no" class=" form-control-label"><small class="form-text text-muted">License Ref No.</small></label>
+                                <input type="text" id="license_ref_no" name="license_ref_no" placeholder="Enter license ref no." class="form-control">
+                        	</div>
+                        	<div class="col-sm-6"> 
+                        		<label for="lpkp_permit_due_date" class=" form-control-label"><small class="form-text text-muted">Due Date</small></label>
+                                <div class="input-group">
+                                    <input id="lpkp_permit_due_date" name="lpkp_permit_due_date" class="form-control" autocomplete="off">
+                                    <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
+                                </div>
+                        	</div>
+                        </div>
+                        
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                             <button type="submit" class="btn btn-primary update_data ">Update</button>
@@ -283,21 +359,38 @@
         
         $(document).on('click', '.edit_data', function(){
         	var vehicle_id = $(this).attr("id");
+        	alert(vehicle_id);
         	$.ajax({
         			url:"vehicle.all.ajax.php",
         			method:"POST",
         			data:{action:'retrive_vehicle', vehicle_id:vehicle_id},
         			dataType:"json",
         			success:function(data){	
+            			console.log(data);
+            			//vehicle
         				$('#vv_id').val(data.vv_id);					
                         $('#vehicle_reg_no').val(data.vv_vehicleNo);  
                         $('#category').val(data.vv_category);  
                         $('#company').val(data.company_id);  
                         $('#brand').val(data.vv_brand);  
-                        $('#name').val(data.vv_name);  
-                        $('#description').val(data.vv_description);  
-                        $('#yearPurchased').val(data.vv_yearPurchased);    
+                        $('#model').val(data.vv_model);  
+                        $('#v_remark').val(data.vv_remark);  
+                        $('#yearMade').val(data.vv_yearMade);    
                         $('#capacity').val(data.vv_capacity);  
+                        $('#chasis_no').val(data.vv_chasis_no);  
+                        $('#engine_no').val(data.vv_engine_no);  
+                        $('#driver').val(data.vv_driver);  
+                        $('#finance').val(data.vv_finance);                          
+                        $('#dispose').val(data.vv_disposed);  
+                        $('#btm').val(data.vv_btm);  
+                        $('#bdm').val(data.vv_bdm);  
+
+                        //permit
+                        var vpr_due_date = dateFormat(data.vpr_due_date);
+                        $('#permit_type').val(data.vpr_type);
+                        $('#permit_no').val(data.vpr_no);
+                        $('#license_ref_no').val(data.vpr_license_ref_no);
+                        $('#lpkp_permit_due_date').val(vpr_due_date);
                         $('#editItem').modal('show');
         			}
         		});
@@ -326,7 +419,7 @@
           event.preventDefault();  
           if($('#vehicle_reg_no').val() == "")  
           {  
-               alert("Vehicle number is required");  
+               alert("Vehicle Reg. number is required");  
           }  
           else if($('#category').val() == '')  
           {  
@@ -338,13 +431,13 @@
           }  
           else if($('#brand').val() == '')  
           {  
-               alert("Brand is required");  
+               alert("Make is required");  
           }  
-          else if($('#name').val() == '')  
+          else if($('#model').val() == '')  
           {  
-               alert("Vehicle name is required");  
+               alert("Vehicle model is required");  
           }  
-          else if($('#yearPurchased').val() == '')  
+          else if($('#yearMade').val() == '')  
           {  
                alert("Purchased year is required");  
           }   
@@ -357,28 +450,45 @@
                     success:function(data){   
                          $('#editItem').modal('hide');  
                          $('#bootstrap-data-table').html(data);
-                         location.reload();  
+//                          location.reload();  
                     }  
                });  
           }  
         }); 
+
+        $('#lpkp_permit_due_date').datepicker({
+        	format: "dd-mm-yyyy",
+            autoclose: true,
+            orientation: "top left",
+            todayHighlight: true
+         });
         
-        function isNumberKey(evt){
-        	var charCode = (evt.which) ? evt.which : evt.keyCode;
-        	if (charCode != 46 && charCode > 31 
-        	&& (charCode < 48 || charCode > 57))
-        	return false;
-        	return true;
-        }  
-        
-        function isNumericKey(evt){
-        	var charCode = (evt.which) ? evt.which : evt.keyCode;
-        	if (charCode != 46 && charCode > 31 
-        	&& (charCode < 48 || charCode > 57))
-        	return true;
-        	return false;
-        } 
     });
+
+    
+    function isNumberKey(evt){
+    	var charCode = (evt.which) ? evt.which : evt.keyCode;
+    	if (charCode != 46 && charCode > 31 
+    	&& (charCode < 48 || charCode > 57))
+    	return false;
+    	return true;
+    }  
+    
+    function isNumericKey(evt){
+    	var charCode = (evt.which) ? evt.which : evt.keyCode;
+    	if (charCode != 46 && charCode > 31 
+    	&& (charCode < 48 || charCode > 57))
+    	return true;
+    	return false;
+    } 
+    function dateFormat(dates){
+        var date = new Date(dates);
+    	var day = date.getDate();
+	  	var monthIndex = date.getMonth()+1;
+	  	var year = date.getFullYear();
+
+	  	return (day <= 9 ? '0' + day : day) + '-' + (monthIndex<=9 ? '0' + monthIndex : monthIndex) + '-' + year ;
+    }
   </script>
 </body>
 </html>

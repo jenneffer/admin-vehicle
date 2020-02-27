@@ -94,34 +94,34 @@
                             </div>
                             <div class="card-body">
 						      	<div class="form-group row col-sm-12">
-    						      	<div class="col-sm-6">
+    						      	<div class="col-sm-12">
                                         <label for="vehicle_reg_no" class=" form-control-label"><small class="form-text text-muted">Vehicle Reg No.</small></label>
                                         <?php
                                             $vehicle = mysqli_query ( $conn_admin_db, "SELECT vv_id, UPPER(vv_vehicleNo) FROM vehicle_vehicle WHERE status='1'");
                                             db_select ($vehicle, 'vehicle_reg_no', '','','-select-','form-control','');
                                         ?>
                                     </div> 
-                                    <div class="col-sm-6">
-                                        <label for="lpkp_date" class="form-control-label"><small class="form-text text-muted">LPKP Permit due date</small></label>
-                                        <div class="input-group">
-                                            <input id="lpkp_date" name="lpkp_date" class="form-control" autocomplete="off">
-                                            <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
-                                        </div>                                            
-                                    </div>
+<!--                                     <div class="col-sm-6"> -->
+<!--                                         <label for="lpkp_date" class="form-control-label"><small class="form-text text-muted">LPKP Permit due date</small></label> -->
+<!--                                         <div class="input-group"> -->
+<!--                                             <input id="lpkp_date" name="lpkp_date" class="form-control" autocomplete="off"> -->
+<!--                                             <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div> -->
+<!--                                         </div>                                             -->
+<!--                                     </div> -->
 						      	</div>
 						      	<div class="form-group row col-sm-12">
 						      	<div class="col-sm-6">
                                     <label for="roadtax_from_date" class="form-control-label"><small class="form-text text-muted">Roadtax from date</small></label>
                                     <div class="input-group">
                                         <input id="roadtax_from_date" name="roadtax_from_date" class="form-control" autocomplete="off">
-                                        <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></i></div>
+                                        <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
                                     <label for="roadtax_due_date" class="form-control-label"><small class="form-text text-muted">Roadtax due date</small></label>
                                     <div class="input-group">
                                         <input id="roadtax_due_date" name="roadtax_due_date" class="form-control" autocomplete="off">
-                                        <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></i></div>
+                                        <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
                                     </div>
                                 </div>   
 						      	</div>

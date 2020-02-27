@@ -68,6 +68,9 @@
         #cellPaiChart{
             height: 160px;
         }
+        .submit-button{
+            text-align: center;
+        }
 
     </style>
 </head>
@@ -82,70 +85,137 @@
         <div id="right-panel" class="right-panel">
         <div class="content">
             <div class="animated fadeIn">
+            <form action="vehicle_add_process.php" method="post">
                 <div class="row">
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header">
                                 <strong class="card-title">Add New Vehicle</strong>
-                            </div>
-                            <form action="vehicle_add_process.php" method="post">
+                            </div>                            
                                 <div class="card-body card-block">
                                 	<div class="form-group row col-sm-12">
-                                        <div class="col-sm-6">
+                                        <div class="col-sm-4">
                                             <label for="vehicle_reg_no" class=" form-control-label"><small class="form-text text-muted">Vehicle Reg No.</small></label>
-                                            <input type="text" id="vehicle_reg_no" name="vehicle_reg_no" placeholder="Enter vehicle registration number" class="form-control col-sm-6">
+                                            <input type="text" id="vehicle_reg_no" name="vehicle_reg_no" placeholder="Enter vehicle registration no." class="form-control">
                                         </div>
-                                        <div class="col-sm-6">
+                                        <div class="col-sm-4">
                                             <label for="category" class=" form-control-label"><small class="form-text text-muted">Vehicle Category</small></label>
                                             <?php
                                                 $cat = mysqli_query ( $conn_admin_db, "SELECT vc_id, vc_type FROM vehicle_category");
-                                                db_select ($cat, 'category', '','','-select-','form-control col-sm-6','');
+                                                db_select ($cat, 'category', '','','-select-','form-control','');
                                             ?>
                                         </div>
-                                    </div>
-                                    <div class="form-group row col-sm-12">
-                                        <div class="col-sm-6">
+                                        <div class="col-sm-4">
                                             <label for="company" class=" form-control-label"><small class="form-text text-muted">Company</small></label>
                                             <?php
                                                 $company = mysqli_query ( $conn_admin_db, "SELECT id, code FROM company");
-                                                db_select ($company, 'company', '','','-select-','form-control col-sm-6','');
+                                                db_select ($company, 'company', '','','-select-','form-control','');
                                             ?>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <label for="yearPurchased" class=" form-control-label"><small class="form-text text-muted">Year Purchased</small></label>
-                                    		<input type="text" id="yearPurchased" name="yearPurchased" onkeypress="return isNumberKey(event)" placeholder="e.g 2010" class="form-control col-sm-6">
                                         </div>
                                     </div>
                                     <div class="form-group row col-sm-12">
-                                        <div class="col-sm-6">
-                                            <label for="brand" class=" form-control-label"><small class="form-text text-muted">Brand</small></label>
-                                            <input type="text" id="brand" name="brand" placeholder="Enter vehicle brand" class="form-control col-sm-6">
+                                        <div class="col-sm-4">
+                                            <label for="brand" class=" form-control-label"><small class="form-text text-muted">Make</small></label>
+                                            <input type="text" id="brand" name="brand" placeholder="Enter vehicle brand" class="form-control">
                                         </div>
-                                        <div class="col-sm-6">
-                                            <label for="name" class=" form-control-label"><small class="form-text text-muted">Name</small></label>
-                                            <input type="text" id="name" name="name" placeholder="Enter vehicle name" class="form-control col-sm-6">
+                                        <div class="col-sm-4">
+                                            <label for="model" class=" form-control-label"><small class="form-text text-muted">Model</small></label>
+                                            <input type="text" id="model" name="model" placeholder="Enter vehicle model" class="form-control">
                                         </div>
+                                        <div class="col-sm-4">
+                                            <label for="yearMade" class=" form-control-label"><small class="form-text text-muted">Year Made</small></label>
+                                    		<input type="text" id="yearMade" name="yearMade" onkeypress="return isNumberKey(event)" placeholder="e.g 2010" class="form-control">
+                                        </div>
+                                    </div>                                    
+                                    <div class="form-group row col-sm-12">
+                                        <div class="col-sm-4">
+                                            <label for="engine_no" class=" form-control-label"><small class="form-text text-muted">Engine No.</small></label>
+                                            <input type="text" id="engine_no" name="engine_no" placeholder="Enter engine no." class="form-control">
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <label for="chasis_no" class=" form-control-label"><small class="form-text text-muted">Chasis No.</small></label>
+                                            <input type="text" id="chasis_no" name="chasis_no" placeholder="Enter chasis no." class="form-control">
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <label for="capacity" class=" form-control-label"><small class="form-text text-muted">Goods Capacity (CC)</small></label>
+                                            <input type="text" id="capacity" name="capacity" class="form-control">
+                                        </div>
+                                    </div>      
+                                    <div class="form-group row col-sm-12">
+                                        <div class="col-sm-4">
+                                            <label for="bdm" class=" form-control-label"><small class="form-text text-muted">B.D.M/B.G.K</small></label>
+                                            <input type="text" id="bdm" name="bdm" class="form-control">
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <label for="btm" class=" form-control-label"><small class="form-text text-muted">B.T.M</small></label>
+                                            <input type="text" id="btm" name="btm" class="form-control">
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <label for="dispose" class=" form-control-label"><small class="form-text text-muted">Dispose</small></label>
+                                            <input type="text" id="dispose" name="dispose" class="form-control">
+                                        </div> 
+                                    </div>  
+                                    <div class="form-group row col-sm-12">
+                                        <div class="col-sm-4">
+                                            <label for="driver" class=" form-control-label"><small class="form-text text-muted">Driver</small></label>
+                                            <input type="text" id="driver" name="driver" class="form-control">
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <label for="finance" class=" form-control-label"><small class="form-text text-muted">Finance</small></label>
+                                            <input type="text" id="finance" name="finance" class="form-control">
+                                        </div>
+                                         
+                                    </div>                              
+                                    <div class="form-group row col-sm-12">
+                                        <div class="col-sm-8">
+                                            <label for="v_remark" class=" form-control-label"><small class="form-text text-muted">Remark</small></label>                                             
+                                            <textarea id="v_remark" name="v_remark" rows="3" class="form-control"></textarea>
+                                        </div>                                                                              
+                                    </div>                                    
+                                </div>                            
+                        </div>                                                
+                    </div>
+                    <div class="col-md-12">
+                    	<div class="card">
+                            <div class="card-header">
+                                <strong class="card-title">Add LPKP Permit</strong>
+                            </div>                            
+                                <div class="card-body card-block">
+                                	<div class="form-group row col-sm-12">
+                                		<div class="col-sm-6"> 
+                                            <label for="permit_type" class=" form-control-label"><small class="form-text text-muted">Type</small></label>
+                                            <input type="text" id="permit_type" name="permit_type" placeholder="Enter permit type" class="form-control">
+                                        </div>
+										<div class="col-sm-6">                                        
+                                            <label for="permit_no" class=" form-control-label"><small class="form-text text-muted">No.</small></label>
+                                    		<input type="text" id="permit_no" name="permit_no" onkeypress="return isNumberKey(event)" class="form-control">
+                                    	</div>
                                     </div>
                                     
                                     <div class="form-group row col-sm-12">
-                                        <div class="col-sm-6">
-                                            <label for="v_description" class=" form-control-label"><small class="form-text text-muted">Description</small></label>                                             
-                                            <textarea id="v_description" name="v_description" rows="3" placeholder="Description..." class="form-control col-sm-9"></textarea>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <label for="capacity" class=" form-control-label"><small class="form-text text-muted">Vehicle Capacity (CC)</small></label>
-                                            <input type="text" id="capacity" name="capacity" placeholder="Enter vehicle capacity" class="form-control col-sm-6">
-                                        </div>                                        
+                                    	<div class="col-sm-6"> 
+                                            <label for="license_ref_no" class=" form-control-label"><small class="form-text text-muted">License Ref No.</small></label>
+                                            <input type="text" id="license_ref_no" name="license_ref_no" placeholder="Enter license ref no." class="form-control">
+                                    	</div>
+                                    	<div class="col-sm-6"> 
+                                    		<label for="lpkp_permit_due_date" class=" form-control-label"><small class="form-text text-muted">Due Date</small></label>
+                                            <div class="input-group">
+                                                <input id="lpkp_permit_due_date" name="lpkp_permit_due_date" class="form-control" autocomplete="off">
+                                                <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
+                                            </div>
+                                    	</div>
                                     </div>
-                                    <div class="card-body">
-                                        <button type="submit" id="save" name="save" class="btn btn-primary">Save</button>
-                                        <button type="button" id="cancel" name="cancel" class="btn btn-secondary">Cancel</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
+                                </div>                            
+                        </div>  
+                     </div>         
+                </div>
+                <div class="card-body">
+                    <div class="submit-button">
+                        <button type="submit" id="save" name="save" class="btn btn-primary">Save</button>
+                        <button type="button" id="cancel" name="cancel" class="btn btn-secondary">Cancel</button>
                     </div>
                 </div>
+                </form>
             </div><!-- .animated -->
         </div><!-- .content -->
         </div>

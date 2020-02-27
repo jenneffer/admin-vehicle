@@ -6,10 +6,10 @@ global $conn_admin_db;
 
 $system_id = $_SESSION['system_id'];
 //test populate menu from database
-$query = "SELECT * FROM system_admin
-            INNER JOIN main_menu ON main_menu.sid = system_admin.sid
+$query = "SELECT * FROM admin_system
+            INNER JOIN main_menu ON main_menu.sid = admin_system.sid
             INNER JOIN sub_menu ON sub_menu.mid = main_menu.mid
-            WHERE system_admin.sid='$system_id'";
+            WHERE admin_system.sid='$system_id' AND status='1'";
 
 $rst  = mysqli_query($conn_admin_db, $query)or die(mysqli_error($conn_admin_db));
 if ( mysqli_num_rows($rst) > 0 ){

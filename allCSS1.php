@@ -15,4 +15,5 @@
     <link rel="stylesheet" href="../assets/css/jqvmap.min.css">
     <link rel="stylesheet" href="../assets/css/weather-icons.css">
     <link rel="stylesheet" href="../assets/css/fullcalendar.min.css">
+    <link rel="stylesheet" href="../assets/css/select2.min.css">
 

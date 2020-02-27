@@ -8,7 +8,7 @@
         
         //roadtax
         $vehicle_reg_no = $_POST['vehicle_reg_no'];        
-        $lpkp_date = dateFormat($_POST['lpkp_date']);        
+//         $lpkp_date = dateFormat($_POST['lpkp_date']);        
         $roadtax_from_date = dateFormat($_POST['roadtax_from_date']);
         $roadtax_due_date = dateFormat($_POST['roadtax_due_date']);
         $roadtax_amount = $_POST['roadtax_amount'];
@@ -35,8 +35,7 @@
 
         //insert into roadtax table
         $sql_insert = mysqli_query($conn_admin_db, "INSERT INTO vehicle_roadtax SET
-                            vv_id = '".$vehicle_reg_no."',
-                            vrt_lpkpPermit_dueDate = '".$lpkp_date."',                            
+                            vv_id = '".$vehicle_reg_no."',                           
                             vrt_roadTax_fromDate = '".$roadtax_from_date."',
                             vrt_roadTax_dueDate = '".$roadtax_due_date."',
                             vrt_roadtaxPeriodYear = '".$years."',

@@ -6,8 +6,7 @@
 
     $action = isset($_POST['action']) && $_POST['action'] !="" ? $_POST['action'] : "";    
     $date_start = isset($_POST['date_start']) ? $_POST['date_start'] : date('01-m-Y');
-    $date_end = isset($_POST['date_end']) ? $_POST['date_end'] : date('t-m-Y');
-   
+    $date_end = isset($_POST['date_end']) ? $_POST['date_end'] : date('t-m-Y');    
     if( $action != "" ){
         switch ($action){
             
