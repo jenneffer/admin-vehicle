@@ -22,9 +22,9 @@
 // 	}
 	
 	$arr_item_unit = array(
-	  '1' => 'Pieces',
-	  '2' => 'Packet',
-	  '3' => 'Box'
+	  'pieces' => 'Pieces',
+	  'packet' => 'Packet',
+	  'box' => 'Box'
 	);
 	
 ?>
@@ -115,7 +115,7 @@
                                             $sql_result = mysqli_query($conn_admin_db, $sql_query)or die(mysqli_error());
                                                 while($row = mysqli_fetch_array($sql_result)){ 
                                                     $count++;
-                                                    $unit = $row['unit'] != 0 ? $arr_item_unit[$row['unit']] : "";
+                                                    $unit = !empty($row['unit']) ? $arr_item_unit[$row['unit']] : "";
                                                     ?>
                                                     <tr>
                                                         <td><?=$count?>.</td>
@@ -163,9 +163,9 @@
                     	<label for="unit" class=" form-control-label"><small class="form-text text-muted">Unit </small></label>
                     	<select name="item_unit" id="item_unit" class="form-control">
                     		<option value="0">-select-</option>
-                            <option value="1">Pieces</option>
-                            <option value="2">Packet</option>
-                            <option value="3">Box</option>
+                            <option value="pieces">Pieces</option>
+                            <option value="packet">Packet</option>
+                            <option value="box">Box</option>
                         </select>
                     	</div>
                     </div>
@@ -202,9 +202,9 @@
                         	<label for="unit" class=" form-control-label"><small class="form-text text-muted">Unit </small></label>
                         	<select name="unit" id="unit" class="form-control">
                         		<option value="0">-select-</option>
-                                <option value="1">Pieces</option>
-                                <option value="2">Packet</option>
-                                <option value="3">Box</option>
+                                <option value="pieces">Pieces</option>
+                                <option value="packet">Packet</option>
+                                <option value="box">Box</option>
                             </select>
                         	</div>
                         </div>
@@ -281,7 +281,8 @@
         			dataType:"json",
         			success:function(data){            			
         				$('#id').val(id);					
-                        $('#name').val(data.item_name);                           
+                        $('#name').val(data.item_name);        
+                        $('#unit').val(data.unit);                        
                         $('#editItem').modal('show');
         			}
         		});

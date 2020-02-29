@@ -63,7 +63,7 @@
                                     <tbody>
 
                                     <?php 
-                                        $sql_query = "SELECT * FROM stationary_stock"; 
+                                        $sql_query = "SELECT * FROM stationary_stock WHERE status ='1'"; 
                                         if(mysqli_num_rows(mysqli_query($conn_admin_db,$sql_query)) > 0){
                                             $count = 0;
                                             $sql_result = mysqli_query($conn_admin_db, $sql_query)or die(mysqli_error());
@@ -147,7 +147,7 @@
                                 <div>
                                     <?php
                                         $item_id = mysqli_query ( $conn_admin_db, "SELECT id, item_name FROM stationary_item");
-                                        db_select ($item_id, 'item_id', '','','-select-','form-control','');
+                                        db_select ($item_id, 'item_id', '','','-select-','form-control','', 'disabled');
                                     ?>
                                 </div>
                             </div>
@@ -234,14 +234,14 @@
         $(document).on('click', '.edit_data', function(){
         	var id = $(this).attr("id");        	
         	$.ajax({
-        			url:"function.ajax.php",
+        			url:"stock.ajax.php",
         			method:"POST",
-        			data:{action:'retrieve_department', id:id},
+        			data:{action:'retrieve_stock', id:id},
         			dataType:"json",
-        			success:function(data){         			
+        			success:function(data){            			        			
         				$('#id').val(id);					
-                        $('#item_id').val(data.department_name);      
-                        $('#stk_in').val(data.department_name);                        
+                        $('#item_id').val(data.item_id);      
+                        $('#stk_in').val(data.stock_in);                        
                         $('#editItem').modal('show');
         			}
         		});
@@ -256,9 +256,9 @@
     	$( "#delete_record" ).click( function() {
     		var ID = $(this).data('id');
     		$.ajax({
-    			url:"function.ajax.php",
+    			url:"stock.ajax.php",
     			method:"POST",    
-    			data:{action:'delete_department', id:ID},
+    			data:{action:'delete_stock', id:ID},
     			success:function(data){	  						
     				$('#deleteItem').modal('hide');		
     				location.reload();		
@@ -268,14 +268,14 @@
     
         $('#update_form').on("submit", function(event){  
           event.preventDefault();  
-          if($('#department').val() == ""){  
-               alert("Department name is required");  
-          }     
+          if($('#stk_in').val() == ""){  
+              alert("Stock in is required");  
+          }    
           else{  
                $.ajax({  
-                    url:"function.ajax.php",  
+                    url:"stock.ajax.php",  
                     method:"POST",  
-                    data:{action:'update_department', data: $('#update_form').serialize()},  
+                    data:{action:'update_stock', data: $('#update_form').serialize()},  
                     success:function(data){   
                          $('#editItem').modal('hide');  
                          $('#bootstrap-data-table').html(data);

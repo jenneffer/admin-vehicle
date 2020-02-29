@@ -9,17 +9,23 @@ $date_end = isset($_POST['date_end']) ? $_POST['date_end'] : date('t-m-Y');
 
 $query = "SELECT item_name, SUM(quantity) AS stock_out, (SELECT SUM(stock_in) 
         FROM stationary_stock WHERE item_id = si.id ) AS stock_in, 
-        (SELECT stock_balance FROM stationary_stock_balance WHERE item_id=si.id  ) AS stock_balance 
+        (SELECT stock_balance FROM stationary_stock_balance WHERE item_id=si.id  ) AS stock_balance,
+        si.unit 
         FROM stationary_item si
-        LEFT JOIN stationary_stock_take sst ON sst.item_id = si.id
+        LEFT JOIN stationary_stock_take sst ON sst.item_id = si.id AND sst.date_taken BETWEEN '".dateFormat($date_start)."' AND '".dateFormat($date_end)."'
         GROUP BY si.id";
 
-$sql_result = mysqli_query($conn_admin_db, $query)or die(mysqli_error());
+$sql_result = mysqli_query($conn_admin_db, $query)or die(mysqli_error($conn_admin_db));
 $arr_data = [];
-while($row = mysqli_fetch_array($sql_result)){
+while($row = mysqli_fetch_assoc($sql_result)){
     $arr_data[] = $row;
 }
 
+$arr_item_unit = array(
+    'pieces' => 'Pieces',
+    'packet' => 'Packet',
+    'box' => 'Box'
+);
 
 ?>
 
@@ -62,7 +68,7 @@ while($row = mysqli_fetch_array($sql_result)){
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header">
-                                <strong class="card-title">Vehicle Summons</strong>
+                                <strong class="card-title">Stock Take Summary</strong>
                             </div>
                             <div class="card-body">
                                 <form id="myform" enctype="multipart/form-data" method="post" action="">                	                   
@@ -96,20 +102,21 @@ while($row = mysqli_fetch_array($sql_result)){
 											<th>Item</th>
                                             <th>Stock In</th>
 											<th>Stock Out</th>
-											<th>Stock Balance</th>
+											<th style="text-align: right">Stock Balance</th>
                                         </tr>
                                     </thead>
                                     <tbody>  
                                     <?php 
                                     $count = 0;
                                     foreach ($arr_data as $data){
+                                        $unit = !empty($data['unit']) && !empty($data['stock_balance']) ? $arr_item_unit[$data['unit']] : "";
                                         $count++;
                                         echo "<tr>";
                                         echo "<td>".$count.".</td>";
                                         echo "<td>".strtoupper($data['item_name'])."</td>";
                                         echo "<td style='text-align:center;'>".$data['stock_in']."</td>";
                                         echo "<td style='text-align:center;'>".$data['stock_out']."</td>";
-                                        echo "<td style='text-align:right;'>".$data['stock_balance']."</td>";                                        
+                                        echo "<td style='text-align:right;'>".$data['stock_balance']." ".$unit."</td>";                                        
                                         echo "</tr>";
                                     }
                                     ?>                                                  
