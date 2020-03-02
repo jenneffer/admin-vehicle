@@ -67,7 +67,7 @@
                                         $sql_query = "SELECT * FROM stationary_stock_take"; 
                                         if(mysqli_num_rows(mysqli_query($conn_admin_db,$sql_query)) > 0){
                                             $count = 0;
-                                            $sql_result = mysqli_query($conn_admin_db, $sql_query)or die(mysqli_error());
+                                            $sql_result = mysqli_query($conn_admin_db, $sql_query)or die(mysqli_error($conn_admin_db));
                                                 while($row = mysqli_fetch_array($sql_result)){ 
                                                     $count++;
                                                     $department = itemName("SELECT department_name FROM stationary_department WHERE department_id='".$row['department_id']."'");

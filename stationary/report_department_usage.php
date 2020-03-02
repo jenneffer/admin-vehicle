@@ -173,31 +173,31 @@ global $conn_admin_db;
 	
 	<script type="text/javascript">
       $(document).ready(function() {
-          $('#department_summary').DataTable({
-              "searching": false,
-              "paging": false,
-        	  "dom": 'Bfrtip',
-              "buttons": [ 
-               { 
-              	extend: 'excelHtml5', 
-              	messageTop: 'Vehicle Summon ',
-              	footer: true 
-               },
-               {
-              	extend: 'print',
-              	messageTop: 'Stock Summary ',
-              	footer: true,
-              	customize: function ( win ) {
-                      $(win.document.body)
-                          .css( 'font-size', '10pt' );
+//           $('#department_summary').DataTable({
+//               "searching": false,
+//               "paging": false,
+//         	  "dom": 'Bfrtip',
+//               "buttons": [ 
+//                { 
+//               	extend: 'excelHtml5', 
+//               	messageTop: 'Vehicle Summon ',
+//               	footer: true 
+//                },
+//                {
+//               	extend: 'print',
+//               	messageTop: 'Stock Summary ',
+//               	footer: true,
+//               	customize: function ( win ) {
+//                       $(win.document.body)
+//                           .css( 'font-size', '10pt' );
               
-                      $(win.document.body).find( 'table' )
-                          .addClass( 'compact' )
-                          .css( 'font-size', 'inherit' );
-                  }
-               }
-              ],
-           });
+//                       $(win.document.body).find( 'table' )
+//                           .addClass( 'compact' )
+//                           .css( 'font-size', 'inherit' );
+//                   }
+//                }
+//               ],
+//            });
     	  $('#date_start, #date_end').datepicker({
               format: "dd-mm-yyyy",
               autoclose: true,

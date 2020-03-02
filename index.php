@@ -1,5 +1,6 @@
 <?php
 	require_once('assets/config/database.php');
+	require_once('function.php');
 // 	require_once('check_login.php');
 	global $conn_admin_db;
 // 	// checking if log in or not
@@ -20,8 +21,11 @@
 		header("Location: login.php?RecLock=".$PrevURL);
 	}
 	
+	//get the access module of current user
+	$cr_access_module = itemName("SELECT cr_access_module FROM credential WHERE cr_id = '$userId'");
+	
 	//get the system list
-	$query = "SELECT * FROM admin_system";
+	$query = "SELECT * FROM admin_system WHERE sid IN (".$cr_access_module.")";
 	$rst  = mysqli_query($conn_admin_db, $query)or die(mysqli_error($conn_admin_db));
 	if ( mysqli_num_rows($rst) > 0 ){
 	    $data = array();
@@ -105,7 +109,7 @@
     <!--Left Panel -->
 	<?php //include('assets/nav/leftNav.php')?>
     <!-- Right Panel -->
-    <?php include('assets/nav/indexRightNav.php')?>
+    <?php //include('assets/nav/indexRightNav.php')?>
         <!-- /#header -->
         <!-- Content -->
 		<div class="content">

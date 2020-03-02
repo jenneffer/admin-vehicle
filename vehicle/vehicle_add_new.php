@@ -164,6 +164,15 @@
                                             <label for="finance" class=" form-control-label"><small class="form-text text-muted">Finance</small></label>
                                             <input type="text" id="finance" name="finance" class="form-control">
                                         </div>
+                                        <div class="col-sm-4">
+                                            <label for="finance" class="form-control-label"><small class="form-text text-muted">Vehicle Status</small></label>
+                                            <select id="vehicle_status" name="" class="form-control">
+                                              <option value="active">Active</option>
+                                              <option value="inactive">Inactive</option>
+                                              <option value="not_sure">Not Sure</option>
+                                              <option value="total_loss">Total Loss</option>
+                                            </select>
+                                        </div>
                                          
                                     </div>                              
                                     <div class="form-group row col-sm-12">

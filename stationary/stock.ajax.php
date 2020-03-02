@@ -111,7 +111,7 @@
             $query = "SELECT * FROM stationary_stock_balance WHERE item_id='$item_id'";
             if(mysqli_num_rows(mysqli_query($conn_admin_db,$query)) > 0){
                 //if ada, get the previous balance plus the new 1.
-                $sql_result = mysqli_query($conn_admin_db, $query)or die(mysqli_error());
+                $sql_result = mysqli_query($conn_admin_db, $query)or die(mysqli_error($conn_admin_db));
                 $row = mysqli_fetch_array($sql_result);
                 //calculate the stock 
                 $total = $row['stock_balance'] + $stock_in;
@@ -162,7 +162,7 @@
             $query = "SELECT * FROM stationary_stock_balance WHERE item_id='$item_id'";
             if(mysqli_num_rows(mysqli_query($conn_admin_db,$query)) > 0){
                 //if ada, get the previous balance - the new 1.
-                $sql_result = mysqli_query($conn_admin_db, $query)or die(mysqli_error());
+                $sql_result = mysqli_query($conn_admin_db, $query)or die(mysqli_error($conn_admin_db));
                 $row = mysqli_fetch_array($sql_result);
                 //calculate the stock
                 $total = $row['stock_balance'] - $quantity;

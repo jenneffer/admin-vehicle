@@ -21,6 +21,7 @@
 // 		header("Location: ../login.php?RecLock=".$PrevURL);
 // 	}
 	
+	$select_c = isset($_POST['select_company']) ? $_POST['select_company'] : "";
 	
 ?>
 
@@ -34,41 +35,7 @@
 	<!-- link to css -->
 	<?php include('../allCSS1.php')?>
    <style>
-    #weatherWidget .currentDesc {
-        color: #ffffff!important;
-    }
-        .traffic-chart {
-            min-height: 335px;
-        }
-        #flotPie1  {
-            height: 150px;
-        }
-        #flotPie1 td {
-            padding:3px;
-        }
-        #flotPie1 table {
-            top: 20px!important;
-            right: -10px!important;
-        }
-        .chart-container {
-            display: table;
-            min-width: 270px ;
-            text-align: left;
-            padding-top: 10px;
-            padding-bottom: 10px;
-        }
-        #flotLine5  {
-             height: 105px;
-        }
-
-        #flotBarChart {
-            height: 150px;
-        }
-        #cellPaiChart{
-            height: 160px;
-        }
-
-    </style>
+   </style>
 </head>
 
 <body>
@@ -87,11 +54,30 @@
                             <div class="card-header">
                                 <strong class="card-title">List of Vehicle</strong>
                             </div>
-<!--                             <button type="button" class="btn btn-primary mb-1 col-md-2" data-toggle="modal" data-target="#modalLoginForm"> -->
-<!--                                 Small -->
-<!--                             </button> -->
+                            <!-- Filter -->
                             <div class="card-body">
-                                <table id="bootstrap-data-table" class="table table-striped table-bordered">
+                            <form id="myform" enctype="multipart/form-data" method="post" action="">  
+                            	<div class="form-group row col-sm-12">
+                            	    <div class="col-sm-3">                                        
+                                        <?php
+                                            $select_company = mysqli_query ( $conn_admin_db, "SELECT id, code FROM company WHERE status='1'");
+                                            db_select ($select_company, 'select_company', $select_c,'','All Company','form-control','');
+                                        ?>                              
+                                    </div>
+                                    <div class="col-sm-1">                                    	
+                                    	<button type="submit" class="btn btn-primary button_search ">Submit</button>
+                                    </div>
+                                    <div class="col-sm-1">                                    	
+                                    	<button type="button" class="btn btn-primary button_search" onclick="printDiv('printableArea')">Print</button>
+                                    </div>
+                                    <div class="col-sm-1">                                    	
+                                    	<button type="button" class="btn btn-primary button_search" onclick="fnExcelReport();">Export to Excel</button>
+                                    </div>
+                            	</div>     
+							</form>
+							</div>
+                            <div class="card-body" id="printableArea">
+                                <table id="vehicle_table" class="table table-striped table-bordered">
                                     <thead>
                                         <tr>
                                             <th rowspan="2">No.</th>
@@ -121,19 +107,26 @@
                                     <tbody>
 
                                     <?php 
-                                        $sql_query = "SELECT * FROM vehicle_vehicle vv
+                                        $sql_query = "SELECT vv.vv_id,vv_vehicleNo,code,vv_category,vv_brand,vv_model,vv_engine_no,vv_chasis_no,vv_bdm,
+                                                    vv_btm,vv_capacity,vv_yearMade,vv_finance,vpr_type, vpr_no,vpr_license_ref_no,vpr_due_date, 
+                                                    vv_remark FROM vehicle_vehicle vv
                                                     INNER JOIN company ON company.id = vv.company_id 
                                                     LEFT JOIN vehicle_permit vp ON vp.vv_id = vv.vv_id
                                                     WHERE vv.status='1'"; //only show active vehicle 
+                                        
+                                        if (!empty($select_c)) {
+                                            $sql_query .= " AND company.id='$select_c'";
+                                        }
+                                        
                                         if(mysqli_num_rows(mysqli_query($conn_admin_db,$sql_query)) > 0){
                                             $count = 0;
-                                            $sql_result = mysqli_query($conn_admin_db, $sql_query)or die(mysqli_error());
+                                            $sql_result = mysqli_query($conn_admin_db, $sql_query)or die(mysqli_error($conn_admin_db));
                                                 while($row = mysqli_fetch_array($sql_result)){ 
                                                     $count++;
                                                     $category = itemName("SELECT vc_type FROM vehicle_category WHERE vc_id='".$row['vv_category']."'");
                                                     ?>
                                                     <tr>
-                                                        <td><?=$count?></td>
+                                                        <td><?=$count?>.</td>
                                                         <td><?=$row['vv_vehicleNo']?></td>
                                                         <td><?=$row['code']?></td>
                                                         <td><?=$category?></td>
@@ -255,7 +248,15 @@
                                             <label for="finance" class=" form-control-label"><small class="form-text text-muted">Finance</small></label>
                                             <input type="text" id="finance" name="finance" class="form-control">
                                         </div>
-                                         
+                                        <div class="col-sm-4">
+                                            <label for="finance" class="form-control-label"><small class="form-text text-muted">Vehicle Status</small></label>
+                                            <select id="vehicle_status" name="" class="form-control">
+                                              <option value="active">Active</option>
+                                              <option value="inactive">Inactive</option>
+                                              <option value="not_sure">Not Sure</option>
+                                              <option value="total_loss">Total Loss</option>
+                                            </select>
+                                        </div>
                                     </div>                              
                                     <div class="form-group row col-sm-12">
                                         <div class="col-sm-8">
@@ -355,11 +356,13 @@
 	
 	<script type="text/javascript">
     $(document).ready(function() {
-        $('#bootstrap-data-table-export').DataTable();
+        $('#vehicle_table').DataTable({
+        	"paging": false,
+        	"pageLength": 1
+         });
         
         $(document).on('click', '.edit_data', function(){
         	var vehicle_id = $(this).attr("id");
-        	alert(vehicle_id);
         	$.ajax({
         			url:"vehicle.all.ajax.php",
         			method:"POST",
@@ -384,9 +387,10 @@
                         $('#dispose').val(data.vv_disposed);  
                         $('#btm').val(data.vv_btm);  
                         $('#bdm').val(data.vv_bdm);  
+                        $('#vehicle_status').val(data.vv_status);  
 
                         //permit
-                        var vpr_due_date = dateFormat(data.vpr_due_date);
+                        var vpr_due_date = data.vpr_due_date != null ? dateFormat(data.vpr_due_date) : "";
                         $('#permit_type').val(data.vpr_type);
                         $('#permit_no').val(data.vpr_no);
                         $('#license_ref_no').val(data.vpr_license_ref_no);
@@ -417,32 +421,25 @@
     
         $('#update_form').on("submit", function(event){  
           event.preventDefault();  
-          if($('#vehicle_reg_no').val() == "")  
-          {  
+          if($('#vehicle_reg_no').val() == ""){  
                alert("Vehicle Reg. number is required");  
           }  
-          else if($('#category').val() == '')  
-          {  
+          else if($('#category').val() == ''){  
                alert("Category is required");  
           }  
-          else if($('#company').val() == '')  
-          {  
+          else if($('#company').val() == ''){  
                alert("Company is required");  
           }  
-          else if($('#brand').val() == '')  
-          {  
+          else if($('#brand').val() == ''){  
                alert("Make is required");  
           }  
-          else if($('#model').val() == '')  
-          {  
+          else if($('#model').val() == ''){  
                alert("Vehicle model is required");  
           }  
-          else if($('#yearMade').val() == '')  
-          {  
+          else if($('#yearMade').val() == ''){  
                alert("Purchased year is required");  
           }   
-          else  
-          {  
+          else{  
                $.ajax({  
                     url:"vehicle.all.ajax.php",  
                     method:"POST",  
@@ -489,6 +486,47 @@
 
 	  	return (day <= 9 ? '0' + day : day) + '-' + (monthIndex<=9 ? '0' + monthIndex : monthIndex) + '-' + year ;
     }
+    
+    function printDiv(divName) {
+	     var printContents = document.getElementById(divName).innerHTML;
+	     var originalContents = document.body.innerHTML;
+	     document.body.innerHTML = printContents;
+	     window.print();
+	     document.body.innerHTML = originalContents;
+	}
+	
+ 	function fnExcelReport(){
+        var tab_text="<table border='2px'><tr bgcolor='#87AFC6'>";
+        var textRange; var j=0;
+        tab = document.getElementById('bootstrap-data-table'); // id of table
+        
+        for(j = 0 ; j < tab.rows.length ; j++) 
+        {     
+         tab_text=tab_text+tab.rows[j].innerHTML+"</tr>";
+         //tab_text=tab_text+"</tr>";
+        }
+        
+        tab_text=tab_text+"</table>";
+        tab_text= tab_text.replace(/<A[^>]*>|<\/A>/g, "");//remove if u want links in your table
+        tab_text= tab_text.replace(/<img[^>]*>/gi,""); // remove if u want images in your table
+        tab_text= tab_text.replace(/<input[^>]*>|<\/input>/gi, ""); // reomves input params
+        
+        var ua = window.navigator.userAgent;
+        var msie = ua.indexOf("MSIE "); 
+        
+        if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./))      // If Internet Explorer
+        {
+         txtArea1.document.open("txt/html","replace");
+         txtArea1.document.write(tab_text);
+         txtArea1.document.close();
+         txtArea1.focus(); 
+         sa=txtArea1.document.execCommand("SaveAs",true,"Department Summary.xls");
+        }  
+        else                 //other browser not tested on IE 11
+         sa = window.open('data:application/vnd.ms-excel,' + encodeURIComponent(tab_text));  
+        
+        return (sa);
+ 	}
   </script>
 </body>
 </html>

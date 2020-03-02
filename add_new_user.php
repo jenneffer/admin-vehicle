@@ -1,25 +1,9 @@
 <?php
     require_once('assets/config/database.php');
     require_once('function.php');
-	
-	session_start();
+	require_once('check_login.php');
 	global $conn_admin_db;
-	if(isset($_SESSION['cr_id'])) {
-		$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-		$url = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-		$query = parse_url($url, PHP_URL_QUERY);
-		parse_str($query, $params);
-		
-		// get id
-		$userId = $_SESSION['cr_id'];
-		$name = $_SESSION['cr_name'];
-		
-	} else {
-		$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-		$url = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-		$PrevURL= $url;
-		header("Location: ../login.php?RecLock=".$PrevURL);
-    }
+
 ?>
 
 <!doctype html>
@@ -36,46 +20,12 @@
 	<!-- link to css -->
 	<?php include('allCSS.php')?>
    <style>
-    #weatherWidget .currentDesc {
-        color: #ffffff!important;
-    }
-        .traffic-chart {
-            min-height: 335px;
-        }
-        #flotPie1  {
-            height: 150px;
-        }
-        #flotPie1 td {
-            padding:3px;
-        }
-        #flotPie1 table {
-            top: 20px!important;
-            right: -10px!important;
-        }
-        .chart-container {
-            display: table;
-            min-width: 270px ;
-            text-align: left;
-            padding-top: 10px;
-            padding-bottom: 10px;
-        }
-        #flotLine5  {
-             height: 105px;
-        }
-
-        #flotBarChart {
-            height: 150px;
-        }
-        #cellPaiChart{
-            height: 160px;
-        }
-
-    </style>
+   </style>
 </head>
 
 <body>
     <!--Left Panel -->
-	<?php  //include('../assets/nav/leftNav.php')?>
+	<?php //include('assets/nav/leftNav.php')?>
     <!-- Right Panel -->
     <?php include('assets/nav/IndexRightNav.php')?>
     <!-- /#header -->
@@ -89,7 +39,7 @@
                             <div class="card-header">
                                 <strong class="card-title">Add New User</strong>
                             </div>
-                            <form action="summon_add_process.php" method="post">
+                            <form action="add_user_process.php" method="post">
                                 <div class="card-body card-block">
                                 	<div class="form-group row col-sm-12">
                                 		<div class="col-sm-6">
@@ -106,56 +56,25 @@
                                             <label for="password" class=" form-control-label"><small class="form-text text-muted">Password</small></label>
                                             <input type="text" id="password" name="password" placeholder="Enter password" class="form-control">
                                         </div>
+                                        <div class="col-sm-6">
+                                            <label for="email" class=" form-control-label"><small class="form-text text-muted">Email</small></label>
+                                            <input type="text" id="email" name="email" placeholder="Enter email" class="form-control">
+                                        </div>
                                     </div>
-                                    <div class="row form-group col-sm-12">
-                                        <div class="col col-md-1"><label class=" form-control-label">Access</label></div>
-                                        <div class="col col-md-3">
-                                            <div class="form-check">
-                                                <div class="checkbox">
-                                                    <label class="form-check-label ">
-                                                        <input type="checkbox" id="cr_addUser" name="cr_addUser" value="" class="form-check-input">Add User
-                                                    </label>
-                                                </div>
-                                                <div class="checkbox">
-                                                    <label class="form-check-label ">
-                                                        <input type="checkbox" id="cr_vehicle" name="cr_vehicle" value="" class="form-check-input"> Vehicle
-                                                    </label>
-                                                </div>
-                                                <div class="checkbox">
-                                                    <label class="form-check-label ">
-                                                        <input type="checkbox" id="cr_safety" name="cr_safety" value="" class="form-check-input"> Safety
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col col-md-3">
-                                            <div class="form-check">
-                                                <div class="checkbox">
-                                                    <label class="form-check-label ">
-                                                        <input type="checkbox" id="cr_telekomANDinternet" name="cr_telekomANDinternet" value="" class="form-check-input">Bill
-                                                    </label>
-                                                </div>
-                                                <div class="checkbox">
-                                                    <label class="form-check-label ">
-                                                        <input type="checkbox" id="cr_security" name="cr_security" value="" class="form-check-input"> Security
-                                                    </label>
-                                                </div>
-                                                <div class="checkbox">
-                                                    <label class="form-check-label ">
-                                                        <input type="checkbox" id="cr_farmMaintenance" name="cr_farmMaintenance" value="" class="form-check-input"> Farm Maintenance
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col col-md-3">
-                                            <div class="form-check">
-                                                <div class="checkbox">
-                                                    <label class="form-check-label ">
-                                                        <input type="checkbox" id="cr_assetManagement" name="cr_assetManagement" value="" class="form-check-input">Asset Management
-                                                    </label>
-                                                </div>                                                
-                                            </div>
-                                        </div>
+                                    <div class="form-group col-sm-12">
+                                        <div class="col col-md-1"><label class=" form-control-label"><strong>Access</strong></label></div>
+                                        <!-- Populate the checkbox based on the module/system in the database -->
+                                        <?php 
+                                        $query = "SELECT * FROM admin_system";
+                                        $sql_result = mysqli_query($conn_admin_db, $query)or die(mysqli_error($conn_admin_db));
+                                        while($row = mysqli_fetch_assoc($sql_result)){?>
+                                              <div class="form-check form-group col-sm-12">
+                                                <input type="checkbox" class="form-check-input" name="system[]" value="<?=$row['sid'];?>">
+                                                <label class="form-check-label"><?=$row['sname']?></label>
+                                              </div>
+                                        <?php }
+                                        ?>
+                                        
                                     </div>
                                     <div class="card-body">
                                         <button type="submit" id="save" name="save" class="btn btn-primary">Save</button>
@@ -192,24 +111,9 @@
     <script src="assets/js/script/bootstrap-datepicker.min.js"></script>
     
 	<script type="text/javascript">
-        $(document).ready(function() {
-          
-          $('#desc').hide(); 
-          $('#summon_type').change(function(){
-              if($('#summon_type').val() == 3) {
-                  $('#desc').show(); 
-              } else {
-                  $('#desc').hide(); 
-              } 
-          });
+    $(document).ready(function(){
 
-          $('#summon_date').datepicker({
-        	  	format: 'dd-mm-yyyy',
-              	autoclose: true,
-              	todayHighlight: true,       
-           });
-          
-      });
+    });
 
     function isNumberKey(evt){
 		var charCode = (evt.which) ? evt.which : evt.keyCode;

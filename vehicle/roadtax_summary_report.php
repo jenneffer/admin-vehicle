@@ -102,14 +102,14 @@
                                             <label for="date_start" class="form-control-label"><small class="form-text text-muted">Date Start</small></label>
                                             <div class="input-group">
                                               <input type="text" id="date_start" name="date_start" class="form-control" value="<?=$date_start?>" autocomplete="off">
-                                              <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></i></div>
+                                              <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
                                             </div>                            
                                         </div>
                                         <div class="col-sm-3">
                                             <label for="date_end" class="form-control-label"><small class="form-text text-muted">Date End</small></label>
                                             <div class="input-group">
                                               <input type="text" id="date_end" name="date_end" class="form-control" value="<?=$date_end?>" autocomplete="off">
-                                              <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></i></div>
+                                              <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
                                             </div>                             
                                         </div>
                                         <div class="col-sm-4">                                    	

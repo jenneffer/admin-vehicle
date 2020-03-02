@@ -116,7 +116,7 @@
                                         
                                         if(mysqli_num_rows(mysqli_query($conn_admin_db,$sql_query)) > 0){
                                             $count = 0;
-                                            $sql_result = mysqli_query($conn_admin_db, $sql_query)or die(mysqli_error());
+                                            $sql_result = mysqli_query($conn_admin_db, $sql_query)or die(mysqli_error($conn_admin_db));
                                                 while($row = mysqli_fetch_array($sql_result)){ 
                                                     $count++;
                                                     $summon_type = $row['summon_desc'] != NULL ? $row['st_name'] ." ( ". $row['summon_desc'] ." ) " : $row['st_name'];
@@ -213,7 +213,7 @@
                                 <label class="form-control-label"><small class="form-text text-muted">Summon's Date</small></label>
                                 <div class="input-group input-inline">
                                     <input class="form-control" id="summon_date" name="summon_date" value="">
-                                    <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></i></div>
+                                    <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
                                 </div>                                
                             </div> 
                             <div class="col-sm-6">

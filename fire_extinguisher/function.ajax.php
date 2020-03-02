@@ -187,7 +187,7 @@
                                 <span id='.$row['fe_id'].' data-toggle="modal" class="delete_data" data-target="#deleteItem"><i class="menu-icon fa fa-trash-alt"></i>
                                 </span>';
                 $data = array(
-                    $count,
+                    $count.".",
                     $row['model'],
                     $row['comp_code'],
                     $row['location_name'],

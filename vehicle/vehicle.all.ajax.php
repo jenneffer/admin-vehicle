@@ -4,9 +4,11 @@
     global $conn_admin_db;
     session_start();
 
-    $action = isset($_POST['action']) && $_POST['action'] !="" ? $_POST['action'] : "";    
-    $date_start = isset($_POST['date_start']) ? $_POST['date_start'] : date('01-m-Y');
-    $date_end = isset($_POST['date_end']) ? $_POST['date_end'] : date('t-m-Y');
+    $action = isset($_POST['action']) && $_POST['action'] !="" ? $_POST['action'] : "";   
+    $data = isset($_POST['data']) ? $_POST['data'] : "";
+    $id = isset($_POST['id']) ? $_POST['id'] : "";
+//     $date_start = isset($_POST['date_start']) ? $_POST['date_start'] : date('01-m-Y');
+//     $date_end = isset($_POST['date_end']) ? $_POST['date_end'] : date('t-m-Y');
    
     if( $action != "" ){
         switch ($action){
@@ -38,6 +40,7 @@
                     $permit_no = $params['permit_no'];
                     $license_ref_no = $params['license_ref_no'];
                     $lpkp_permit_due_date = $params['lpkp_permit_due_date'];
+                    $vehicle_status = $params['vehicle_status'];
                     
                     //update vehicle table
                     $query = "UPDATE vehicle_vehicle
@@ -55,7 +58,8 @@
                         vv_disposed = '$dispose',
                         vv_finance = '$finance',
                         vv_driver = '$driver',
-                        vv_remark = '$v_remark'
+                        vv_remark = '$v_remark',
+                        vv_status = '$vehicle_status'
                         WHERE vv_id='".$vv_id."'";
 
                         $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
@@ -108,10 +112,52 @@
                         
                         echo json_encode($row);
                 }
-                break;                
+                break;  
+
+            case 'retrive_vehicle_total_lost':
+                retrive_vehicle_total_lost($id);
+                break;
+                
+            case 'delete_vehicle_total_loss':
+                delete_vehicle_total_loss($id);
+                break;
+                
             default:
                 break;
         }
     }
+    
+    function delete_vehicle_total_loss($id){
+        global $conn_admin_db;        
+        if(!empty($id)){
+            
+            $query = "UPDATE vehicle_total_loss SET status = 0 WHERE vt_id = '".$id."' ";
+            $result = mysqli_query($conn_admin_db, $query);
+            
+            if ($result) {
+                alert ("Deleted successfully", "vehicle_total_loss.php");
+            }
+            
+        }
+    }
+    
+    function retrive_vehicle_total_lost($id){        
+        global $conn_admin_db;
+        
+        if(!empty($id)){
+            $query = "SELECT * FROM vehicle_vehicle vv 
+                    INNER JOIN vehicle_total_loss vtl ON vtl.vt_vv_id = vv.vv_id
+                    INNER JOIN company ON company.id = vv.company_id
+                    WHERE vtl.vt_id='$id'";
+            
+            $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
+            $row = mysqli_fetch_array($result);
+            
+            echo json_encode($row);
+        }
+        
+    }
+    
+
     
 ?>

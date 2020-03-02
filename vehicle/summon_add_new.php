@@ -2,7 +2,7 @@
     require_once('../assets/config/database.php');
     require_once('../function.php');
     require_once('../check_login.php');
-// 	global $conn_admin_db;
+	global $conn_admin_db;
 // 	if(isset($_SESSION['cr_id'])) {
 // 		$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
 // 		$url = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
@@ -138,7 +138,7 @@
                                             <label for="summon_date" class=" form-control-label"><small class="form-text text-muted">Summon's Date</small></label>
                                             <div class="input-group">
                                                 <input id="summon_date" name="summon_date" class="form-control" autocomplete="off">
-                                                <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></i></div>
+                                                <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
                                             </div>
                                         </div> 
                                         <div class="col-sm-6">

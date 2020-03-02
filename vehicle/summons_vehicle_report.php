@@ -70,9 +70,7 @@
 	}
 	
 	$payment_count = [];
-	$payment_datas = [];
-	foreach ($arr_data as $data){
-	    $payment_datas[$data['vs_id']] = $data['payment_data'];
+	foreach ($arr_data as $data){	   
 	    $payment_count[] = count($data['payment_data']);
 	}
 	$max_value = !empty($payment_count) ? max($payment_count) : 0;
@@ -125,39 +123,6 @@
 	<!-- link to css -->
 	<?php include('../allCSS1.php')?>
    <style>
-    #weatherWidget .currentDesc {
-        color: #ffffff!important;
-    }
-        .traffic-chart {
-            min-height: 335px;
-        }
-        #flotPie1  {
-            height: 150px;
-        }
-        #flotPie1 td {
-            padding:3px;
-        }
-        #flotPie1 table {
-            top: 20px!important;
-            right: -10px!important;
-        }
-        .chart-container {
-            display: table;
-            min-width: 270px ;
-            text-align: left;
-            padding-top: 10px;
-            padding-bottom: 10px;
-        }
-        #flotLine5  {
-             height: 105px;
-        }
-
-        #flotBarChart {
-            height: 150px;
-        }
-        #cellPaiChart{
-            height: 160px;
-        }
         .hide{
             display:none
         }
@@ -166,7 +131,6 @@
             left:    0;
             bottom:   0;
         }
-
     </style>
 </head>
 
@@ -300,31 +264,31 @@
 	
 	<script type="text/javascript">
       $(document).ready(function() {
-          $('#vehicle_summon').DataTable({
-              "searching": false,
-        	  "dom": 'Bfrtip',
-              "buttons": [ 
-               { 
-              	extend: 'excelHtml5', 
-              	messageTop: 'Vehicle Summon ',
-              	footer: true 
-               },
-               {
-              	extend: 'print',
-              	messageTop: 'Vehicle Summon ',
-              	footer: true,
-              	customize: function ( win ) {
-                      $(win.document.body)
-                          .css( 'font-size', '10pt' );
+//           $('#vehicle_summon').DataTable({
+//               "searching": false,
+//         	  "dom": 'Bfrtip',
+//               "buttons": [ 
+//                { 
+//               	extend: 'excelHtml5', 
+//               	messageTop: 'Vehicle Summon ',
+//               	footer: true 
+//                },
+//                {
+//               	extend: 'print',
+//               	messageTop: 'Vehicle Summon ',
+//               	footer: true,
+//               	customize: function ( win ) {
+//                       $(win.document.body)
+//                           .css( 'font-size', '10pt' );
               
-                      $(win.document.body).find( 'table' )
-                          .addClass( 'compact' )
-                          .css( 'font-size', 'inherit' );
-                  }
-               }
-              ],
-           });
-    	  $('#date_start, #date_end').datepicker({
+//                       $(win.document.body).find( 'table' )
+//                           .addClass( 'compact' )
+//                           .css( 'font-size', 'inherit' );
+//                   }
+//                }
+//               ],
+//            });
+          $('#date_start, #date_end').datepicker({
               format: "dd-mm-yyyy",
               autoclose: true,
               orientation: "top left",

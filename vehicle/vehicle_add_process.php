@@ -24,6 +24,7 @@
         $permit_no = $_POST['permit_no'];
         $license_ref_no = $_POST['license_ref_no'];
         $lpkp_permit_due_date = $_POST['lpkp_permit_due_date'];
+        $vehicle_status = $_POST['vehicle_status'];
         
         $sql_insert = mysqli_query($conn_admin_db, "INSERT INTO vehicle_vehicle SET
                                             vv_vehicleNo = '".$vehicle_reg_no."',
@@ -41,6 +42,7 @@
                                             vv_remark = '".$v_remark."',
                                             vv_yearMade = '".$yearMade."',
                                             vv_capacity = '".$capacity."',
+                                            vv_status = '".$vehicle_status."',
                                             date_added = now()");
         
         // get the vrt_id from vehicle table

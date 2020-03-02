@@ -81,7 +81,7 @@
     
     function itemName($query){
         global $conn_admin_db;
-        $sql_query = mysqli_query($conn_admin_db,$query) or die ('Error: '.mysqli_error ());
+        $sql_query = mysqli_query($conn_admin_db,$query) or die ('Error: '.mysqli_error ($conn_admin_db));
         $item = mysqli_fetch_array($sql_query);
         return $item[0];
     }

@@ -42,7 +42,7 @@
             $updated_id = $args['id'];
             
             //update roadtax table
-            $query = "UPDATE vehicle_roadtax SET status = 0 WHERE vp_id = '".$updated_id."' ";
+            $query = "UPDATE vehicle_roadtax SET status = 0 WHERE vrt_id = '".$updated_id."' ";
             $result = mysqli_query($conn_admin_db, $query);
             
             //update insurance table
