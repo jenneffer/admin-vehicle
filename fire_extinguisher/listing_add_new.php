@@ -255,15 +255,11 @@
 
     	// Initialize select2
     	var select2 = $("#company").select2({
-//     		placeholder: "select option",
     	    selectOnClose: true
         });
     	select2.data('select2').$selection.css('height', '38px');
     	select2.data('select2').$selection.css('border', '1px solid #ced4da');
 
-
-
-        
         $('#fire_extinguisher').on("submit", function(event){  
             event.preventDefault();  
             if($('#serial_no').val() == ""){  

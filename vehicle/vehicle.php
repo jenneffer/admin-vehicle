@@ -68,7 +68,7 @@
                                     	<button type="submit" class="btn btn-primary button_search ">Submit</button>
                                     </div>
                                     <div class="col-sm-1">                                    	
-                                    	<button type="button" class="btn btn-primary button_search" onclick="printDiv('printableArea')">Print</button>
+                                    	<button type="button" class="btn btn-primary button_search" onclick="window.open('vehicle_print.php?company=<?php echo $select_c; ?>')">Print</button>
                                     </div>
                                     <div class="col-sm-1">                                    	
                                     	<button type="button" class="btn btn-primary button_search" onclick="fnExcelReport();">Export to Excel</button>
@@ -77,7 +77,7 @@
 							</form>
 							</div>
                             <div class="card-body" id="printableArea">
-                                <table id="vehicle_table" class="table table-striped table-bordered">
+                                <table id="vehicle_table" class="table table-striped responsive table-bordered">
                                     <thead>
                                         <tr>
                                             <th rowspan="2">No.</th>
@@ -358,7 +358,8 @@
     $(document).ready(function() {
         $('#vehicle_table').DataTable({
         	"paging": false,
-        	"pageLength": 1
+        	"pageLength": 1,
+        	"responsive": true
          });
         
         $(document).on('click', '.edit_data', function(){
@@ -496,9 +497,9 @@
 	}
 	
  	function fnExcelReport(){
-        var tab_text="<table border='2px'><tr bgcolor='#87AFC6'>";
+        var tab_text="<table border='1px'><tr>";
         var textRange; var j=0;
-        tab = document.getElementById('bootstrap-data-table'); // id of table
+        tab = document.getElementById('vehicle_table'); // id of table
         
         for(j = 0 ; j < tab.rows.length ; j++) 
         {     
@@ -529,4 +530,10 @@
  	}
   </script>
 </body>
+<style>
+#printableArea{
+    font-size:11px;
+    margin:0px;
+}
+</style>
 </html>

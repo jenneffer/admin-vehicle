@@ -17,11 +17,12 @@ if ( mysqli_num_rows($rst) > 0 ){
     $menu_item = [];
     while( $row = mysqli_fetch_assoc( $rst ) ){
         $system_title = $row['sname'];
-        $menu_item[$row['title']][] = array(
+        $menu_item[$row['title']]['data'][]= array(
             'sub_menu_title' =>  $row['menu_title'],
             'sub_menu_url' =>  $row['menu_url'],
             'sub_menu_icon' =>  $row['menu_icon'],
         );
+        $menu_item[$row['title']]['icon'] = $row['icon'];
     }
     $data[$system_title] = $menu_item;
 }
@@ -38,9 +39,9 @@ if ( mysqli_num_rows($rst) > 0 ){
         			<li class="menu-title"><?=$sys_title?></li><!-- /.menu-title -->
         			<?php foreach ($item_menu as $m_title => $sub_item){?>
         			<li class="menu-item-has-children dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-cogs"></i><?=$m_title?></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon <?=$sub_item['icon'];?>"></i><?=$m_title?></a>
                         <ul class="sub-menu children dropdown-menu">
-                            <?php foreach ($sub_item as $item ){?>
+                            <?php foreach ($sub_item['data'] as $item ){?>
                             	<li><a href="<?=$item['sub_menu_url']?>"><i class="menu-icon <?=$item['sub_menu_icon']?>"></i><?=$item['sub_menu_title'];?></a></li>
                             <?php }?>
                         </ul>

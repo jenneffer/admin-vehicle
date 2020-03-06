@@ -68,6 +68,12 @@
         #cellPaiChart{
             height: 160px;
         }
+        .select2-selection__rendered {
+          margin: 5px;
+        }
+        .select2-selection__arrow {
+          margin: 5px;
+        }
 
     </style>
 </head>
@@ -179,10 +185,17 @@
     <script src="../assets/js/lib/data-table/buttons.colVis.min.js"></script>
     <script src="../assets/js/init/datatables-init.js"></script>
     <script src="../assets/js/script/bootstrap-datepicker.min.js"></script>
+    <script src="../assets/js/select2.min.js"></script>
     
 	<script type="text/javascript">
         $(document).ready(function() {
-          
+           // Initialize select2
+           var select2 = $("#vehicle_reg_no").select2({   
+               selectOnClose: true
+           });
+           select2.data('select2').$selection.css('height', '38px');
+           select2.data('select2').$selection.css('border', '1px solid #ced4da');
+        	
           $('#desc').hide(); 
           $('#summon_type').change(function(){
               if($('#summon_type').val() == 3) {
