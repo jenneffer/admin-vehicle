@@ -22,8 +22,7 @@
 	}
 	
 	//get the access module of current user
-	$cr_access_module = itemName("SELECT cr_access_module FROM credential WHERE cr_id = '$userId'");
-	
+	$cr_access_module = itemName("SELECT cr_access_module FROM credential WHERE cr_id = '$userId'");	
 	//get the system list
 	$query = "SELECT * FROM admin_system WHERE sid IN (".$cr_access_module.")";
 	$rst  = mysqli_query($conn_admin_db, $query)or die(mysqli_error($conn_admin_db));

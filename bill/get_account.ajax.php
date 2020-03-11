@@ -17,7 +17,7 @@
         $query = "SELECT acc_id , CONCAT((SELECT c.code FROM company c WHERE c.id = bill_account_setup.company_id), ' - ', bill_account_setup.serial_no ) AS comp_acc FROM bill_account_setup WHERE bill_type='$bill_type'";
     }
     else if($bill_type == 6){ //management fee
-        $query = "SELECT acc_id , CONCAT((SELECT c.code FROM company c WHERE c.id = bill_account_setup.company_id),' (',IF(bill_account_setup.owner_ref = '', bill_account_setup.unit_no, bill_account_setup.owner_ref),')') AS comp_acc FROM bill_account_setup WHERE bill_type='$bill_type'";
+        $query = "SELECT acc_id , CONCAT((SELECT c.code FROM company c WHERE c.id = bill_account_setup.company_id),' (',IF(bill_account_setup.owner_ref = '', bill_account_setup.unit_no, bill_account_setup.owner_ref),')',' - ', IF(property_type = 2,'HOUSE', 'SHOP LOT')) AS comp_acc FROM bill_account_setup WHERE bill_type='$bill_type'";
     }
     
     $result = mysqli_query($conn_admin_db, $query);

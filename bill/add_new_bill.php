@@ -70,7 +70,7 @@
 
 <body>
     <!--Left Panel -->
-	<?php  //include('../assets/nav/leftNav.php')?>
+	<?php  include('../assets/nav/leftNav.php')?>
     <!-- Right Panel -->
     <?php include('../assets/nav/rightNav.php')?>
     <!-- /#header -->
@@ -268,18 +268,18 @@
                                     <div id="5" class="billing">
                                     <div class="row form-group col-sm-12">
                                     	<div class="col-sm-3">
-                                    	<label for="date_entered" class=" form-control-label">Meter Reading (Based on Machine)</label>
-                                    	</div>
-                                    </div>                                                                        	 
-                                    <div class="row form-group col-sm-12"> 
-                                    	<div class="col-sm-4" id="date_entered">
-                                            <label for="date_entered" class=" form-control-label"><small class="form-text text-muted">Date</small></label>
+                                    		<label class=" form-control-label">Meter Reading (Based on Machine)</label>
+                                    	</div>                                    	
+                                    </div>    
+                                    <div class="row form-group col-sm-12">
+                                    	<div class="col-sm-4">
+                                            <label for="date_entered_fx" class=" form-control-label"><small class="form-text text-muted">Date</small></label>
                                             <div class="input-group">
-                                                <input type="text" id="date_entered" name="date_entered" class="form-control" autocomplete="off">
+                                                <input type="text" id="date_entered_fx" name="date_entered_fx" class="form-control" autocomplete="off">
                                                 <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
                                             </div>
-                                        </div>                                       
-                                    </div>
+                                        </div>
+                                    </div>                                                                    	 
                                     <div class="row form-group col-sm-12">
                                     	<div class="col-sm-4">
                                             <label for="full_color" class=" form-control-label"><small class="form-text text-muted">Full Color</small></label>
@@ -321,27 +321,39 @@
                                                 <input type="text" id="payment" name="payment" class="form-control" autocomplete="off">
                                             </div>
                                             <div class="col-sm-4">
-                                                <label for="insurance_premium" class=" form-control-label"><small class="form-text text-muted">Insurance Premium</small></label>
-                                                <input type="text" id="insurance_premium" name="insurance_premium" class="form-control" autocomplete="off">
-                                            </div>                                    
+                                            	<label for="payment_mode" class=" form-control-label"><small class="form-text text-muted">Payment Mode</small></label>
+                                            	<select id="payment_mode" name="payment_mode" class="form-control">
+                                            		<option value="">- Select -</option>
+                                            		<option value="cash">Cash</option>
+                                            		<option value="ibg">IBG</option>
+                                            	</select>
+                                            </div>                                 
                                         </div>
                                         <div class="row form-group col-sm-12">
+                                        <div class="col-sm-4">
+                                                <label for="insurance_premium" class=" form-control-label"><small class="form-text text-muted">Insurance Premium</small></label>
+                                                <input type="text" id="insurance_premium" name="insurance_premium" class="form-control" autocomplete="off">
+                                            </div>
                                         	<div class="col-sm-4">
                                                 <label for="interest_charges" class=" form-control-label"><small class="form-text text-muted">Interest Charge</small></label>
                                                 <input type="text" id="interest_charges" name="interest_charges" class="form-control" autocomplete="off">
                                             </div>
                                             <div class="col-sm-4">
-                                                <label for="ibg_date" class=" form-control-label"><small class="form-text text-muted">IBG Date</small></label>
-                                                <div class="input-group">
-                                                    <input type="text" id="ibg_date" name="ibg_date" class="form-control" autocomplete="off">
-                                                    <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
-                                                </div>
-                                            </div>                                    
+                                                <label for="or_no" class=" form-control-label"><small class="form-text text-muted">Official Receipt No.</small></label>
+                                                <input type="text" id="or_no" name="or_no" class="form-control" autocomplete="off">
+                                            </div>                                                                                
                                         </div>    
                                         <div class="row form-group col-sm-12">
                                         	<div class="col-sm-4">
-                                                <label for="or_no" class=" form-control-label"><small class="form-text text-muted">OR No.</small></label>
-                                                <input type="text" id="or_no" name="or_no" class="form-control" autocomplete="off">
+                                                <label for="bill_invoice_no" class=" form-control-label"><small class="form-text text-muted">Bill No. / Invoice No.</small></label>
+                                                <input type="text" id="bill_invoice_no" name="bill_invoice_no" class="form-control" autocomplete="off">
+                                            </div>
+                                        	<div class="col-sm-4">
+                                                <label for="payment_date" class=" form-control-label"><small class="form-text text-muted">Payment Date</small></label>
+                                                <div class="input-group">
+                                                    <input type="text" id="payment_date" name="payment_date" class="form-control" autocomplete="off">
+                                                    <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
+                                                </div>
                                             </div>
                                             <div class="col-sm-4">
                                                 <label for="receive_date" class=" form-control-label"><small class="form-text text-muted">Received Date</small></label>
@@ -435,7 +447,7 @@
 				$('.date, #cheque_no').hide();
 			}
 			else if($(this).val() == 6){
-				$('.date').hide();
+				$('.date, #cheque_no').hide();
 			}
         });
 
@@ -472,7 +484,7 @@
            });    
         });
 
-        $('#from_date, #to_date, #paid_date, #due_date, #date_entered').datepicker({
+        $('#from_date, #to_date, #paid_date, #due_date, #date_entered, #payment_date, #receive_date, #date_entered_fx').datepicker({
             format: "dd-mm-yyyy",
             autoclose: true,
             orientation: "top left",

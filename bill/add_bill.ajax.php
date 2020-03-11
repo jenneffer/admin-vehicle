@@ -27,15 +27,13 @@ if( $action != "" ){
                     insert_billing_telekom($param, $telefon_list);
                 }
                 elseif( $bill_type == 4 ){
-                    insert_billing_celcom($param);
-                    
+                    insert_billing_celcom($param);                    
                 }
                 elseif( $bill_type == 5 ){
-                    insert_billing_photocopy_machine($param);
-                    
+                    insert_billing_photocopy_machine($param);                    
                 }
                 elseif( $bill_type == 6 ){
-                    
+                    insert_billing_management($param);                    
                 }
                 
             }
@@ -44,6 +42,34 @@ if( $action != "" ){
         default:
             break;
     }
+}
+
+function insert_billing_management($param){
+    global $conn_admin_db;
+    $sel_account = $param['sel_account'];
+    $description = $param['description'];
+    $payment = $param['payment'];
+    $payment_mode = $param['payment_mode'];
+    $insurance_premium = $param['insurance_premium'];
+    $interest_charges = $param['interest_charges'];
+    $or_no = $param['or_no'];
+    $bill_invoice_no = $param['bill_invoice_no'];
+    $payment_date = $param['payment_date'];
+    $receive_date = $param['receive_date'];
+    
+    $query = "INSERT INTO bill_management_fee SET acc_id = '$sel_account',
+            description = '$description',
+            payment_amount = '$payment',
+            payment_mode = '$payment_mode',
+            insurance_premium = '$insurance_premium',
+            interest_charge = '$interest_charges',
+            official_receipt_no = '$or_no',
+            bill_inv_no = '$bill_invoice_no',
+            payment_date = '".dateFormat($payment_date)."',
+            received_date = '".dateFormat($receive_date)."' ";
+    
+    mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
+    
 }
 
 function insert_billing_photocopy_machine($param){
@@ -129,7 +155,7 @@ function insert_billing_sesb($param){
                     date_end = '".dateFormat($to_date)."',
                     paid_date = '".dateFormat($paid_date)."',
                     due_date = '".dateFormat($due_date)."'";
-    
+   
     mysqli_query($conn_admin_db, $query_insert_sesb) or die(mysqli_error($conn_admin_db));
     
 }
