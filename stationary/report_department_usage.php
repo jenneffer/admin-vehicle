@@ -7,7 +7,7 @@ global $conn_admin_db;
     $date_start = isset($_POST['date_start']) ? $_POST['date_start'] : date('01-m-Y');
     $date_end = isset($_POST['date_end']) ? $_POST['date_end'] : date('t-m-Y');
 
-    $query = "SELECT sst.department_id, sst.item_id, date_added, date_taken, item_name, department_name, 
+    $query = "SELECT sst.department_id, sst.item_id, date_added, date_taken, sst.item_name, sst.department_name, 
             SUM(quantity) as quantity FROM stationary_stock_take sst
             INNER JOIN stationary_item si ON si.id = sst.item_id
             INNER JOIN stationary_department sd ON sd.department_id = sst.department_id
@@ -123,7 +123,7 @@ global $conn_admin_db;
                                             $tbody .= "<tr>";
                                             $tbody .= "<td>".$count.".</td>";
                                             $tbody .= "<td>".$value['item_name']."</td>";
-                                            $tbody .= "<td>".$value['quantity']."</td>";
+                                            $tbody .= "<td style='text-align:center;'>".$value['quantity']."</td>";
                                             $tbody .= "</tr>";
                                         }
                                     }

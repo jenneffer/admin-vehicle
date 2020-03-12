@@ -7,13 +7,14 @@ global $conn_admin_db;
 $date_start = isset($_POST['date_start']) ? $_POST['date_start'] : date('01-m-Y');
 $date_end = isset($_POST['date_end']) ? $_POST['date_end'] : date('t-m-Y');
 
-$query = "SELECT item_name, SUM(quantity) AS stock_out, (SELECT SUM(stock_in) 
-        FROM stationary_stock WHERE item_id = si.id ) AS stock_in, 
-        (SELECT stock_balance FROM stationary_stock_balance WHERE item_id=si.id  ) AS stock_balance,
+$query = "SELECT si.item_name, SUM(quantity) AS stock_out, (SELECT SUM(stock_in) 
+        FROM stationary_stock WHERE item_id = si.id AND date_added BETWEEN '".dateFormat($date_start)."' AND '".dateFormat($date_end)."' ) AS stock_in, 
+        IF(sst.date_added IS NULL,'',(SELECT stock_balance FROM stationary_stock_balance WHERE item_id=si.id  )) AS stock_balance,
         si.unit 
         FROM stationary_item si
         LEFT JOIN stationary_stock_take sst ON sst.item_id = si.id AND sst.date_taken BETWEEN '".dateFormat($date_start)."' AND '".dateFormat($date_end)."'
-        GROUP BY si.id";
+        GROUP BY si.id
+        ORDER BY stock_out DESC";
 
 $sql_result = mysqli_query($conn_admin_db, $query)or die(mysqli_error($conn_admin_db));
 $arr_data = [];
