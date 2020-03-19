@@ -4,18 +4,12 @@ require_once('../function.php');
 require_once('../check_login.php');
 global $conn_admin_db;
 
-$select_account = isset($_POST['acc_no']) ? $_POST['acc_no'] : "";
+// $select_account = isset($_POST['acc_no']) ? $_POST['acc_no'] : "";
 $year_select = isset($_POST['year_select']) ? $_POST['year_select'] : date("Y");
 ob_start();
 selectYear('year_select',$year_select,'','','form-control','','');
 $html_year_select = ob_get_clean();
 
-$company_name = "";
-$serial_no = "";
-if(!empty($select_account)){
-    $company_name = itemName("SELECT name FROM company WHERE id IN (SELECT company_id FROM bill_account_setup WHERE acc_id = '$select_account')");
-    $serial_no = itemName("SELECT serial_no FROM bill_account_setup WHERE acc_id='$select_account'");
-}
 
 ?>
 
@@ -60,20 +54,13 @@ if(!empty($select_account)){
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header">
-                                <strong class="card-title">PHOTOCOPY MACHINE (FUJIXEROX)</strong>
+                                <strong class="card-title">Insurance Premium</strong>
                             </div>
-                            <div class="card-body">
+							<div class="card-body">
                                 <form id="myform" enctype="multipart/form-data" method="post" action="">                	                   
                     	            <div class="form-group row col-sm-12">
-                                        <div class="col-sm-3">
-                                            <label for="acc_no" class="form-control-label"><small class="form-text text-muted">Account No.</small></label>
-                                            <?php
-                                                $photocopy_acc = mysqli_query ( $conn_admin_db, "SELECT acc_id , CONCAT((SELECT c.code FROM company c WHERE c.id = bill_account_setup.company_id),' - ',bill_account_setup.serial_no ) AS comp_acc FROM bill_account_setup WHERE bill_type='5'");
-                                                db_select ($photocopy_acc, 'acc_no', $select_account,'','-select-','form-control','');
-                                            ?>                           
-                                        </div>
                                         <div class="col-sm-2">
-                                        	<label for="year" class="form-control-label"><small class="form-text text-muted">Year</small></label>
+                                        	<label for="acc_no" class="form-control-label"><small class="form-text text-muted">Year</small></label>
                                         	<?=$html_year_select;?>
                                         </div>
                                         <div class="col-sm-4">                                    	
@@ -84,35 +71,27 @@ if(!empty($select_account)){
                             </div>
                             <hr>
                             <div class="card-body">
-                                <table id="sesb_table" class="table table-striped table-bordered">
+                                <table id="insurance_premium" class="table table-striped table-bordered">
                                     <thead>
                                         <tr>
-                                        	<th>Month</th>
-											<th>Full Color</th>
-                                            <th>B/W</th>
-											<th>Color A3</th>
-											<th>Copy</th>											
-											<th>Print</th>
-											<th>Fax</th>	
-											<th>Total</th>	
-											<th>Date</th>										
-                                        </tr>										
+                                        	<th colspan="2" style="text-align: center;">Premium Date</th>
+											<th rowspan="2">INV No.</th>											
+											<th rowspan="2" style="text-align: center;">Description</th>
+											<th rowspan="2">Payment (RM)</th>
+											<th rowspan="2">Paid Date</th>
+											<th rowspan="2">Payment Mode</th>
+											<th rowspan="2">Official Receipt No.</th>
+                                        </tr>              
+                                        <tr>
+                                        	<th>From</th>
+                                        	<th>To</th>
+                                        </tr>                          
                                     </thead>
                                     <tbody>                                      
                                     </tbody> 
                                     <tfoot>
-                                    <tr>
-                                            <td class="text-left font-weight-bold">TOTAL</td>
-                                            <td class="text-right font-weight-bold"></td>
-                                            <td class="text-right font-weight-bold"></td>
-                                            <td class="text-right font-weight-bold"></td>
-                                            <td class="text-right font-weight-bold"></td>
-                                            <td class="text-right font-weight-bold"></td>
-                                            <td class="text-right font-weight-bold"></td>
-                                            <td class="text-right font-weight-bold"></td>
-                                            <td class="text-right font-weight-bold"></td>                                            
-                                        </tr>
-                                    </tfoot>                                  
+                                    	
+                                    </tfoot>                                                                   
                                 </table>
                             </div>
                         </div>
@@ -145,24 +124,19 @@ if(!empty($select_account)){
 	
 	<script type="text/javascript">
       $(document).ready(function() {
-    	  var company_name = '<?=$company_name;?>';
           var year = '<?=$year_select;?>';
-          var res = company_name.concat('_'+year);
-          var serial_no = '<?=$serial_no;?>';
-          
-          $('#sesb_table').DataTable({
+          $('#insurance_premium').DataTable({
               "searching": true,
-        	  "dom": 'Bfrtip',
-        	  "order" : [[ 8, "asc" ]],     
+        	  "dom": 'Bfrtip',    
               "buttons": [ 
                { 
               	extend: 'excelHtml5', 
-              	title: 'PHOTOCOPY MACHINE (FUJIXEROX)_'+res,
+              	title: 'Insurance Premium_' +year ,
               	footer: true 
                },
                {
               	extend: 'print',
-              	title: 'Company : '+company_name+'<br>'+'Serial No. : '+serial_no,
+              	title: 'Insurance Premium '+year,
               	footer: true,
               	customize: function ( win ) {
               		  $(win.document.body).find('h1').css('font-size', '12pt'); 
@@ -172,6 +146,7 @@ if(!empty($select_account)){
                       $(win.document.body).find( 'table' )
                           .addClass( 'compact' )
                           .css( 'font-size', 'inherit' );
+
                   }
                }
               ],
@@ -179,39 +154,34 @@ if(!empty($select_account)){
                   "url": "report_all.ajax.php",  
                   "type":"POST",       	        	
              	 	"data" : function ( data ) {
-      					data.action = 'report_photocopy_machine';
-      					data.filter = '<?=$select_account?>';
-      					data.year = '<?=$year_select?>';		
+      					data.action = 'insurance_premium';	      					
+      					data.year = '<?=$year_select?>';			
          	        }         	                 
                  },
-                 "footerCallback": function( tfoot, data, start, end, display ) {
-      				var api = this.api(), data;
-      				var numFormat = $.fn.dataTable.render.number( '\,', '.', 0, '' ).display;
+             "footerCallback": function( tfoot, data, start, end, display ) {
+  				var api = this.api(), data;
+  				var numFormat = $.fn.dataTable.render.number( '\,', '.', 2, '' ).display;
 
-     				api.columns([1,2,3,4,5,6,7], { page: 'current'}).every(function() {
-     					var sum = this
-     				    .data()
-     				    .reduce(function(a, b) {
-     				    var x = parseFloat(a) || 0;
-     				    var y = parseFloat(b) || 0;
-     				    	return x + y;
-     				    }, 0);			
-     				       
-     				    $(this.footer()).html(numFormat(sum));
-     				}); 
-      			},
-                 'columnDefs': [                	    
-                	    {
-                	        'targets': [8],
-                	        'visible': false,
-                	        'searchable': false
-                	    },
-                	    {
-                    	      "targets": [1,2,3,4,5,6,7], // your case first column
-                    	      "className": "text-center", 
-                    	      "render": $.fn.dataTable.render.number(',', '.', 0, '')               	                      	        	     
-                    	 }
-                	],
+ 				api.columns([4], { page: 'current'}).every(function() {
+ 					var sum = this
+ 				    .data()
+ 				    .reduce(function(a, b) {
+ 				    var x = parseFloat(a) || 0;
+ 				    var y = parseFloat(b) || 0;
+ 				    	return x + y;
+ 				    }, 0);			
+ 				       
+ 				    $(this.footer()).html(numFormat(sum));
+ 				}); 
+  			},
+  			'columnDefs': [
+           	  {
+           	      "targets": [4], // your case first column
+           	      "className": "text-right", 
+           	      "render": $.fn.dataTable.render.number(',', '.', 2, '')               	                      	        	     
+           	 }
+ 			],
+ 			
            });
 //           $('#date_start, #date_end').datepicker({
 //               format: "dd-mm-yyyy",

@@ -1,16 +1,18 @@
 <?php
-    require_once('assets/config/database.php');
-    require_once('function.php');
-	require_once('check_login.php');
-	global $conn_admin_db;
+require_once('../assets/config/database.php');
+require_once('../function.php');
+require_once('../check_login.php');
+global $conn_admin_db;
+
+$arr_item_unit = array(
+    'pieces' => 'Pieces',
+    'packet' => 'Packet',
+    'box' => 'Box'
+);
 
 ?>
 
-<!doctype html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang=""> <!--<![endif]-->
+<!doctype html><html class="no-js" lang="">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -18,16 +20,50 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	<!-- link to css -->
-	<?php include('allCSS.php')?>
+	<?php include('../allCSS1.php')?>
    <style>
-   </style>
+    #weatherWidget .currentDesc {
+        color: #ffffff!important;
+    }
+        .traffic-chart {
+            min-height: 335px;
+        }
+        #flotPie1  {
+            height: 150px;
+        }
+        #flotPie1 td {
+            padding:3px;
+        }
+        #flotPie1 table {
+            top: 20px!important;
+            right: -10px!important;
+        }
+        .chart-container {
+            display: table;
+            min-width: 270px ;
+            text-align: left;
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+        #flotLine5  {
+             height: 105px;
+        }
+
+        #flotBarChart {
+            height: 150px;
+        }
+        #cellPaiChart{
+            height: 160px;
+        }
+
+    </style>
 </head>
 
 <body>
     <!--Left Panel -->
-	<?php //include('assets/nav/leftNav.php')?>
+	<?php  include('../assets/nav/leftNav.php')?>
     <!-- Right Panel -->
-    <?php include('assets/nav/IndexRightNav.php')?>
+    <?php include('../assets/nav/rightNav.php')?>
     <!-- /#header -->
     <!-- Content -->
         <div id="right-panel" class="right-panel">
@@ -38,8 +74,9 @@
                         <div class="card">
                             <div class="card-header">
                                 <strong class="card-title">Add New User</strong>
-                            </div>
-                            <form action="add_user_process.php" method="post">
+                            </div>     
+                           <div class="card-body">
+                           	<form action="add_user_process.php" method="post">
                                 <div class="card-body card-block">
                                 	<div class="form-group row col-sm-12">
                                 		<div class="col-sm-6">
@@ -82,54 +119,51 @@
                                     </div>
                                 </div>
                             </form>
+                           </div>
                         </div>
                     </div>
                 </div>
             </div><!-- .animated -->
         </div><!-- .content -->
         </div>
-        <div class="clearfix"></div>
-        <!-- Footer -->
-        <?PHP include('footer.php')?>
+    <div class="clearfix"></div>
+    <!-- Footer -->
+    <?PHP include('../footer.php')?>
         <!-- /.site-footer -->
-    <!-- from right panel page -->
     <!-- /#right-panel -->
 
     <!-- link to the script-->
-	<?php include ('allScript.php')?>
+	<?php include ('../allScript2.php')?>
 	<!-- Datatables -->
-	<script src="assets/js/lib/data-table/datatables.min.js"></script>
-    <script src="assets/js/lib/data-table/dataTables.bootstrap.min.js"></script>
-    <script src="assets/js/lib/data-table/dataTables.buttons.min.js"></script>
-    <script src="assets/js/lib/data-table/buttons.bootstrap.min.js"></script>
-    <script src="assets/js/lib/data-table/jszip.min.js"></script>
-    <script src="assets/js/lib/data-table/vfs_fonts.js"></script>
-    <script src="assets/js/lib/data-table/buttons.html5.min.js"></script>
-    <script src="assets/js/lib/data-table/buttons.print.min.js"></script>
-    <script src="assets/js/lib/data-table/buttons.colVis.min.js"></script>
-    <script src="assets/js/init/datatables-init.js"></script>
-    <script src="assets/js/script/bootstrap-datepicker.min.js"></script>
-    
-	<script type="text/javascript">
-    $(document).ready(function(){
-
-    });
-
-    function isNumberKey(evt){
-		var charCode = (evt.which) ? evt.which : evt.keyCode;
-		if (charCode != 46 && charCode > 31 
-		&& (charCode < 48 || charCode > 57))
-		return false;
-		return true;
-	}  
+	<script src="../assets/js/lib/data-table/datatables.min.js"></script>
+    <script src="../assets/js/lib/data-table/dataTables.bootstrap.min.js"></script>
+    <script src="../assets/js/lib/data-table/dataTables.buttons.min.js"></script>
+    <script src="../assets/js/lib/data-table/buttons.bootstrap.min.js"></script>
+    <script src="../assets/js/lib/data-table/jszip.min.js"></script>
+    <script src="../assets/js/lib/data-table/vfs_fonts.js"></script>
+    <script src="../assets/js/lib/data-table/buttons.html5.min.js"></script>
+    <script src="../assets/js/lib/data-table/buttons.print.min.js"></script>
+    <script src="../assets/js/lib/data-table/buttons.colVis.min.js"></script>
+    <script src="../assets/js/init/datatables-init.js"></script>
+    <script src="../assets/js/script/bootstrap-datepicker.min.js"></script>
 	
-	function isNumericKey(evt){
-		var charCode = (evt.which) ? evt.which : evt.keyCode;
-		if (charCode != 46 && charCode > 31 
-		&& (charCode < 48 || charCode > 57))
-		return true;
-		return false;
-	} 
+	<script type="text/javascript">        
+        function isNumberKey(evt){
+        	var charCode = (evt.which) ? evt.which : evt.keyCode;
+        	if (charCode != 46 && charCode > 31 
+        	&& (charCode < 48 || charCode > 57))
+        	return false;
+        	return true;
+        }  
+        
+        function isNumericKey(evt){
+        	var charCode = (evt.which) ? evt.which : evt.keyCode;
+        	if (charCode != 46 && charCode > 31 
+        	&& (charCode < 48 || charCode > 57))
+        	return true;
+        	return false;
+        } 
+    });
   </script>
 </body>
 </html>

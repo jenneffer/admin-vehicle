@@ -5,18 +5,16 @@ require_once('../check_login.php');
 global $conn_admin_db;
 
 $select_company = isset($_POST['company']) ? $_POST['company'] : "";
+$year_select = isset($_POST['year_select']) ? $_POST['year_select'] : date("Y");
+ob_start();
+selectYear('year_select',$year_select,'','','form-control','','');
+$html_year_select = ob_get_clean();
 
-function addOrdinalNumberSuffix($num) {
-    if (!in_array(($num % 100),array(11,12,13))){
-        switch ($num % 10) {
-            // Handle 1st, 2nd, 3rd
-            case 1:  return $num.'st';
-            case 2:  return $num.'nd';
-            case 3:  return $num.'rd';
-        }
-    }
-    return $num.'th';
+$company_name = "";
+if(!empty($select_company)){
+    $company_name = itemName("SELECT name FROM company WHERE id = '$select_company'");
 }
+
 ?>
 
 <!doctype html>
@@ -72,6 +70,10 @@ function addOrdinalNumberSuffix($num) {
                                                 db_select ($company, 'company', $select_company,'','-select-','form-control','');
                                             ?>                           
                                         </div>
+                                        <div class="col-sm-2">
+                                        	<label for="acc_no" class="form-control-label"><small class="form-text text-muted">Year</small></label>
+                                        	<?=$html_year_select;?>
+                                        </div>
                                         <div class="col-sm-4">                                    	
                                         	<button type="submit" class="btn btn-primary button_search ">Submit</button>
                                         </div>
@@ -86,18 +88,49 @@ function addOrdinalNumberSuffix($num) {
                                         	<th>No.</th>
                                         	<th>User</th>	
 											<th>Position/Dept</th>
-                                            <th>HP No.</th>
+<!--                                             <th>HP No.</th> -->
 											<th>Acc No.</th>
-											<th>Celcom Limit</th>	
-											<th>Package</th>										
-											<th>Latest Package</th>	
-											<th>Limit (RM)</th>	
-											<th>Data</th>																			
-                                            <th>Remarks</th>                                            
+<!-- 											<th>Celcom Limit</th>	 -->
+<!-- 											<th>Package</th>										 -->
+<!-- 											<th>Latest Package</th>	 -->
+<!-- 											<th>Limit (RM)</th>	 -->
+<!-- 											<th>Data</th>																			 -->
+<!--                                             <th>Remarks</th>                                             -->
+                        					<th scope='col'>Jan</th>
+                                            <th scope='col'>Feb</th>
+                                            <th scope='col'>Mar</th>
+                                            <th scope='col'>Apr</th>
+                                            <th scope='col'>May</th>
+                                            <th scope='col'>Jun</th>
+                                            <th scope='col'>Jul</th>
+                                            <th scope='col'>Aug</th>
+                                            <th scope='col'>Sep</th>
+                                            <th scope='col'>Oct</th>
+                                            <th scope='col'>Nov</th>
+                                            <th scope='col'>Dec</th>
+											<th scope='col'>TOTAL</th>
                                         </tr>                                        									
                                     </thead>
                                     <tbody>                                      
-                                    </tbody>                                   
+                                    </tbody>  
+                                    <tfoot>
+                                    	<tr>
+                                            <td colspan="4" class="text-right font-weight-bold">Grand Total</td>
+                                            <td class="text-right font-weight-bold"></td>
+                                            <td class="text-right font-weight-bold"></td>
+                                            <td class="text-right font-weight-bold"></td>
+                                            <td class="text-right font-weight-bold"></td>
+                                            <td class="text-right font-weight-bold"></td>
+                                            <td class="text-right font-weight-bold"></td>
+                                            <td class="text-right font-weight-bold"></td>
+                                            <td class="text-right font-weight-bold"></td>
+                                            <td class="text-right font-weight-bold"></td>
+                                            <td class="text-right font-weight-bold"></td>
+                                            <td class="text-right font-weight-bold"></td>
+                                            <td class="text-right font-weight-bold"></td>
+                                            <td class="text-right font-weight-bold"></td>
+                                        </tr>
+                                    </tfoot>                                 
                                 </table>
                             </div>
                         </div>
@@ -130,26 +163,51 @@ function addOrdinalNumberSuffix($num) {
 	
 	<script type="text/javascript">
       $(document).ready(function() {
+          var company_name = '<?=$company_name;?>';
+          var year = '<?=$year_select;?>';
+          var res = company_name.concat('_'+year);
+          
           $('#telekom_table').DataTable({
               "searching": true,
         	  "dom": 'Bfrtip',
               "buttons": [ 
                { 
               	extend: 'excelHtml5', 
-              	messageTop: 'Vehicle Summon ',
+              	title: 'Celcom Mobile_' + res,
               	footer: true 
                },
                {
               	extend: 'print',
-              	messageTop: 'Vehicle Summon ',
+              	text: 'Print',
+              	title: company_name,
               	footer: true,
               	customize: function ( win ) {
-                      $(win.document.body)
-                          .css( 'font-size', '10pt' );
-              
-                      $(win.document.body).find( 'table' )
-                          .addClass( 'compact' )
+              		  $(win.document.body).find('h1').css('font-size', '12pt');              	     
+                      $(win.document.body).css( 'font-size', '10pt' );              
+                      $(win.document.body).find( 'table' ).addClass( 'compact' )
                           .css( 'font-size', 'inherit' );
+
+                      var last = null;
+                      var current = null;
+                      var bod = [];
+       
+                      var css = '@page { size: landscape; }',
+                          head = win.document.head || win.document.getElementsByTagName('head')[0],
+                          style = win.document.createElement('style');
+       
+                      style.type = 'text/css';
+                      style.media = 'print';
+       
+                      if (style.styleSheet)
+                      {
+                        style.styleSheet.cssText = css;
+                      }
+                      else
+                      {
+                        style.appendChild(win.document.createTextNode(css));
+                      }
+       
+                      head.appendChild(style);
                   }
                }
               ],
@@ -158,9 +216,34 @@ function addOrdinalNumberSuffix($num) {
                   "type":"POST",       	        	
              	 	"data" : function ( data ) {
       					data.action = 'report_celcom';
-      					data.filter = '<?=$select_company?>';				
+      					data.filter = '<?=$select_company?>';		
+      					data.year = '<?=$year_select?>';		
          	        }         	                 
                  },
+                 "footerCallback": function( tfoot, data, start, end, display ) {
+       				var api = this.api(), data;
+       				var numFormat = $.fn.dataTable.render.number( '\,', '.', 2, '' ).display;
+
+      				api.columns([4,5,6,7,8,9,10,11,12,13,14,15,16], { page: 'current'}).every(function() {
+      					var sum = this
+      				    .data()
+      				    .reduce(function(a, b) {
+      				    var x = parseFloat(a) || 0;
+      				    var y = parseFloat(b) || 0;
+      				    	return x + y;
+      				    }, 0);			
+      				       
+      				    $(this.footer()).html(numFormat(sum));
+      				}); 
+       			},
+      			'columnDefs': [
+                	  {
+                	      "targets": [4,5,6,7,8,9,10,11,12,13,14,15,16], // your case first column
+                	      "className": "text-right", 
+                	      "render": $.fn.dataTable.render.number(',', '.', 2, '')               	                      	        	     
+                	 }
+      			],
+
            });
 //           $('#date_start, #date_end').datepicker({
 //               format: "dd-mm-yyyy",

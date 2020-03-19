@@ -43,7 +43,7 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header">
-                                <strong class="card-title">Stock Take</strong>
+                                <strong class="card-title">Stock Out</strong>
                             </div>     
                            <div class="card-body">
                            <br>                            

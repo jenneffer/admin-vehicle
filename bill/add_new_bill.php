@@ -363,7 +363,11 @@
                                                 </div>
                                             </div>                                            
                                         </div>                                    	
-                                    </div>                                                  
+                                    </div>  
+                                    <!-- div for water bill(housing) -->
+                                    <div id="7" class="billing">
+                                    	
+                                    </div>                                                
                                     <div class="card-body">
                                         <button type="submit" id="save" name="save" class="btn btn-primary">Save</button>
                                         <button type="button" id="cancel" name="cancel" data-dismiss="modal" class="btn btn-secondary">Cancel</button>

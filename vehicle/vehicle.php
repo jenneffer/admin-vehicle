@@ -534,6 +534,7 @@
 #printableArea{
     font-size:11px;
     margin:0px;
+    padding:.5rem;
 }
 </style>
 </html>

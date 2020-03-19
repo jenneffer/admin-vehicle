@@ -36,7 +36,7 @@
     
     // select input - year list
     function selectYear($txt_name,$txt_value,$function,$default,$class,$tabindex){
-        $start_y = 2011;
+        $start_y = 2015;
         $end_y = date('Y')+10;
         echo "<select name='$txt_name' onchange='$function' class='$class'>\n";
         if($default <> '') echo "<option value=''>$default</option>\n";
@@ -84,5 +84,17 @@
         $sql_query = mysqli_query($conn_admin_db,$query) or die ('Error: '.mysqli_error ($conn_admin_db));
         $item = mysqli_fetch_array($sql_query);
         return $item[0];
+    }
+    
+    function addOrdinalNumberSuffix($num) {
+        if (!in_array(($num % 100),array(11,12,13))){
+            switch ($num % 10) {
+                // Handle 1st, 2nd, 3rd
+                case 1:  return $num.'st';
+                case 2:  return $num.'nd';
+                case 3:  return $num.'rd';
+            }
+        }
+        return $num.'th';
     }
 ?>

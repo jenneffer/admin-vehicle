@@ -12,7 +12,7 @@ global $conn_admin_db;
             INNER JOIN stationary_item si ON si.id = sst.item_id
             INNER JOIN stationary_department sd ON sd.department_id = sst.department_id
             WHERE date_taken BETWEEN '".dateFormat($date_start)."' AND '".dateFormat($date_end)."'
-            GROUP BY sst.department_id, sst.item_id";
+            GROUP BY sst.department_id, sst.item_id ORDER BY quantity DESC";
     
     $result = mysqli_query ( $conn_admin_db,$query);
     $arr_data = array();
@@ -40,6 +40,7 @@ global $conn_admin_db;
             left:    0;
             bottom:   0;
         }
+
 /*         @media print { */
 /*           body * { */
 /*             visibility: hidden; */
@@ -115,8 +116,8 @@ global $conn_admin_db;
                                     foreach ($arr_data as $dept_id => $data){                                       
                                         $dept_name = itemName("SELECT department_name FROM stationary_department WHERE department_id='$dept_id'");
              
-                                        $tbody .= "<tr><th colspan='3'>".$dept_name."</th></tr>";                                        
-                                        $tbody .= "<tr><th>No.</th><th>Item</th><th>Quantity</th></tr>";                                         
+                                        $tbody .= "<tr><th colspan='3' style='text-align:center;'>".$dept_name."</th></tr>";                                        
+                                        $tbody .= "<tr><th>No.</th><th>Item</th><th style='text-align:center;'>Quantity</th></tr>";                                         
                                         $count = 0;
                                         foreach ($data as $value){
                                             $count++;                                                                                           
@@ -246,6 +247,6 @@ global $conn_admin_db;
 
           return (sa);
       }
-  </script>
+  </script> 
 </body>
 </html>

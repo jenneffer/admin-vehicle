@@ -73,45 +73,40 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header">
-                                <strong class="card-title">List of Item</strong>
+                                <strong class="card-title">List of User</strong>
                             </div>     
                            <div class="card-body">
-                           <br>                            
-                            <button type="button" class="btn btn-primary mb-1 col-md-2" data-toggle="modal" data-target="#addItem">
-                               Add New Item
-							</button>
+                           <br>                                                        
                                 <table id="item-data-table" class="table table-striped table-bordered">
                                     <thead>
                                         <tr>
                                             <th>No.</th>
-											<th>Item</th>
-											<th>Unit</th>
+											<th>Name</th>
+											<th>Email</th>
 											<th>&nbsp;</th>
                                         </tr>
                                     </thead>
                                     <tbody>
 
                                     <?php 
-                                        $sql_query = "SELECT * FROM stationary_item WHERE status='1'"; //only show active vehicle 
-                                        if(mysqli_num_rows(mysqli_query($conn_admin_db,$sql_query)) > 0){
-                                            $count = 0;
-                                            $sql_result = mysqli_query($conn_admin_db, $sql_query)or die(mysqli_error($conn_admin_db));
-                                                while($row = mysqli_fetch_array($sql_result)){ 
-                                                    $count++;
-                                                    $unit = !empty($row['unit']) ? $arr_item_unit[$row['unit']] : "";
-                                                    ?>
-                                                    <tr>
-                                                        <td><?=$count?>.</td>
-                                                        <td><?=$row['item_name']?></td>
-                                                        <td><?=$unit?></td>
-                                                        <td>
-                                                        	<span id="<?=$row['id']?>" data-toggle="modal" class="edit_data" data-target="#editItem"><i class="fa fa-edit"></i></span>
-                                                        	<span id="<?=$row['id']?>" data-toggle="modal" class="delete_data" data-target="#deleteItem"><i class="fas fa-trash-alt"></i></span>
-                                                        </td>
-                                                    </tr>
-                                    <?php
-                                                }
+                                        $sql_query = "SELECT * FROM credential"; //only show active vehicle                                         
+                                        $count = 0;
+                                        $sql_result = mysqli_query($conn_admin_db, $sql_query)or die(mysqli_error($conn_admin_db));
+                                            while($row = mysqli_fetch_array($sql_result)){ 
+                                                $count++;                                                    
+                                                ?>
+                                                <tr>
+                                                    <td><?=$count?>.</td>
+                                                    <td><?=$row['cr_name']?></td>
+                                                    <td><?=$row['cr_email']?></td>
+                                                    <td>
+                                                    	<span id="<?=$row['cr_id']?>" data-toggle="modal" class="edit_data" data-target="#editItem"><i class="fa fa-edit"></i></span>
+                                                    	<span id="<?=$row['cr_id']?>" data-toggle="modal" class="delete_data" data-target="#deleteItem"><i class="fas fa-trash-alt"></i></span>
+                                                    </td>
+                                                </tr>
+                                <?php
                                             }
+                                            
                                     ?>
                                     </tbody>
                                 </table>
@@ -122,74 +117,54 @@
             </div><!-- .animated -->
         </div><!-- .content -->
         </div>
-        
-        <!-- Modal Add new item -->
-        <div id="addItem" class="modal fade">
-            <div class="modal-dialog modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title">Add New</h4>
-                    </div>
-                    <div class="modal-body">
-                    <form role="form" method="POST" action="" id="add_form">
-                    <input type="hidden" id="item_id" name="item_id" value="">
-                    <div class="form-group row col-sm-12">
-                    	<div class="col-sm-12">
-                            <label for="item_name" class=" form-control-label"><small class="form-text text-muted">Item </small></label>
-                            <div>
-                            	<input type="text" id="item_name" name="item_name" placeholder="Enter item name" class="form-control">
-                        	</div>
-                        </div>
-                    </div>
-                    <div class="form-group row col-sm-12">
-                    	<div class="col-sm-6">
-                    	<label for="unit" class=" form-control-label"><small class="form-text text-muted">Unit </small></label>
-                    	<select name="item_unit" id="item_unit" class="form-control">
-                    		<option value="0">-select-</option>
-                            <option value="pieces">Pieces</option>
-                            <option value="packet">Packet</option>
-                            <option value="box">Box</option>
-                        </select>
-                    	</div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary save_data ">Save</button>
-                    </div>
-                    </form>
-                    </div>
-                </div>
-            </div>
-        </div>
+       
         <!-- Modal edit item  -->
         <div id="editItem" class="modal fade">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Edit Item</h4>
+                    <h4 class="modal-title">Edit User</h4>
                 </div>
                 <div class="modal-body">
                     <form role="form" method="POST" action="" id="update_form">
                         <input type="hidden" name="_token" value="">
                         <input type="hidden" id="id" name="id" value="">
-                        <div class="form-group row col-sm-12">
-                        	<div class="col-sm-12">
-                                <label for="name" class=" form-control-label"><small class="form-text text-muted">Item </small></label>
-                                <div>
-                                	<input type="text" id="name" name="name" class="form-control">
-                            	</div>
+                        <div class="card-body card-block">
+                        	<div class="form-group row col-sm-12">
+                        		<div class="col-sm-6">
+                                    <label for="name" class=" form-control-label"><small class="form-text text-muted">Name</small></label>
+                                    <input type="text" id="name" name="name" placeholder="Enter name" class="form-control">
+                                </div>
+                                <div class="col-sm-6">
+                                    <label for="username" class=" form-control-label"><small class="form-text text-muted">Username</small></label>
+                                    <input type="text" id="username" name="username" placeholder="Enter username" class="form-control">
+                                </div>                    
                             </div>
-                    	</div>
-                    	<div class="form-group row col-sm-12">
-                    	<div class="col-sm-6">
-                        	<label for="unit" class=" form-control-label"><small class="form-text text-muted">Unit </small></label>
-                        	<select name="unit" id="unit" class="form-control">
-                        		<option value="0">-select-</option>
-                                <option value="pieces">Pieces</option>
-                                <option value="packet">Packet</option>
-                                <option value="box">Box</option>
-                            </select>
-                        	</div>
+                            <div class="form-group row col-sm-12">
+<!--                             	<div class="col-sm-6"> -->
+<!--                                     <label for="password" class=" form-control-label"><small class="form-text text-muted">Password</small></label> -->
+<!--                                     <input type="text" id="password" name="password" placeholder="Enter password" class="form-control"> -->
+<!--                                 </div> -->
+                                <div class="col-sm-6">
+                                    <label for="email" class=" form-control-label"><small class="form-text text-muted">Email</small></label>
+                                    <input type="text" id="email" name="email" placeholder="Enter email" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group col-sm-12">
+                                <div class="col col-md-1"><label class=" form-control-label"><strong>Access</strong></label></div>
+                                <!-- Populate the checkbox based on the module/system in the database -->
+                                <?php 
+                                $query = "SELECT * FROM admin_system";
+                                $sql_result = mysqli_query($conn_admin_db, $query)or die(mysqli_error($conn_admin_db));
+                                while($row = mysqli_fetch_assoc($sql_result)){?>
+                                      <div class="form-check form-group col-sm-12">
+                                        <input type="checkbox" class="form-check-input" id="system[]" name="system[]" value="<?=$row['sid'];?>">
+                                        <label class="form-check-label"><?=$row['sname']?></label>
+                                      </div>
+                                <?php }
+                                ?>
+                                
+                            </div>                            
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
@@ -205,7 +180,7 @@
         <div class="modal-dialog modal-sm" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="staticModalLabel">Delete Item</h5>
+                    <h5 class="modal-title" id="staticModalLabel">Delete User</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -256,21 +231,36 @@
   	  	});
         
         $(document).on('click', '.edit_data', function(){
-        	var id = $(this).attr("id");
+        	var id = $(this).attr("id");        	
         	$.ajax({
-        			url:"function.ajax.php",
+        			url:"user.ajax.php",
         			method:"POST",
-        			data:{action:'retrieve_item', id:id},
+        			data:{action:'retrieve_user', id:id},
         			dataType:"json",
-        			success:function(data){            			
+        			success:function(data){  
+            			var access_module = data.cr_access_module;
+            			var res = access_module.split(",");
+            			res.forEach(function(value){
+                			console.log(value);
+            				$(":checkbox[value="+value+"]").prop("checked","true");
+            			});
+            			console.log(res);	         			
         				$('#id').val(id);					
-                        $('#name').val(data.item_name);        
-                        $('#unit').val(data.unit);                        
+                        $('#name').val(data.cr_name); 
+//                         $('#password').val(data.cr_password);      
+                        $('#username').val(data.cr_username);        
+                        $('#email').val(data.cr_email);   
+                        
                         $('#editItem').modal('show');
         			}
         		});
         });
-    
+
+        //reset the modal to it original form -- checkbox issue
+        $('#editItem').on('hidden.bs.modal', function () {
+            $('#editItem form')[0].reset();
+        });
+        
         $(document).on('click', '.delete_data', function(){
         	var id = $(this).attr("id");
         	$('#delete_record').data('id', id); //set the data attribute on the modal button
@@ -280,9 +270,9 @@
     	$( "#delete_record" ).click( function() {
     		var ID = $(this).data('id');
     		$.ajax({
-    			url:"function.ajax.php",
+    			url:"user.ajax.php",
     			method:"POST",    
-    			data:{action:'delete_item', id:ID},
+    			data:{action:'delete_user', id:ID},
     			success:function(data){	  						
     				$('#deleteItem').modal('hide');		
     				location.reload();		
@@ -295,14 +285,17 @@
           if($('#name').val() == ""){  
                alert("Item name is required");  
           }     
-          else if($('#unit').val == ""){
-        	  alert("Unit is required");  
+          else if($('#username').val == ""){
+        	  alert("Username is required");  
+          }
+          else if($('#email').val == ""){
+        	  alert("Email is required");  
           }
           else{  
                $.ajax({  
-                    url:"function.ajax.php",  
+                    url:"user.ajax.php",  
                     method:"POST",  
-                    data:{action:'update_item', data: $('#update_form').serialize()},  
+                    data:{action:'update_user', data: $('#update_form').serialize()},  
                     success:function(data){   
                          $('#editItem').modal('hide');  
                          $('#bootstrap-data-table').html(data);
@@ -311,28 +304,6 @@
                });  
           }  
         }); 
-        
-        $('#add_form').on("submit", function(event){  
-            event.preventDefault();  
-            if($('#item_name').val() == ""){  
-                 alert("Item name is required");  
-            } 
-            else if($('#item_unit').val == ""){
-          	  alert("Unit is required");  
-            }    
-            else{  
-                 $.ajax({  
-                      url:"function.ajax.php",  
-                      method:"POST",  
-                      data:{action:'add_item', data: $('#add_form').serialize()},  
-                      success:function(data){   
-                           $('#editItem').modal('hide');  
-                           $('#bootstrap-data-table').html(data);
-                           location.reload();  
-                      }  
-                 });  
-            }  
-          });
         
         function isNumberKey(evt){
         	var charCode = (evt.which) ? evt.which : evt.keyCode;

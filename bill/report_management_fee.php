@@ -4,18 +4,12 @@ require_once('../function.php');
 require_once('../check_login.php');
 global $conn_admin_db;
 
+$select_account = isset($_POST['acc_no']) ? $_POST['acc_no'] : "";
+$year_select = isset($_POST['year_select']) ? $_POST['year_select'] : date("Y");
+ob_start();
+selectYear('year_select',$year_select,'','','form-control','','');
+$html_year_select = ob_get_clean();
 
-function addOrdinalNumberSuffix($num) {
-    if (!in_array(($num % 100),array(11,12,13))){
-        switch ($num % 10) {
-            // Handle 1st, 2nd, 3rd
-            case 1:  return $num.'st';
-            case 2:  return $num.'nd';
-            case 3:  return $num.'rd';
-        }
-    }
-    return $num.'th';
-}
 ?>
 
 <!doctype html>
@@ -59,58 +53,43 @@ function addOrdinalNumberSuffix($num) {
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header">
-                                <strong class="card-title">SESB</strong>
+                                <strong class="card-title">Management Fee</strong>
                             </div>
-<!--                             <div class="card-body"> -->
-<!--                                 <form id="myform" enctype="multipart/form-data" method="post" action="">                	                    -->
-<!--                     	            <div class="form-group row col-sm-12"> -->
-<!--                                         <div class="col-sm-3"> -->
-<!--                                             <label for="date_start" class="form-control-label"><small class="form-text text-muted">Date Start</small></label> -->
-<!--                                             <div class="input-group"> -->
-<!--                                              <input type="text" id="date_start" name="date_start" class="form-control" value="<?=$date_start?>" autocomplete="off">
-<!--                                               <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div> -->
-<!--                                             </div>                             -->
-<!--                                         </div> -->
-<!--                                         <div class="col-sm-3"> -->
-<!--                                             <label for="date_end" class="form-control-label"><small class="form-text text-muted">Date End</small></label> -->
-<!--                                             <div class="input-group"> -->
-<!--                                             <input type="text" id="date_end" name="date_end" class="form-control" value="<?=$date_end?>" autocomplete="off">
-<!--                                               <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div> -->
-<!--                                             </div>                              -->
-<!--                                         </div> -->
-<!--                                         <div class="col-sm-4">                                    	 -->
-<!--                                         	<button type="submit" class="btn btn-primary button_search ">Submit</button> -->
-<!--                                         </div> -->
-<!--                                      </div>     -->
-<!--                                 </form> -->
-<!--                             </div> -->
-<!--                             <hr> -->
+                            <div class="card-body">
+                                <form id="myform" enctype="multipart/form-data" method="post" action="">                	                   
+                    	            <div class="form-group row col-sm-12">
+                                        <div class="col-sm-3">
+                                            <label for="acc_no" class="form-control-label"><small class="form-text text-muted">Account No.</small></label>
+                                            <?php
+                                                $management_acc = mysqli_query ( $conn_admin_db, "SELECT acc_id , CONCAT((SELECT c.code FROM company c WHERE c.id = bill_account_setup.company_id),' - ',bill_account_setup.owner_ref, bill_account_setup.unit_no) AS comp_acc FROM bill_account_setup WHERE bill_type='6'");
+                                                db_select ($management_acc, 'acc_no', $select_account,'','-select-','form-control','');
+                                            ?>                           
+                                        </div>
+                                        <div class="col-sm-2">
+                                        	<label for="acc_no" class="form-control-label"><small class="form-text text-muted">Year</small></label>
+                                        	<?=$html_year_select;?>
+                                        </div>
+                                        <div class="col-sm-4">                                    	
+                                        	<button type="submit" class="btn btn-primary button_search ">Submit</button>
+                                        </div>
+                                     </div>    
+                                </form>   
+                            </div>
+                            <hr>
                             <div class="card-body">
                                 <table id="sesb_table" class="table table-striped table-bordered">
                                     <thead>
                                         <tr>
-                                        	<th>Description</th>
-											<th colspan="3">Meter Reading</th>
-                                            <th rowspan="2">Current Usage (RM)</th>
-											<th rowspan="2">KWTBB (RM)</th>
-											<th rowspan="2">Penalty (RM)</th>											
-											<th rowspan="2">Power Factor Below 0.85</th>
-											<th rowspan="2">Additional Deposit (RM)</th>
-											<th rowspan="2">Other Charges (RM)</th>											
-                                            <th rowspan="2">Adjustment</th>
-                                            <th colspan="2">Period Date</th>
-                                            <th rowspan="2">Amount (RM)</th>
-                                            <th rowspan="2">Due Date</th>
-                                            <th rowspan="2">Cheque No.</th>
-                                            <th rowspan="2">Payment Date</th>
-                                        </tr>
-                                        <tr>
                                         	<th>Month</th>
-                                        	<th>From</th>
-                                        	<th>To</th>
-                                        	<th>Total Usage (KWH)</th>
-                                        	<th>From</th>
-                                        	<th>To</th>                                        	
+                                        	<th>Reference No.</th>
+                                        	<th>Description</th>
+                                        	<th>Payment (RM)</th>
+                                        	<th>Insurance Premium</th>
+                                        	<th>Interest Charge</th>    
+                                        	<th>Payment Date</th>
+                                        	<th>Payment Mode</th>
+                                        	<th> OR No.</th>
+                                        	<th>Recieved Date</th>                                     	
                                         </tr>										
                                     </thead>
                                     <tbody>                                      
@@ -149,6 +128,7 @@ function addOrdinalNumberSuffix($num) {
       $(document).ready(function() {
           $('#sesb_table').DataTable({
               "searching": true,
+              "order" : [[ 9, "asc" ]],          
         	  "dom": 'Bfrtip',
               "buttons": [ 
                { 
@@ -174,9 +154,18 @@ function addOrdinalNumberSuffix($num) {
                   "url": "report_all.ajax.php",  
                   "type":"POST",       	        	
              	 	"data" : function ( data ) {
-      					data.action = 'report_sesb';				
+      					data.action = 'report_management_fee';	
+      					data.filter = '<?=$select_account?>';	
+      					data.year = '<?=$year_select?>';				
          	        }         	                 
                  },
+  			'columnDefs': [
+            	  {
+            	      "targets": [3,4,5], // your case first column
+            	      "className": "text-right", 
+            	      "render": $.fn.dataTable.render.number(',', '.', 2, '')               	                      	        	     
+            	 }
+  			],
            });
 //           $('#date_start, #date_end').datepicker({
 //               format: "dd-mm-yyyy",

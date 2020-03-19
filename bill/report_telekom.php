@@ -5,17 +5,8 @@ require_once('../check_login.php');
 global $conn_admin_db;
 
 
-function addOrdinalNumberSuffix($num) {
-    if (!in_array(($num % 100),array(11,12,13))){
-        switch ($num % 10) {
-            // Handle 1st, 2nd, 3rd
-            case 1:  return $num.'st';
-            case 2:  return $num.'nd';
-            case 3:  return $num.'rd';
-        }
-    }
-    return $num.'th';
-}
+
+
 ?>
 
 <!doctype html>
@@ -89,19 +80,20 @@ function addOrdinalNumberSuffix($num) {
                                 <table id="telekom_table" class="table table-striped table-bordered">
                                     <thead>
                                         <tr>
-                                        	<th>Description</th>
-                                        	<th rowspan="2">Period Date</th>	
-											<th rowspan="2">Bill No.</th>
-                                            <th rowspan="2">Monthly Bill (RM)</th>
-											<th rowspan="2">Rebate (RM)</th>
-											<th rowspan="2">Credit Adjustment</th>	
-											<th rowspan="2">GST/ST 6%</th>										
-											<th rowspan="2">Adjustment</th>	
-											<th rowspan="2">Total Amount (RM)</th>	
-											<th rowspan="2">Due Date</th>																			
-                                            <th rowspan="2">Cheque No.</th>
-                                            <th rowspan="2">Payment Date</th>
-                                            
+                                       		<th>Description</th>
+                        					<th scope='col'>Jan</th>
+                                            <th scope='col'>Feb</th>
+                                            <th scope='col'>Mar</th>
+                                            <th scope='col'>Apr</th>
+                                            <th scope='col'>May</th>
+                                            <th scope='col'>Jun</th>
+                                            <th scope='col'>Jul</th>
+                                            <th scope='col'>Aug</th>
+                                            <th scope='col'>Sep</th>
+                                            <th scope='col'>Oct</th>
+                                            <th scope='col'>Nov</th>
+                                            <th scope='col'>Dec</th>
+											<th scope='col'>TOTAL</th>                                            
                                         </tr>                                        									
                                     </thead>
                                     <tbody>                                      
@@ -141,15 +133,16 @@ function addOrdinalNumberSuffix($num) {
           $('#telekom_table').DataTable({
               "searching": true,
         	  "dom": 'Bfrtip',
+			  "paging": false,
               "buttons": [ 
                { 
               	extend: 'excelHtml5', 
-              	messageTop: 'Vehicle Summon ',
+              	messageTop: 'Vehicle Summon',
               	footer: true 
                },
                {
               	extend: 'print',
-              	messageTop: 'Vehicle Summon ',
+              	messageTop: 'Vehicle Summon',
               	footer: true,
               	customize: function ( win ) {
                       $(win.document.body)
@@ -165,9 +158,16 @@ function addOrdinalNumberSuffix($num) {
                   "url": "report_all.ajax.php",  
                   "type":"POST",       	        	
              	 	"data" : function ( data ) {
-      					data.action = 'report_jabatan_air';				
+      					data.action = 'report_telekom';				
          	        }         	                 
                  },
+             'columnDefs': [
+           	  {
+           	      "targets": [1,2,3,4,5,6,7,8,9,10,11,12,13], // your case first column
+           	      "className": "text-right", 
+           	      //"render": $.fn.dataTable.render.number(',', '.', 2, '')               	                      	        	     
+           	 }
+ 			],
            });
 //           $('#date_start, #date_end').datepicker({
 //               format: "dd-mm-yyyy",

@@ -1,6 +1,6 @@
 <?php
-	include('assets/config/database.php');
-	include('function.php');
+	include('../assets/config/database.php');
+	include('../function.php');
 	session_start();
 	
 	global $conn_admin_db;

@@ -39,9 +39,154 @@ if( $action != "" ){
             }
             
             break;
+            
+        case 'add_water_bill':
+                insert_billing_water($data);
+            break;
+            
+        case 'add_late_interest_charge':
+                add_late_interest_charge($data);
+            break;
+            
+        case 'add_quit_rent_billing':
+                add_quit_rent_billing($data);
+            break;
+            
+        case 'add_premium_insurance':
+                add_premium_insurance($data);
+            break;
         default:
             break;
     }
+}
+
+function add_premium_insurance($data){
+    global $conn_admin_db;
+    $param = array();
+    parse_str($data, $param); //unserialize jquery string data
+    
+    $date_from = $param['date_from'];
+    $date_to = $param['date_to'];
+    $invoice_no = $param['invoice_no'];
+    $charged_amt = $param['charged_amt'];
+    $payment_mode = $param['payment_mode'];
+    $or_no = $param['or_no'];
+    $paid_date = $param['paid_date'];
+    $description = $param['description'];
+    
+    $query = "INSERT INTO bill_insurance_premium SET 
+            invoice_no = '$invoice_no',
+            description = '$description',
+            payment = '$charged_amt',
+            payment_mode = '$payment_mode',
+            or_no = '$or_no',
+            date_paid = '".dateFormat($paid_date)."',
+            date_from = '".dateFormat($date_from)."',
+            date_to = '".dateFormat($date_to)."' ";
+    
+    mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
+}
+
+function add_quit_rent_billing($data){
+    global $conn_admin_db;
+    $param = array();
+    parse_str($data, $param); //unserialize jquery string data
+    
+    $invoice_no = $param['invoice_no'];
+    $invoice_date = $param['invoice_date'];
+    $paid_date = $param['paid_date'];
+    $charged_amt = $param['charged_amt'];
+    $payment_mode = $param['payment_mode'];
+    $or_no = $param['or_no'];
+    $due_date = $param['due_date'];
+    $received_date = $param['received_date'];
+    $remark = $param['remark'];
+    
+    $query = "INSERT INTO bill_quit_rent_billing SET
+            inv_no = '$invoice_no',
+            invoice_date = '".dateFormat($invoice_date)."',
+            payment = '$charged_amt',
+            date_paid = '".dateFormat($paid_date)."',
+            payment_mode = '$payment_mode',
+            or_no = '$or_no',
+            due_date = '".dateFormat($due_date)."',
+            date_received = '".dateFormat($received_date)."',
+            remarks = '$remark' ";
+    
+    mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
+}
+
+function add_late_interest_charge($data){
+    global $conn_admin_db;
+    $param = array();
+    parse_str($data, $param); //unserialize jquery string data
+    
+    $bill_date = $param['bill_date'];
+    $invoice_no = $param['invoice_no'];
+    $payment_due_date = $param['payment_due_date'];
+    $charged_amt = $param['charged_amt'];
+    $payment_mode = $param['payment_mode'];
+    $or_no = $param['or_no'];
+    $description = $param['description'];
+    
+    $query = "INSERT INTO bill_late_interest_charge SET
+            bill_date = '".dateFormat($bill_date)."',
+            inv_no = '$invoice_no',
+            payment_due_date = '".dateFormat($payment_due_date)."',
+            description = '$description',
+            amount = '$charged_amt',
+            payment_mode = '$payment_mode',
+            or_no = '$or_no'";
+    
+    mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
+}
+
+function insert_billing_water($data){
+    global $conn_admin_db;
+    $param = array();
+    parse_str($data, $param); //unserialize jquery string data
+    
+    $invoice_no = $param['invoice_no'];
+    $invoice_date = $param['invoice_date'];
+    $receive_date = $param['receive_date'];
+    $from_date = $param['from_date'];
+    $to_date = $param['to_date'];
+    $paid_date = $param['paid_date'];
+    $due_date = $param['due_date'];
+    $description = $param['description'];
+    $previous_mr = $param['previous_mr'];
+    $current_mr = $param['current_mr'];
+    $charged_amt = $param['charged_amt'];
+    $surcharge = $param['surcharge'];
+    $adjustment = $param['adjustment'];
+    $payment_mode = $param['payment_mode'];
+    $or_no = $param['or_no'];
+    $total_consume = $current_mr - $previous_mr;
+    $total = $charged_amt + $surcharge + $adjustment;
+    
+    $rounded = round_up($total);
+    $adjustment = number_format(($rounded-$total), 2);
+    
+    $query = "INSERT INTO bill_water SET 
+            date_from = '".dateFormat($from_date)."',
+            date_to = '".dateFormat($to_date)."',
+            invoice_no = '$invoice_no',
+            invoice_date = '".dateFormat($invoice_date)."',
+            due_date = '".dateFormat($due_date)."',
+            description = '$description',
+            previous_mr = '$previous_mr',
+            current_mr = '$current_mr',
+            total_consume = '$total_consume',
+            charged_amount = '$charged_amt',
+            surcharge = '$surcharge',
+            adjustment = '$adjustment',
+            total = '$total',
+            paid_date = '".dateFormat($paid_date)."',
+            payment_mode = '$payment_mode',
+            or_no = '$or_no',
+            received_date = '".dateFormat($receive_date)."'";
+    
+    mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
 }
 
 function insert_billing_management($param){
@@ -75,7 +220,7 @@ function insert_billing_management($param){
 function insert_billing_photocopy_machine($param){
     global $conn_admin_db;
     $sel_account = $param['sel_account'];
-    $date_entered = $param['date_entered'];
+    $date_entered = $param['date_entered_fx'];
     $full_color = $param['full_color'];
     $black_white = $param['black_white'];
     $color_a3 = $param['color_a3'];

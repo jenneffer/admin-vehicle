@@ -5,18 +5,18 @@ require_once('../check_login.php');
 global $conn_admin_db;
 
 $select_account = isset($_POST['acc_no']) ? $_POST['acc_no'] : "";
+$year_select = isset($_POST['year_select']) ? $_POST['year_select'] : date("Y");
+ob_start();
+selectYear('year_select',$year_select,'','','form-control','','');
+$html_year_select = ob_get_clean();
 
-function addOrdinalNumberSuffix($num) {
-    if (!in_array(($num % 100),array(11,12,13))){
-        switch ($num % 10) {
-            // Handle 1st, 2nd, 3rd
-            case 1:  return $num.'st';
-            case 2:  return $num.'nd';
-            case 3:  return $num.'rd';
-        }
-    }
-    return $num.'th';
+$company_name = "";
+$acc_no = "";
+if(!empty($select_account)){
+    $company_name = itemName("SELECT name FROM company WHERE id IN (SELECT company_id FROM bill_account_setup WHERE acc_id = '$select_account')");
+    $acc_no = itemName("SELECT account_no FROM bill_account_setup WHERE acc_id='$select_account'");
 }
+
 ?>
 
 <!doctype html>
@@ -71,6 +71,10 @@ function addOrdinalNumberSuffix($num) {
                                                 $jabatan_air_acc = mysqli_query ( $conn_admin_db, "SELECT acc_id , CONCAT((SELECT c.code FROM company c WHERE c.id = bill_account_setup.company_id),' - ',bill_account_setup.account_no ) AS comp_acc FROM bill_account_setup WHERE bill_type='2'");
                                                 db_select ($jabatan_air_acc, 'acc_no', $select_account,'','-select-','form-control','');
                                             ?>                           
+                                        </div>
+                                        <div class="col-sm-1">
+                                        	<label for="acc_no" class="form-control-label"><small class="form-text text-muted">Year</small></label>
+                                        	<?=$html_year_select;?>
                                         </div>
                                         <div class="col-sm-4">                                    	
                                         	<button type="submit" class="btn btn-primary button_search ">Submit</button>
@@ -158,6 +162,11 @@ function addOrdinalNumberSuffix($num) {
 	
 	<script type="text/javascript">
       $(document).ready(function() {
+    	  var company_name = '<?=$company_name;?>';
+          var year = '<?=$year_select;?>';
+          var res = company_name.concat('_'+year);
+          var acc_no = '<?=$acc_no;?>';
+          
           $('#jabatan_air_table').DataTable({
               "searching": true,
         	  "dom": 'Bfrtip',
@@ -165,20 +174,43 @@ function addOrdinalNumberSuffix($num) {
               "buttons": [ 
                { 
               	extend: 'excelHtml5', 
-              	messageTop: 'Vehicle Summon ',
+              	title: 'Jabatan Air_'+res,
               	footer: true 
                },
                {
               	extend: 'print',
-              	messageTop: 'Vehicle Summon ',
+              	title: 'Jabatan Air <br>Company : '+company_name+'<br>'+'Account No. : '+acc_no+'<br>Year : '+year,
               	footer: true,
               	customize: function ( win ) {
+              		  $(win.document.body).find('h1').css('font-size', '12pt'); 
                       $(win.document.body)
                           .css( 'font-size', '10pt' );
               
                       $(win.document.body).find( 'table' )
                           .addClass( 'compact' )
                           .css( 'font-size', 'inherit' );
+
+                      var last = null;
+                      var current = null;
+                      var bod = [];
+       
+                      var css = '@page { size: landscape; }',
+                          head = win.document.head || win.document.getElementsByTagName('head')[0],
+                          style = win.document.createElement('style');
+       
+                      style.type = 'text/css';
+                      style.media = 'print';
+       
+                      if (style.styleSheet)
+                      {
+                        style.styleSheet.cssText = css;
+                      }
+                      else
+                      {
+                        style.appendChild(win.document.createTextNode(css));
+                      }
+       
+                      head.appendChild(style);
                   }
                }
               ],
@@ -187,7 +219,8 @@ function addOrdinalNumberSuffix($num) {
                   "type":"POST",       	        	
              	 	"data" : function ( data ) {
       					data.action = 'report_jabatan_air';	
-      					data.filter = '<?=$select_account?>';			
+      					data.filter = '<?=$select_account?>';
+      					data.year = '<?=$year_select?>';			
          	        }         	                 
                  },
              "footerCallback": function( tfoot, data, start, end, display ) {
