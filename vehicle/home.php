@@ -1,7 +1,9 @@
 <?php
-	require_once('../assets/config/database.php');
+    $root = $_SERVER['DOCUMENT_ROOT'] .'/admin';
+	require_once($root .'/assets/config/database.php');
 	
 	session_start();
+
 	if(isset($_SESSION['cr_id'])) {
 		$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
 		$url = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
@@ -11,7 +13,7 @@
 		// get id
 		$userId = $_SESSION['cr_id'];
 		$name = $_SESSION['cr_name'];
-		
+
 	} else {
 		$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
 		$url = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
@@ -28,11 +30,11 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Eng Peng Vehicle</title>
+    <title>Eng Peng Insurance</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	<!-- link to css -->
-	<?php include('../allCSS1.php')?>
+	<?php include($root .'/allCSS1.php')?>
    <style>
     #weatherWidget .currentDesc {
         color: #ffffff!important;
@@ -73,12 +75,12 @@
 
 <body>
     <!--Left Panel -->
-	<?php  include('../assets/nav/leftNav.php')?>
+	<?php  include($root .'/assets/nav/leftNav.php')?> 
     <!-- Right Panel -->
-    <?php include('../assets/nav/rightNav.php')?>
+    <?php include($root .'/assets/nav/rightNav.php')?>
         <!-- /#header -->
         <!-- Content -->
-        <div id="right-panel" class="right-panel">
+    <div id="right-panel" class="right-panel">
 		<div class="content">
             <div class="animated fadeIn">
 
@@ -185,24 +187,14 @@
                 
         <div class="clearfix"></div>
         <!-- Footer -->
-        <?PHP include('../footer.php')?>
+        <?PHP include($root .'/footer.php')?>
         <!-- /.site-footer -->
     </div> <!-- from right panel page -->
+</div>
     <!-- /#right-panel -->
 
     <!-- link to the script-->
-	<?php include ('../allScript2.php')?>
-	
-	<script src="../assets/js/lib/data-table/datatables.min.js"></script>
-    <script src="../assets/js/lib/data-table/dataTables.bootstrap.min.js"></script>
-    <script src="../assets/js/lib/data-table/dataTables.buttons.min.js"></script>
-    <script src="../assets/js/lib/data-table/buttons.bootstrap.min.js"></script>
-    <script src="../assets/js/lib/data-table/jszip.min.js"></script>
-    <script src="../assets/js/lib/data-table/vfs_fonts.js"></script>
-    <script src="../assets/js/lib/data-table/buttons.html5.min.js"></script>
-    <script src="../assets/js/lib/data-table/buttons.print.min.js"></script>
-    <script src="../assets/js/lib/data-table/buttons.colVis.min.js"></script>
-    <script src="../assets/js/init/datatables-init.js"></script>
+	<?php include ($root .'/allScript2.php')?>
 	
 	<script type="text/javascript">
         $(document).ready(function() {

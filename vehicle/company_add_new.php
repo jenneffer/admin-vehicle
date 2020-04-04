@@ -89,7 +89,7 @@
                             <div class="card-header">
                                 <strong class="card-title">Add New Company</strong>
                             </div>
-                            <form id="location_form" role="form" action="" method="post">
+                            <form id="company_form" role="form" action="" method="post">
                                 <div class="card-body card-block">
                                 	<div class="form-group row col-sm-12">
                                         <div class="col-sm-6">
@@ -145,19 +145,22 @@
 	<script type="text/javascript">
     $(document).ready(function() {
 
-        $('#location_form').on("submit", function(event){  
+        $('#company_form').on("submit", function(event){  
             event.preventDefault();  
-            if($('#location_code').val() == ""){  
-                 alert("Location code is required");  
+            if($('#company_code').val() == ""){  
+                 alert("Company code is required");  
             }  
-            else if($('#location_name').val() == ''){  
-                 alert("Location name is required");  
-            }                      
+            else if($('#company_name').val() == ''){  
+                 alert("Company name is required");  
+            } 
+            else if($('#company_reg_no').val() == ''){  
+                alert("Company registration number is required");  
+           	}                     
             else{  
                  $.ajax({  
-                      url:"function.ajax.php",  
+                      url:"company.ajax.php",  
                       method:"POST",  
-                      data:{action:'add_new_location', data : $('#location_form').serialize()},  
+                      data:{action:'add_new_company', data : $('#company_form').serialize()},  
                       success:function(data){ 
                           location.reload();                                                        	 
                       }  

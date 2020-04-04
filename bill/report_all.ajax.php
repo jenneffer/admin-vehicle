@@ -30,7 +30,7 @@ if( $action != "" ){
             break;
             
         case 'report_telekom':
-            get_monthly_bill_telekom($year);
+            get_monthly_bill_telekom($filter,$year);
             break;
             
         case 'report_water_bill':
@@ -548,8 +548,8 @@ function get_report_sesb($filter, $year){
     echo json_encode($arr_result);
 }
 
-function get_monthly_bill_telekom($year){
-    global $conn_admin_db;
+function get_monthly_bill_telekom($filter, $year){
+//     global $conn_admin_db;
     $monthto = 12;
     $arr_result = array(
         'sEcho' => 0,
@@ -558,23 +558,27 @@ function get_monthly_bill_telekom($year){
         'aaData' => array()
     );
     
-    $sql_query = "SELECT acc_id,account_no,user,position FROM bill_account_setup WHERE bill_type='3'";
-    $rst  = mysqli_query($conn_admin_db, $sql_query)or die(mysqli_error($conn_admin_db));
+//     $sql_query = "SELECT acc_id,account_no,user,position FROM bill_account_setup WHERE bill_type='3'";
+//     $rst  = mysqli_query($conn_admin_db, $sql_query)or die(mysqli_error($conn_admin_db));
     
-    while ($row = mysqli_fetch_assoc($rst)) {
-        $acc_id = $row['acc_id'];
-        $arr_bills = get_telekom_bill($acc_id, $year, $monthto);        
-    }
+//     while ($row = mysqli_fetch_assoc($rst)) {
+//         $acc_id = $row['acc_id'];
+//         $arr_bills = get_telekom_bill($acc_id, $year, $monthto);        
+//     }
+    $arr_bills = get_telekom_bill($filter, $year, $monthto);     
 
     $total_found_rows = 0;
     $arr_data = array();
     foreach ($arr_bills as $item_desc => $data){
         $total_found_rows++;        
         $total = 0;
-        if($item_desc != 'Payment Due Date'){
+        if($item_desc != 'Payment Due Date' && $item_desc != 'Cheque No' && $item_desc != 'Payment Date' ){
             for( $i=1; $i<=$monthto; $i++){
-                $total += $data[$i];
+//                 var_dump($data[$i]);
+                $total += is_null($data[$i]) ? 0 : (float)$data[$i];
             }
+            $total = number_format($total,2);
+
         }
         
         $datas = array(
@@ -591,7 +595,7 @@ function get_monthly_bill_telekom($year){
             $data[10],
             $data[11],
             $data[12],
-            $total
+            '<b>'.$total.'<b>'
     
         );
         $arr_data[] = $datas;
@@ -655,7 +659,7 @@ function get_monthly_fee($acc_id, $monthto){
     $result = array();
     for($m = 1; $m <= $monthto; $m++){
         $amount = itemName("SELECT monthly_bill FROM bill_telekom WHERE MONTH(date_start) = '$m' AND acc_id='$acc_id'");
-        $result[$m] = $amount;
+        $result[$m] = number_format($amount,2);
     }
     return $result;
 }
@@ -663,7 +667,7 @@ function get_rebate($acc_id, $monthto){
     $result = array();
     for($m = 1; $m <= $monthto; $m++){
         $amount = itemName("SELECT rebate FROM bill_telekom WHERE MONTH(date_start) = '$m' AND acc_id='$acc_id'");
-        $result[$m] = $amount;
+        $result[$m] = number_format($amount,2);
     }
     return $result;
 }
@@ -671,7 +675,7 @@ function get_credit_adjustment($acc_id, $monthto){
     $result = array();
     for($m = 1; $m <= $monthto; $m++){
         $amount = itemName("SELECT credit_adjustment FROM bill_telekom WHERE MONTH(date_start) = '$m' AND acc_id='$acc_id'");
-        $result[$m] = $amount;
+        $result[$m] = number_format($amount,2);
     }
     return $result;
 }
@@ -679,7 +683,7 @@ function get_gst_sst($acc_id, $monthto){
     $result = array();
     for($m = 1; $m <= $monthto; $m++){
         $amount = itemName("SELECT gst_sst FROM bill_telekom WHERE MONTH(date_start) = '$m' AND acc_id='$acc_id'");
-        $result[$m] = $amount;
+        $result[$m] = number_format($amount,2);
     }
     return $result;
 }
@@ -687,7 +691,7 @@ function get_adjustment($acc_id, $monthto){
     $result = array();
     for($m = 1; $m <= $monthto; $m++){
         $amount = itemName("SELECT adjustment FROM bill_telekom WHERE MONTH(date_start) = '$m' AND acc_id='$acc_id'");
-        $result[$m] = $amount;
+        $result[$m] = number_format($amount,2);
     }
     return $result;
 }
@@ -695,31 +699,31 @@ function get_total($acc_id, $monthto){
     $result = array();
     for($m = 1; $m <= $monthto; $m++){
         $amount = itemName("SELECT amount FROM bill_telekom WHERE MONTH(date_start) = '$m' AND acc_id='$acc_id'");
-        $result[$m] = $amount;
+        $result[$m] = number_format($amount,2);
     }
     return $result;
 }
 function get_payment_due_date($acc_id, $monthto){
     $result = array();
     for($m = 1; $m <= $monthto; $m++){
-        $amount = itemName("SELECT due_date FROM bill_telekom WHERE MONTH(date_start) = '$m' AND acc_id='$acc_id'");
-        $result[$m] = $amount;
+        $due_date = itemName("SELECT due_date FROM bill_telekom WHERE MONTH(date_start) = '$m' AND acc_id='$acc_id'");
+        $result[$m] = $due_date;
     }
     return $result;
 }
 function get_cheque_no($acc_id, $monthto){
     $result = array();
     for($m = 1; $m <= $monthto; $m++){
-        $amount = itemName("SELECT cheque_no FROM bill_telekom WHERE MONTH(date_start) = '$m' AND acc_id='$acc_id'");
-        $result[$m] = $amount;
+        $cheque_no = itemName("SELECT cheque_no FROM bill_telekom WHERE MONTH(date_start) = '$m' AND acc_id='$acc_id'");
+        $result[$m] = $cheque_no;
     }
     return $result;
 }
 function get_payment_date($acc_id, $monthto){
     $result = array();
     for($m = 1; $m <= $monthto; $m++){
-        $amount = itemName("SELECT paid_date FROM bill_telekom WHERE MONTH(date_start) = '$m' AND acc_id='$acc_id'");
-        $result[$m] = $amount;
+        $paid_date = itemName("SELECT paid_date FROM bill_telekom WHERE MONTH(date_start) = '$m' AND acc_id='$acc_id'");
+        $result[$m] = $paid_date;
     }
     return $result;
 }
@@ -730,7 +734,7 @@ function get_bill_monthly($tel_no, $monthto){
         $amount = itemName("SELECT usage_amt FROM bill_telefon_list
                     INNER JOIN bill_telekom ON bill_telekom.id = bill_telefon_list.bt_id
                     WHERE month(date_start)='$m' AND tel_no LIKE '%$tel_no%'");
-        $result[$m] = $amount;
+        $result[$m] = number_format($amount,2);
     }
     
     return $result;

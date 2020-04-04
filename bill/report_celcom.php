@@ -174,7 +174,49 @@ if(!empty($select_company)){
                { 
               	extend: 'excelHtml5', 
               	title: 'Celcom Mobile_' + res,
-              	footer: true 
+              	footer: true,
+              	customize: function ( xlsx ) {
+              		console.log(xlsx);
+                    var sheet = xlsx.xl.worksheets['sheet1.xml'];
+                    var downrows = 2;
+                    var clRow = $('row', sheet);
+                    //update Row
+                    clRow.each(function () {
+                        var attr = $(this).attr('r');
+                        var ind = parseInt(attr);
+                        ind = ind + downrows;
+                        $(this).attr("r",ind);
+                    });
+             
+                    // Update  row > c
+                    $('row c ', sheet).each(function () {
+                        var attr = $(this).attr('r');
+                        var pre = attr.substring(0, 1);
+                        var ind = parseInt(attr.substring(1, attr.length));
+                        ind = ind + downrows;
+                        $(this).attr("r", pre + ind);
+                    });
+             
+                    function Addrow(index,data) {
+                        msg='<row r="'+index+'">'
+                        for(i=0;i<data.length;i++){
+                            var key=data[i].k;
+                            var value=data[i].v;
+                            msg += '<c t="inlineStr" r="' + key + index + '" s="42">';
+                            msg += '<is>';
+                            msg +=  '<t>'+value+'</t>';
+                            msg+=  '</is>';
+                            msg+='</c>';
+                        }
+                        msg += '</row>';
+                        return msg;
+                    }
+             
+                    //insert
+                    var r1 = Addrow(1, [{ k: 'A', v: 'Company' }, { k: 'B', v: company_name }]);
+                     
+                    sheet.childNodes[0].childNodes[1].innerHTML = r1 + sheet.childNodes[0].childNodes[1].innerHTML;                
+               }
                },
                {
               	extend: 'print',

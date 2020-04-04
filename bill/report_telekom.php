@@ -4,9 +4,20 @@ require_once('../function.php');
 require_once('../check_login.php');
 global $conn_admin_db;
 
+$select_account = isset($_POST['acc_no']) ? $_POST['acc_no'] : "";
+$year_select = isset($_POST['year_select']) ? $_POST['year_select'] : date("Y");
+ob_start();
+selectYear('year_select',$year_select,'','','form-control','','');
+$html_year_select = ob_get_clean();
 
-
-
+$company_name = "";
+$acc_no = "";
+$ref_no = "";
+if(!empty($select_account)){
+    $company_name = itemName("SELECT name FROM company WHERE id IN (SELECT company_id FROM bill_account_setup WHERE acc_id = '$select_account')");
+    $acc_no = itemName("SELECT account_no FROM bill_account_setup WHERE acc_id='$select_account'");
+    $ref_no = itemName("SELECT reference FROM bill_account_setup WHERE acc_id='$select_account'");
+}
 ?>
 
 <!doctype html>
@@ -52,30 +63,27 @@ global $conn_admin_db;
                             <div class="card-header">
                                 <strong class="card-title">Telekom</strong>
                             </div>
-<!--                             <div class="card-body"> -->
-<!--                                 <form id="myform" enctype="multipart/form-data" method="post" action="">                	                    -->
-<!--                     	            <div class="form-group row col-sm-12"> -->
-<!--                                         <div class="col-sm-3"> -->
-<!--                                             <label for="date_start" class="form-control-label"><small class="form-text text-muted">Date Start</small></label> -->
-<!--                                             <div class="input-group"> -->
-<!--                                              <input type="text" id="date_start" name="date_start" class="form-control" value="<?=$date_start?>" autocomplete="off">
-<!--                                               <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div> -->
-<!--                                             </div>                             -->
-<!--                                         </div> -->
-<!--                                         <div class="col-sm-3"> -->
-<!--                                             <label for="date_end" class="form-control-label"><small class="form-text text-muted">Date End</small></label> -->
-<!--                                             <div class="input-group"> -->
-<!--                                             <input type="text" id="date_end" name="date_end" class="form-control" value="<?=$date_end?>" autocomplete="off">
-<!--                                               <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div> -->
-<!--                                             </div>                              -->
-<!--                                         </div> -->
-<!--                                         <div class="col-sm-4">                                    	 -->
-<!--                                         	<button type="submit" class="btn btn-primary button_search ">Submit</button> -->
-<!--                                         </div> -->
-<!--                                      </div>     -->
-<!--                                 </form> -->
-<!--                             </div> -->
-<!--                             <hr> -->
+                            <div class="card-body">
+                                <form id="myform" enctype="multipart/form-data" method="post" action="">                	                   
+									<div class="form-group row col-sm-12">
+										<div class="col-sm-3">
+                                            <label for="date_start" class="form-control-label"><small class="form-text text-muted">Account No.</small></label>
+                                            <?php
+                                                $jabatan_air_acc = mysqli_query ( $conn_admin_db, "SELECT acc_id , CONCAT((SELECT c.code FROM company c WHERE c.id = bill_account_setup.company_id),' - ',bill_account_setup.account_no ) AS comp_acc FROM bill_account_setup WHERE bill_type='3'");
+                                                db_select ($jabatan_air_acc, 'acc_no', $select_account,'','-select-','form-control','');
+                                            ?>                           
+                                        </div>
+                                        <div class="col-sm-2">
+                                        	<label for="acc_no" class="form-control-label"><small class="form-text text-muted">Year</small></label>
+                                        	<?=$html_year_select;?>
+                                        </div>
+                                        <div class="col-sm-4">                                    	
+                                        	<button type="submit" class="btn btn-primary button_search ">Submit</button>
+                                        </div>
+                                     </div>
+                                </form>
+                            </div>
+                            <hr>
                             <div class="card-body">
                                 <table id="telekom_table" class="table table-striped table-bordered">
                                     <thead>
@@ -130,6 +138,21 @@ global $conn_admin_db;
 	
 	<script type="text/javascript">
       $(document).ready(function() {
+    	  var company_name = '<?=$company_name;?>';
+          var year = '<?=$year_select;?>';
+          var res = company_name.concat('_'+year);
+          var acc_no = '<?=$acc_no;?>';
+          var ref_no = '<?=$ref_no?>';
+
+//           if ( config.header) {
+//               var tablecaption = [config.message];
+//        			addRow( tablecaption, rowPos );
+//               //addRow( "testing", "0" );
+//                addRow( "", rowPos );
+//              addRow( data.header, rowPos );
+//              //$('row c', rels).attr( 's', '2' ); // bold
+//          }
+          
           $('#telekom_table').DataTable({
               "searching": true,
         	  "dom": 'Bfrtip',
@@ -137,18 +160,64 @@ global $conn_admin_db;
               "buttons": [ 
                { 
               	extend: 'excelHtml5', 
-              	messageTop: 'Vehicle Summon',
-              	footer: true 
+              	title: 'Telekom_'+res,
+              	footer: true,
+              	customize: function ( xlsx ) {
+              		console.log(xlsx);
+                    var sheet = xlsx.xl.worksheets['sheet1.xml'];
+                    var downrows = 3;
+                    var clRow = $('row', sheet);
+                    //update Row
+                    clRow.each(function () {
+                        var attr = $(this).attr('r');
+                        var ind = parseInt(attr);
+                        ind = ind + downrows;
+                        $(this).attr("r",ind);
+                    });
+             
+                    // Update  row > c
+                    $('row c ', sheet).each(function () {
+                        var attr = $(this).attr('r');
+                        var pre = attr.substring(0, 1);
+                        var ind = parseInt(attr.substring(1, attr.length));
+                        ind = ind + downrows;
+                        $(this).attr("r", pre + ind);
+                    });
+             
+                    function Addrow(index,data) {
+                        msg='<row r="'+index+'">'
+                        for(i=0;i<data.length;i++){
+                            var key=data[i].k;
+                            var value=data[i].v;
+                            msg += '<c t="inlineStr" r="' + key + index + '" s="42">';
+                            msg += '<is>';
+                            msg +=  '<t>'+value+'</t>';
+                            msg+=  '</is>';
+                            msg+='</c>';
+                        }
+                        msg += '</row>';
+                        return msg;
+                    }
+             
+                    //insert
+                    var r1 = Addrow(1, [{ k: 'A', v: 'Company' }, { k: 'B', v: company_name }]);
+                    var r2 = Addrow(2, [{ k: 'A', v: 'Account No.' }, { k: 'B', v: acc_no }]);
+                    var r3 = Addrow(3, [{ k: 'A', v: 'Reference' }, { k: 'B', v: ref_no }]);
+                    
+                    sheet.childNodes[0].childNodes[1].innerHTML = r1 + r2 + r3 + sheet.childNodes[0].childNodes[1].innerHTML;
+                
+               }
                },
                {
               	extend: 'print',
-              	messageTop: 'Vehicle Summon',
+              	title: 'Telekom <br>Company : '+company_name+'<br>'+'Account No. : '+acc_no+'<br>Year : '+year,
               	footer: true,
               	customize: function ( win ) {
-                      $(win.document.body)
+              		$(win.document.body).find('h1').css('font-size', '12pt'); 
+                    $(win.document.body)
                           .css( 'font-size', '10pt' );
               
-                      $(win.document.body).find( 'table' )
+                    $(win.document.body).find( 'table' )
                           .addClass( 'compact' )
                           .css( 'font-size', 'inherit' );
                   }
@@ -158,7 +227,9 @@ global $conn_admin_db;
                   "url": "report_all.ajax.php",  
                   "type":"POST",       	        	
              	 	"data" : function ( data ) {
-      					data.action = 'report_telekom';				
+      					data.action = 'report_telekom';		
+      					data.filter = '<?=$select_account?>';
+      					data.year = '<?=$year_select?>';		
          	        }         	                 
                  },
              'columnDefs': [

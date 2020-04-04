@@ -86,6 +86,15 @@
         return $item[0];
     }
     
+    //check pcash status
+    function checkStatus($id){
+        global $conn_admin_db;
+        $query = "SELECT workflow_status FROM om_pcash_request WHERE id='$id'";       
+        $sql_query = mysqli_query($conn_admin_db,$query) or die ('Error: '.mysqli_error ($conn_admin_db));
+        $item = mysqli_fetch_array($sql_query);
+        return $item[0];
+    }
+    
     function addOrdinalNumberSuffix($num) {
         if (!in_array(($num % 100),array(11,12,13))){
             switch ($num % 10) {

@@ -89,9 +89,10 @@
                 registration_no = '".$reg_no."'";
             
             $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
-            if ($result) {
-                alert("Successfully added!", "company.php");
-            }
+            alert("Successfully added!", "company.php");
+//             if ($result) {
+//                 alert("Successfully added!", "company.php");
+//             }
             
         }        
     }

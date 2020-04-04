@@ -12,9 +12,11 @@ $html_year_select = ob_get_clean();
 
 $company_name = "";
 $serial_no = "";
+$location_name = "";
 if(!empty($select_account)){
     $company_name = itemName("SELECT name FROM company WHERE id IN (SELECT company_id FROM bill_account_setup WHERE acc_id = '$select_account')");
     $serial_no = itemName("SELECT serial_no FROM bill_account_setup WHERE acc_id='$select_account'");
+    $location_name = itemName("SELECT (SELECT location_name FROM fireextinguisher_location WHERE location_id = bill_account_setup.location_id ) FROM bill_account_setup WHERE acc_id='$select_account'");
 }
 
 ?>
@@ -149,6 +151,7 @@ if(!empty($select_account)){
           var year = '<?=$year_select;?>';
           var res = company_name.concat('_'+year);
           var serial_no = '<?=$serial_no;?>';
+          var location_name = '<?=$location_name;?>';
           
           $('#sesb_table').DataTable({
               "searching": true,
@@ -158,7 +161,52 @@ if(!empty($select_account)){
                { 
               	extend: 'excelHtml5', 
               	title: 'PHOTOCOPY MACHINE (FUJIXEROX)_'+res,
-              	footer: true 
+              	footer: true,
+              	customize: function ( xlsx ) {
+              		console.log(xlsx);
+                    var sheet = xlsx.xl.worksheets['sheet1.xml'];
+                    var downrows = 3;
+                    var clRow = $('row', sheet);
+                    //update Row
+                    clRow.each(function () {
+                        var attr = $(this).attr('r');
+                        var ind = parseInt(attr);
+                        ind = ind + downrows;
+                        $(this).attr("r",ind);
+                    });
+             
+                    // Update  row > c
+                    $('row c ', sheet).each(function () {
+                        var attr = $(this).attr('r');
+                        var pre = attr.substring(0, 1);
+                        var ind = parseInt(attr.substring(1, attr.length));
+                        ind = ind + downrows;
+                        $(this).attr("r", pre + ind);
+                    });
+             
+                    function Addrow(index,data) {
+                        msg='<row r="'+index+'">'
+                        for(i=0;i<data.length;i++){
+                            var key=data[i].k;
+                            var value=data[i].v;
+                            msg += '<c t="inlineStr" r="' + key + index + '" s="42">';
+                            msg += '<is>';
+                            msg +=  '<t>'+value+'</t>';
+                            msg+=  '</is>';
+                            msg+='</c>';
+                        }
+                        msg += '</row>';
+                        return msg;
+                    }
+             
+                    //insert
+                    var r1 = Addrow(1, [{ k: 'A', v: 'Company' }, { k: 'B', v: company_name }]);                    
+                    var r2 = Addrow(2, [{ k: 'A', v: 'Location' }, { k: 'B', v: location_name }]);
+                    var r3 = Addrow(3, [{ k: 'A', v: 'Serial Number' }, { k: 'B', v: serial_no}]);
+
+                    sheet.childNodes[0].childNodes[1].innerHTML = r1 + r2 + r3 + sheet.childNodes[0].childNodes[1].innerHTML;
+                
+               }
                },
                {
               	extend: 'print',

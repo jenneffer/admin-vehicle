@@ -6,7 +6,7 @@ global $conn_admin_db;
 
 $monthto = 12;
 $year = 2020;
-
+var_dump($year);
 function get_telekom_bill($acc_id, $year){
     global $conn_admin_db, $year,$monthto;
     $result = array();
