@@ -12,11 +12,11 @@
     
     
     <!--  Chart js -->
-    <!-- <script src="../assets/js/chart/Chart.bundle.min.js"></script> -->
+    <script src="../assets/js/chart/Chart.bundle.min.js"></script>
 
     <!--Chartist Chart-->
-    <!--     <script src="../assets/js/chartist/chartist.min.js"></script> -->
-    <!--     <script src="../assets/js/chartist/chartist-plugin-legend.min.js"></script> -->
+    <script src="../assets/js/chartist/chartist.min.js"></script>
+    <script src="../assets/js/chartist/chartist-plugin-legend.min.js"></script>
     
     <script src="../assets/js/chartist/jquery.flot.min.js"></script> 
     <script src="../assets/js/chartist/jquery.flot.pie.min.js"></script> 

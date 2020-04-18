@@ -15,10 +15,9 @@
             
             case 'update_vehicle':
                 
-                if( !empty($_POST) ){
-                    
+                if( !empty($data) ){                    
                     $params = array();
-                    parse_str($_POST['data'], $params); //unserialize jquery string data   
+                    parse_str($data, $params); //unserialize jquery string data   
                     
                     $vv_id = $params['vv_id'];
                     $vehicle_reg_no = $params['vehicle_reg_no'];
@@ -36,10 +35,10 @@
                     $driver = $params['driver'];
                     $finance = $params['finance'];
                     $v_remark = $params['v_remark'];
-                    $permit_type = $params['permit_type'];
-                    $permit_no = $params['permit_no'];
-                    $license_ref_no = $params['license_ref_no'];
-                    $lpkp_permit_due_date = $params['lpkp_permit_due_date'];
+//                     $permit_type = $params['permit_type'];
+//                     $permit_no = $params['permit_no'];
+//                     $license_ref_no = $params['license_ref_no'];
+//                     $lpkp_permit_due_date = $params['lpkp_permit_due_date'];
                     $vehicle_status = $params['vehicle_status'];
                     
                     //update vehicle table
@@ -65,13 +64,13 @@
                         $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
                     //update permit table   
                     
-                    $query2 = "UPDATE vehicle_permit 
-                        SET vpr_type = '$permit_type',
-                        vpr_no = '$permit_no',
-                        vpr_license_ref_no = '$license_ref_no',
-                        vpr_due_date = '".dateFormat($lpkp_permit_due_date)."' WHERE vv_id='$vv_id'";
+//                     $query2 = "UPDATE vehicle_permit 
+//                         SET vpr_type = '$permit_type',
+//                         vpr_no = '$permit_no',
+//                         vpr_license_ref_no = '$license_ref_no',
+//                         vpr_due_date = '".dateFormat($lpkp_permit_due_date)."' WHERE vv_id='$vv_id'";
                  
-                    $result2 = mysqli_query($conn_admin_db, $query2) or die(mysqli_error($conn_admin_db));
+//                     $result2 = mysqli_query($conn_admin_db, $query2) or die(mysqli_error($conn_admin_db));
                         
                     alert ("Updated successfully","vehicle.php");
                 } 
@@ -122,8 +121,100 @@
                 delete_vehicle_total_loss($id);
                 break;
                 
+            case 'add_new_permit':
+                add_new_permit($data);
+                break;
+                
+            case 'get_vehicle_no':
+                get_vehicle_no($id);
+                break;
+                
+            case 'retrive_permit':
+                retrieve_permit($id);
+                break;
+                
+            case 'delete_permit':
+                delete_permit($id);
+                break;
             default:
                 break;
+        }
+    }
+    
+    function delete_permit($id){
+        global $conn_admin_db;
+        if(!empty($id)){
+            //update vehicle permit table
+            $query = "UPDATE vehicle_permit SET status = 0 WHERE vpr_id = '".$id."' ";
+            $result = mysqli_query($conn_admin_db, $query);
+            
+            if ($result) {
+                alert ("Deleted successfully", "permit.php");
+            }            
+        }
+    }
+    
+    function retrieve_permit($id){
+        global $conn_admin_db;
+        if(!empty($id)){            
+            $query = "SELECT * FROM vehicle_permit
+            INNER JOIN vehicle_vehicle ON vehicle_vehicle.vv_id = vehicle_permit.vv_id            
+            WHERE vehicle_permit.vpr_id = '".$id."'";
+            
+            $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
+            $row = mysqli_fetch_array($result);
+            
+            echo json_encode($row);
+        }
+    }
+    
+    function get_vehicle_no($id){
+        global $conn_admin_db;
+        
+        $query = "SELECT company_id, vv_vehicleNo FROM vehicle_vehicle WHERE company_id='$id'";
+        $result = mysqli_query($conn_admin_db, $query);        
+        $vehicle_arr = array();        
+        while( $row = mysqli_fetch_array($result) ){
+            $id = $row['company_id'];
+            $code = $row['vv_vehicleNo'];
+            
+            $vehicle_arr[] = array("company_id" => $id, "vv_vehicleNo" => $code);
+        }
+        
+        // encoding array to json format
+        echo json_encode($vehicle_arr);
+    }
+    
+    function add_new_permit($data){
+        global $conn_admin_db;
+        $params = array();
+        parse_str($data, $params); //unserialize jquery string data 
+        $vv_id = isset( $params['vv_id'] ) ? $params['vv_id'] : "";
+        $vpr_id = isset( $params['vpr_id'] ) ? $params['vpr_id'] : "";
+        $type = isset( $params['permit_type'] ) ? $params['permit_type'] : "";
+        $permit_no = isset( $params['permit_no'] ) ? $params['permit_no'] : "";
+        $ref_no = isset( $params['license_ref_no'] ) ? $params['license_ref_no'] : "";
+        $due_date = isset( $params['lpkp_permit_due_date'] ) ? $params['lpkp_permit_due_date'] : "";
+        
+        //update renewal status of a previous permit
+        //check if vpr_id exist in the table
+        $exist = mysqli_query($conn_admin_db,"SELECT * FROM vehicle_permit WHERE vpr_id='$vpr_id'");
+        if (mysqli_num_rows($exist) > 0) {
+            $sql_query = "UPDATE vehicle_permit SET renewal_status='1' WHERE vpr_id='$vpr_id'";
+            mysqli_query($conn_admin_db, $sql_query) or die(mysqli_error($conn_admin_db));
+        }
+                
+        //add new permit
+        $query = "INSERT INTO vehicle_permit SET 
+                vv_id='$vv_id',
+                vpr_type='$type',
+                vpr_no='$permit_no',
+                vpr_license_ref_No='$ref_no',
+                vpr_due_date='".dateFormat($due_date)."'";
+
+        $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
+        if($result){
+            alert ("Added successfully", "vehicle.php");
         }
     }
     

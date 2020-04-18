@@ -52,7 +52,7 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header">
-                                <strong class="card-title">List of Vehicle</strong>
+                                <strong class="card-title">Vehicle Master List</strong>
                             </div>
                             <!-- Filter -->
                             <div class="card-body">
@@ -80,29 +80,22 @@
                                 <table id="vehicle_table" class="table table-striped responsive table-bordered">
                                     <thead>
                                         <tr>
-                                            <th rowspan="2">No.</th>
-											<th rowspan="2">Reg No.</th>
-                                            <th rowspan="2">Company</th>
-                                            <th rowspan="2">Category</th>
-											<th rowspan="2">Make</th>
-											<th rowspan="2">Model</th>
-											<th rowspan="2">Engine No.</th>
-											<th rowspan="2">Chasis No.</th>
-											<th rowspan="2">B.D.M/B.G.K</th>
-											<th rowspan="2">B.T.M</th>
-											<th rowspan="2">Goods Capacity</th>
-											<th rowspan="2">Year Made</th>
-											<th rowspan="2">Finance</th>		
-											<th colspan="4" style="text-align: center;">LPKP Permit</th>
-											<th rowspan="2">Remarks</th>
-											<th rowspan="2">&nbsp;</th>
+                                            <th>No.</th>
+											<th>Reg No.</th>
+                                            <th>Company</th>
+                                            <th>Category</th>
+											<th width="25%">Details</th>		
+											<th>Finance</th>		
+											<th width="20%" style="text-align: center;">LPKP Permit</th>
+											<th>Remarks</th>
+											<th>&nbsp;</th>
                                         </tr>
-                                        <tr>
-                                        	<th>Type</th>
-                                        	<th>No.</th>
-                                        	<th>License Ref No.</th>
-                                        	<th>Due Date</th>
-                                        </tr>
+<!--                                         <tr> -->
+<!--                                         	<th>Type</th> -->
+<!--                                         	<th>No.</th> -->
+<!--                                         	<th>License Ref No.</th> -->
+<!--                                         	<th>Due Date</th> -->
+<!--                                         </tr> -->
                                     </thead>
                                     <tbody>
 
@@ -117,37 +110,44 @@
                                         if (!empty($select_c)) {
                                             $sql_query .= " AND company.id='$select_c'";
                                         }
-                                        
                                         if(mysqli_num_rows(mysqli_query($conn_admin_db,$sql_query)) > 0){
                                             $count = 0;
                                             $sql_result = mysqli_query($conn_admin_db, $sql_query)or die(mysqli_error($conn_admin_db));
                                                 while($row = mysqli_fetch_array($sql_result)){ 
                                                     $count++;
+                                                    $vpr_due_date = ($row['vpr_due_date'] == '0000-00-00') || empty($row['vpr_due_date']) ? "-" : dateFormatRev($row['vpr_due_date']);
                                                     $category = itemName("SELECT vc_type FROM vehicle_category WHERE vc_id='".$row['vv_category']."'");
+                                                    $vehicle_details = "<span><b>Make</b> : ".$row['vv_brand']."</span><br>
+                                                            <span><b>Model</b> : ".$row['vv_model']."</span><br>
+                                                            <span><b>Engine No.</b> : ".$row['vv_engine_no']."</span><br>
+                                                            <span><b>Chassis No.</b> : ".$row['vv_chasis_no']."</span><br>
+                                                            <span><b>B.D.M/B.G.K</b> : ".$row['vv_bdm']."</span><br>
+                                                            <span><b>B.T.M</b> : ".$row['vv_btm']."</span><br>
+                                                            <span><b>Capacity</b> : ".$row['vv_capacity']."</span><br>
+                                                            <span><b>Year Made</b> : ".$row['vv_yearMade']."</span><br>";
+                                                                                                        
+                                                    $permit_details="";
+                                                    
+                                                    if (!empty($row['vpr_type'])) {
+                                                        $permit_details = "<span><b>Type</b> : ".$row['vpr_type']."</span><br>
+                                                            <span><b>Permit No.</b> : ".$row['vpr_no']."</span><br>
+                                                            <span><b>License Ref. No.</b> : ".$row['vpr_license_ref_no']."</span><br>
+                                                            <span><b>Due date.</b> : ".$vpr_due_date."</span><br>";
+                                                    }
                                                     ?>
                                                     <tr>
                                                         <td><?=$count?>.</td>
                                                         <td><?=$row['vv_vehicleNo']?></td>
                                                         <td><?=$row['code']?></td>
                                                         <td><?=$category?></td>
-                                                        <td><?=$row['vv_brand']?></td>
-                                                        <td><?=$row['vv_model']?></td>
-                                                        <td><?=$row['vv_engine_no']?></td>
-                                                        <td><?=$row['vv_chasis_no']?></td>
-                                                        <td><?=$row['vv_bdm']?></td>
-                                                        <td><?=$row['vv_btm']?></td>
-                                                        <td><?=$row['vv_capacity']?></td>
-                                                        <td><?=$row['vv_yearMade']?></td>
-                                                        <td><?=$row['vv_finance']?></td>
-                                                        <td><?=$row['vpr_type']?></td>
-                                                        <td><?=$row['vpr_no']?></td>
-                                                        <td><?=$row['vpr_license_ref_no']?></td>
-                                                        <td><?=($row['vpr_due_date'] == '0000-00-00') || empty($row['vpr_due_date']) ? "-" : dateFormatRev($row['vpr_due_date'])?></td>
+                                                        <td><?=$vehicle_details?></td>                                                        
+                                                        <td><?=strtoupper($row['vv_finance'])?></td>
+                                                        <td><?=$permit_details?></td>
                                                         <td><?=$row['vv_remark']?></td>
-                                                        <td>
+                                                         <td> 
                                                         	<span id="<?=$row['vv_id']?>" data-toggle="modal" class="edit_data" data-target="#editItem"><i class="fa fa-edit"></i></span>
                                                         	<span id="<?=$row['vv_id']?>" data-toggle="modal" class="delete_data" data-target="#deleteItem"><i class="fas fa-trash-alt"></i></span>
-                                                        </td>
+                                                         </td> 
                                                     </tr>
                                     <?php
                                                 }
@@ -167,16 +167,13 @@
         <div id="editItem" class="modal fade" tabindex="-1">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
-<!--                 <div class="modal-header"> -->
-<!--                     <h4 class="modal-title">Edit Vehicle</h4> -->
-<!--                 </div> -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Edit Vehicle</h4>
+                </div>
                 <div class="modal-body">
                     <form role="form" method="POST" action="" id="update_form">
                         <input type="hidden" name="_token" value="">
-                        <input type="hidden" id="vv_id" name="vv_id" value="">
-                        <hr>
-                        <h5 style="text-align: center"><strong>Vehicle</strong></h5>
-                        <hr>
+                        <input type="hidden" id="vv_id" name="vv_id" value="">                         
                             <div class="form-group row col-sm-12">
                                         <div class="col-sm-4">
                                             <label for="vehicle_reg_no" class=" form-control-label"><small class="form-text text-muted">Vehicle Reg No.</small></label>
@@ -273,33 +270,33 @@
 <!--                                 </div> -->
 <!--                             </div> -->
 <!--                         </div> -->
-						<hr>
-                        <h5 style="text-align: center"><strong>LPKP Permit</strong></h5>
-                        <hr>
-                        <div class="form-group row col-sm-12">
-                    		<div class="col-sm-6"> 
-                                <label for="permit_type" class=" form-control-label"><small class="form-text text-muted">Type</small></label>
-                                <input type="text" id="permit_type" name="permit_type" placeholder="Enter permit type" class="form-control">
-                            </div>
-							<div class="col-sm-6">                                        
-                                <label for="permit_no" class=" form-control-label"><small class="form-text text-muted">No.</small></label>
-                        		<input type="text" id="permit_no" name="permit_no" onkeypress="return isNumberKey(event)" class="form-control">
-                        	</div>
-                        </div>
+<!-- 						<hr> -->
+<!--                        <h5 style="text-align: center"><strong>LPKP Permit</strong></h5>
+<!--                         <hr> -->
+<!--                         <div class="form-group row col-sm-12"> -->
+<!--                     		<div class="col-sm-6">  -->
+<!--                                 <label for="permit_type" class=" form-control-label"><small class="form-text text-muted">Type</small></label> -->
+<!--                                 <input type="text" id="permit_type" name="permit_type" placeholder="Enter permit type" class="form-control"> -->
+<!--                             </div> -->
+<!-- 							<div class="col-sm-6">                                         -->
+<!--                                 <label for="permit_no" class=" form-control-label"><small class="form-text text-muted">No.</small></label> -->
+<!--                        		<input type="text" id="permit_no" name="permit_no" onkeypress="return isNumberKey(event)" class="form-control">
+<!--                         	</div> -->
+<!--                         </div> -->
                         
-                        <div class="form-group row col-sm-12">
-                        	<div class="col-sm-6"> 
-                                <label for="license_ref_no" class=" form-control-label"><small class="form-text text-muted">License Ref No.</small></label>
-                                <input type="text" id="license_ref_no" name="license_ref_no" placeholder="Enter license ref no." class="form-control">
-                        	</div>
-                        	<div class="col-sm-6"> 
-                        		<label for="lpkp_permit_due_date" class=" form-control-label"><small class="form-text text-muted">Due Date</small></label>
-                                <div class="input-group">
-                                    <input id="lpkp_permit_due_date" name="lpkp_permit_due_date" class="form-control" autocomplete="off">
-                                    <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
-                                </div>
-                        	</div>
-                        </div>
+<!--                         <div class="form-group row col-sm-12"> -->
+<!--                         	<div class="col-sm-6">  -->
+<!--                                 <label for="license_ref_no" class=" form-control-label"><small class="form-text text-muted">License Ref No.</small></label> -->
+<!--                                 <input type="text" id="license_ref_no" name="license_ref_no" placeholder="Enter license ref no." class="form-control"> -->
+<!--                         	</div> -->
+<!--                         	<div class="col-sm-6">  -->
+<!--                         		<label for="lpkp_permit_due_date" class=" form-control-label"><small class="form-text text-muted">Due Date</small></label> -->
+<!--                                 <div class="input-group"> -->
+<!--                                     <input id="lpkp_permit_due_date" name="lpkp_permit_due_date" class="form-control" autocomplete="off"> -->
+<!--                                     <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div> -->
+<!--                                 </div> -->
+<!--                         	</div> -->
+<!--                         </div> -->
                         
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
@@ -362,7 +359,7 @@
         	"responsive": true
          });
         
-        $(document).on('click', '.edit_data', function(){
+        $('.edit_data').on('click', function(){
         	var vehicle_id = $(this).attr("id");
         	$.ajax({
         			url:"vehicle.all.ajax.php",
@@ -391,11 +388,11 @@
                         $('#vehicle_status').val(data.vv_status);  
 
                         //permit
-                        var vpr_due_date = data.vpr_due_date != null ? dateFormat(data.vpr_due_date) : "";
-                        $('#permit_type').val(data.vpr_type);
-                        $('#permit_no').val(data.vpr_no);
-                        $('#license_ref_no').val(data.vpr_license_ref_no);
-                        $('#lpkp_permit_due_date').val(vpr_due_date);
+//                         var vpr_due_date = data.vpr_due_date != null ? dateFormat(data.vpr_due_date) : "";
+//                         $('#permit_type').val(data.vpr_type);
+//                         $('#permit_no').val(data.vpr_no);
+//                         $('#license_ref_no').val(data.vpr_license_ref_no);
+//                         $('#lpkp_permit_due_date').val(vpr_due_date);
                         $('#editItem').modal('show');
         			}
         		});
@@ -460,6 +457,7 @@
             orientation: "top left",
             todayHighlight: true
          });
+        
         
     });
 
@@ -531,10 +529,10 @@
   </script>
 </body>
 <style>
-#printableArea{
-    font-size:11px;
-    margin:0px;
-    padding:.5rem;
-}
+ #printableArea{ 
+     font-size:14px; 
+     margin:0px; 
+     padding:.5rem; 
+} 
 </style>
 </html>

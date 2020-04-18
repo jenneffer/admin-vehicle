@@ -7,6 +7,7 @@
 
     <!--  Chart js -->
     <script src="assets/js/chart/Chart.bundle.min.js"></script>
+<!--     <script src="assets/js/init/chartjs-init.js"></script> -->
 
     <!--Chartist Chart-->
     <script src="assets/js/chartist/chartist.min.js"></script>

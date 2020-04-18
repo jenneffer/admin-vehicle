@@ -1,7 +1,7 @@
 <?php
 // select input - retrieve data from database
     function db_select($query,$txt_name,$txt_value,$function,$default,$class,$tabindex, $readonly = NULL){
-    	echo "<select id='$txt_name' name='$txt_name' onchange='$function' class='$class'  tabindex='$tabindex' $readonly>\n";
+    	echo "<select id='$txt_name' name='$txt_name' onchange='$function' class='$class'  $readonly>\n";
     	if($default <> '') echo "<option value=''>$default</option>\n";
     	while($row = mysqli_fetch_array($query)){
     		if($txt_value == $row[0])
