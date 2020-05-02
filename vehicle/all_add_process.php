@@ -59,7 +59,7 @@
                             vi_premium_amount='".$premium_amount."',
                             vi_ncd='".$ncd."',
                             vi_sum_insured='".$sum_insured."',
-                            vi_excess_paid='".$excess_paid."',
+                            vi_excess='".$excess_paid."',
                             vi_lastUpdated = now(),
                             vi_updatedBy = '".$_SESSION['cr_id']."'") or die(mysqli_error($conn_admin_db));
         

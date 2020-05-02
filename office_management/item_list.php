@@ -1,8 +1,14 @@
 <?php
-	require_once('../assets/config/database.php');
-	require_once('../function.php');	
-	require_once('../check_login.php');
-	global $conn_admin_db;
+require_once('../assets/config/database.php');
+require_once('../function.php');
+require_once('../check_login.php');
+global $conn_admin_db;
+
+$arr_item_unit = array(
+    'pieces' => 'Pieces',
+    'packet' => 'Packet',
+    'box' => 'Box'
+);
 
 ?>
 
@@ -16,17 +22,41 @@
 	<!-- link to css -->
 	<?php include('../allCSS1.php')?>
    <style>
-    .select2-selection__rendered {
-      margin: 5px;
+    #weatherWidget .currentDesc {
+        color: #ffffff!important;
     }
-    .select2-selection__arrow {
-      margin: 5px;
-    }
-    .select2-container{ 
-        width: 100% !important; 
-    }
-    
-   </style>
+        .traffic-chart {
+            min-height: 335px;
+        }
+        #flotPie1  {
+            height: 150px;
+        }
+        #flotPie1 td {
+            padding:3px;
+        }
+        #flotPie1 table {
+            top: 20px!important;
+            right: -10px!important;
+        }
+        .chart-container {
+            display: table;
+            min-width: 270px ;
+            text-align: left;
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+        #flotLine5  {
+             height: 105px;
+        }
+
+        #flotBarChart {
+            height: 150px;
+        }
+        #cellPaiChart{
+            height: 160px;
+        }
+
+    </style>
 </head>
 
 <body>
@@ -43,39 +73,37 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header">
-                                <strong class="card-title">List of Stock</strong>
+                                <strong class="card-title">List of Item</strong>
                             </div>     
                            <div class="card-body">
                            <br>                            
                             <button type="button" class="btn btn-primary mb-1 col-md-2" data-toggle="modal" data-target="#addItem">
-                               Add New 
+                               Add New Item
 							</button>
                                 <table id="item-data-table" class="table table-striped table-bordered">
                                     <thead>
                                         <tr>
                                             <th>No.</th>
 											<th>Item</th>
-											<th>Stock In</th>
-											<th>Date added</th>
+											<th>Unit</th>
 											<th>&nbsp;</th>
                                         </tr>
                                     </thead>
                                     <tbody>
 
                                     <?php 
-                                        $sql_query = "SELECT * FROM om_stock WHERE status ='1'"; 
+                                        $sql_query = "SELECT * FROM om_item WHERE status='1'"; //only show active vehicle 
                                         if(mysqli_num_rows(mysqli_query($conn_admin_db,$sql_query)) > 0){
                                             $count = 0;
                                             $sql_result = mysqli_query($conn_admin_db, $sql_query)or die(mysqli_error($conn_admin_db));
                                                 while($row = mysqli_fetch_array($sql_result)){ 
                                                     $count++;
-                                                    $item = itemName("SELECT item_name FROM om_item WHERE id='".$row['item_id']."'")
+                                                    $unit = !empty($row['unit']) ? $arr_item_unit[$row['unit']] : "";
                                                     ?>
                                                     <tr>
                                                         <td><?=$count?>.</td>
-                                                        <td><?=$item?></td>
-                                                        <td><?=$row['stock_in']?></td>
-                                                        <td><?=dateFormatRev($row['date_added'])?></td>
+                                                        <td><?=$row['item_name']?></td>
+                                                        <td><?=$unit?></td>
                                                         <td>
                                                         	<span id="<?=$row['id']?>" data-toggle="modal" class="edit_data" data-target="#editItem"><i class="fa fa-edit"></i></span>
                                                         	<span id="<?=$row['id']?>" data-toggle="modal" class="delete_data" data-target="#deleteItem"><i class="fas fa-trash-alt"></i></span>
@@ -95,7 +123,7 @@
         </div><!-- .content -->
         </div>
         
-        <!-- Modal Add new department -->
+        <!-- Modal Add new item -->
         <div id="addItem" class="modal fade">
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
@@ -103,24 +131,27 @@
                         <h4 class="modal-title">Add New</h4>
                     </div>
                     <div class="modal-body">
-                    <form role="form" method="POST" action="" id="add_form">                    
+                    <form role="form" method="POST" action="" id="add_form">
+                    <input type="hidden" id="item_id" name="item_id" value="">
                     <div class="form-group row col-sm-12">
                     	<div class="col-sm-12">
-                            <label for="item" class=" form-control-label"><small class="form-text text-muted">Item</small></label>
+                            <label for="item_name" class=" form-control-label"><small class="form-text text-muted">Item </small></label>
                             <div>
-                                <?php
-                                    $item = mysqli_query ( $conn_admin_db, "SELECT id, item_name FROM om_item");
-                                    db_select ($item, 'item', '','','-select-','form-control','');
-                                ?>
-                            </div>
+                            	<input type="text" id="item_name" name="item_name" placeholder="Enter item name" class="form-control">
+                        	</div>
                         </div>
                     </div>
                     <div class="form-group row col-sm-12">
-                    	<div class="col-sm-12">
-                            <label for="stock_in" class=" form-control-label"><small class="form-text text-muted">Stock In</small></label>
-                            <input type="text" id="stock_in" name="stock_in" class="form-control">
-                        </div>
-                    </div>                    
+                    	<div class="col-sm-6">
+                    	<label for="unit" class=" form-control-label"><small class="form-text text-muted">Unit </small></label>
+                    	<select name="item_unit" id="item_unit" class="form-control">
+                    		<option value="0">-select-</option>
+                            <option value="pieces">Pieces</option>
+                            <option value="packet">Packet</option>
+                            <option value="box">Box</option>
+                        </select>
+                    	</div>
+                    </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                         <button type="submit" class="btn btn-primary save_data ">Save</button>
@@ -130,12 +161,12 @@
                 </div>
             </div>
         </div>
-        <!-- Modal edit department  -->
+        <!-- Modal edit item  -->
         <div id="editItem" class="modal fade">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Edit Stock</h4>
+                    <h4 class="modal-title">Edit Item</h4>
                 </div>
                 <div class="modal-body">
                     <form role="form" method="POST" action="" id="update_form">
@@ -143,21 +174,23 @@
                         <input type="hidden" id="id" name="id" value="">
                         <div class="form-group row col-sm-12">
                         	<div class="col-sm-12">
-                                <label for="item_id" class=" form-control-label"><small class="form-text text-muted">Item</small></label>
+                                <label for="name" class=" form-control-label"><small class="form-text text-muted">Item </small></label>
                                 <div>
-                                    <?php
-                                        $item_id = mysqli_query ( $conn_admin_db, "SELECT id, item_name FROM om_item");
-                                        db_select ($item_id, 'item_id', '','','-select-','form-control','', 'disabled');
-                                    ?>
-                                </div>
+                                	<input type="text" id="name" name="name" class="form-control">
+                            	</div>
                             </div>
+                    	</div>
+                    	<div class="form-group row col-sm-12">
+                    	<div class="col-sm-6">
+                        	<label for="unit" class=" form-control-label"><small class="form-text text-muted">Unit </small></label>
+                        	<select name="unit" id="unit" class="form-control">
+                        		<option value="0">-select-</option>
+                                <option value="pieces">Pieces</option>
+                                <option value="packet">Packet</option>
+                                <option value="box">Box</option>
+                            </select>
+                        	</div>
                         </div>
-                        <div class="form-group row col-sm-12">
-                        	<div class="col-sm-12">
-                                <label for="stk_in" class=" form-control-label"><small class="form-text text-muted">Stock In</small></label>
-                                <input type="text" id="stk_in" name="stk_in" class="form-control">
-                            </div>
-                        </div> 
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                             <button type="submit" class="btn btn-primary update_data ">Update</button>
@@ -210,38 +243,29 @@
     <script src="../assets/js/lib/data-table/buttons.colVis.min.js"></script>
     <script src="../assets/js/init/datatables-init.js"></script>
     <script src="../assets/js/script/bootstrap-datepicker.min.js"></script>
-    <script src="../assets/js/select2.min.js"></script>
 	
 	<script type="text/javascript">
     $(document).ready(function() {
-
-    	// Initialize select2
-    	var select2 = $("#item").select2({
-//     		placeholder: "select option",
-    	    selectOnClose: true
-        });
-    	select2.data('select2').$selection.css('height', '38px');
-    	select2.data('select2').$selection.css('border', '1px solid #ced4da');
-        
         $('#item-data-table').DataTable({
         	"columnDefs": [
-//         	    { "width": "10%", "targets": 0 },
-//         	    { "width": "80%", "targets": 1 },
-//         	    { "width": "10%", "targets": 2 }
+        	    { "width": "10%", "targets": 0 },
+        	    { "width": "60%", "targets": 1 },
+        	    { "width": "20%", "targets": 2 },
+        	    { "width": "10%", "targets": 3 }
         	  ]
   	  	});
         
         $(document).on('click', '.edit_data', function(){
-        	var id = $(this).attr("id");        	
+        	var id = $(this).attr("id");
         	$.ajax({
-        			url:"stock.ajax.php",
+        			url:"function.ajax.php",
         			method:"POST",
-        			data:{action:'retrieve_stock', id:id},
+        			data:{action:'retrieve_item', id:id},
         			dataType:"json",
-        			success:function(data){            			        			
+        			success:function(data){            			
         				$('#id').val(id);					
-                        $('#item_id').val(data.item_id);      
-                        $('#stk_in').val(data.stock_in);                        
+                        $('#name').val(data.item_name);        
+                        $('#unit').val(data.unit);                        
                         $('#editItem').modal('show');
         			}
         		});
@@ -256,9 +280,9 @@
     	$( "#delete_record" ).click( function() {
     		var ID = $(this).data('id');
     		$.ajax({
-    			url:"stock.ajax.php",
+    			url:"function.ajax.php",
     			method:"POST",    
-    			data:{action:'delete_stock', id:ID},
+    			data:{action:'delete_item', id:ID},
     			success:function(data){	  						
     				$('#deleteItem').modal('hide');		
     				location.reload();		
@@ -268,14 +292,17 @@
     
         $('#update_form').on("submit", function(event){  
           event.preventDefault();  
-          if($('#stk_in').val() == ""){  
-              alert("Stock in is required");  
-          }    
+          if($('#name').val() == ""){  
+               alert("Item name is required");  
+          }     
+          else if($('#unit').val == ""){
+        	  alert("Unit is required");  
+          }
           else{  
                $.ajax({  
-                    url:"stock.ajax.php",  
+                    url:"function.ajax.php",  
                     method:"POST",  
-                    data:{action:'update_stock', data: $('#update_form').serialize()},  
+                    data:{action:'update_item', data: $('#update_form').serialize()},  
                     success:function(data){   
                          $('#editItem').modal('hide');  
                          $('#bootstrap-data-table').html(data);
@@ -287,17 +314,17 @@
         
         $('#add_form').on("submit", function(event){  
             event.preventDefault();  
-            if($('#item').val() == ""){  
-                 alert("Item is required");  
+            if($('#item_name').val() == ""){  
+                 alert("Item name is required");  
             } 
-            else if($('#stock_in').val() == ""){  
-                 alert("Stock in is required");  
-            }     
+            else if($('#item_unit').val == ""){
+          	  alert("Unit is required");  
+            }    
             else{  
                  $.ajax({  
-                      url:"stock.ajax.php",  
+                      url:"function.ajax.php",  
                       method:"POST",  
-                      data:{action:'add_new_stock', data: $('#add_form').serialize()},  
+                      data:{action:'add_item', data: $('#add_form').serialize()},  
                       success:function(data){   
                            $('#editItem').modal('hide');  
                            $('#bootstrap-data-table').html(data);

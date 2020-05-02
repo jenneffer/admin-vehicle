@@ -82,16 +82,17 @@
                 $var3 = $row['var3']; //road tax date end
                 
                 if (DateTime::createFromFormat('Y-m-d', $var2) !== FALSE) {
-                    $diff = abs(strtotime($var2) - strtotime($var3));
-                    $years = floor($diff / (365*60*60*24));
-                    $months = floor(($diff - $years * 365*60*60*24) / (30*60*60*24));
-                    $days = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24)/ (60*60*24));
+//                     $diff = abs(strtotime($var2) - strtotime($var3));
+//                     $years = floor($diff / (365*60*60*24));
+//                     $months = floor(($diff - $years * 365*60*60*24) / (30*60*60*24));
+//                     $days = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24)/ (60*60*24));
                     
-                    $year = !empty($years) ? $years ." Year" : "";
-                    $month = !empty($months) ? $months ." Month" : "";
-                    $day = !empty($days) ? $days ." days" : "";
+//                     $year = !empty($years) ? $years ." Year" : "";
+//                     $month = !empty($months) ? $months ." Month" : "";
+//                     $day = !empty($days) ? $days ." days" : "";
                     
-                    $variable2 = " - ". $year.  $month . $day ;
+//                     $variable2 = " - ". $year.  $month . $day ;
+                    $variable2 = "";
                     
                 }else{
                     $variable2 = $var2;

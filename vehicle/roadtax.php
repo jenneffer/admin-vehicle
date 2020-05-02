@@ -370,7 +370,7 @@
                         $('#insurance_amount').val(data.vi_amount);   
                         $('#ncd').val(data.vi_ncd);  
                         $('#sum_insured').val(data.vi_sum_insured);  
-                        $('#excess_paid').val(data.vi_excess_paid);  
+                        $('#excess_paid').val(data.vi_excess);  
                         $('#roadtax_amount').val(data.vrt_amount);  
                         $('#insurance_status').val(data.vi_insuranceStatus); 
                         $('#editItem').modal('show');

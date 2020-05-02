@@ -31,10 +31,11 @@
 			$total_found_rows = $row_found[0];
 			$count++;
 			
-			$year = !empty($row['vrt_roadtaxPeriodYear']) ? $row['vrt_roadtaxPeriodYear'] ." Year(s)" : "";
-			$month = !empty($row['vrt_roadtaxPeriodMonth']) ? $row['vrt_roadtaxPeriodMonth'] ." Month(s)" : "";
-			$days = !empty($row['vrt_roadtaxPeriodDay']) ? $row['vrt_roadtaxPeriodDay'] ." Day(s)" : "";
-			$period = $year ." ". $month ." ".$days;
+// 			$year = !empty($row['vrt_roadtaxPeriodYear']) ? $row['vrt_roadtaxPeriodYear'] ." Year(s)" : "";
+// 			$month = !empty($row['vrt_roadtaxPeriodMonth']) ? $row['vrt_roadtaxPeriodMonth'] ." Month(s)" : "";
+// 			$days = !empty($row['vrt_roadtaxPeriodDay']) ? $row['vrt_roadtaxPeriodDay'] ." Day(s)" : "";
+// 			$period = $year ." ". $month ." ".$days;
+            $period = $row['vrt_roadTax_period'];
 			$fitness_test = !empty($row['vp_fitnessDate']) ? dateFormatRev($row['vp_fitnessDate']) : "-";
 
 			$data = array(
@@ -45,14 +46,14 @@
 			        dateFormatRev($row['vi_insurance_fromDate']),
     			    dateFormatRev($row['vi_insurance_dueDate']),
 			        $row['vi_premium_amount'],
-    			    $row['vi_ncd'],
+    			    $row['vi_ncd'] * 100,
 			        $row['vi_sum_insured'],
-			        $row['vi_excess_paid'],
+			        $row['vi_excess'],
     			    $row['vv_capacity'],
 			        $fitness_test,
     			    dateFormatRev($row['vrt_roadTax_fromDate']),
     			    dateFormatRev($row['vrt_roadTax_dueDate']),
-			        $row['vi_amount'],
+			        $row['vrt_amount'],
 			        $period,
 		
 			);

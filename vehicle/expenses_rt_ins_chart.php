@@ -12,10 +12,9 @@ selectYear('year_select',$year_select,'','','form-control col-sm-3','','');
 $html_year_select = ob_get_clean();
 
 $query = "SELECT vehicle_vehicle.vv_id, company_id, (SELECT code FROM company WHERE id=vehicle_vehicle.company_id) AS code, vv_vehicleNo, vi_insurance_fromDate, 
-        vi_insurance_dueDate, vi_premium_amount, vi_ncd, vi_sum_insured, vi_excess , vrt_roadTax_fromDate, vrt_roadTax_dueDate,vrt_amount
+        vi_insurance_dueDate, vi_premium_amount, vi_ncd, vi_sum_insured, vi_excess 
         FROM vehicle_vehicle
-        INNER JOIN vehicle_insurance ON vehicle_vehicle.vv_id = vehicle_insurance.vv_id
-        LEFT JOIN vehicle_roadtax ON vehicle_insurance.vv_id = vehicle_roadtax.vv_id";
+        INNER JOIN vehicle_insurance ON vehicle_vehicle.vv_id = vehicle_insurance.vv_id";
 
 $sql_result = mysqli_query($conn_admin_db, $query)or die(mysqli_error($conn_admin_db));
 $data = array();
@@ -23,8 +22,7 @@ while($row = mysqli_fetch_array($sql_result)){
     $data[$row['code']][] = array(    
         'premium' => $row['vi_premium_amount'],
         'sum_insured' => $row['vi_sum_insured'],
-        //'ncd' => $row['vi_ncd']
-        'roadtax' => !empty($row['vrt_amount']) ? $row['vrt_amount'] : 0
+        'ncd' => $row['vi_ncd']
     );    
 }
 
@@ -32,33 +30,35 @@ $company = [];
 $arr_premium = [];
 $arr_sum_insured = [];
 $arr_ncd = [];
-$arr_roadtax = [];
 
 foreach ($data as $key => $value) {
-    
     $company[] = $key;
+    $count = count($value);
     foreach ($value as $val) {
-        //premium
         if (isset($arr_premium[$key])){
             $arr_premium[$key] += $val['premium'];
-        }else{
-            $arr_premium[$key] = $val['premium'];            
+            $arr_sum_insured[$key] += $val['sum_insured'];
+            $arr_ncd[$key] += $val['ncd'];
         }
-        //sum insured
-        if(isset($arr_sum_insured[$key])){
-            $arr_sum_insured[$key] += $val['sum_insured'];                        
-        }else{
-            $arr_sum_insured[$key] = $val['sum_insured'];            
+        else{
+            $arr_premium[$key] = $val['premium'];
+            $arr_sum_insured[$key] = $val['sum_insured'];
+            $arr_ncd[$key] = $val['ncd'];
         }
-        //roadtax
-        if(isset($arr_roadtax[$key])){
-            $arr_roadtax[$key] += $val['roadtax'];            
-        }else{
-            $arr_roadtax[$key] = $val['roadtax'];            
-        }        
+        
     }  
+    $arr_ncd[$key] = $arr_ncd[$key]/$count;
 }
 
+// $company = array(
+//     "EPCS",
+//     "KFSB",
+//     "EPPF",
+//     "SMESB",
+//     "JDSB",
+//     "JNSB",
+//     "PDUSB"
+// );
 $company = implode("','",$company);
 
 $data_premium = array_values($arr_premium);
@@ -69,9 +69,6 @@ $data_sum_insured = implode(",", $data_sum_insured);
 
 $data_ncd = array_values($arr_ncd);
 $data_ncd = implode(",", $data_ncd);
-
-$data_roadtax = array_values($arr_roadtax);
-$data_roadtax = implode(",", $data_roadtax);
 
 $month = array(
     "JAN", 
@@ -90,7 +87,14 @@ $month = array(
 
 $month = implode("','", $month);
 
+$data_premium_m = array(60, 30, 15, 110, 50, 63, 120, 12, 30, 10, 90, 78);
+$data_premium_m = implode(",", $data_premium_m);
 
+$data_sum_insured_m = array(12, 50, 40, 80, 35, 99, 80, 30, 36, 58, 12, 100);
+$data_sum_insured_m = implode(",", $data_sum_insured_m);
+
+$data_ncd_m = array(25, 60, 30, 95, 40, 55, 90, 80, 76, 40, 11, 32);
+$data_ncd_m = implode(",", $data_ncd_m);
 ?>
 <html>
 <head>
@@ -144,7 +148,7 @@ tr:nth-child(even) {
     			<div class="col-lg-6"><!-- Expenses by company monthly -->            	
                     <div class="card">                	
                         <div class="card-body">                        
-                            <canvas id="chart-roadtax"></canvas>                        
+                            <canvas id="chart-ncd"></canvas>                        
                         </div>
                     </div>
                     
@@ -224,7 +228,7 @@ tr:nth-child(even) {
                                 display: false,
                                 labelString: 'Month'
                             }
-                        } ],
+                                } ],
                         yAxes: [ {
                             display: true,
                             gridLines: {
@@ -235,13 +239,12 @@ tr:nth-child(even) {
                                 display: true,
                                 labelString: 'Value'
                             }
-                        } ]
+                                } ]
                     },
                     title: {
                         display: true,
                         text: 'Premium (RM)'
-                    },
-                    
+                    }
                 }
             } );
 //             ctx.onclick = function(evt) {
@@ -353,7 +356,7 @@ tr:nth-child(even) {
             } );
 
           //Sales chart
-            var ctx = document.getElementById( "chart-roadtax" );
+            var ctx = document.getElementById( "chart-ncd" );
             ctx.height = 150;
             var myChart = new Chart( ctx, {
                 type: 'line',
@@ -362,8 +365,8 @@ tr:nth-child(even) {
                     type: 'line',
                     defaultFontFamily: 'Montserrat',
                     datasets: [ {
-                            label: "Road Tax (RM)",
-                            data: [ <?php echo $data_roadtax?> ],
+                            label: "NCD (%)",
+                            data: [ <?php echo $data_ncd?> ],
                             backgroundColor: 'transparent',
                             borderColor: 'rgba(220,53,69,0.75)',
                             borderWidth: 3,
@@ -421,7 +424,7 @@ tr:nth-child(even) {
                     },
                     title: {
                         display: true,
-                        text: 'Road Tax (RM)'
+                        text: 'NCD (%)'
                     }
                 }
             } );

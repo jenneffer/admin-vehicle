@@ -47,46 +47,58 @@
                             </div>     
                            <div class="card-body">
                            <br>                            
-                            <button type="button" class="btn btn-primary mb-1 col-md-2" data-toggle="modal" data-target="#addItem">
-                               Add New 
-							</button>
+<!--                             <button type="button" class="btn btn-primary mb-1 col-md-2" data-toggle="modal" data-target="#addItem"> -->
+<!--                                Add New  -->
+<!-- 							</button> -->
                                 <table id="item-data-table" class="table table-striped table-bordered">
                                     <thead>
                                         <tr>
                                             <th>No.</th>
                                             <th>Request Date</th>
-											<th>Item</th>
-											<th>Details</th>
-											<th>Quantity</th>
-											<th>Unit cost</th>
-											<th>Total cost</th>
+											<th>Recipient</th>
+											<th>Serial No.</th>
+											<th>Particular</th>
+											<th>Total (RM)</th>
 											<th>Status</th>
 											<th>Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                     <?php 
-                                        $sql_query = "SELECT * FROM om_pcash_request"; //only show active vehicle 
+                                        $sql_query = "SELECT * FROM om_requisition
+                                                        INNER JOIN om_requisition_item ON om_requisition.id = om_requisition_item.rq_id"; //only show active vehicle 
                                         if(mysqli_num_rows(mysqli_query($conn_admin_db,$sql_query)) > 0){
                                             $count = 0;
                                             $sql_result = mysqli_query($conn_admin_db, $sql_query)or die(mysqli_error($conn_admin_db));
-                                                while($row = mysqli_fetch_array($sql_result)){ 
+                                                while($row = mysqli_fetch_array($sql_result)){                                                       
                                                     $count++;
-                                                    
+                                                    $status = $row['status'];
+                                                    $color="";
+                                                    if( $status == 0 ) {
+                                                        $status = "Pending";
+                                                        $color = "orange";
+                                                    }
+                                                    else if( $status == 1 ) {
+                                                        $status = "Confirm";
+                                                        $color = "green";
+                                                    }
+                                                    else if( $status == 2 ) {
+                                                        $status = "Rejected";
+                                                        $color = "red";
+                                                    }
                                                     ?>
                                                     <tr>
                                                         <td><?=$count?>.</td>
-                                                        <td><?=$row['request_date']?></td>
-                                                        <td><?=$row['title']?></td>
-                                                        <td><?=$row['details']?></td>
-                                                        <td><?=$row['quantity']?></td>
-                                                        <td><?=$row['cost_per_unit']?></td>
-                                                        <td><?=$row['total_cost']?></td>
-                                                        <td><?=$row['workflow_status']?></td>
+                                                        <td><?=$row['date']?></td>
+                                                        <td><?=$row['recipient']?></td>
+                                                        <td><?=$row['serial_no']?></td>
+                                                        <td><?=$row['particular']?></td>
+                                                        <td><?=$row['total']?></td>                                                        
+                                                        <td><a href="requisition_preview.php?rq_id=<?=$row['rq_id']?>&status=<?=$row['status']?>" target="_blank" style="color: <?=$color?>"><b><?=$status?></b></a></td>
                                                         <td>
-                                                        	<span id="<?=$row['id']?>" data-toggle="modal" class="confirm_data" data-target="#confirmItem"><i class="fas fa-paper-plane"></i></span>
-                                                        	&nbsp;&nbsp;<span id="<?=$row['id']?>" data-toggle="modal" class="edit_data" data-target="#editItem"><i class="fa fa-edit"></i></span>
-                                                        	&nbsp;&nbsp;<span id="<?=$row['id']?>" data-toggle="modal" class="delete_data" data-target="#deleteItem"><i class="fas fa-trash-alt"></i></span>
+                                                        	<span id="<?=$row['rq_id']?>" data-toggle="modal" class="confirm_data" data-target="#confirmItem"><i class="fas fa-paper-plane"></i></span>
+                                                        	&nbsp;&nbsp;<span id="<?=$row['rq_id']?>" data-toggle="modal" class="edit_data" data-target="#editItem"><i class="fa fa-edit"></i></span>
+                                                        	&nbsp;&nbsp;<span id="<?=$row['rq_id']?>" data-toggle="modal" class="delete_data" data-target="#deleteItem"><i class="fas fa-trash-alt"></i></span>
                                                         </td>
                                                     </tr>
                                     <?php
@@ -321,7 +333,11 @@
         
         $('#item-data-table').DataTable({
         	"columnDefs": [
-//         	    { "width": "10%", "targets": 0 },
+        		{
+          	      "targets": [5], // your case first column
+          	      "className": "text-right", 
+          	      "render": $.fn.dataTable.render.number(',', '.', 2, '')               	                      	        	     
+          	 	}
 //         	    { "width": "80%", "targets": 1 },
 //         	    { "width": "10%", "targets": 2 }
         	  ]

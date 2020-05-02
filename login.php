@@ -1,6 +1,7 @@
 <?php
 	require_once('assets/config/database.php');
 	session_start();
+	
 
 ?>
 

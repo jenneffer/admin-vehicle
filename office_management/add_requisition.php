@@ -3,7 +3,7 @@ require_once('../assets/config/database.php');
 require_once('../function.php');
 session_start();
 global $conn_admin_db;
-if (isset($_POST['btn_save'])) {
+if (isset($_POST['btn_save'])) { 
     $company_id = isset($_POST['company_id']) ? $_POST['company_id'] : "";
     $recipient = isset($_POST['recipient']) ? $_POST['recipient'] : "";
     $serial_no = isset($_POST['serial_no']) ? $_POST['serial_no'] : "";
@@ -30,21 +30,17 @@ if (isset($_POST['btn_save'])) {
     $count = count($particular);
     $value = [];
     for($i=0; $i<$count; $i++){
-        if ($particular[$i] !='' && $total[$i] !='' && $remark[$i] !=''){
+        if ($particular[$i] !='' || $total[$i] !='' || $remark[$i] !=''){         
             $value[] = "($last_id,'".$particular[$i]."','".$total[$i]."', '".$remark[$i]."')";
-        }        
-    }
-    
-    $values = implode(",", $value);
-    
-    $insert_query = "INSERT INTO om_requisition_item (rq_id, particular, total, remark) VALUES $values";
+        }
+    }        
+    $values = implode(",", $value);    
+    $insert_query = "INSERT INTO om_requisition_item (rq_id, particular, total, remark) VALUES $values";    
     $result2 = mysqli_query($conn_admin_db, $insert_query) or die(mysqli_error($conn_admin_db));
     
     if ($result && $result2) {
         alert("Successfully added!", "requisition_preview.php?rq_id=".$last_id);
     }
-    
-    
     
 }
 

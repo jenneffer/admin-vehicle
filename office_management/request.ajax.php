@@ -46,13 +46,13 @@ function delete_request($id){
             if ($result) {
                 $data = array(
                     'message' => "Request Deleted!",
-                    'url' => "request_list.php"
+                    'url' => "requisition_list.php"
                 );
             }
         }else{
             $data = array(
                 'message' => "Not allowed to delete confirmed request!",
-                'url' => "request_list.php"
+                'url' => "requisition_list.php"
             );
         }
         echo json_encode($data);
@@ -65,7 +65,7 @@ function confirm_request($id){
         $query = "UPDATE om_pcash_request SET workflow_status = 'Confirm', updated_at = NOW() WHERE id='$id'";
         $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
         if ($result) {
-            alert("Request Confirmed!", "request_list.php");
+            alert("Request Confirmed!", "requisition_list.php");
         }            
     }    
 }
@@ -108,7 +108,7 @@ function add_new_request($data){
         
         $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
         if ($result) {
-            alert("Successfully added!", "request_list.php");
+            alert("Successfully added!", "requisition_list.php");
         }
     }
 }

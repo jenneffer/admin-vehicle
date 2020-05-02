@@ -261,43 +261,44 @@
                                             <textarea id="v_remark" name="v_remark" rows="3" class="form-control"></textarea>
                                         </div>                                                                              
                                     </div>
-<!--                         <div class="form-group"> -->
-<!--                             <div> -->
-<!--                                 <div class="checkbox"> -->
-<!--                                     <label> -->
-<!--                                         <input type="checkbox" name="remember"> Remember Me -->
-<!--                                     </label> -->
-<!--                                 </div> -->
-<!--                             </div> -->
-<!--                         </div> -->
-<!-- 						<hr> -->
-<!--                        <h5 style="text-align: center"><strong>LPKP Permit</strong></h5>
-<!--                         <hr> -->
-<!--                         <div class="form-group row col-sm-12"> -->
-<!--                     		<div class="col-sm-6">  -->
-<!--                                 <label for="permit_type" class=" form-control-label"><small class="form-text text-muted">Type</small></label> -->
-<!--                                 <input type="text" id="permit_type" name="permit_type" placeholder="Enter permit type" class="form-control"> -->
-<!--                             </div> -->
-<!-- 							<div class="col-sm-6">                                         -->
-<!--                                 <label for="permit_no" class=" form-control-label"><small class="form-text text-muted">No.</small></label> -->
-<!--                        		<input type="text" id="permit_no" name="permit_no" onkeypress="return isNumberKey(event)" class="form-control">
-<!--                         	</div> -->
-<!--                         </div> -->
+<!--                          <div class="form-group">  -->
+<!--                              <div>  -->
+<!--                                  <div class="checkbox">  -->
+<!--                                      <label>  -->
+<!--                                          <input type="checkbox" name="remember"> Remember Me  -->
+<!--                                      </label>  -->
+<!--                                  </div>  -->
+<!--                              </div>  -->
+<!--                          </div>  -->
+					<div class="lkpk_permit">
+ 						<hr> 
+                        <h5 style="text-align: center"><strong>LPKP Permit</strong></h5>
+                         <hr> 
+                         <div class="form-group row col-sm-12"> 
+                     		<div class="col-sm-6">  
+                                 <label for="permit_type" class=" form-control-label"><small class="form-text text-muted">Type</small></label> 
+                                 <input type="text" id="permit_type" name="permit_type" placeholder="Enter permit type" class="form-control"> 
+                             </div> 
+ 							<div class="col-sm-6">                                         
+                                 <label for="permit_no" class=" form-control-label"><small class="form-text text-muted">No.</small></label> 
+                        		<input type="text" id="permit_no" name="permit_no" onkeypress="return isNumberKey(event)" class="form-control">
+                         	</div> 
+                         </div> 
                         
-<!--                         <div class="form-group row col-sm-12"> -->
-<!--                         	<div class="col-sm-6">  -->
-<!--                                 <label for="license_ref_no" class=" form-control-label"><small class="form-text text-muted">License Ref No.</small></label> -->
-<!--                                 <input type="text" id="license_ref_no" name="license_ref_no" placeholder="Enter license ref no." class="form-control"> -->
-<!--                         	</div> -->
-<!--                         	<div class="col-sm-6">  -->
-<!--                         		<label for="lpkp_permit_due_date" class=" form-control-label"><small class="form-text text-muted">Due Date</small></label> -->
-<!--                                 <div class="input-group"> -->
-<!--                                     <input id="lpkp_permit_due_date" name="lpkp_permit_due_date" class="form-control" autocomplete="off"> -->
-<!--                                     <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div> -->
-<!--                                 </div> -->
-<!--                         	</div> -->
-<!--                         </div> -->
-                        
+                         <div class="form-group row col-sm-12"> 
+                         	<div class="col-sm-6">  
+                                 <label for="license_ref_no" class=" form-control-label"><small class="form-text text-muted">License Ref No.</small></label> 
+                                 <input type="text" id="license_ref_no" name="license_ref_no" placeholder="Enter license ref no." class="form-control"> 
+                         	</div> 
+                         	<div class="col-sm-6">  
+                         		<label for="lpkp_permit_due_date" class=" form-control-label"><small class="form-text text-muted">Due Date</small></label> 
+                                 <div class="input-group"> 
+                                     <input id="lpkp_permit_due_date" name="lpkp_permit_due_date" class="form-control" autocomplete="off"> 
+                                     <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div> 
+                                 </div> 
+                         	</div> 
+                         </div> 
+                        </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                             <button type="submit" class="btn btn-primary update_data ">Update</button>
@@ -358,7 +359,7 @@
         	"pageLength": 1,
         	"responsive": true
          });
-        
+        $('.lkpk_permit').hide();
         $('.edit_data').on('click', function(){
         	var vehicle_id = $(this).attr("id");
         	$.ajax({
@@ -388,12 +389,18 @@
                         $('#vehicle_status').val(data.vv_status);  
 
                         //permit
-//                         var vpr_due_date = data.vpr_due_date != null ? dateFormat(data.vpr_due_date) : "";
-//                         $('#permit_type').val(data.vpr_type);
-//                         $('#permit_no').val(data.vpr_no);
-//                         $('#license_ref_no').val(data.vpr_license_ref_no);
-//                         $('#lpkp_permit_due_date').val(vpr_due_date);
+                        var vpr_due_date = data.vpr_due_date != null ? dateFormat(data.vpr_due_date) : "";
+                        $('#permit_type').val(data.vpr_type);
+                        $('#permit_no').val(data.vpr_no);
+                        $('#license_ref_no').val(data.vpr_license_ref_no);
+                        $('#lpkp_permit_due_date').val(vpr_due_date);
                         $('#editItem').modal('show');
+                        
+                        //hide permit section if permit empty
+                        if(data.vpr_no != "" && data.vpr_no != null){
+							$('.lkpk_permit').show();
+                        }
+                        
         			}
         		});
         });

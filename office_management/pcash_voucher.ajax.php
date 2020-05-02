@@ -5,9 +5,9 @@ session_start();
 
 $action = isset($_POST['action']) && $_POST['action'] !="" ? $_POST['action'] : "";
 $data = isset($_POST['data']) ? $_POST['data'] : "";
-$rq_item = isset($_POST['rq_item']) ? $_POST['rq_item'] : "";
+$cv_item = isset($_POST['cv_item']) ? $_POST['cv_item'] : "";
 $id = isset($_POST['id']) ? $_POST['id'] : "";
-var_dump($_POST);
+
 if($action !=""){
     switch ($action){
             
@@ -15,8 +15,8 @@ if($action !=""){
             add_new_request($data, $rq_item);
             break;
             
-        case 'confirm_request':
-            confirm_request($id);
+        case 'confirm_cash_voucher':
+            confirm_cash_voucher($id);
             break;
             
         default:
@@ -24,9 +24,9 @@ if($action !=""){
     }
 }
 
-function confirm_request($id){
+function confirm_cash_voucher($id){
     global $conn_admin_db;
-    $query = "UPDATE om_requisition SET status='1' WHERE id='$id'";
+    $query = "UPDATE om_pcash_voucher SET workflow_status='1' WHERE id='$id'";
     $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
 }
 
@@ -104,7 +104,7 @@ function delete_request($id){
 //         $query = "UPDATE om_pcash_request SET workflow_status = 'Confirm', updated_at = NOW() WHERE id='$id'";
 //         $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
 //         if ($result) {
-//             alert("Request Confirmed!", "requisition_list.php");
+//             alert("Request Confirmed!", "request_list.php");
 //         }            
 //     }    
 // }

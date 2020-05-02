@@ -103,14 +103,14 @@
                                         <label for="date_start" class="form-control-label"><small class="form-text text-muted">Date Start</small></label>
                                         <div class="input-group">
                                           <input type="text" id="date_start" name="date_start" class="form-control" value="<?=$date_start?>" autocomplete="off">
-                                          <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></i></div>
+                                          <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
                                         </div>                            
                                     </div>
                                     <div class="col-sm-3">
                                         <label for="date_end" class="form-control-label"><small class="form-text text-muted">Date End</small></label>
                                         <div class="input-group">
                                           <input type="text" id="date_end" name="date_end" class="form-control" value="<?=$date_end?>" autocomplete="off">
-                                          <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></i></div>
+                                          <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
                                         </div>                             
                                     </div>
                                     <div class="col-sm-4">                                    	
@@ -135,8 +135,7 @@
 											<th rowspan="2">Excess</th>
 											<th rowspan="2">Capacity</th>
 											<th rowspan="2">Puspakom</th>
-                                            <th colspan="2" style="text-align: center">Road Tax</th>
-                                            <th rowspan="2">Amount(RM)</th>
+                                            <th colspan="3" style="text-align: center">Road Tax</th>                                            
                                             <th rowspan="2">Period</th>
                                         </tr>
                                         <tr>
@@ -144,6 +143,7 @@
 											<th>To</th>
 											<th>From</th>
 											<th>To</th>
+											<th>Amount(RM)</th>
                                         </tr>
                                     </thead>
                                     <tbody>                                                    

@@ -4,25 +4,24 @@
 	require_once('../check_login.php');
 	global $conn_admin_db;
 	
-	$rq_id = isset($_GET['rq_id']) ? $_GET['rq_id'] : "";
-	$rq_status = isset($_GET['status']) ? $_GET['status'] :"";
-	$readonly = $rq_status == 0 ? "" : "readonly";
-	$disabled = $rq_status == 0 ? "" : "disabled";
-	$query = "SELECT *, (SELECT NAME FROM company WHERE company.id = om_requisition.company_id ) AS company_name, 
-            (SELECT cr_name FROM credential WHERE cr_id=om_requisition.user_id) AS prepared_by FROM om_requisition WHERE id='$rq_id'";
+	$cv_id = $_GET['cv_id'];
+	$cv_status = isset($_GET['status']) ? $_GET['status'] : "";
+	$readonly = $cv_status == 0 ? "" : "readonly";
+	$disabled = $cv_status == 0 ? "" : "disabled";
+	$query = "SELECT *, (SELECT NAME FROM company WHERE company.id = om_pcash_voucher.company_id ) AS company_name, 
+            (SELECT cr_name FROM credential WHERE cr_id=om_pcash_voucher.user_id) AS prepared_by FROM om_pcash_voucher WHERE id='$cv_id'";
 	
 	$result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
 	$row = mysqli_fetch_array($result);
 	$company_id = $row['company_id'];
 	$recipient = $row['recipient'];
-	$username = itemName("SELECT cr_name FROM credential WHERE cr_id='".$row['user_id']."'");
-	$serial_no = $row['serial_no'];
-	$date = dateFormatRev($row['date']);
-	$payment_date = dateFormatRev($row['payment_date']);
-	$status = $row['status'];// 0-pending, 1-confirm, 2-rejected/cancelled
+	$prepared_by = $row['prepared_by'];
+	$cv_no = $row['cv_no'];
+	$date = dateFormatRev($row['cv_date']);	
+	$status = $row['workflow_status'];// 0-pending, 1-confirm, 2-rejected/cancelled
 	
 	//get the particular details
-	$particular_query = "SELECT * FROM om_requisition_item WHERE rq_id='$rq_id'";
+	$particular_query = "SELECT * FROM om_pcash_voucher_item WHERE cv_id='$cv_id'";
 	$sql_result = mysqli_query($conn_admin_db, $particular_query) or die(mysqli_error($conn_admin_db));
 	$particular_data = [];
 	while ($row = mysqli_fetch_array($sql_result)){
@@ -80,11 +79,11 @@
         <div class="content">
             <div class="animated fadeIn">
                 <div class="row">
-                <form id="rq_form">
+                <form id="cv_form">
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header">                            
-                                <strong class="card-title">Requisition Preview</strong>
+                                <strong class="card-title">Voucher Preview</strong>
                             </div>     
                             <div class="card-body">
                             <br>                                          
@@ -104,25 +103,18 @@
                                     </div>
                                     <div class="col-sm-4">
                                     	<label for="prepared_by" class=" form-control-label"><small class="form-text text-muted">Prepared by</small></label>
-                                    	<input type="text" id="prepared_by" name="prepared_by" value="<?=strtoupper($username);?>" class="form-control" readonly>
+                                    	<input type="text" id="prepared_by" name="prepared_by" value="<?=strtoupper($prepared_by);?>" class="form-control" readonly>
                                     </div>
                                 </div>
                                 <div class="form-group row col-sm-12">                                	
                                     <div class="col-sm-4">
                                     	<label for="serial_no" class=" form-control-label"><small class="form-text text-muted">Serial No.</small></label>
-                                        <input type="text" id="serial_no" name="serial_no" value="<?=$serial_no;?>" class="form-control" <?=$readonly?>>
+                                        <input type="text" id="serial_no" name="serial_no" value="<?=$cv_no;?>" class="form-control" <?=$readonly?>>
                                     </div>
                                 	<div class="col-sm-4">
                                         <label for="date" class=" form-control-label"><small class="form-text text-muted">Date</small></label>
                                         <div class="input-group">
                                             <input id="date" name="date" class="form-control" value="<?=$date?>" autocomplete="off" <?=$disabled?>>
-                                            <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
-                                        </div>   
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <label for="paid_date" class=" form-control-label"><small class="form-text text-muted">Required to be paid on</small></label>
-                                        <div class="input-group">
-                                            <input id="paid_date" name="paid_date" class="form-control" value="<?=$payment_date?>" autocomplete="off" <?=$disabled?>>
                                             <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
                                         </div>   
                                     </div>
@@ -134,9 +126,9 @@
                                     <table class="table table-striped table-bordered">
                                         <tr>
                                             <th scope="col" width='10%' class="text-center">No.</th>
-                                            <th scope="col" width='50%' class="text-center">Particular</th>
-                                            <th scope="col" width='20%' class="text-right">Total (RM)</th>
-                                            <th scope="col" width='20%' class="text-center">Remark</th>
+                                            <th scope="col" width='20%' class="text-center">Date</th>
+                                            <th scope="col" width='50%' class="text-right">Descriptions</th>
+                                            <th scope="col" width='20%' class="text-center">Amt (RM)</th>
                                         </tr>
                                         <?php 
                                         $counter = 0;
@@ -144,9 +136,9 @@
                                         $counter++;?>                               
                                         <tr>
                                             <td class="text-center"><?=$counter?></td>
+                                            <td><input name='item_date[]' size="20" class="form-control-sm hideBorder text-right date_item" value="<?=dateFormatRev($data['item_date'])?>" <?=$readonly?>></td>
                                             <td><input name='particular[]' size="80" class="form-control-sm hideBorder" value="<?=$data['particular']?>" <?=$readonly?>></td>
-                                            <td><input name='total[]' size="20" class="form-control-sm hideBorder text-right" value="<?=number_format($data['total'],2)?>" <?=$readonly?>></td>
-                                            <td><input name='remark[]' size="20" class="form-control-sm hideBorder" value="<?=$data['remark']?>" <?=$readonly?>></td>
+                                            <td><input name='amount[]' size="20" class="form-control-sm hideBorder text-right" value="<?=number_format($data['amount'],2)?>" <?=$readonly?>></td>                                            
                                         </tr> 
                                         <?php }?>                                                                     
                                     </table>
@@ -198,7 +190,7 @@
 	
 	<script type="text/javascript">
     $(document).ready(function() {
-    	var RQ_ITEM_LIST = [];
+//     	var RQ_ITEM_LIST = [];
     	// Initialize select2
 //     	var select2 = $("#item").select2({
 //     		placeholder: "select option",
@@ -215,32 +207,32 @@
         	  ]
   	  	});
 
-        $('#rq_form').on("submit", function(e){ 
-            e.preventDefault();
-            var particular = $("input[name='particular']").val();
-            var total = $("input[name='total']").val();
-         	var remark = $("input[name='remark']").val();
+//         $('#cv_form').on("submit", function(e){ 
+//             e.preventDefault();
+//             var particular = $("input[name='particular']").val();
+//             var total = $("input[name='total']").val();
+//          	var remark = $("input[name='remark']").val();
          	
-            $(".data-table tbody").append("<tr data-particular='"+particular+"' data-total='"+total+"' data-remark='"+remark+"'><td>"+particular+"</td><td>"+total+"</td><td>"+remark+"</td><td style='text-align:center'><i class='fa fa-edit' style='color:#33b5e5'></i>&nbsp;&nbsp;<i class='fas fa-trash-alt' style='color:red'></i></td></tr>");
+//             $(".data-table tbody").append("<tr data-particular='"+particular+"' data-total='"+total+"' data-remark='"+remark+"'><td>"+particular+"</td><td>"+total+"</td><td>"+remark+"</td><td style='text-align:center'><i class='fa fa-edit' style='color:#33b5e5'></i>&nbsp;&nbsp;<i class='fas fa-trash-alt' style='color:red'></i></td></tr>");
 
-            //push data into array
-            RQ_ITEM_LIST.push({
-				particular: particular,
-				total: total,
-				remark: remark
-            });
-            console.log(RQ_ITEM_LIST);
-            $("input[name='particular']").val('');
-            $("input[name='total']").val('');
-            $("input[name='remark']").val('');
-        });
+//             //push data into array
+//             RQ_ITEM_LIST.push({
+// 				particular: particular,
+// 				total: total,
+// 				remark: remark
+//             });
+//             console.log(RQ_ITEM_LIST);
+//             $("input[name='particular']").val('');
+//             $("input[name='total']").val('');
+//             $("input[name='remark']").val('');
+//         });
 
         $('.button_confirm').on("click", function(event){
             event.preventDefault();
             $.ajax({  
-                url:"requisition.ajax.php",  
+                url:"pcash_voucher.ajax.php",  
                 method:"POST",                        
-                data:{action:'confirm_request',id: '<?=$rq_id?>'},  
+                data:{action:'confirm_cash_voucher',id: '<?=$cv_id?>'},  
                 success:function(data){   
                     console.log(data);
                     location.reload();                     
@@ -254,46 +246,52 @@
         });
         
         $('.button_print').on("click", function(event){
-            var rq_id = '<?=$rq_id?>';
+            var cv_id = '<?=$cv_id?>';
             event.preventDefault();
-            window.open("requisition_form_print.php?rq_id="+rq_id,"mywindow","width=1000,height=650");
+            window.open("pcash_voucher_print.php?cv_id="+cv_id,"mywindow","width=1000,height=650");
         });
 
-        $('.button_save').on("click", function(event){ 
-        	event.preventDefault(); 
-            if($('#company_id').val() == ""){  
-                alert("Company is required");  
-            }  
-            else if($('#to').val() == ""){  
-                alert("Recipient is required");  
-            } 
-            else if($('#date').val() == ""){  
-                alert("Date is required");  
-            } 
-            else if($('#paid_date').val() == ""){  
-                alert("Payment date is required");  
-            }      
-            else{  
-                 $.ajax({  
-                      url:"requisition.ajax.php",  
-                      method:"POST",                        
-                      data:{action:'add_new_request', data: $('#rq_form').serialize(), rq_item: RQ_ITEM_LIST},  
-                      success:function(data){   
-                          console.log(data);
-                          var rq_id = data.rq_id;
-                          console.log(rq_id);
-                           $('#editItem').modal('hide');                             
-                           location.reload();                             
-                      }  
-                 });  
-            }
-        });
+//         $('.button_save').on("click", function(event){ 
+//         	event.preventDefault(); 
+//             if($('#company_id').val() == ""){  
+//                 alert("Company is required");  
+//             }  
+//             else if($('#to').val() == ""){  
+//                 alert("Recipient is required");  
+//             } 
+//             else if($('#date').val() == ""){  
+//                 alert("Date is required");  
+//             } 
+//             else if($('#paid_date').val() == ""){  
+//                 alert("Payment date is required");  
+//             }      
+//             else{  
+//                  $.ajax({  
+//                       url:"requisition.ajax.php",  
+//                       method:"POST",                        
+//                       data:{action:'add_new_request', data: $('#rq_form').serialize(), rq_item: RQ_ITEM_LIST},  
+//                       success:function(data){   
+//                           console.log(data);
+//                           var rq_id = data.rq_id;
+//                           console.log(rq_id);
+//                            $('#editItem').modal('hide');                             
+//                            location.reload();                             
+//                       }  
+//                  });  
+//             }
+//         });
         
-        $('#paid_date, #date').datepicker({
+        $('#date').datepicker({
               format: "dd-mm-yyyy",
               autoclose: true,
               orientation: "top left",
               todayHighlight: true
+        });
+        $('.date_item').datepicker({
+        	format: "dd-mm-yyyy",
+            autoclose: true,
+            orientation: "top left",
+            todayHighlight: true
         });
       
         function isNumberKey(evt){

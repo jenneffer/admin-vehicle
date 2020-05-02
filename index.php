@@ -1,28 +1,28 @@
 <?php
 	require_once('assets/config/database.php');
 	require_once('function.php');
-// 	require_once('check_login.php');
+	require_once('check_login.php');
 	global $conn_admin_db;
 // 	// checking if log in or not
-	session_start();
-	if(isset($_SESSION['cr_id'])) {
-		$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-		$url = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-		$query = parse_url($url, PHP_URL_QUERY);
-		parse_str($query, $params);
+// 	session_start();
+// 	if(isset($_SESSION['cr_id'])) {
+// 		$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+// 		$url = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+// 		$query = parse_url($url, PHP_URL_QUERY);
+// 		parse_str($query, $params);
 		
-		// get id
-		$userId = $_SESSION['cr_id'];
-		$name = $_SESSION['cr_name'];
-	} else {
-		$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-		$url = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-		$PrevURL= $url;
-		header("Location: login.php?RecLock=".$PrevURL);
-	}
+// 		// get id
+// 		$userId = $_SESSION['cr_id'];
+// 		$name = $_SESSION['cr_name'];
+// 	} else {
+// 		$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+// 		$url = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+// 		$PrevURL= $url;
+// 		header("Location: login.php?RecLock=".$PrevURL);
+// 	}
 	
 	//get the access module of current user
-	$cr_access_module = itemName("SELECT cr_access_module FROM credential WHERE cr_id = '$userId'");	
+	$cr_access_module = itemName("SELECT cr_access_module FROM credential WHERE cr_id = '".$_SESSION['cr_id']."'");	
 	//get the system list
 	$query = "SELECT * FROM admin_system WHERE sid IN (".$cr_access_module.")";
 	$rst  = mysqli_query($conn_admin_db, $query)or die(mysqli_error($conn_admin_db));

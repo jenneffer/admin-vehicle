@@ -84,10 +84,10 @@
                 $total_found_rows = $row_found[0];
                 $count++;
                 $insurance_status = $row['vi_insuranceStatus'] == 1 ? "Active" : "Inactive";
-                $year = !empty($row['vrt_roadtaxPeriodYear']) ? $row['vrt_roadtaxPeriodYear'] ." Year(s)" : "";
-                $month = !empty($row['vrt_roadtaxPeriodMonth']) ? $row['vrt_roadtaxPeriodMonth'] ." Month(s)" : "";
-                $days = !empty($row['vrt_roadtaxPeriodDay']) ? $row['vrt_roadtaxPeriodDay'] ." Day(s)" : "";
-                $period = $year ." ". $month ." ".$days;
+//                 $year = !empty($row['vrt_roadtaxPeriodYear']) ? $row['vrt_roadtaxPeriodYear'] ." Year(s)" : "";
+//                 $month = !empty($row['vrt_roadtaxPeriodMonth']) ? $row['vrt_roadtaxPeriodMonth'] ." Month(s)" : "";
+//                 $days = !empty($row['vrt_roadtaxPeriodDay']) ? $row['vrt_roadtaxPeriodDay'] ." Day(s)" : "";
+                $period = $row['vrt_roadTax_period'];
                 
                 $fitness_date = !empty($row['vp_fitnessDate']) ? dateFormatRev($row['vp_fitnessDate']) : '-';
                 
@@ -124,7 +124,7 @@
         global $conn_admin_db;
         $sql_query = "SELECT * FROM vehicle_roadtax
                         INNER JOIN vehicle_vehicle ON vehicle_vehicle.vv_id = vehicle_roadtax.vv_id
-                        LEFT JOIN vehicle_insurance ON vehicle_insurance.vi_vrt_id = vehicle_roadtax.vrt_id
+                        LEFT JOIN vehicle_insurance ON vehicle_insurance.vv_id = vehicle_roadtax.vv_id
                         INNER JOIN company ON company.id = vehicle_vehicle.company_id
                         WHERE vehicle_roadtax.status='1' ";
         
@@ -145,13 +145,15 @@
         if ( mysqli_num_rows($rst) ){
             $count = 0;
             while( $row = mysqli_fetch_assoc( $rst ) ){
+   
                 $row_found = mysqli_fetch_row(mysqli_query($conn_admin_db,"SELECT FOUND_ROWS()"));
                 $total_found_rows = $row_found[0];
+                
                 $count++;
-                $year = !empty($row['vrt_roadtaxPeriodYear']) ? $row['vrt_roadtaxPeriodYear'] ."Year(s)" : "";
-                $month = !empty($row['vrt_roadtaxPeriodMonth']) ? $row['vrt_roadtaxPeriodMonth'] ."Month(s)" : "";
-                $days = !empty($row['vrt_roadtaxPeriodDay']) ? $row['vrt_roadtaxPeriodDay'] ."Day(s)" : "";
-                $period = $year ." ". $month ." ".$days;
+//                 $year = !empty($row['vrt_roadtaxPeriodYear']) ? $row['vrt_roadtaxPeriodYear'] ."Year(s)" : "";
+//                 $month = !empty($row['vrt_roadtaxPeriodMonth']) ? $row['vrt_roadtaxPeriodMonth'] ."Month(s)" : "";
+//                 $days = !empty($row['vrt_roadtaxPeriodDay']) ? $row['vrt_roadtaxPeriodDay'] ."Day(s)" : "";
+                $period = $row['vrt_roadTax_period'];
                 $insurance_status = $row['vi_insuranceStatus'] == 1 ? "Active" : "Inactive";
                 
                 $action = '<span id='.$row['vrt_id'].' data-toggle="modal" class="edit_data" data-target="#editItem"><i class="menu-icon fa fa-edit"></i>
@@ -241,7 +243,7 @@
                             vi_premium_amount='".$premium_amount."',
                             vi_ncd='".$ncd."',
                             vi_sum_insured='".$sum_insured."',
-                            vi_excess_paid='".$excess_paid."',
+                            vi_excess='".$excess_paid."',
                             vi_lastUpdated = now(),
                             vi_updatedBy = '".$_SESSION['cr_id']."'
                             WHERE vi_vrt_id='".$vrt_id."'";

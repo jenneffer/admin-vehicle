@@ -5,7 +5,9 @@
 	global $conn_admin_db;
 	
 	$username = itemName("SELECT cr_name FROM credential WHERE cr_id='".$_SESSION['cr_id']."'");
-
+	$company_id = isset($_GET['company_id']) ? $_GET['company_id'] : "";
+	$company_name = itemName("SELECT name FROM company WHERE id='".$company_id."'");
+	$total = isset($_GET['total_amount']) ? $_GET['total_amount'] : 0;
 ?>
 
 <!doctype html><html class="no-js" lang="">
@@ -57,21 +59,23 @@
                 <div class="row">
                     <div class="col-md-12">
                     	<form id="rq_form" method="POST" action="add_requisition.php">
+                    	<input type="hidden" name="company_id" value="<?=$company_id?>"/>
                         <div class="card">     
                            <div class="card-body"> 
                            		<div class="text-center">
-                           			<h5><b>PAYMENT REQUISITION FORM</b></h5>
+                           			<span style="font-size: 18px;"><b><?=$company_name?></b></span><br>
+                           			<span style="font-size: 16px;"><b>PAYMENT REQUISITION FORM</b></span>
                            		</div>  
                            		<br>               
-                           		<div class="form-group row col-sm-12">
-                           			<div class="col-sm-6">
-                           				<label for="company" class=" form-control-label"><small class="form-text text-muted">Company</small></label>
+<!--                            		<div class="form-group row col-sm-12"> -->
+<!--                            			<div class="col-sm-6"> -->
+<!--                            				<label for="company" class=" form-control-label"><small class="form-text text-muted">Company</small></label> -->
                            				<?php
-                                            $company = mysqli_query ( $conn_admin_db, "SELECT id, name FROM company");
-                                            db_select ($company, 'company_id', '','','-select-','form-control','');
-                                        ?>
-                           			</div>                                    
-                                </div> 
+//                                             $company = mysqli_query ( $conn_admin_db, "SELECT id, name FROM company");
+//                                             db_select ($company, 'company_id', '','','-select-','form-control','');
+//                                         ?>
+<!--                            			</div>                                     -->
+<!--                                 </div>  -->
                                 <div class="form-group row col-sm-12">
                                     <div class="col-sm-3">
                                         <label for="recipient" class=" form-control-label"><small class="form-text text-muted">To</small></label>
@@ -84,7 +88,7 @@
                                     <div class="col-sm-3">
                                 		<label for="date" class=" form-control-label"><small class="form-text text-muted">Date</small></label>
                                 		<div class="input-group">
-                                        	<input id="date" name="date" class="form-control" autocomplete="off">
+                                        	<input id="date" name="date" class="form-control" value="<?=date('d-m-Y')?>" autocomplete="off">
                                         	<div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
                                     	</div>
                                 	</div>
@@ -108,51 +112,51 @@
                                     <tr>
                                         <td class="text-center">1.</td>
                                         <td>                                              
-                                             <input name='particular[]' size="80" class="form-control-sm hideBorder">
+                                             <input name='particular[]' size="80" value="Expenses for Admin department" class="form-control-sm hideBorder">
                                         </td>
                                         <td> 
-                                             <input name='total[]' size="20" class="form-control-sm hideBorder">
+                                             <input name='total[]' size="30" value="<?=number_format($total,2)?>" class="form-control-sm hideBorder text-right">
                                         </td>
                                         <td> 
-                                             <input name='remark[]' size="20" class="form-control-sm hideBorder">
+                                             <input name='remark[]' size="30" class="form-control-sm hideBorder">
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <td class="text-center">2.</td>
-                                        <td> 
-                                             <input name='particular[]' size="80" class="form-control-sm hideBorder">
-                                        </td>
-                                        <td> 
-                                             <input name='total[]' size="20" class="form-control-sm hideBorder">
-                                        </td>
-                                        <td> 
-                                             <input name='remark[]' size="20" class="form-control-sm hideBorder">
-                                        </td>
-                                    </tr> 
-                                    <tr>
-                                        <td class="text-center">3.</td>
-                                        <td> 
-                                             <input name='particular[]' size="80" class="form-control-sm hideBorder">
-                                        </td>
-                                        <td> 
-                                             <input name='total[]' size="20" class="form-control-sm hideBorder">
-                                        </td>
-                                        <td> 
-                                             <input name='remark[]' size="20" class="form-control-sm hideBorder">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-center">4.</td>
-                                        <td> 
-                                             <input name='particular[]' size="80" class="form-control-sm hideBorder">
-                                        </td>
-                                        <td> 
-                                             <input name='total[]' size="20" class="form-control-sm hideBorder">
-                                        </td>
-                                        <td> 
-                                             <input name='remark[]' size="20" class="form-control-sm hideBorder">
-                                        </td>
-                                    </tr>
+<!--                                     <tr> -->
+<!--                                         <td class="text-center">2.</td> -->
+<!--                                         <td>  -->
+<!--                                              <input name='particular[]' size="80" class="form-control-sm hideBorder"> -->
+<!--                                         </td> -->
+<!--                                         <td>  -->
+<!--                                              <input name='total[]' size="20" class="form-control-sm hideBorder"> -->
+<!--                                         </td> -->
+<!--                                         <td>  -->
+<!--                                              <input name='remark[]' size="20" class="form-control-sm hideBorder"> -->
+<!--                                         </td> -->
+<!--                                     </tr>  -->
+<!--                                     <tr> -->
+<!--                                         <td class="text-center">3.</td> -->
+<!--                                         <td>  -->
+<!--                                              <input name='particular[]' size="80" class="form-control-sm hideBorder"> -->
+<!--                                         </td> -->
+<!--                                         <td>  -->
+<!--                                              <input name='total[]' size="20" class="form-control-sm hideBorder"> -->
+<!--                                         </td> -->
+<!--                                         <td>  -->
+<!--                                              <input name='remark[]' size="20" class="form-control-sm hideBorder"> -->
+<!--                                         </td> -->
+<!--                                     </tr> -->
+<!--                                     <tr> -->
+<!--                                         <td class="text-center">4.</td> -->
+<!--                                         <td>  -->
+<!--                                              <input name='particular[]' size="80" class="form-control-sm hideBorder"> -->
+<!--                                         </td> -->
+<!--                                         <td>  -->
+<!--                                              <input name='total[]' size="20" class="form-control-sm hideBorder"> -->
+<!--                                         </td> -->
+<!--                                         <td>  -->
+<!--                                              <input name='remark[]' size="20" class="form-control-sm hideBorder"> -->
+<!--                                         </td> -->
+<!--                                     </tr> -->
                                     <tr>                                    
                                     </table>
                                 </div>                                              

@@ -32,13 +32,13 @@
 <?php include('../allCSS1.php')?>
 <style>
 .table-1 {
-    padding:5px;
-    border-collapse:collapse;
+    border-collapse:separate;
+    border-spacing: 15px;
 }
 .table-content {
     border: 1px solid black;
     border-collapse:collapse;
-    padding:5px;    
+    padding: 8px;    
  }
  .button{
     width:10%;
@@ -59,19 +59,13 @@
 <body>
 <table class="table-1" style="width: 100%">
 <tr>
-	<th class="table-1" colspan="6" style="text-align:center;">PAYMENT REQUISITION FORM</th>
+	<th class="table-1" colspan="3" style="text-align:center; font-size:18px"><?=$company_name?><br>
+	<span class="table-1" style="text-align:center; font-size:16px;">PAYMENT REQUISITION FORM</span></th>
 </tr>
 <tr>
-    <td class="table-1">Company</td>
-    <td>: &nbsp;<?=$company_name?></td>    
-</tr>
-<tr>
-    <td class="table-1">To</td>
-    <td>: &nbsp;<?=$recipient?></td>
-    <td class="table-1">Serial No.</td>
-    <td class="table-1">: &nbsp;<?=$serial_no?></td>
-    <td class="table-1">Date</td>
-    <td class="table-1">: &nbsp;<?=$date?></td>
+    <td class="table-1 text-left" width="30%">To &nbsp;:&nbsp; <?=strtoupper($recipient)?></td>
+    <td class="table-1 text-center" width="30%">Serial No. &nbsp;:&nbsp; <?=$serial_no?></td>
+    <td class="table-1 text-right" width="30%">Date &nbsp;:&nbsp; <?=$date?></td>
 </tr>
 <tr>
     <td class="table-1" colspan="6">We append below the details list of payment required to be paid on <b><?=$payment_date?></b></td>    
@@ -80,10 +74,10 @@
 <br>
 <table class="table-content" style="width: 100%">
 <tr>
-    <th class="table-content text-center">No.</th>
-    <th class="table-content text-center">Particular</th>
-    <th class="table-content text-right">Total (RM)</th>
-    <th class="table-content text-center">Remark</th>
+    <th class="table-content text-center" width="10%">No.</th>
+    <th class="table-content text-center" width="40%">Particular</th>
+    <th class="table-content text-right" width="20%">Total (RM)</th>
+    <th class="table-content text-center" width="30%">Remark</th>
 </tr>
 <?php 
     $counter = 0;
@@ -94,7 +88,7 @@
     ?>  
     <tr>
         <td class="table-content" style="text-align: center"><?=$counter?>.</td>
-        <td class="table-content"><?=$data['particular']?></td>
+        <td class="table-content"><?=ucfirst($data['particular'])?></td>
         <td style='text-align: right;' class="table-content"><?=number_format($data['total'],2)?></td>
         <td class="table-content text-center">&nbsp;<?=$data['remark']?></td>
     </tr>
@@ -106,13 +100,11 @@
     <td class="table-content">&nbsp;</td>
 </tr>
 <tr>
-    <th class="table-content">&nbsp;</th>
-    <th class="table-content" style='text-align: right;'>Total</th>
+    <th class="table-content" colspan="2" style='text-align: right;'>Total</th>
     <th class="table-content" style='text-align: right;'><?=number_format($total,2)?></th>
     <th class="table-content">&nbsp;</th>
 </tr>
 </table>
-<br><br>
 <table class="table-1" style="width: 100%">
 <tr>
     <td class="table-1 text-center">Requested By</td>
@@ -125,12 +117,12 @@
     <td class="table-1">&nbsp;</td>
 </tr>
 <tr>
-    <td class="table-1 text-center">_____________________</td>
-    <td class="table-1 text-center">_____________________</td>
-    <td class="table-1 text-center">_____________________</td>
+    <td class="table-1 text-center border-bottom border-dark"></td>
+    <td class="table-1 text-center border-bottom border-dark"></td>
+    <td class="table-1 text-center border-bottom border-dark"></td>
 </tr>
 <tr>
-    <td class="table-1 text-center">Catherine Emas</td>
+    <td class="table-1 text-center"><?=ucfirst($username)?></td>
     <td class="table-1 text-center">Department In-Charge</td>
     <td class="table-1 text-center">Acc. Personnel</td>
 </tr>

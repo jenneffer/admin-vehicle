@@ -1,4 +1,4 @@
-<?php 
+<?php
 require_once('../assets/config/database.php');
 require_once('../function.php');
 require_once('../check_login.php');
@@ -11,7 +11,7 @@ ob_start();
 selectYear('year_select',$year_select,'','','form-control col-sm-3','','');
 $html_year_select = ob_get_clean();
 
-$query = "SELECT vehicle_vehicle.vv_id, company_id, (SELECT code FROM company WHERE id=vehicle_vehicle.company_id) AS code, vv_vehicleNo, vi_insurance_fromDate, 
+$query = "SELECT vehicle_vehicle.vv_id, company_id, (SELECT code FROM company WHERE id=vehicle_vehicle.company_id) AS code, vv_vehicleNo, vi_insurance_fromDate,
         vi_insurance_dueDate, vi_premium_amount, vi_ncd, vi_sum_insured, vi_excess , vrt_roadTax_fromDate, vrt_roadTax_dueDate,vrt_amount
         FROM vehicle_vehicle
         INNER JOIN vehicle_insurance ON vehicle_vehicle.vv_id = vehicle_insurance.vv_id
@@ -19,70 +19,97 @@ $query = "SELECT vehicle_vehicle.vv_id, company_id, (SELECT code FROM company WH
 
 $sql_result = mysqli_query($conn_admin_db, $query)or die(mysqli_error($conn_admin_db));
 $data = array();
-while($row = mysqli_fetch_array($sql_result)){ 
-    $data[$row['code']][] = array(    
+while($row = mysqli_fetch_array($sql_result)){
+    $data[$row['code']][] = array(
         'premium' => $row['vi_premium_amount'],
         'sum_insured' => $row['vi_sum_insured'],
         //'ncd' => $row['vi_ncd']
         'roadtax' => !empty($row['vrt_amount']) ? $row['vrt_amount'] : 0
-    );    
+    );
 }
 
 $company = [];
 $arr_premium = [];
 $arr_sum_insured = [];
-$arr_ncd = [];
 $arr_roadtax = [];
 
 foreach ($data as $key => $value) {
-    
     $company[] = $key;
     foreach ($value as $val) {
         //premium
-        if (isset($arr_premium[$key])){
-            $arr_premium[$key] += $val['premium'];
-        }else{
-            $arr_premium[$key] = $val['premium'];            
+        if(!isset($arr_premium[$key])) {
+            $arr_premium[$key] = array(); //Declare it
         }
+        $arr_premium[$key][] = $val['premium'];
+        
         //sum insured
-        if(isset($arr_sum_insured[$key])){
-            $arr_sum_insured[$key] += $val['sum_insured'];                        
-        }else{
-            $arr_sum_insured[$key] = $val['sum_insured'];            
+        if(!isset($arr_sum_insured[$key])) {
+            $arr_sum_insured[$key] = array(); //Declare it
         }
+        $arr_sum_insured[$key][] = $val['sum_insured'];
+        
         //roadtax
-        if(isset($arr_roadtax[$key])){
-            $arr_roadtax[$key] += $val['roadtax'];            
-        }else{
-            $arr_roadtax[$key] = $val['roadtax'];            
-        }        
-    }  
+        if(!isset($arr_roadtax[$key])) {
+            $arr_roadtax[$key] = array(); //Declare it
+        }
+        $arr_roadtax[$key][]  = $val['roadtax'];
+        
+    }
 }
-
+// $company = array(
+//     "EPCS",
+//     "KFSB",
+//     "EPPF",
+//     "SMESB",
+//     "JDSB",
+//     "JNSB",
+//     "PDUSB"
+// );
 $company = implode("','",$company);
 
-$data_premium = array_values($arr_premium);
+$premiumData = [];
+$premiumArray = [];
+foreach ($arr_premium as $key=>$val){
+    foreach ($val as $row){
+        $premiumData[$key][] = (float)$row;
+    }
+    $premiumArray[] = array_sum($premiumData[$key]);
+}
+$data_premium = array_values($premiumArray);
 $data_premium = implode(",", $data_premium);
 
-$data_sum_insured = array_values($arr_sum_insured);
+$sumInsuredData = [];
+$sumInsuredArray = [];
+foreach ($arr_sum_insured as $key=>$val){
+    foreach ($val as $row){
+        $sumInsuredData[$key][] = (float)$row;
+    }
+    $sumInsuredArray[] = array_sum($sumInsuredData[$key]);
+}
+$data_sum_insured = array_values($sumInsuredArray);
 $data_sum_insured = implode(",", $data_sum_insured);
 
-$data_ncd = array_values($arr_ncd);
-$data_ncd = implode(",", $data_ncd);
-
-$data_roadtax = array_values($arr_roadtax);
+$roadTaxData = [];
+$roadTaxArray = [];
+foreach ($arr_roadtax as $key=>$val){
+    foreach ($val as $row){
+        $roadTaxData[$key][] = (float)$row;
+    }
+    $roadTaxArray[] = array_sum($roadTaxData[$key]);
+}
+$data_roadtax = array_values($roadTaxArray);
 $data_roadtax = implode(",", $data_roadtax);
 
 $month = array(
-    "JAN", 
-    "FEB", 
-    "MAR", 
-    "APR", 
-    "MAY", 
-    "JUN", 
-    "JUL", 
-    "AUG", 
-    "SEP", 
+    "JAN",
+    "FEB",
+    "MAR",
+    "APR",
+    "MAY",
+    "JUN",
+    "JUL",
+    "AUG",
+    "SEP",
     "OCT",
     "NOV",
     "DEC"
@@ -90,7 +117,14 @@ $month = array(
 
 $month = implode("','", $month);
 
+$data_premium_m = array(60, 30, 15, 110, 50, 63, 120, 12, 30, 10, 90, 78);
+$data_premium_m = implode(",", $data_premium_m);
 
+$data_sum_insured_m = array(12, 50, 40, 80, 35, 99, 80, 30, 36, 58, 12, 100);
+$data_sum_insured_m = implode(",", $data_sum_insured_m);
+
+$data_ncd_m = array(25, 60, 30, 95, 40, 55, 90, 80, 76, 40, 11, 32);
+$data_ncd_m = implode(",", $data_ncd_m);
 ?>
 <html>
 <head>
@@ -117,9 +151,9 @@ tr:nth-child(even) {
 </head>
 <body>
     <!--Left Panel -->
-	<?php  include('../assets/nav/leftNav.php')?>
+	<?php  //include('../assets/nav/leftNav.php')?>
     <!-- Right Panel -->
-    <?php include('../assets/nav/rightNav.php')?>
+    <?php //include('../assets/nav/rightNav.php')?>
     <div id="right-panel" class="right-panel">
     <div class="content">
         <div class="animated fadeIn">
