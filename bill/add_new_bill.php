@@ -382,7 +382,7 @@
         </div>
         <div>
         </div>
-        <!-- Modal   -->
+        <!-- Modal add telefon list  -->
         <div id="add_phone" class="modal fade">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">

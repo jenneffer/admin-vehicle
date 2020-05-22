@@ -36,7 +36,7 @@
     function delete_item($id){
         global $conn_admin_db;
         if (!empty($id)) {
-            $query = "UPDATE om_item SET status = 0 WHERE id = '".$id."' ";
+            $query = "UPDATE om_stock_item SET status = 0 WHERE id = '".$id."' ";
             $result = mysqli_query($conn_admin_db, $query);
             if ($result) {
                 alert ("Deleted successfully", "item_list.php");
@@ -54,7 +54,7 @@
             $name =  mysqli_real_escape_string( $conn_admin_db,$param['name']);
             $unit = $param['unit'];
             
-            $query = "UPDATE om_item SET item_name='$name', unit='$unit' WHERE id='$id'";
+            $query = "UPDATE om_stock_item SET item_name='$name', unit='$unit' WHERE id='$id'";
             $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
             if ($result) {
                 alert("Successfully updated!", "item_list.php");
@@ -66,7 +66,7 @@
         global $conn_admin_db;
         if (!empty($id)) {
             
-            $query = "SELECT * FROM om_item WHERE id = '$id'";
+            $query = "SELECT * FROM om_stock_item WHERE id = '$id'";
             $rst  = mysqli_query($conn_admin_db, $query)or die(mysqli_error($conn_admin_db));
             
             $row = mysqli_fetch_assoc($rst);
@@ -83,7 +83,7 @@
             $name =  mysqli_real_escape_string( $conn_admin_db,$param['item_name']);
             $unit = $param['item_unit'];
             
-            $query = "INSERT INTO om_item SET item_name='$name', unit='$unit'";
+            $query = "INSERT INTO om_stock_item SET item_name='$name', unit='$unit'";
             $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
             if ($result) {
                 alert("Successfully added!", "item_list.php");

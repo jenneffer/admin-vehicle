@@ -56,6 +56,7 @@
                                             <th>No.</th>
                                             <th>Request Date</th>
 											<th>Recipient</th>
+											<th>Company</th>
 											<th>Serial No.</th>
 											<th>Particular</th>
 											<th>Total (RM)</th>
@@ -73,6 +74,7 @@
                                                 while($row = mysqli_fetch_array($sql_result)){                                                       
                                                     $count++;
                                                     $status = $row['status'];
+                                                    $comp_name = itemName("SELECT code FROM company WHERE id='".$row['company_id']."'");
                                                     $color="";
                                                     if( $status == 0 ) {
                                                         $status = "Pending";
@@ -91,14 +93,13 @@
                                                         <td><?=$count?>.</td>
                                                         <td><?=$row['date']?></td>
                                                         <td><?=$row['recipient']?></td>
+                                                        <td><?=$comp_name?></td>
                                                         <td><?=$row['serial_no']?></td>
                                                         <td><?=$row['particular']?></td>
                                                         <td><?=$row['total']?></td>                                                        
                                                         <td><a href="requisition_preview.php?rq_id=<?=$row['rq_id']?>&status=<?=$row['status']?>" target="_blank" style="color: <?=$color?>"><b><?=$status?></b></a></td>
                                                         <td>
-                                                        	<span id="<?=$row['rq_id']?>" data-toggle="modal" class="confirm_data" data-target="#confirmItem"><i class="fas fa-paper-plane"></i></span>
-                                                        	&nbsp;&nbsp;<span id="<?=$row['rq_id']?>" data-toggle="modal" class="edit_data" data-target="#editItem"><i class="fa fa-edit"></i></span>
-                                                        	&nbsp;&nbsp;<span id="<?=$row['rq_id']?>" data-toggle="modal" class="delete_data" data-target="#deleteItem"><i class="fas fa-trash-alt"></i></span>
+                                                        	<span id="<?=$row['rq_id']?>" data-toggle="modal" class="delete_data" data-target="#deleteItem"><i class="fas fa-trash-alt"></i></span>
                                                         </td>
                                                     </tr>
                                     <?php
@@ -334,10 +335,10 @@
         $('#item-data-table').DataTable({
         	"columnDefs": [
         		{
-          	      "targets": [5], // your case first column
+          	      "targets": [6], // your case first column
           	      "className": "text-right", 
           	      "render": $.fn.dataTable.render.number(',', '.', 2, '')               	                      	        	     
-          	 	}
+          	 	}          	 	
 //         	    { "width": "80%", "targets": 1 },
 //         	    { "width": "10%", "targets": 2 }
         	  ]

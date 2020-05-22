@@ -49,7 +49,7 @@
             $id = $param['id'];
             $stock_in =  mysqli_real_escape_string( $conn_admin_db,$param['stk_in']);
             
-            $query = "UPDATE stationary_stock
+            $query = "UPDATE om_stock
                     SET stock_in='$stock_in' WHERE id='$id'";
             
             $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
@@ -59,7 +59,7 @@
     function delete_stock($id){
         global $conn_admin_db;
         if (!empty($id)) {
-            $query = "UPDATE stationary_stock SET status = 0 WHERE id = '".$id."' ";
+            $query = "UPDATE om_stock SET status = 0 WHERE id = '".$id."' ";
             $result = mysqli_query($conn_admin_db, $query);
             if ($result) {
                 alert ("Deleted successfully", "stock.php");
@@ -71,7 +71,7 @@
         global $conn_admin_db;
         if (!empty($id)) {
             
-            $query = "SELECT * FROM stationary_stock WHERE id = '$id'";
+            $query = "SELECT * FROM om_stock WHERE id = '$id'";
             $rst  = mysqli_query($conn_admin_db, $query)or die(mysqli_error($conn_admin_db));
             
             $row = mysqli_fetch_assoc($rst);
@@ -83,7 +83,7 @@
         global $conn_admin_db;
         if (!empty($id)) {
             
-            $query = "SELECT * FROM stationary_stock_take WHERE id = '$id'";
+            $query = "SELECT * FROM om_stock_take WHERE id = '$id'";
             $rst  = mysqli_query($conn_admin_db, $query)or die(mysqli_error($conn_admin_db));
             
             $row = mysqli_fetch_assoc($rst);
@@ -100,7 +100,7 @@
             $item_id =  mysqli_real_escape_string( $conn_admin_db,$param['item']);
             $stock_in =  mysqli_real_escape_string( $conn_admin_db,$param['stock_in']);
             
-            $query = "INSERT INTO stationary_stock 
+            $query = "INSERT INTO om_stock 
                     SET item_id='$item_id',
                     stock_in='$stock_in',
                     date_added = now()";
@@ -108,7 +108,7 @@
             $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
             
             //check the item_id if exist in stock balance table          
-            $query = "SELECT * FROM stationary_stock_balance WHERE item_id='$item_id'";
+            $query = "SELECT * FROM om_stock_balance WHERE item_id='$item_id'";
             if(mysqli_num_rows(mysqli_query($conn_admin_db,$query)) > 0){
                 //if ada, get the previous balance plus the new 1.
                 $sql_result = mysqli_query($conn_admin_db, $query)or die(mysqli_error($conn_admin_db));
@@ -116,7 +116,7 @@
                 //calculate the stock 
                 $total = $row['stock_balance'] + $stock_in;
                 //update stock balance
-                $query_update =  "UPDATE stationary_stock_balance 
+                $query_update =  "UPDATE om_stock_balance 
                                 SET stock_balance='$total', 
                                 last_updated= now(), 
                                 updated_by ='".$_SESSION['cr_id']."' 
@@ -126,7 +126,7 @@
             }
             //insert new if belum exist
             else{
-                $query_insert = "INSERT INTO stationary_stock_balance 
+                $query_insert = "INSERT INTO om_stock_balance 
                                 SET item_id='$item_id',
                                 stock_balance='$stock_in',
                                 last_updated = now(),
@@ -149,7 +149,7 @@
             $quantity =  mysqli_real_escape_string( $conn_admin_db,$param['quantity']);
             $date_taken = $param['date_taken'];
             
-            $query = "INSERT INTO stationary_stock_take
+            $query = "INSERT INTO om_stock_take
                     SET item_id='$item_id',
                     department_id='$department_id',
                     quantity='$quantity',
@@ -159,7 +159,7 @@
             $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
             
             //check the item_id if exist in stock balance table
-            $query = "SELECT * FROM stationary_stock_balance WHERE item_id='$item_id'";
+            $query = "SELECT * FROM om_stock_balance WHERE item_id='$item_id'";
             if(mysqli_num_rows(mysqli_query($conn_admin_db,$query)) > 0){
                 //if ada, get the previous balance - the new 1.
                 $sql_result = mysqli_query($conn_admin_db, $query)or die(mysqli_error($conn_admin_db));
@@ -167,7 +167,7 @@
                 //calculate the stock
                 $total = $row['stock_balance'] - $quantity;
                 //update stock balance
-                $query_update =  "UPDATE stationary_stock_balance
+                $query_update =  "UPDATE om_stock_balance
                                 SET stock_balance='$total',
                                 last_updated= now(),
                                 updated_by ='".$_SESSION['cr_id']."'

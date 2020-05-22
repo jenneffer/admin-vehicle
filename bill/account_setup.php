@@ -124,12 +124,7 @@
                                     <div class="form-group row col-sm-12">
                                        <div class="col-sm-4" id="location">
                                             <label class="control-label"><small class="form-text text-muted">Location</small></label>
-                                            <div class="input-group">
-                                                <?php
-                                                $location = mysqli_query ( $conn_admin_db, "SELECT location_id, location_name FROM fireextinguisher_location");
-                                                db_select ($location, 'location', '','','-select-','form-control','');
-                                            ?>
-                                            </div>
+                                            <textarea id="location" name="location" placeholder="Enter location" class="form-control"></textarea>
                                         </div> 
                                         <div class="col-sm-4" id="deposit">
                                             <label for="deposit" class=" form-control-label"><small class="form-text text-muted">Deposit (RM)</small></label>

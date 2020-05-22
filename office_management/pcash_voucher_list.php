@@ -20,7 +20,7 @@
 	    $cv_date = $row['cv_date'];
 	    $cv_no = $row['cv_no'];
 	    $recipient = $row['recipient'];
-	    $company_name = itemName("SELECT name FROM company WHERE id='".$row['company_id']."'");
+	    $company_name = itemName("SELECT code FROM company WHERE id='".$row['company_id']."'");
 	    $user = $_SESSION['cr_name'];
 	    $cv_id = $row['id'];
 	    $status = $row['workflow_status'];
@@ -138,6 +138,7 @@
                                             <th>No.</th>
                                             <th>Date</th>
 											<th>Recipient</th>
+											<th>Company</th>
 											<th>Cash Voucher No.</th>
 											<th>Particular</th>
 											<th>Amount (RM)</th>
@@ -175,6 +176,7 @@
                                                         <td><?=$count?>.</td>
                                                         <td><?=dateFormatRev($data['cv_date'])?></td>
                                                         <td><?=$data['recipient']?></td>
+                                                        <td><?=$data['company_name']?></td>
                                                         <td><?=strtoupper($data['cv_no'])?></td>
                                                         <td><?=ucfirst($particular)?></td>
                                                         <td><?=$data['total']?></td>                                                        

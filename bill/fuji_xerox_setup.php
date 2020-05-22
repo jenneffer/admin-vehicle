@@ -43,7 +43,7 @@ global $conn_admin_db;
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header">
-                                <strong class="card-title">Stock Out</strong>
+                                <strong class="card-title">Photocopy Machine (Fuji Xerox)</strong>
                             </div>     
                            <div class="card-body">
                            <br>                            
@@ -54,33 +54,27 @@ global $conn_admin_db;
                                     <thead>
                                         <tr>
                                             <th>No.</th>
-											<th>Department</th>
-											<th>Staff Name</th>
-											<th>Item</th>
-											<th>Quantity</th>
-											<th>Date</th>
-											<th>&nbsp;</th>
+											<th>Company</th>
+											<th>Serial No.</th>
+											<th>Location</th>
+											<th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
 
                                     <?php 
-                                        $sql_query = "SELECT * FROM om_stock_take"; 
+                                        $sql_query = "SELECT * FROM bill_fuji_xerox_account WHERE status ='1'"; 
                                         if(mysqli_num_rows(mysqli_query($conn_admin_db,$sql_query)) > 0){
                                             $count = 0;
                                             $sql_result = mysqli_query($conn_admin_db, $sql_query)or die(mysqli_error($conn_admin_db));
                                                 while($row = mysqli_fetch_array($sql_result)){ 
-                                                    $count++;
-                                                    $department = itemName("SELECT department_name FROM stationary_department WHERE department_id='".$row['department_id']."'");
-                                                    $item = itemName("SELECT item_name FROM om_stock_item WHERE id='".$row['item_id']."'")
+                                                    $count++;                                                    
                                                     ?>
                                                     <tr>
                                                         <td><?=$count?>.</td>
-                                                        <td><?=$department?></td>
-                                                        <td><?=$row['staff_name']?></td>
-                                                        <td><?=$item?></td>
-                                                        <td><?=$row['quantity']?></td>
-                                                        <td><?=dateFormatRev($row['date_taken'])?></td>                                                        
+                                                        <td><?=strtoupper($row['company'])?></td>
+                                                        <td><a href="fx_account_details.php?id=<?=$row['id']?>" target="_blank" style="color:blue;"><?=$row['serial_no']?></a></td>
+                                                        <td><?=$row['location']?></td>
                                                         <td>
                                                         	<span id="<?=$row['id']?>" data-toggle="modal" class="edit_data" data-target="#editItem"><i class="fa fa-edit"></i></span>
                                                         	<span id="<?=$row['id']?>" data-toggle="modal" class="delete_data" data-target="#deleteItem"><i class="fas fa-trash-alt"></i></span>
@@ -100,7 +94,7 @@ global $conn_admin_db;
         </div><!-- .content -->
         </div>
         
-        <!-- Modal Add new department -->
+        <!-- Modal Add new fuji xerox account -->
         <div id="addItem" class="modal fade">
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
@@ -108,49 +102,34 @@ global $conn_admin_db;
                         <h4 class="modal-title">Add New</h4>
                     </div>
                     <div class="modal-body">
-                    <form role="form" method="POST" action="" id="add_form"> 
+                    <form role="form" method="POST" action="" id="add_form">                    
                     <div class="form-group row col-sm-12">
-                    	<div class="col-sm-12">
-                    		<label for="staff_name" class=" form-control-label"><small class="form-text text-muted">Staff Name</small></label>
-                            <input type="text" id="staff_name" name="staff_name" class="form-control">
-                    	</div>
-                    	<div class="col-sm-12">
-                            <label for="department" class=" form-control-label"><small class="form-text text-muted">Department</small></label>
+                    	<div class="col-sm-6">
+                            <label for="company" class=" form-control-label"><small class="form-text text-muted">Company</small></label>
                             <div>
                                 <?php
-                                $department = mysqli_query ( $conn_admin_db, "SELECT department_id, department_name FROM stationary_department");
-                                db_select ($department, 'department', '','','-select-','form-control','');
+                                    $company = mysqli_query ( $conn_admin_db, "SELECT id, code FROM company");
+                                    db_select ($company, 'company', '','','-select-','form-control','');
                                 ?>
                             </div>
                         </div>
-                    </div>                   
-                    <div class="form-group row col-sm-12">
-                    	<div class="col-sm-12">
-                            <label for="item" class=" form-control-label"><small class="form-text text-muted">Item</small></label>
-                            <div>
-                                <?php
-                                $item = mysqli_query ( $conn_admin_db, "SELECT si.id AS id, item_name FROM om_stock ss
-                                                              INNER JOIN om_stock_item si ON si.id = ss.item_id GROUP BY si.id");
-                                db_select ($item, 'item', '','','-select-','form-control','');
-                                ?>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group row col-sm-12">
-                    	<div class="col-sm-12">
-                            <label for="quantity" class=" form-control-label"><small class="form-text text-muted">Quantity</small></label>
-                            <input type="text" id="quantity" name="quantity" class="form-control">
-                        </div>
-                    </div> 
-                    <div class="form-group row col-sm-12"> 
                         <div class="col-sm-6">
-                            <label for="date_taken" class="form-control-label"><small class="form-text text-muted">Date taken</small></label>
-                            <div class="input-group">
-                                <input id="date_taken" name="date_taken" class="form-control" autocomplete="off">
-                                <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
-                            </div>                                            
-                        </div>     
-                    </div>             
+                            <label for="serial_no" class=" form-control-label"><small class="form-text text-muted">Serial No.</small></label>
+                            <input type="text" id="serial_no" name="serial_no" placeholder="Enter Serial number" class="form-control">
+                        </div>
+                    </div>                    
+                    <div class="form-group row col-sm-12">
+                    	<div class="col-sm-12">
+                            <label for="location" class=" form-control-label"><small class="form-text text-muted">Location</small></label>
+                            <textarea id="location" name="location" class="form-control"></textarea>
+                        </div>
+                    </div>                        
+                    <div class="form-group row col-sm-12">
+                    	<div class="col-sm-12">
+                            <label for="remark" class=" form-control-label"><small class="form-text text-muted">Remark</small></label>
+                            <textarea id="remark" name="remark" class="form-control"></textarea>
+                        </div>
+                    </div>              
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                         <button type="submit" class="btn btn-primary save_data ">Save</button>
@@ -160,58 +139,44 @@ global $conn_admin_db;
                 </div>
             </div>
         </div>
-        <!-- Modal edit department  -->
+        <!-- Modal edit sesb account  -->
         <div id="editItem" class="modal fade">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Edit Stock Take</h4>
+                    <h4 class="modal-title">Edit Account</h4>
                 </div>
                 <div class="modal-body">
                     <form role="form" method="POST" action="" id="update_form">
                         <input type="hidden" name="_token" value="">
                         <input type="hidden" id="id" name="id" value="">
                         <div class="form-group row col-sm-12">
-                        <div class="col-sm-12">
-                    		<label for="staff" class=" form-control-label"><small class="form-text text-muted">Staff Name</small></label>
-                            <input type="text" id="staff" name="staff" class="form-control">
-                    	</div>
-                    	<div class="col-sm-12">
-                            <label for="department" class=" form-control-label"><small class="form-text text-muted">Department</small></label>
+                    	<div class="col-sm-6">
+                            <label for="company_edit" class=" form-control-label"><small class="form-text text-muted">Company</small></label>
                             <div>
                                 <?php
-                                $department_name = mysqli_query ( $conn_admin_db, "SELECT department_id, department_name FROM stationary_department");
-                                db_select ($department_name, 'department_name', '','','-select-','form-control','');
+                                    $company = mysqli_query ( $conn_admin_db, "SELECT id, code FROM company");
+                                    db_select ($company, 'company_edit', '','','-select-','form-control','');
                                 ?>
                             </div>
                         </div>
-                        </div>                   
+                        <div class="col-sm-6">
+                            <label for="serial_no_edit" class=" form-control-label"><small class="form-text text-muted">Serial No.</small></label>
+                            <input type="text" id="serial_no_edit" name="serial_no_edit" placeholder="Enter Serial number" class="form-control">
+                        </div>
+                        </div>                    
                         <div class="form-group row col-sm-12">
                         	<div class="col-sm-12">
-                                <label for="item" class=" form-control-label"><small class="form-text text-muted">Item</small></label>
-                                <div>
-                                    <?php
-                                    $item_name = mysqli_query ( $conn_admin_db, "SELECT id, item_name FROM om_stock_item");
-                                    db_select ($item_name, 'item_name', '','','-select-','form-control','');
-                                    ?>
-                                </div>
+                                <label for="location_edit" class=" form-control-label"><small class="form-text text-muted">Location</small></label>
+                                <textarea id="location_edit" name="location_edit" class="form-control"></textarea>
+                            </div>
+                        </div>                        
+                        <div class="form-group row col-sm-12">
+                        	<div class="col-sm-12">
+                                <label for="remark_edit" class=" form-control-label"><small class="form-text text-muted">Remark</small></label>
+                                <textarea id="remark_edit" name="remark_edit" class="form-control"></textarea>
                             </div>
                         </div>
-                        <div class="form-group row col-sm-12">
-                        	<div class="col-sm-12">
-                                <label for="qty" class=" form-control-label"><small class="form-text text-muted">Quantity</small></label>
-                                <input type="text" id="qty" name="qty" class="form-control">
-                            </div>
-                        </div> 
-                        <div class="form-group row col-sm-12"> 
-                            <div class="col-sm-6">
-                                <label for="date" class="form-control-label"><small class="form-text text-muted">Date taken</small></label>
-                                <div class="input-group">
-                                    <input id="date" name="date" class="form-control" autocomplete="off">
-                                    <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
-                                </div>                                            
-                            </div>     
-                        </div>           
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                             <button type="submit" class="btn btn-primary update_data ">Update</button>
@@ -270,7 +235,7 @@ global $conn_admin_db;
     $(document).ready(function() {
 
     	// Initialize select2
-    	var select2 = $("#item").select2({
+    	var select2 = $("#company").select2({
 //     		placeholder: "select option",
     	    selectOnClose: true
         });
@@ -278,32 +243,23 @@ global $conn_admin_db;
     	select2.data('select2').$selection.css('border', '1px solid #ced4da');
         
         $('#item-data-table').DataTable({
-        	"columnDefs": [
-//         	    { "width": "10%", "targets": 0 },
-//         	    { "width": "80%", "targets": 1 },
-//         	    { "width": "10%", "targets": 2 }
-        	  ]
-  	  	});
 
-  	  	$(document).on('change', '#quantity', function(){  	  	  	
-  	  	  	//get the stock balance 
-  	  	  	
   	  	});
         
         $(document).on('click', '.edit_data', function(){
-        	var id = $(this).attr("id");       	
+        	var id = $(this).attr("id");        	
         	$.ajax({
-        			url:"stock.ajax.php",
+        			url:"fx_bill.ajax.php",
         			method:"POST",
-        			data:{action:'retrieve_stock_take', id:id},
+        			data:{action:'retrieve_account', id:id},
         			dataType:"json",
-        			success:function(data){            			 
-            			var date = dateFormat(data.date_taken);        			
+        			success:function(data){
+            			console.log(data);            			        			
         				$('#id').val(id);					
-                        $('#department_name').val(data.department_id);    
-                        $('#item_name').val(data.item_id);     
-                        $('#qty').val(data.quantity);    
-                        $('#date').val(date);                        
+                        $('#company_edit').val(data.company);      
+                        $('#serial_no_edit').val(data.account_no);  
+                        $('#location_edit').val(data.location);            
+                        $('#remark_edit').val(data.remark);                        
                         $('#editItem').modal('show');
         			}
         		});
@@ -318,9 +274,9 @@ global $conn_admin_db;
     	$( "#delete_record" ).click( function() {
     		var ID = $(this).data('id');
     		$.ajax({
-    			url:"function.ajax.php",
+    			url:"fx_bill.ajax.php",
     			method:"POST",    
-    			data:{action:'delete_department', id:ID},
+    			data:{action:'delete_account', id:ID},
     			success:function(data){	  						
     				$('#deleteItem').modal('hide');		
     				location.reload();		
@@ -330,14 +286,14 @@ global $conn_admin_db;
     
         $('#update_form').on("submit", function(event){  
           event.preventDefault();  
-          if($('#department').val() == ""){  
-               alert("Department name is required");  
-          }     
+          if($('#stk_in').val() == ""){  
+              alert("Stock in is required");  
+          }    
           else{  
                $.ajax({  
-                    url:"function.ajax.php",  
+                    url:"stock.ajax.php",  
                     method:"POST",  
-                    data:{action:'update_department', data: $('#update_form').serialize()},  
+                    data:{action:'update_stock', data: $('#update_form').serialize()},  
                     success:function(data){   
                          $('#editItem').modal('hide');  
                          $('#bootstrap-data-table').html(data);
@@ -349,23 +305,23 @@ global $conn_admin_db;
         
         $('#add_form').on("submit", function(event){  
             event.preventDefault();  
-            if($('#item').val() == ""){  
-                 alert("Item is required");  
-            }
-            else if($('#department').val() == ""){  
-                alert("Department is required");  
-           	}  
-            else if($('#quantity').val() == ""){  
-                 alert("Quantity in is required");  
+            if($('#company').val() == ""){  
+                 alert("Company is required");  
             } 
-            else if($('#date_taken').val() == ""){  
-                alert("Date is required");  
+            else if($('#acc_no').val() == ""){  
+                 alert("Account number is required");  
             }    
+            else if($('#location').val() == ""){  
+                alert("Location is required");  
+           	}             
+            else if($('#tariff').val() == ""){  
+                alert("Tariff is required");  
+           	}                           
             else{  
                  $.ajax({  
-                      url:"stock.ajax.php",  
+                      url:"fx_bill.ajax.php",  
                       method:"POST",  
-                      data:{action:'add_stock_take', data: $('#add_form').serialize()},  
+                      data:{action:'add_new_account', data: $('#add_form').serialize()},  
                       success:function(data){   
                            $('#editItem').modal('hide');  
                            $('#bootstrap-data-table').html(data);
@@ -375,38 +331,22 @@ global $conn_admin_db;
             }  
           });
         
-        $('#date_taken').datepicker({
-            format: "dd-mm-yyyy",
-            autoclose: true,
-            orientation: "top left",
-            todayHighlight: true
-        });
+        function isNumberKey(evt){
+        	var charCode = (evt.which) ? evt.which : evt.keyCode;
+        	if (charCode != 46 && charCode > 31 
+        	&& (charCode < 48 || charCode > 57))
+        	return false;
+        	return true;
+        }  
         
-        
+        function isNumericKey(evt){
+        	var charCode = (evt.which) ? evt.which : evt.keyCode;
+        	if (charCode != 46 && charCode > 31 
+        	&& (charCode < 48 || charCode > 57))
+        	return true;
+        	return false;
+        } 
     });
-    function isNumberKey(evt){
-    	var charCode = (evt.which) ? evt.which : evt.keyCode;
-    	if (charCode != 46 && charCode > 31 
-    	&& (charCode < 48 || charCode > 57))
-    	return false;
-    	return true;
-    }  
-    
-    function isNumericKey(evt){
-    	var charCode = (evt.which) ? evt.which : evt.keyCode;
-    	if (charCode != 46 && charCode > 31 
-    	&& (charCode < 48 || charCode > 57))
-    	return true;
-    	return false;
-    } 
-    function dateFormat(dates){
-        var date = new Date(dates);
-    	var day = date.getDate();
-	  	var monthIndex = date.getMonth()+1;
-	  	var year = date.getFullYear();
-
-	  	return (day <= 9 ? '0' + day : day) + '-' + (monthIndex<=9 ? '0' + monthIndex : monthIndex) + '-' + year ;
-    }
   </script>
 </body>
 </html>

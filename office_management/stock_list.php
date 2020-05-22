@@ -69,7 +69,7 @@
                                             $sql_result = mysqli_query($conn_admin_db, $sql_query)or die(mysqli_error($conn_admin_db));
                                                 while($row = mysqli_fetch_array($sql_result)){ 
                                                     $count++;
-                                                    $item = itemName("SELECT item_name FROM om_item WHERE id='".$row['item_id']."'")
+                                                    $item = itemName("SELECT item_name FROM om_stock_item WHERE id='".$row['item_id']."'")
                                                     ?>
                                                     <tr>
                                                         <td><?=$count?>.</td>
@@ -109,7 +109,7 @@
                             <label for="item" class=" form-control-label"><small class="form-text text-muted">Item</small></label>
                             <div>
                                 <?php
-                                    $item = mysqli_query ( $conn_admin_db, "SELECT id, item_name FROM om_item");
+                                    $item = mysqli_query ( $conn_admin_db, "SELECT id, item_name FROM om_stock_item");
                                     db_select ($item, 'item', '','','-select-','form-control','');
                                 ?>
                             </div>
@@ -146,7 +146,7 @@
                                 <label for="item_id" class=" form-control-label"><small class="form-text text-muted">Item</small></label>
                                 <div>
                                     <?php
-                                        $item_id = mysqli_query ( $conn_admin_db, "SELECT id, item_name FROM om_item");
+                                        $item_id = mysqli_query ( $conn_admin_db, "SELECT id, item_name FROM om_stock_item");
                                         db_select ($item_id, 'item_id', '','','-select-','form-control','', 'disabled');
                                     ?>
                                 </div>

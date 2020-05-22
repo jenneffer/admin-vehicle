@@ -92,7 +92,7 @@ $arr_item_unit = array(
                                     <tbody>
 
                                     <?php 
-                                        $sql_query = "SELECT * FROM om_item WHERE status='1'"; //only show active vehicle 
+                                        $sql_query = "SELECT * FROM om_stock_item WHERE status='1'"; //only show active vehicle 
                                         if(mysqli_num_rows(mysqli_query($conn_admin_db,$sql_query)) > 0){
                                             $count = 0;
                                             $sql_result = mysqli_query($conn_admin_db, $sql_query)or die(mysqli_error($conn_admin_db));
@@ -258,7 +258,7 @@ $arr_item_unit = array(
         $(document).on('click', '.edit_data', function(){
         	var id = $(this).attr("id");
         	$.ajax({
-        			url:"function.ajax.php",
+        			url:"item.ajax.php",
         			method:"POST",
         			data:{action:'retrieve_item', id:id},
         			dataType:"json",
@@ -280,7 +280,7 @@ $arr_item_unit = array(
     	$( "#delete_record" ).click( function() {
     		var ID = $(this).data('id');
     		$.ajax({
-    			url:"function.ajax.php",
+    			url:"item.ajax.php",
     			method:"POST",    
     			data:{action:'delete_item', id:ID},
     			success:function(data){	  						
@@ -300,7 +300,7 @@ $arr_item_unit = array(
           }
           else{  
                $.ajax({  
-                    url:"function.ajax.php",  
+                    url:"item.ajax.php",  
                     method:"POST",  
                     data:{action:'update_item', data: $('#update_form').serialize()},  
                     success:function(data){   
@@ -322,7 +322,7 @@ $arr_item_unit = array(
             }    
             else{  
                  $.ajax({  
-                      url:"function.ajax.php",  
+                      url:"item.ajax.php",  
                       method:"POST",  
                       data:{action:'add_item', data: $('#add_form').serialize()},  
                       success:function(data){   
