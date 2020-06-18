@@ -7,6 +7,8 @@ $action = isset($_POST['action']) && $_POST['action'] !="" ? $_POST['action'] : 
 $data = isset($_POST['data']) ? $_POST['data'] : "";
 $cv_item = isset($_POST['cv_item']) ? $_POST['cv_item'] : "";
 $id = isset($_POST['id']) ? $_POST['id'] : "";
+$arr_cv_id = isset($_POST['str_cv_id']) ? $_POST['str_cv_id'] : "";
+$total_cv = isset($_POST['total_cv']) ? $_POST['total_cv'] : 0;
 
 if($action !=""){
     switch ($action){
@@ -19,8 +21,34 @@ if($action !=""){
             confirm_cash_voucher($id);
             break;
             
+        case 'save_staff_claim':
+            save_staff_claim($arr_cv_id, $total_cv);
+            break;
+            
         default:
             break;
+    }
+}
+
+function save_staff_claim($string, $total_cv){   
+    global $conn_admin_db;
+    $user_id = $_SESSION['cr_id'];
+    $arr_cv_id = [];
+    if(!empty($string)){
+        $arr_cv_id = explode(",", $string);
+    }    
+    $cv_id = implode("','", $arr_cv_id);
+    
+    //generate staff_claim_id
+    $insert_query = mysqli_query($conn_admin_db, "INSERT INTO om_pcash_staff_claim (date_added, add_by, amount)
+                    VALUES(NOW(),$user_id, $total_cv)") or mysqli_error($conn_admin_db);
+    $last_insert_id = mysqli_insert_id($conn_admin_db);
+    
+    //update  staff_claim_id and workflow_status in pcash_voucher table
+    if($insert_query){
+        $update_query = "UPDATE om_pcash_voucher SET staff_claim_id='$last_insert_id', workflow_status='3' WHERE id IN ('".$cv_id."')";        
+        $rst = mysqli_query($conn_admin_db, $update_query) or mysqli_error($conn_admin_db);
+        echo json_encode($rst);
     }
 }
 

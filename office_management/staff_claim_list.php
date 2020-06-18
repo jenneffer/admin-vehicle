@@ -8,50 +8,24 @@
 	$date_end = isset($_POST['date_end']) ? $_POST['date_end'] : date('t-12-Y');
 	$select_c = isset($_POST['select_company']) ? $_POST['select_company'] : "";
 	
-    //only show unclaimed cv list
-	$query = "SELECT * FROM om_pcash_voucher WHERE cv_date 
-            BETWEEN '".dateFormat($date_start)."' AND '".dateFormat($date_end)."' AND workflow_status !=3";
+	$query = "SELECT sc.id, sc.date_added, amount, (SELECT cr_name FROM credential WHERE cr_id=sc.add_by)add_by,
+            (SELECT CODE FROM company WHERE id=pv.company_id)company_code, pv.company_id FROM om_pcash_staff_claim sc
+            INNER JOIN om_pcash_voucher pv ON pv.staff_claim_id = sc.id 
+            WHERE sc.date_added BETWEEN '".dateFormat($date_start)."' AND '".dateFormat($date_end)."'";
 	
-	if(!empty($select_c)){
-	    $query .= " AND company_id='$select_c'";
+	if (!empty($select_c)) {
+	    $query .=" AND pv.company_id='$select_c'";
+	}
+	$query .=" GROUP BY sc.id";
+	
+	$rst = mysqli_query($conn_admin_db, $query);
+	$arr_data = [];
+	while($row = mysqli_fetch_array($rst)){
+	    $arr_data[] = $row;
 	}
 	
-	$result = mysqli_query($conn_admin_db, $query)or die(mysqli_error($conn_admin_db));
-	$cv_data = array();	
-	while($row = mysqli_fetch_array($result)){             
-	    $cv_date = $row['cv_date'];
-	    $cv_no = $row['cv_no'];
-	    $recipient = $row['recipient'];
-	    $company_name = itemName("SELECT code FROM company WHERE id='".$row['company_id']."'");
-	    $user = $_SESSION['cr_name'];
-	    $cv_id = $row['id'];
-	    $status = $row['workflow_status'];
-	    
-	    //get the data for cash voucher item
-	    $cv_query = "SELECT * FROM om_pcash_voucher_item WHERE cv_id = '".$row['id']."'";
-	    $rst = mysqli_query($conn_admin_db, $cv_query)or die(mysqli_error($conn_admin_db));
-	    $cv_item = [];
-	    $total = 0;
-	    while($rows = mysqli_fetch_array($rst)){ 	       
-	        $total += $rows['amount'];
-	         $cv_item[] = array(
-                'item_date' => $rows['item_date'],
-	             'particular' => $rows['particular']
-	         );
-	    }
-	    $cv_data[] = array(
-	        'cv_id' => $cv_id,
-            'cv_date' => $cv_date,
-            'cv_no' => $cv_no,
-            'recipient' => $recipient,
-            'company_name' => $company_name,
-            'user' => $user,
-            'total' => $total,
-	        'status' => $status,
-	        'cv_item' => $cv_item
-	    );	    
-	}
-
+	
+    
 ?>
 
 <!doctype html><html class="no-js" lang="">
@@ -73,22 +47,12 @@
     .select2-container{ 
         width: 100% !important; 
     }
-    .button_search {
-        position: absolute;
-        left:    0;
-        bottom:   0;
-    }
-    .button_staff_claim {
-        position: absolute;
-        left:    0;
-        bottom:   0;
-    }
    </style>
 </head>
 
 <body>
     <!--Left Panel -->
-	<?php  include('../assets/nav/leftNav.php')?>
+	<?php include('../assets/nav/leftNav.php')?>
     <!-- Right Panel -->
     <?php include('../assets/nav/rightNav.php')?>
     <!-- /#header -->
@@ -101,110 +65,83 @@
                         <div class="card">
                         <form id="myform" enctype="multipart/form-data" method="post" action="">
                             <div class="card-header">
-                                <strong class="card-title">Cash Voucher List ( Unclaimed )</strong>
+                                <strong class="card-title">Staff Claim List</strong>
                             </div> 
                             <div class="card-body">              	                   
-                	            <div class="form-group row col-sm-12">                    	            	
-                    	            <div class="col-sm-3"> 
-                    	            <label for="select_company" class="form-control-label"><small class="form-text text-muted">Company</small></label>                                       
-                                        <?php
-                                            $select_company = mysqli_query ( $conn_admin_db, "SELECT DISTINCT(company.id), code FROM company INNER JOIN om_pcash_voucher ON om_pcash_voucher.company_id = company.id WHERE status='1'");
-                                            db_select ($select_company, 'select_company', $select_c,'submit()','All Company','form-control','');
-                                        ?>                              
-                                    </div>
-                                    <div class="col-sm-2">
-                                        <label for="date_start" class="form-control-label"><small class="form-text text-muted">Date Start</small></label>
-                                        <div class="input-group">
-                                          <input type="text" id="date_start" name="date_start" class="form-control" value="<?=$date_start?>" autocomplete="off">
-                                          <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
-                                        </div>                            
-                                    </div>
-                                    <div class="col-sm-2">
-                                        <label for="date_end" class="form-control-label"><small class="form-text text-muted">Date End</small></label>
-                                        <div class="input-group">
-                                          <input type="text" id="date_end" name="date_end" class="form-control" value="<?=$date_end?>" autocomplete="off">
-                                          <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
-                                        </div>                             
-                                    </div>
-                                    <div class="col-sm-1">                                    	
-                                    	<button type="submit" class="btn btn-primary button_search ">Submit</button>
-                                    </div>
-                                    <div class="col-sm-2">                                    	
-                                    	<input type="button" class="btn btn-primary button_staff_claim" value="Generate Staff Claim"/>                                        	
-                                    </div>
-                                 </div>                                                                   
-                            </div>   
+                    	            <div class="form-group row col-sm-12">                    	            	
+                        	            <div class="col-sm-3"> 
+                        	            <label for="select_company" class="form-control-label"><small class="form-text text-muted">Company</small></label>                                       
+                                            <?php
+                                                $select_company = mysqli_query ( $conn_admin_db, "SELECT DISTINCT(company.id), code FROM company INNER JOIN om_pcash_voucher ON om_pcash_voucher.company_id = company.id WHERE status='1'");
+                                                db_select ($select_company, 'select_company', $select_c,'submit()','All Company','form-control','');
+                                            ?>                              
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <label for="date_start" class="form-control-label"><small class="form-text text-muted">Date Start</small></label>
+                                            <div class="input-group">
+                                              <input type="text" id="date_start" name="date_start" class="form-control" value="<?=$date_start?>" autocomplete="off">
+                                              <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
+                                            </div>                            
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <label for="date_end" class="form-control-label"><small class="form-text text-muted">Date End</small></label>
+                                            <div class="input-group">
+                                              <input type="text" id="date_end" name="date_end" class="form-control" value="<?=$date_end?>" autocomplete="off">
+                                              <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
+                                            </div>                             
+                                        </div>
+                                        
+                                     </div> 
+                                     <div class="form-group row col-sm-12 btn-group">
+                                     	<div class="col-sm-1">                                    	
+                                        	<button type="submit" class="btn btn-primary button_search ">Submit</button>
+                                        </div>
+                                     </div>   
+                                
+                            </div>
                            <div class="card-body">                         
                                 <table id="item-data-table" class="table table-striped table-bordered">
                                     <thead>
                                         <tr>
-                                            <th><input type="checkbox" name="selectAll" id="selectAll"></th>
+                                            <th>&nbsp;</th>
                                             <th>Date</th>
-											<th>Recipient</th>
+											<th>Ref No.</th>
 											<th>Company</th>
-											<th>Cash Voucher No.</th>
-											<th>Particular</th>
+											<th>Add by</th>											
 											<th>Amount (RM)</th>
-											<th>Status</th>
 											<th>Actions</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody>                                    
                                     <?php 
                                     $count = 0;
-                                    foreach ($cv_data as $data){
+                                    foreach ($arr_data as $data){
                                         $count++;
-                                        $status = $data['status'];
-                                        $display = $data['status'] == 1 ? "none":"block";
-                                        $color="";
-                                        if( $status == 0 ) {
-                                            $status = "Pending";
-                                            $color = "orange";
-                                        }
-                                        else if( $status == 1 ) {
-                                            $status = "Confirm";
-                                            $color = "green";
-                                        }
-                                        else if( $status == 2 ) {
-                                            $status = "Rejected";
-                                            $color = "red";
-                                        }
-                                        $cv_item_data = $data['cv_item'];
-                                        $desc = [];
-                                        
-                                        foreach ($cv_item_data as $item_data){
-                                          
-                                            $desc[] = $item_data['particular'];
-                                        }
-                                        $particular = implode(", ", $desc);
+                                        //check if staff_claim_id exist in requisition table
+                                        $check = mysqli_num_rows(mysqli_query($conn_admin_db, "SELECT * FROM om_requisition WHERE staff_claim_id='".$data['id']."'"));
+                                        $display = $check != 0 ? "none" : "block"; //show button generate form if has not been generated
                                         ?>
                                         <tr>
+                                            <td><?=$count?>.</td>
+                                            <td><?=dateFormatRev($data['date_added'])?></td>
+                                            <td>&nbsp;</td>
+                                            <td><?=$data['company_code']?></td>
+                                            <td><?=ucfirst($data['add_by'])?></td>                                            
+                                            <td><?=$data['amount']?></td>                                                                                            
                                             <td>
-                                            	<input type="checkbox" name="cv_id[]" value="<?=$data['cv_id']?>">
-                                            </td>
-                                            <td><?=dateFormatRev($data['cv_date'])?></td>
-                                            <td><?=$data['recipient']?></td>
-                                            <td><?=$data['company_name']?></td>
-                                            <td><?=strtoupper($data['cv_no'])?></td>
-                                            <td><?=ucfirst($particular)?></td>
-                                            <td><?=$data['total']?></td>    
-                                            <td><?=$status?></td>                                              
-                                            <td>
-                                            	<span id="<?=$data['cv_id']?>" style="display: <?=$display?>" data-toggle="modal" class="confirm_data" data-target="#confirmItem"><i class="fas fa-paper-plane"></i></span>&nbsp;&nbsp;
-                                            	<span id="<?=$data['cv_id']?>" onclick="window.open('pcash_voucher_preview.php?cv_id=<?=$data['cv_id']?>&status=<?=$data['status']?>');"><i class="fas fa-eye"></i></span>
+                                            	<span id="view_data"><i class="fas fa-eye"></i></span>
+                                            	<span id="generate_form" style="display:<?=$display?>;" onclick="window.open('requisition_form.php?company_id=<?=$data['company_id']?>&total_amount=<?=$data['amount']?>&staff_claim_id=<?=$data['id']?>');" ><i class="fab fa-wpforms"></i></span>
                                             </td>
                                         </tr>
                                     <?php
-                                    }
+                                                }
                                     ?>
                                     </tbody>
                                     <tfoot>
                                     	<tr>
-                                            <th colspan="5" class="text-right">Total</th>
-                                            <th class="text-right font-weight-bold">&nbsp;</th>
-                                            <th>&nbsp;</th>
-                                            <th>&nbsp;</th>        
-                                            <th>&nbsp;</th>                                                                                        
+                                            <td colspan="5" class="text-right font-weight-bold">Total</td>
+                                            <td class="text-right font-weight-bold">&nbsp;</td>
+                                            <td>&nbsp;</td>                                                                                      
                                         </tr>
                                     </tfoot>
                                 </table>
@@ -299,24 +236,20 @@
         	"searching": false,
         	"columnDefs": [
         		{
-          	      "targets": [6],
+          	      "targets": [5],
           	      "className": "text-right", 
           	      "render": $.fn.dataTable.render.number(',', '.', 2, '')               	                      	        	     
           	 	},
           	 	{
-          	 		"targets": 0,
-          	 		"orderable": false
-          	 	},
-          	 	{
-          	 		"targets": 8,
-          	 		"className": "text-center", 
-          	 	} 
+        	      "targets": [6],
+        	      "className": "text-center"        	                  	                      	        	     
+        	 	},
           	 	
         	  ],
             "footerCallback": function( tfoot, data, start, end, display ) {
             	var api = this.api(), data;
             	var numFormat = $.fn.dataTable.render.number( '\,', '.', 2, '' ).display;            
-        		api.columns([6], { page: 'current'}).every(function() {
+        		api.columns([5], { page: 'current'}).every(function() {
         				var sum = this
         			    .data()
         			    .reduce(function(a, b) {
@@ -330,28 +263,28 @@
             },
   	  	});
         
-        $(document).on('click', '.edit_data', function(){
-        	var id = $(this).attr("id");          		
-        	$.ajax({
-        			url:"request.ajax.php",
-        			method:"POST",
-        			data:{action:'retrieve_request', id:id},
-        			dataType:"json",
-        			success:function(data){ 
-            			console.log(data);    
-        				$('#id').val(id);					
-                        $('#company_id').val(data.company_id);        
-                        $('#date').val(data.request_date);      
-                        $('#item_title').val(data.title);					
-                        $('#desc').val(data.details);        
-                        $('#qty').val(data.quantity);     
-                        $('#unit_cost').val(data.cost_per_unit);        
-                        $('#total').val(data.total_cost);                     
-                        $('#editItem').modal('show');       			        			
+//         $(document).on('click', '.edit_data', function(){
+//         	var id = $(this).attr("id");          		
+//         	$.ajax({
+//         			url:"request.ajax.php",
+//         			method:"POST",
+//         			data:{action:'retrieve_request', id:id},
+//         			dataType:"json",
+//         			success:function(data){ 
+//             			console.log(data);    
+//         				$('#id').val(id);					
+//                         $('#company_id').val(data.company_id);        
+//                         $('#date').val(data.request_date);      
+//                         $('#item_title').val(data.title);					
+//                         $('#desc').val(data.details);        
+//                         $('#qty').val(data.quantity);     
+//                         $('#unit_cost').val(data.cost_per_unit);        
+//                         $('#total').val(data.total_cost);                     
+//                         $('#editItem').modal('show');       			        			
         				
-        			}
-        		});
-        });
+//         			}
+//         		});
+//         });
     
         $(document).on('click', '.delete_data', function(){
         	var id = $(this).attr("id");
@@ -365,22 +298,18 @@
         
         });
 
-        $( "#confirm_record" ).click( function() {
-    		var ID = $(this).data('id');
-    		alert(ID);
-    		$.ajax({
-    			url:"pcash_voucher.ajax.php",
-    			method:"POST",    
-    			data:{action:'confirm_cash_voucher', id:ID},
-    			success:function(data){	  						
-    				$('#confirmItem').modal('hide');		
-    				location.reload();		
-    			}
-    		});
-    	});
-        $("#selectAll").click(function() {
-            $("input[type=checkbox]").prop("checked", $(this).prop("checked"));
-        });
+//         $( "#confirm_record" ).click( function() {
+//     		var ID = $(this).data('id');
+//     		$.ajax({
+//     			url:"request.ajax.php",
+//     			method:"POST",    
+//     			data:{action:'confirm_request', id:ID},
+//     			success:function(data){	  						
+//     				$('#confirmItem').modal('hide');		
+//     				location.reload();		
+//     			}
+//     		});
+//     	});
       	
     	$( "#delete_record" ).click( function() {
     		var ID = $(this).data('id');
@@ -399,17 +328,10 @@
             $.each($("input[name='cv_id[]']:checked"), function(){            
                 cv_id.push($(this).val());
             });
-            //cv_id must not empty
-            
             //alert("My favourite sports are: " + cv_id.join(", "));
-        	if(select_company != '' && cv_id.length != 0){
+        	if(select_company != ''){
         		window.open('staff_claim_form.php?company_id=<?=$select_c?>&date_start=<?=$date_start?>&date_end=<?=$date_end?>&cv_id='+cv_id);
-            }
-        	else if (cv_id === undefined || cv_id.length == 0) {
-                // array empty or does not exist
-                alert("Please select at least 1 cash voucher to proceed!");
-            }
-            else if (select_company == ''){
+            }else{
 				alert("Please select company name to generate staff claim");
             }		
         });

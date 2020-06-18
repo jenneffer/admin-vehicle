@@ -1,25 +1,10 @@
 <?php
 	require_once('../assets/config/database.php');
 	require_once('../check_login.php');
-// 	if(isset($_SESSION['cr_id'])) {
-// 		$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-// 		$url = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-// 		$query = parse_url($url, PHP_URL_QUERY);
-// 		parse_str($query, $params);
-		
-// 		// get id
-// 		$userId = $_SESSION['cr_id'];
-// 		$name = $_SESSION['cr_name'];
-		
-// 	} else {
-// 		$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-// 		$url = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-// 		$PrevURL= $url;
-// 		header("Location: ../login.php?RecLock=".$PrevURL);
-// 	}
-	
+	global $conn_admin_db;
 	$date_start = isset($_POST['date_start']) ? $_POST['date_start'] : date('01-m-Y');
 	$date_end = isset($_POST['date_end']) ? $_POST['date_end'] : date('t-m-Y');
+	$select_c = isset($_POST['select_company']) ? $_POST['select_company'] : "";
 ?>
 
 <!doctype html>
@@ -98,6 +83,13 @@
                             <div class="card-body">
                                 <form id="myform" enctype="multipart/form-data" method="post" action="">                	                   
                     	            <div class="form-group row col-sm-12">
+                    	            	<div class="col-sm-3">
+                                			<label for="company_dd" class="form-control-label"><small class="form-text text-muted">Company</small></label>
+                                    		<?php
+                                                $select_company = mysqli_query ( $conn_admin_db, "SELECT id, code FROM company WHERE status='1'");
+                                                db_select ($select_company, 'select_company', $select_c,'submit()','All','form-control','');                        
+                                            ?>
+                                      	</div>
                                         <div class="col-sm-3">
                                             <label for="date_start" class="form-control-label"><small class="form-text text-muted">Date Start</small></label>
                                             <div class="input-group">
@@ -112,14 +104,14 @@
                                               <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
                                             </div>                             
                                         </div>
-                                        <div class="col-sm-4">                                    	
+                                        <div class="col-sm-3">                                    	
                                         	<button type="submit" class="btn btn-primary button_search ">Submit</button>
                                         </div>
                                      </div>    
                                 </form>
                             </div>
                             <hr>
-                            <div class="card-body">
+                            <div class="card-body" id="printableArea">
                                 <table id="roadtax_summary" class="table table-striped table-bordered">
                                     <thead>
                                         <tr>
@@ -192,24 +184,30 @@
                 	 	data.date_start = '<?=$date_start?>';
 						data.date_end = '<?=$date_end?>';
 						data.action = 'roadtax_summary';
+						data.select_company = '<?=$select_c?>';
 					}
                 },
                 "footerCallback": function( tfoot, data, start, end, display ) {
     				var api = this.api(), data;
+    				// Remove the formatting to get integer data for summation
+    	            var intVal = function ( i ) {
+    	                return typeof i === 'string' ?
+    	                    i.replace(/[\$,]/g, '')*1 :
+    	                    typeof i === 'number' ?
+    	                        i : 0;
+    	            };
+    				var numFormat = $.fn.dataTable.render.number( '\,', '.', 2, '' ).display;
 
-    				for( var i=10; i < 11; i++ ){
-    					api.columns(i, { page: 'current'}).every(function() {
-    							var sum = this
-    						    .data()
-    						    .reduce(function(a, b) {
-    						    var x = parseFloat(a) || 0;
-    						    var y = parseFloat(b) || 0;
-    						    	return x + y;
-    						    }, 0);			
-    						       
-    						    $(this.footer()).html(parseFloat(sum).toFixed(2));
-    					}); 
-    				} 
+					api.columns([10], { page: 'current'}).every(function() {
+							var sum = this
+						    .data()
+						    .reduce( function (a, b) {
+                                return intVal(a) + intVal(b);
+                            }, 0 );			
+						       
+						    $(this.footer()).html(numFormat(sum));
+					}); 
+    				
     			},
                 "columnDefs": [
                 	  {
@@ -254,4 +252,11 @@
         });
   </script>
 </body>
+<style>
+ #printableArea{ 
+     font-size:14px; 
+     margin:0px; 
+     padding:.5rem; 
+} 
+</style>
 </html>

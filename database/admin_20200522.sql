@@ -1479,7 +1479,7 @@ CREATE TABLE IF NOT EXISTS `om_stock_take` (
   `date_added` date DEFAULT NULL,
   `date_taken` date DEFAULT NULL,
   `staff_name` varchar(50) DEFAULT NULL,
-  `department_name` varchar(50) DEFAULT NULL,
+  `department_code` varchar(50) DEFAULT NULL,
   `item_name` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `department_id` (`department_id`),
@@ -1488,7 +1488,7 @@ CREATE TABLE IF NOT EXISTS `om_stock_take` (
 
 -- Dumping data for table admin.om_stock_take: ~2 rows (approximately)
 /*!40000 ALTER TABLE `om_stock_take` DISABLE KEYS */;
-INSERT INTO `om_stock_take` (`id`, `department_id`, `item_id`, `quantity`, `date_added`, `date_taken`, `staff_name`, `department_name`, `item_name`) VALUES
+INSERT INTO `om_stock_take` (`id`, `department_id`, `item_id`, `quantity`, `date_added`, `date_taken`, `staff_name`, `department_code`, `item_name`) VALUES
 	(1, 2, 1, 1, '2020-05-13', '2020-05-13', NULL, NULL, NULL),
 	(2, 2, 1, 1, '2020-05-13', '2020-06-02', NULL, NULL, NULL);
 /*!40000 ALTER TABLE `om_stock_take` ENABLE KEYS */;
@@ -1627,14 +1627,14 @@ INSERT INTO `roadtax` (`id`, `comp_id`, `vehicle_id`, `vehicle_no`, `insurance_d
 -- Dumping structure for table admin.stationary_department
 CREATE TABLE IF NOT EXISTS `stationary_department` (
   `department_id` int(11) NOT NULL AUTO_INCREMENT,
-  `department_name` varchar(50) DEFAULT NULL,
+  `department_code` varchar(50) DEFAULT NULL,
   `status` int(11) DEFAULT 1,
   PRIMARY KEY (`department_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=latin1;
 
 -- Dumping data for table admin.stationary_department: ~19 rows (approximately)
 /*!40000 ALTER TABLE `stationary_department` DISABLE KEYS */;
-INSERT INTO `stationary_department` (`department_id`, `department_name`, `status`) VALUES
+INSERT INTO `stationary_department` (`department_id`, `department_code`, `status`) VALUES
 	(1, 'ADMIN', 1),
 	(2, 'IT HARDWARE	', 1),
 	(3, 'ACCOUNTS', 1),
@@ -1874,7 +1874,7 @@ CREATE TABLE IF NOT EXISTS `stationary_stock_take` (
   `quantity` int(11) DEFAULT NULL,
   `date_added` date DEFAULT NULL,
   `date_taken` date DEFAULT NULL,
-  `department_name` varchar(50) DEFAULT NULL,
+  `department_code` varchar(50) DEFAULT NULL,
   `item_name` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `department_id` (`department_id`),
@@ -1883,7 +1883,7 @@ CREATE TABLE IF NOT EXISTS `stationary_stock_take` (
 
 -- Dumping data for table admin.stationary_stock_take: ~680 rows (approximately)
 /*!40000 ALTER TABLE `stationary_stock_take` DISABLE KEYS */;
-INSERT INTO `stationary_stock_take` (`id`, `department_id`, `item_id`, `quantity`, `date_added`, `date_taken`, `department_name`, `item_name`) VALUES
+INSERT INTO `stationary_stock_take` (`id`, `department_id`, `item_id`, `quantity`, `date_added`, `date_taken`, `department_code`, `item_name`) VALUES
 	(1, 1, 3, 1, NULL, '2019-02-28', 'ADMIN', 'L-FOLDER COLOURFUL'),
 	(2, 1, 5, 1, NULL, '2019-02-28', 'ADMIN', 'ENVELOPE WHITE-WINDOW'),
 	(3, 1, 17, 1, NULL, '2019-02-28', 'ADMIN', 'DOUBLE CLIP-32MM'),

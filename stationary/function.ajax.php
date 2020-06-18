@@ -68,9 +68,11 @@
             parse_str($_POST['data'], $param); //unserialize jquery string data
             $id = $param['id'];
             $name =  mysqli_real_escape_string( $conn_admin_db,$param['name']);
+            $category =  mysqli_real_escape_string( $conn_admin_db,$param['cat']);
             $unit = $param['unit'];
             
-            $query = "UPDATE stationary_item SET item_name='$name', unit='$unit' WHERE id='$id'";
+            $query = "UPDATE stationary_item SET item_name='$name', unit='$unit', category_id='$category' WHERE id='$id'";
+            
             $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
             if ($result) {
                 alert("Successfully updated!", "item.php");
@@ -97,9 +99,10 @@
             parse_str($_POST['data'], $param); //unserialize jquery string data
             
             $name =  mysqli_real_escape_string( $conn_admin_db,$param['item_name']);
+            $category =  mysqli_real_escape_string( $conn_admin_db,$param['category']);
             $unit = $param['item_unit'];
             
-            $query = "INSERT INTO stationary_item SET item_name='$name', unit='$unit'";
+            $query = "INSERT INTO stationary_item SET item_name='$name', category_id='$category', unit='$unit'";
             $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
             if ($result) {
                 alert("Successfully added!", "item.php");
@@ -128,7 +131,7 @@
             $id = $param['id'];           
             $name =  mysqli_real_escape_string( $conn_admin_db,$param['department']);
             
-            $query = "UPDATE stationary_department SET department_name='$name' WHERE department_id='$id'";          
+            $query = "UPDATE stationary_department SET department_code='$name' WHERE department_id='$id'";          
             $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
             if ($result) {
                 alert("Successfully updated!", "department.php");
@@ -154,9 +157,9 @@
             $param = array();
             parse_str($_POST['data'], $param); //unserialize jquery string data
             
-            $name =  mysqli_real_escape_string( $conn_admin_db,$param['department_name']);
+            $name =  mysqli_real_escape_string( $conn_admin_db,$param['department_code']);
             
-            $query = "INSERT INTO stationary_department SET department_name='$name'";
+            $query = "INSERT INTO stationary_department SET department_code='$name'";
             $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
             if ($result) {
                 alert("Successfully added!", "department.php");

@@ -24,10 +24,9 @@ $today = date( 'Y-m-d' );
 $upcoming_renewal = date( 'Y-m-d', strtotime( "+30 days" ) );
 //get the data of upcoming fire extinguisher renewal
 
-$query = "SELECT * FROM fireextinguisher_listing fli
-        INNER JOIN fireextinguisher_location flo ON flo.location_id = fli.location
-        INNER JOIN company c ON c.id = fli.company_id
-        INNER JOIN credential cr ON cr.cr_id = fli.added_by
+$query = "SELECT * FROM fe_master_listing fli
+        INNER JOIN fe_location flo ON flo.location_id = fli.location
+        INNER JOIN company c ON c.id = fli.company_id        
         WHERE expiry_date BETWEEN '".$today."' AND '".$upcoming_renewal."'";
 
 $rst  = mysqli_query($conn_admin_db, $query)or die(mysqli_error($conn_admin_db));

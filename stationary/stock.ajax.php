@@ -34,9 +34,39 @@
             case 'update_stock':
                 update_stock($data);
                 break;
+                
+            case 'update_stock_out':
+                update_stock_out($data);
+                break;
             
             default:
                 break;
+        }
+    }
+    
+    function update_stock_out($data){
+        global $conn_admin_db;
+        if(!empty($data)){
+            $param = array();
+            parse_str($_POST['data'], $param); //unserialize jquery string data
+            
+            $id = $param['id'];
+            $department_id = $param['department_code'];
+            $item_id = $param['item_name'];
+            $quantity = $param['qty'];
+            $staff_name = $param['s_name'];
+            $date = $param['date'];
+            
+            $query = "UPDATE stationary_stock_take SET
+                    department_id='$department_id',
+                    item_id='$item_id',
+                    quantity = '$quantity',
+                    date_taken = '".dateFormat($date)."',
+                    staff_name ='$staff_name' WHERE id='$id'";
+            
+            $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
+            
+            
         }
     }
     
@@ -147,12 +177,14 @@
             $item_id =  mysqli_real_escape_string( $conn_admin_db,$param['item']);
             $department_id =  mysqli_real_escape_string( $conn_admin_db,$param['department']);
             $quantity =  mysqli_real_escape_string( $conn_admin_db,$param['quantity']);
+            $staff_name =  mysqli_real_escape_string( $conn_admin_db,$param['staff_name']);
             $date_taken = $param['date_taken'];
             
             $query = "INSERT INTO stationary_stock_take
                     SET item_id='$item_id',
                     department_id='$department_id',
                     quantity='$quantity',
+                    staff_name='$staff_name',
                     date_taken='".dateFormat($date_taken)."',
                     date_added = now()";
             

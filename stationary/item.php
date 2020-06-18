@@ -9,6 +9,7 @@
 	  'packet' => 'Packet',
 	  'box' => 'Box'
 	);
+	$select_category = isset($_POST['cat']) ? $_POST['cat'] : "";
 	
 ?>
 
@@ -85,8 +86,9 @@
                                         <tr>
                                             <th>No.</th>
 											<th>Item</th>
+											<th>Category</th>
 											<th>Unit</th>
-											<th>&nbsp;</th>
+											<th class="text-center">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -99,14 +101,16 @@
                                                 while($row = mysqli_fetch_array($sql_result)){ 
                                                     $count++;
                                                     $unit = !empty($row['unit']) ? $arr_item_unit[$row['unit']] : "";
+                                                    $cat = itemName("SELECT name FROM stationary_category WHERE id='".$row['category_id']."'");
                                                     ?>
                                                     <tr>
                                                         <td><?=$count?>.</td>
                                                         <td><?=$row['item_name']?></td>
+                                                        <td><?=$cat?></td>
                                                         <td><?=$unit?></td>
-                                                        <td>
+                                                        <td class="text-center">
                                                         	<span id="<?=$row['id']?>" data-toggle="modal" class="edit_data" data-target="#editItem"><i class="fa fa-edit"></i></span>
-                                                        	<span id="<?=$row['id']?>" data-toggle="modal" class="delete_data" data-target="#deleteItem"><i class="fas fa-trash-alt"></i></span>
+<!--                                                         	<span id="<?=$row['id']?>" data-toggle="modal" class="delete_data" data-target="#deleteItem"><i class="fas fa-trash-alt"></i></span> -->
                                                         </td>
                                                     </tr>
                                     <?php
@@ -139,6 +143,17 @@
                             <div>
                             	<input type="text" id="item_name" name="item_name" placeholder="Enter item name" class="form-control">
                         	</div>
+                        </div>
+                    </div>
+                    <div class="form-group row col-sm-12">
+                    	<div class="col-sm-12">
+                            <label for="category" class=" form-control-label"><small class="form-text text-muted">Category </small></label>
+                            <div>
+                                <?php
+                                $category = mysqli_query ( $conn_admin_db, "SELECT id, name FROM stationary_category");
+                                db_select ($category, 'category', '','','-select-','form-control','');
+                                ?>
+                            </div>
                         </div>
                     </div>
                     <div class="form-group row col-sm-12">
@@ -180,6 +195,17 @@
                             	</div>
                             </div>
                     	</div>
+                    	<div class="form-group row col-sm-12">
+                    	<div class="col-sm-12">
+                            <label for="cat" class=" form-control-label"><small class="form-text text-muted">Category </small></label>
+                            <div>
+                                <?php
+                                $category = mysqli_query ( $conn_admin_db, "SELECT id, name FROM stationary_category");
+                                db_select ($category, 'cat', $select_category,'','-select-','form-control','');
+                                ?>
+                            </div>
+                        </div>
+                    </div>
                     	<div class="form-group row col-sm-12">
                     	<div class="col-sm-6">
                         	<label for="unit" class=" form-control-label"><small class="form-text text-muted">Unit </small></label>
@@ -264,7 +290,8 @@
         			dataType:"json",
         			success:function(data){            			
         				$('#id').val(id);					
-                        $('#name').val(data.item_name);        
+                        $('#name').val(data.item_name);    
+                        $('#cat').val(data.category_id);        
                         $('#unit').val(data.unit);                        
                         $('#editItem').modal('show');
         			}

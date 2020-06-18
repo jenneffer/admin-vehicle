@@ -2,6 +2,8 @@
     require_once('../assets/config/database.php');
     require_once('../function.php');
     require_once('../check_login.php');	
+    
+    $acc_id = isset($_GET['id']) ? $_GET['id']: "";
 	
 ?>
 
@@ -84,6 +86,7 @@
                                 <strong class="card-title">Add Premium Insurance</strong>
                             </div>
                             <form id="add_premium_insurance" role="form" action="" method="post">
+                                <input type="hidden" id="acc_id" name="acc_id" class="form-control">
                                 <div class="card-body card-block">
                                     <div class="form-group row col-sm-12">                                        	                                          
                                         <div class="col-sm-4">
@@ -181,17 +184,45 @@
     <script src="../assets/js/script/bootstrap-datepicker.min.js"></script>
     <script src="../assets/js/select2.min.js"></script>
 	<script type="text/javascript">
-    $(document).ready(function() {    	
+    $(document).ready(function() {  
+        var acc_id = '<?=$acc_id?>';  	
         $('#add_premium_insurance').on("submit", function(event){  
-            event.preventDefault();                        
-            $.ajax({  
-                url:"add_bill.ajax.php",  
-                method:"POST",  
-                data:{action:'add_premium_insurance', data : $('#add_premium_insurance').serialize()},  
-                success:function(data){ 
-                    location.reload();                                                        	 
-                }  
-           });    
+        	$('#acc_id').val(acc_id); 
+        	event.preventDefault();
+        	if($('#date_from').val() == ""){
+        		alert("Date from is required");    
+        	}
+        	else if($('#date_to').val() == ""){
+        		alert("Date from is required");    
+        	}
+        	else if($('#invoice_no').val() == ""){
+        		alert("Invoice number is required");    
+        	}
+        	else if($('#charged_amt').val() == ""){
+        		alert("Charge amount is required");    
+        	}
+        	else if($('#payment_mode').val() == ""){
+        		alert("Payment mode is required");    
+        	}
+        	else if($('#or_no').val() == ""){
+        		alert("Official receipt number is required");    
+        	}
+        	else if($('#paid_date').val() == ""){
+        		alert("Payment date is required");    
+        	}
+        	else if($('#description').val() == ""){
+        		alert("Description is required");    
+        	}
+        	else{            	                                    
+                $.ajax({  
+                    url:"add_bill.ajax.php",  
+                    method:"POST",  
+                    data:{action:'add_premium_insurance', data : $('#add_premium_insurance').serialize()},  
+                    success:function(data){ 
+                        location.reload();                                                        	 
+                    }  
+                });  
+        	}  
         });
 
         $('#date_from, #date_to, #paid_date').datepicker({

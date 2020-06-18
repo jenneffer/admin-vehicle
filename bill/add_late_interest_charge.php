@@ -4,6 +4,8 @@
     require_once('../check_login.php');
 	global $conn_admin_db;
 	
+	$acc_id = isset($_GET['id']) ? $_GET['id'] : "";
+	
 ?>
 
 <!doctype html>
@@ -85,6 +87,7 @@
                                 <strong class="card-title">Add Late Interest Charge</strong>
                             </div>
                             <form id="add_late_interest_charge" role="form" action="" method="post">
+                            <input type="hidden" id="acc_id" name="acc_id" class="form-control">
                                 <div class="card-body card-block">
                                     <div class="form-group row col-sm-12"> 
                                        	<div class="col-sm-4">
@@ -176,17 +179,47 @@
     <script src="../assets/js/script/bootstrap-datepicker.min.js"></script>
     <script src="../assets/js/select2.min.js"></script>
 	<script type="text/javascript">
-    $(document).ready(function() {    	
+    $(document).ready(function() {  
+        
+    	var acc_id = '<?=$acc_id?>';
+    	  	
         $('#add_late_interest_charge').on("submit", function(event){  
-            event.preventDefault();                        
-            $.ajax({  
-                url:"add_bill.ajax.php",  
-                method:"POST",  
-                data:{action:'add_late_interest_charge', data : $('#add_late_interest_charge').serialize()},  
-                success:function(data){ 
-                    location.reload();                                                        	 
-                }  
-           });    
+            event.preventDefault();  
+
+            $('#acc_id').val(acc_id); 
+            
+            if($('#bill_date').val() == ""){  
+                alert("Bill date is required");  
+            }
+            else if($('#invoice_no').val() == ""){  
+                alert("Invoice number is required");  
+            }
+            else if($('#payment_due_date').val() == ""){  
+                alert("Payment due date is required");  
+            }
+            else if($('#charged_amt').val() == ""){  
+                alert("Charge amount is required");  
+            }
+            else if($('#or_no').val() == ""){  
+                alert("Official receipt number is required");  
+            }
+            else if($('#payment_mode').val() == ""){  
+                alert("Payment mode is required");  
+            }
+            else if($('#description').val() == ""){  
+                alert("Description is required");  
+            }
+            else{
+            	$.ajax({  
+                    url:"add_bill.ajax.php",  
+                    method:"POST",  
+                    data:{action:'add_late_interest_charge', data : $('#add_late_interest_charge').serialize()},  
+                    success:function(data){ 
+                        location.reload();                                                        	 
+                    }  
+                });
+            }                       
+                
         });
 
         $('#bill_date, #payment_due_date').datepicker({

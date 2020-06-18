@@ -13,6 +13,8 @@ if (isset($_POST['btn_save'])) {
     $total = isset($_POST['total']) ? $_POST['total'] : ""; //array
     $remark = isset($_POST['remark']) ? $_POST['remark'] : ""; //array
     
+    $staff_claim_id = isset($_POST['staff_claim_id']) ? $_POST['staff_claim_id'] : "";
+    
     $prepared_by = $_SESSION['cr_id'];
     
     $query = "INSERT INTO om_requisition SET
@@ -20,6 +22,7 @@ if (isset($_POST['btn_save'])) {
             user_id='$prepared_by',
             recipient='$recipient',
             serial_no='$serial_no',
+            staff_claim_id='$staff_claim_id',
             date='".dateFormat($date)."',
             payment_date='".dateFormat($payment_date)."'";
     

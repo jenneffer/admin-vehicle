@@ -10,9 +10,19 @@ $date_end = isset($_GET['date_end']) ? $_GET['date_end'] :"";
 $company_name = itemName("SELECT name FROM company WHERE id='$company_id'");
 $position = itemName("SELECT cr_position FROM credential WHERE cr_id='".$_SESSION['cr_id']."'");
 
+//get cv_id
+$str_cv_id = isset($_GET['cv_id']) ? $_GET['cv_id'] : "";
+$arr_cv_id = [];
+if(!empty($str_cv_id)){
+    $arr_cv_id = explode(",", $str_cv_id);
+}
+
+$cv_id = implode("','", $arr_cv_id);
+
 $query = "SELECT * FROM om_pcash_voucher 
             INNER JOIN om_pcash_voucher_item ON om_pcash_voucher_item.cv_id = om_pcash_voucher.id
-            WHERE cv_date BETWEEN '".dateFormat($date_start)."' AND '".dateFormat($date_end)."' AND company_id='$company_id'";
+            WHERE cv_date BETWEEN '".dateFormat($date_start)."' AND '".dateFormat($date_end)."' AND company_id='$company_id' 
+            AND om_pcash_voucher.id IN ('".$cv_id."')";
 
 $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
 $cv_item_data = [];
@@ -48,7 +58,7 @@ while ($row = mysqli_fetch_assoc($result)){
     margin: 5mm; 
 }
 @media print {
-    #print{
+    .exclude_print{
         display:none;
     }
 }   
@@ -143,9 +153,53 @@ while ($row = mysqli_fetch_assoc($result)){
 </div>
 </body>
 <br><br>
-<div style="text-align: center;">
-	<button type="button" name='print' id="print" class="btn btn-success"  onClick='window.print();window.close();' >Print</button>
-	<button type="button" name='btn_payment_rq' id="btn_payment_rq" class="btn btn-primary"  onClick="window.open('requisition_form.php?company_id=<?=$company_id?>&total_amount=<?=$total?>')" >Payment Requisition Form</button>
+<div style="text-align: center;" class="exclude_print">	
+	<button type="button" name='print' id="print" class="btn btn-success">Print</button>	
+	<input type="checkbox" name="confirm" value="">&nbsp;&nbsp;Confirm?
 </div>
-
 </html>
+<!-- link to the script-->
+<?php include ('../allScript2.php')?>
+<!-- Datatables -->
+<script src="../assets/js/lib/data-table/datatables.min.js"></script>
+<script src="../assets/js/lib/data-table/dataTables.bootstrap.min.js"></script>
+<script src="../assets/js/lib/data-table/dataTables.buttons.min.js"></script>
+<script src="../assets/js/lib/data-table/buttons.bootstrap.min.js"></script>
+<script src="../assets/js/lib/data-table/jszip.min.js"></script>
+<script src="../assets/js/lib/data-table/vfs_fonts.js"></script>
+<script src="../assets/js/lib/data-table/buttons.html5.min.js"></script>
+<script src="../assets/js/lib/data-table/buttons.print.min.js"></script>
+<script src="../assets/js/lib/data-table/buttons.colVis.min.js"></script>
+<script src="../assets/js/init/datatables-init.js"></script>
+<script src="../assets/js/script/bootstrap-datepicker.min.js"></script>
+<script src="../assets/js/select2.min.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        var str_cv_id = '<?=$str_cv_id?>'; //string of cv_id
+        var total_cv = '<?=$total?>'; //total of cv
+    	$('#print').on("click", function(event){
+    		if($('input[type="checkbox"]').prop("checked") == true){       
+        		//save data into database 	
+        		event.preventDefault();
+        		$.ajax({
+        			url:"pcash_voucher.ajax.php",
+        			method:"POST",   
+        			dataType: "json", 
+        			data:{action:'save_staff_claim', str_cv_id:str_cv_id, total_cv:total_cv },
+        			success:function(data){	    
+            			if(data){
+            				window.print();window.close();       
+                		}else{
+							alert(data);
+                    	}    												
+        			}
+        		});	
+        		
+    		}
+    		else{
+				alert('Please Confirmed before printing!');
+    		}
+    	});
+    });
+</script>     

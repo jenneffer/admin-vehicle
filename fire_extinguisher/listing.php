@@ -3,39 +3,18 @@
 	require_once('../function.php');
 	require_once('../check_login.php');
 	global $conn_admin_db;
-// 	session_start();
-// 	if(isset($_SESSION['cr_id'])) {
-// 		$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-// 		$url = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-// 		$query = parse_url($url, PHP_URL_QUERY);
-// 		parse_str($query, $params);
-		
-// 		// get id
-// 		$userId = $_SESSION['cr_id'];
-// 		$name = $_SESSION['cr_name'];
-		
-// 	} else {
-// 		$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-// 		$url = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-// 		$PrevURL= $url;
-// 		header("Location: ../login.php?RecLock=".$PrevURL);
-// 	}
 	$date_start = isset($_POST['date_start']) ? $_POST['date_start'] : date('01-m-Y');
-	$date_end = isset($_POST['date_end']) ? $_POST['date_end'] : date('31-12-Y');
+	$date_end = isset($_POST['date_end']) ? $_POST['date_end'] : date('t-m-Y');
 	$status = isset($_POST['status']) ? $_POST['status'] : "";
+	$select_pic = isset($_POST['person_incharge']) ? $_POST['person_incharge'] : "";
+	$select_company = isset($_POST['company']) ? $_POST['company'] : "";
 	
 	$arr_status = array(
 	    '0' => 'All',
-	    '1' => 'Pending',
-	    '2' => 'Active',
-	    '3' => 'Reject',
-	    '4' => 'Hold',
-	    '5' => 'Expired',
+	    '1' => 'Active',
+	    '2' => 'Expired',
 	);
 	
-	
-	
-
 ?>
 
 <!doctype html>
@@ -118,23 +97,41 @@
                             </div>
                             <!-- Filter -->
                             <div class="card-body">
-                            <form id="myform" enctype="multipart/form-data" method="post" action="">                	                   
-                	            <div class="form-group row col-sm-12">
-                                    <div class="col-sm-3">
+                            <form id="myform" enctype="multipart/form-data" method="post" action="">       
+                            	<div class="form-group row col-sm-12">       
+                                	<div class="col-sm-2">
+                                        <label for="company" class=" form-control-label"><small class="form-text text-muted">Company</small></label>
+                                        <div>
+                                            <?php
+                                                $company = mysqli_query ( $conn_admin_db, "SELECT id, UPPER(code) FROM company");
+                                                db_select ($company, 'company', $select_company,'submit()','-select-','form-control','');
+                                            ?>
+                                        </div>
+                                    </div> 
+                                    <div class="col-sm-2">
+                                        <label for="person_incharge" class=" form-control-label"><small class="form-text text-muted">Person incharge</small></label>
+                                        <div>
+                                            <?php
+                                                $pic = mysqli_query ( $conn_admin_db, "SELECT pic_id, UPPER(pic_name) FROM fe_person_incharge");
+                                                db_select ($pic, 'person_incharge', $select_pic,'submit()','-select-','form-control','');
+                                            ?>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-2">
                                         <label for="date_start" class="form-control-label"><small class="form-text text-muted">Date Start</small></label>
                                         <div class="input-group">
                                           <input type="text" id="date_start" name="date_start" class="form-control" value="<?=$date_start?>" autocomplete="off">
                                           <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
                                         </div>                            
                                     </div>
-                                    <div class="col-sm-3">
+                                    <div class="col-sm-2">
                                         <label for="date_end" class="form-control-label"><small class="form-text text-muted">Date End</small></label>
                                         <div class="input-group">
                                         <input type="text" id="date_end" name="date_end" class="form-control" value="<?=$date_end?>" autocomplete="off">
                                           <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
                                         </div>                             
                                     </div>
-                                    <div class="col-sm-3">
+                                    <div class="col-sm-2">
                                         <label for="status" class="form-control-label"><small class="form-text text-muted">Status</small></label>
                                         <select name="status" id="status" class="form-control">
                                         	<?php foreach($arr_status as $key => $value) {
@@ -144,15 +141,14 @@
                                         	}?>
                                         </select>                              
                                     </div>
-                                    <div class="col-sm-3">                                    	
+                                    <div class="col-sm-2">                                    	
                                     	<button type="submit" class="btn btn-primary button_search ">Submit</button>
                                     </div>
-                                 </div>  
-                                  
+                            	</div> 	                                   	               
                             </form>
                             </div>
                             <hr>
-                            <div class="card-body">
+                            <div class="card-body"  id="printableArea">
                                 <table id="master_listing" class="table table-striped table-bordered">
                                     <thead>
                                         <tr>
@@ -164,8 +160,7 @@
                                             <th>Serial No.</th>											
 											<th>Expiry Date</th>
 											<th>Status</th>
-											<th>Remark</th>
-											<th>Tel No.</th>
+											<th>Remark</th>											
 											<th>&nbsp;</th>
                                         </tr>                                        
                                     </thead>
@@ -179,6 +174,34 @@
             </div><!-- .animated -->
         </div><!-- .content -->
         </div>
+        <!-- Modal update expiry date -->
+        <div id="updateRenewal" class="modal fade">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Update Renewal Date</h4>
+                </div>
+                <div class="modal-body">
+                    <form role="form" method="POST" action="" id="update_renewal_date">                        
+                        <input type="hidden" id="fe_id" name="fe_id" value="">
+                        <div class="form-group row col-sm-12">                            
+                            <div class="col-sm-12">
+                                <label for="expiry_date" class="form-control-label"><small class="form-text text-muted">New Date</small></label>
+                                <div class="input-group">
+                                    <input id="new_date" name="new_date" class="form-control" autocomplete="off">
+                                    <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
+                                </div>                                            
+                            </div>                                        
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary update_renewal_date ">Update</button>
+                        </div>
+                    </form>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
         <!-- Modal edit master listing  -->
         <div id="editItem" class="modal fade">
         <div class="modal-dialog modal-lg" role="document">
@@ -206,16 +229,18 @@
                         <div class="form-group row col-sm-12">
                         	<div class="col-sm-6">
                                 <label for="model" class=" form-control-label"><small class="form-text text-muted">Model</small></label>
-                                <input type="text" id="model" name="model" class="form-control">
+                                <div>
+                                    <?php
+                                        $model = mysqli_query ( $conn_admin_db, "SELECT id, name FROM fe_model");
+                                        db_select ($model, 'model', '','','-select-','form-control','');
+                                    ?>
+                                </div>
                             </div>
                             <div class="col-sm-6">
                                 <label for="insurance_status" class=" form-control-label"><small class="form-text text-muted">Status</small></label>
-                                <select name="fe_status" id="fe_status" class="form-control">
-                                    <option value="1">Pending</option>
-                                    <option value="2">Active</option>
-                                    <option value="3">Reject</option>
-                                    <option value="4">Hold</option>
-                                    <option value="5">Expired</option>
+                                <select name="fe_status" id="fe_status" class="form-control">                                    
+                                    <option value="1">Active</option>
+                                    <option value="2">Expired</option>
                                 </select>
                             </div>
                         </div>
@@ -233,7 +258,7 @@
                                 <label class="control-label"><small class="form-text text-muted">Person in charge</small></label>
                                  <div class="input-group">
                                     <?php
-                                    $pic = mysqli_query ( $conn_admin_db, "SELECT pic_id, pic_name FROM fireextinguisher_person_incharge");
+                                    $pic = mysqli_query ( $conn_admin_db, "SELECT pic_id, pic_name FROM fe_person_incharge");
                                     db_select ($pic, 'pic', '','','-select-','form-control','');
                                 ?>
                                 </div>
@@ -248,7 +273,7 @@
                                 <label class="control-label"><small class="form-text text-muted">Location</small></label>
                                 <div>
                                     <?php
-                                        $location = mysqli_query ( $conn_admin_db, "SELECT location_id, location_name FROM fireextinguisher_location");
+                                        $location = mysqli_query ( $conn_admin_db, "SELECT location_id, location_name FROM fe_location");
                                         db_select ($location, 'location', '','','-select-','form-control','');
                                     ?>
                                 </div>
@@ -324,7 +349,8 @@
     	var table = $('#master_listing').DataTable({
          	"processing": true,
          	"serverSide": true,
-         	"searching": false,
+         	"searching": true,  
+         	"paging": true,       	
             "ajax":{
                 "url": "function.ajax.php",    
                 "type":"POST",       	
@@ -332,30 +358,32 @@
                     data.action = 'master_listing';	
                     data.date_start = '<?=$date_start?>';
                     data.date_end = '<?=$date_end?>';		
-                    data.fe_status = '<?=$status?>';	
+                    data.fe_status = '<?=$status?>';
+                    data.company = '<?=$select_company?>';
+                    data.pic = '<?=$select_pic?>';	
        	        }
        	    },
-            "dom": 'Bfrtip',
-            "buttons": [ 
-                { 
-                    extend: 'excelHtml5', 
-                    messageTop: 'Vehicle Summon ',
-                    footer: true 
-                },
-                {
-                    extend: 'print',
-                    messageTop: 'Vehicle Summon ',
-                    footer: true,
-                    customize: function ( win ) {
-                         $(win.document.body)
-                             .css( 'font-size', '10pt' );
+//             "dom": 'Bfrtip',
+//             "buttons": [ 
+//                 { 
+//                     extend: 'excelHtml5', 
+//                     messageTop: 'Fire Extinguisher Master Listing',
+//                     footer: true 
+//                 },
+//                 {
+//                     extend: 'print',
+//                     messageTop: 'Fire Extinguisher Master Listing',
+//                     footer: true,
+//                     customize: function ( win ) {
+//                          $(win.document.body)
+//                              .css( 'font-size', '10pt' );
                     
-                         $(win.document.body).find( 'table' )
-                             .addClass( 'compact' )
-                             .css( 'font-size', 'inherit' );
-                     }
-                 }
-            ],
+//                          $(win.document.body).find( 'table' )
+//                              .addClass( 'compact' )
+//                              .css( 'font-size', 'inherit' );
+//                      }
+//                  }
+//             ],
        		"rowCallback": function(row, data, index){
        			var new_date = dateFormatRev(data[6]);
        			var numDays = calcDay( new Date(), new_date);
@@ -382,19 +410,23 @@
 						console.log(data);
                         var expiryDate = dateFormat(data.expiry_date);                       
                         $('#id').val(id);					
-                        $('#model').val(data.model);  
+                        $('#model').val(data.model_id);  
                         $('#expiry_date').val(expiryDate);   
                         $('#serial_no').val(data.serial_no);    
                         $('#remark').val(data.remark); 
                         $('#status').val(data.status); 
-                        $('#location').val(data.location); 
+                        $('#location').val(data.location_id); 
                         $('#company').val(data.company_id); 
-                        $('#pic').val(data.person_incharge);   
-                        $('#fe_status').val(data.fe_status);                       
+                        $('#pic').val(data.person_incharge_id);   
+//                         $('#fe_status').val(data.fe_status);                       
                         $('#editItem').modal('show');
 	  				}
 				});
       });
+        $(document).on('click', '.update_date', function(){
+        	var fe_id = $(this).attr("id");
+        	$('#update_renewal_date').data('id', fe_id); 
+        });
 
       //delete records
       $(document).on('click', '.delete_data', function(){
@@ -448,6 +480,27 @@
                });  
           }  
      }); 
+		//update renewal date
+      $('#update_renewal_date').on("submit", function(event){  
+    	  var ID = $(this).data('id');
+    	  $('#fe_id').val(ID);
+          event.preventDefault();            
+          if($('#new_date').val() == ""){  
+               alert("Date is required");  
+          }                     
+          else{  
+               $.ajax({  
+                    url:"function.ajax.php",  
+                    method:"POST",  
+                    data:{action:'update_renewal_date', data : $('#update_renewal_date').serialize()},  
+                    success:function(data){   
+                         $('#editItem').modal('hide');  
+                         $('#bootstrap-data-table').html(data); 
+                         location.reload();		 
+                    }  
+               });  
+          }  
+     }); 
       
      $( ".button_search" ).click(function( event ) {
   		table.clear();
@@ -455,7 +508,7 @@
   		table.draw();  		
   		});	
 
-     $('#expiry_date, #date_start, #date_end').datepicker({
+     $('#expiry_date, #date_start, #date_end, #new_date').datepicker({
          format: "dd-mm-yyyy",
          autoclose: true,
          orientation: "top left",
@@ -495,4 +548,11 @@
 	
   </script>
 </body>
+<style>
+ #printableArea{ 
+     font-size:14px; 
+     margin:0px; 
+     padding:.5rem; 
+} 
+</style>
 </html>

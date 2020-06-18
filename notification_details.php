@@ -29,11 +29,11 @@ switch ($system_id) {
 function fireextinguisher_details($id){
     global $conn_admin_db;
     $data = array();
-    $query = "SELECT * FROM fireextinguisher_listing 
-            INNER JOIN fireextinguisher_location ON fireextinguisher_location.location_id = fireextinguisher_listing.location
-            INNER JOIN company ON company.id = fireextinguisher_listing.company_id
-            INNER JOIN fireextinguisher_person_incharge ON fireextinguisher_person_incharge.pic_id = fireextinguisher_listing.person_incharge
-            WHERE fireextinguisher_listing.id='$id'";
+    $query = "SELECT * FROM fe_master_listing 
+            INNER JOIN fe_location ON fe_location.location_id = fe_master_listing.location_id
+            INNER JOIN company ON company.id = fe_master_listing.company_id
+            INNER JOIN fe_person_incharge ON fe_person_incharge.pic_id = fe_master_listing.person_incharge_id
+            WHERE fe_master_listing.id='$id'";
     $rst  = mysqli_query($conn_admin_db, $query)or die(mysqli_error($conn_admin_db));
     $row = mysqli_fetch_assoc( $rst );
     

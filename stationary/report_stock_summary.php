@@ -7,7 +7,7 @@ global $conn_admin_db;
 $date_start = isset($_POST['date_start']) ? $_POST['date_start'] : date('01-m-Y');
 $date_end = isset($_POST['date_end']) ? $_POST['date_end'] : date('t-m-Y');
 
-$query = "SELECT si.item_name, SUM(quantity) AS stock_out, (SELECT SUM(stock_in) 
+$query = "SELECT si.item_name, (SELECT name FROM stationary_category WHERE id=si.category_id) AS category,SUM(quantity) AS stock_out, (SELECT SUM(stock_in) 
         FROM stationary_stock WHERE item_id = si.id AND date_added BETWEEN '".dateFormat($date_start)."' AND '".dateFormat($date_end)."' ) AS stock_in, 
         IF(sst.date_added IS NULL,'',(SELECT stock_balance FROM stationary_stock_balance WHERE item_id=si.id  )) AS stock_balance,
         si.unit 
@@ -62,10 +62,9 @@ $arr_item_unit = array(
     <!-- /#header -->
     <!-- Content -->
         <div id="right-panel" class="right-panel">
-        <div class="content">
+        <div class="content" id="printableArea">
             <div class="animated fadeIn">
                 <div class="row">
-
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header">
@@ -78,18 +77,18 @@ $arr_item_unit = array(
                                             <label for="date_start" class="form-control-label"><small class="form-text text-muted">Date Start</small></label>
                                             <div class="input-group">
                                               <input type="text" id="date_start" name="date_start" class="form-control" value="<?=$date_start?>" autocomplete="off">
-                                              <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
+<!--                                               <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div> -->
                                             </div>                            
                                         </div>
                                         <div class="col-sm-3">
                                             <label for="date_end" class="form-control-label"><small class="form-text text-muted">Date End</small></label>
                                             <div class="input-group">
                                               <input type="text" id="date_end" name="date_end" class="form-control" value="<?=$date_end?>" autocomplete="off">
-                                              <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
+<!--                                               <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div> -->
                                             </div>                             
                                         </div>
                                         <div class="col-sm-4">                                    	
-                                        	<button type="submit" class="btn btn-primary button_search ">Submit</button>
+                                        	<button type="submit" class="btn btn-primary button_search ">View</button>
                                         </div>
                                      </div>    
                                 </form>
@@ -101,6 +100,7 @@ $arr_item_unit = array(
                                         <tr>
                                         	<th>No.</th>
 											<th>Item</th>
+											<th>Category</th>
                                             <th>Stock In</th>
 											<th>Stock Out</th>
 											<th style="text-align: right">Stock Balance</th>
@@ -115,6 +115,7 @@ $arr_item_unit = array(
                                         echo "<tr>";
                                         echo "<td>".$count.".</td>";
                                         echo "<td>".strtoupper($data['item_name'])."</td>";
+                                        echo "<td>".strtoupper($data['category'])."</td>";
                                         echo "<td style='text-align:center;'>".$data['stock_in']."</td>";
                                         echo "<td style='text-align:center;'>".$data['stock_out']."</td>";
                                         echo "<td style='text-align:right;'>".$data['stock_balance']." ".$unit."</td>";                                        
@@ -162,8 +163,8 @@ $arr_item_unit = array(
 	<script type="text/javascript">
       $(document).ready(function() {
           $('#stock_summary').DataTable({
-              "searching": false,
-              "paging": false,
+              "searching": true,
+              "paging": true,
         	  "dom": 'Bfrtip',
               "buttons": [ 
                { 
@@ -195,4 +196,11 @@ $arr_item_unit = array(
       });
   </script>
 </body>
+<style>
+ #printableArea{ 
+     font-size:11px; 
+     margin:0px; 
+     padding:.5rem; 
+} 
+</style>
 </html>

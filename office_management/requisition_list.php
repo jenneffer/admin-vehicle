@@ -43,7 +43,7 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header">
-                                <strong class="card-title">Request List</strong>
+                                <strong class="card-title">Requisition List</strong>
                             </div>     
                            <div class="card-body">
                            <br>                            
@@ -97,9 +97,10 @@
                                                         <td><?=$row['serial_no']?></td>
                                                         <td><?=$row['particular']?></td>
                                                         <td><?=$row['total']?></td>                                                        
-                                                        <td><a href="requisition_preview.php?rq_id=<?=$row['rq_id']?>&status=<?=$row['status']?>" target="_blank" style="color: <?=$color?>"><b><?=$status?></b></a></td>
+                                                        <td><?=$status?></td>
                                                         <td>
-                                                        	<span id="<?=$row['rq_id']?>" data-toggle="modal" class="delete_data" data-target="#deleteItem"><i class="fas fa-trash-alt"></i></span>
+                                                        <span id="view_data" onclick="window.open('requisition_preview.php?status=<?=$row['status']?>&rq_id=<?=$row['id']?>');"><i class="fas fa-eye"></i></span>&nbsp;&nbsp;                                            	
+                                            			<span id="edit_rq_status" style="display:<?=$display?>;" onclick="window.open('requisition_form.php?company_id=<?=$data['company_id']?>&total_amount=<?=$data['amount']?>&staff_claim_id=<?=$data['id']?>');" ><i class="fas fa-edit"></i></span>                                                        	                                                      	
                                                         </td>
                                                     </tr>
                                     <?php
@@ -338,7 +339,11 @@
           	      "targets": [6], // your case first column
           	      "className": "text-right", 
           	      "render": $.fn.dataTable.render.number(',', '.', 2, '')               	                      	        	     
-          	 	}          	 	
+          	 	},
+          	 	{
+        	      "targets": [8], // your case first column
+        	      "className": "text-center"        	                	                      	        	     
+        	 	}           	 	
 //         	    { "width": "80%", "targets": 1 },
 //         	    { "width": "10%", "targets": 2 }
         	  ]

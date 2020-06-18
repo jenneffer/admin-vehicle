@@ -58,7 +58,7 @@
 											<th>Item</th>
 											<th>Quantity</th>
 											<th>Date</th>
-											<th>&nbsp;</th>
+											<th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -68,20 +68,20 @@
                                         if(mysqli_num_rows(mysqli_query($conn_admin_db,$sql_query)) > 0){
                                             $count = 0;
                                             $sql_result = mysqli_query($conn_admin_db, $sql_query)or die(mysqli_error($conn_admin_db));
-                                                while($row = mysqli_fetch_array($sql_result)){ 
+                                                while($row = mysqli_fetch_array($sql_result)){                                                     
                                                     $count++;
-                                                    $department = itemName("SELECT department_name FROM stationary_department WHERE department_id='".$row['department_id']."'");
-                                                    $item = itemName("SELECT item_name FROM stationary_item WHERE id='".$row['item_id']."'")
+                                                    $department = itemName("SELECT department_code FROM stationary_department WHERE department_id='".$row['department_id']."'");                                                    
+                                                    $item = itemName("SELECT item_name FROM stationary_item WHERE id='".$row['item_id']."'");
                                                     ?>
                                                     <tr>
                                                         <td><?=$count?>.</td>
                                                         <td><?=$department?></td>
                                                         <td><?=$item?></td>
-                                                        <td><?=$row['quantity']?></td>
+                                                        <td class="text-center"><?=$row['quantity']?></td>
                                                         <td><?=dateFormatRev($row['date_taken'])?></td>                                                        
-                                                        <td>
+                                                        <td class="text-center">
                                                         	<span id="<?=$row['id']?>" data-toggle="modal" class="edit_data" data-target="#editItem"><i class="fa fa-edit"></i></span>
-                                                        	<span id="<?=$row['id']?>" data-toggle="modal" class="delete_data" data-target="#deleteItem"><i class="fas fa-trash-alt"></i></span>
+                                                        	<!-- <span id="<?=$row['id']?>" data-toggle="modal" class="delete_data" data-target="#deleteItem"><i class="fas fa-trash-alt"></i></span> -->
                                                         </td>
                                                     </tr>
                                     <?php
@@ -98,7 +98,7 @@
         </div><!-- .content -->
         </div>
         
-        <!-- Modal Add new department -->
+        <!-- Modal Add new stock out -->
         <div id="addItem" class="modal fade">
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
@@ -112,7 +112,7 @@
                             <label for="department" class=" form-control-label"><small class="form-text text-muted">Department</small></label>
                             <div>
                                 <?php
-                                $department = mysqli_query ( $conn_admin_db, "SELECT department_id, department_name FROM stationary_department");
+                                $department = mysqli_query ( $conn_admin_db, "SELECT department_id, department_code FROM stationary_department");
                                 db_select ($department, 'department', '','','-select-','form-control','');
                                 ?>
                             </div>
@@ -131,9 +131,13 @@
                         </div>
                     </div>
                     <div class="form-group row col-sm-12">
-                    	<div class="col-sm-12">
+                    	<div class="col-sm-6">
                             <label for="quantity" class=" form-control-label"><small class="form-text text-muted">Quantity</small></label>
                             <input type="text" id="quantity" name="quantity" class="form-control">
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="staff_name" class=" form-control-label"><small class="form-text text-muted">Staff Name</small></label>
+                            <input type="text" id="staff_name" name="staff_name" class="form-control">
                         </div>
                     </div> 
                     <div class="form-group row col-sm-12"> 
@@ -154,7 +158,7 @@
                 </div>
             </div>
         </div>
-        <!-- Modal edit department  -->
+        <!-- Modal edit stock out  -->
         <div id="editItem" class="modal fade">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
@@ -170,8 +174,8 @@
                             <label for="department" class=" form-control-label"><small class="form-text text-muted">Department</small></label>
                             <div>
                                 <?php
-                                $department_name = mysqli_query ( $conn_admin_db, "SELECT department_id, department_name FROM stationary_department");
-                                db_select ($department_name, 'department_name', '','','-select-','form-control','');
+                                $department_code = mysqli_query ( $conn_admin_db, "SELECT department_id, department_code FROM stationary_department");
+                                db_select ($department_code, 'department_code', '','','-select-','form-control','');
                                 ?>
                             </div>
                         </div>
@@ -188,9 +192,13 @@
                             </div>
                         </div>
                         <div class="form-group row col-sm-12">
-                        	<div class="col-sm-12">
+                        	<div class="col-sm-6">
                                 <label for="qty" class=" form-control-label"><small class="form-text text-muted">Quantity</small></label>
                                 <input type="text" id="qty" name="qty" class="form-control">
+                            </div>
+                            <div class="col-sm-6">
+                                <label for="s_name" class=" form-control-label"><small class="form-text text-muted">Staff Name</small></label>
+                                <input type="text" id="s_name" name="s_name" class="form-control">
                             </div>
                         </div> 
                         <div class="form-group row col-sm-12"> 
@@ -290,9 +298,10 @@
         			success:function(data){            			 
             			var date = dateFormat(data.date_taken);        			
         				$('#id').val(id);					
-                        $('#department_name').val(data.department_id);    
+                        $('#department_code').val(data.department_id);    
                         $('#item_name').val(data.item_id);     
                         $('#qty').val(data.quantity);    
+                        $('#s_name').val(data.staff_name);    
                         $('#date').val(date);                        
                         $('#editItem').modal('show');
         			}
@@ -320,14 +329,23 @@
     
         $('#update_form').on("submit", function(event){  
           event.preventDefault();  
-          if($('#department').val() == ""){  
+          if($('#department_code').val() == ""){  
                alert("Department name is required");  
+          } 
+          else if($('#item_name').val() == ""){  
+              alert("Item name is required");  
+          }
+          else if($('#qty').val() == ""){  
+              alert("Quantity is required");  
+          }          
+          else if($('#date').val() == ""){  
+              alert("Date is required");  
           }     
           else{  
                $.ajax({  
-                    url:"function.ajax.php",  
+                    url:"stock.ajax.php",  
                     method:"POST",  
-                    data:{action:'update_department', data: $('#update_form').serialize()},  
+                    data:{action:'update_stock_out', data: $('#update_form').serialize()},  
                     success:function(data){   
                          $('#editItem').modal('hide');  
                          $('#bootstrap-data-table').html(data);
@@ -347,6 +365,9 @@
            	}  
             else if($('#quantity').val() == ""){  
                  alert("Quantity in is required");  
+            } 
+            else if($('#staff_name').val() == ""){  
+                alert("Staff name is required");  
             } 
             else if($('#date_taken').val() == ""){  
                 alert("Date is required");  

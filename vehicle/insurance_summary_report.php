@@ -6,6 +6,7 @@
 	$date_end = isset($_POST['date_end']) ? $_POST['date_end'] : date('t-m-Y');
 	$select_c = isset($_POST['select_company']) ? $_POST['select_company'] : "";
 	
+	
 ?>
 
 <!doctype html>
@@ -79,7 +80,7 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header">
-                                <strong class="card-title">General Table</strong>
+                                <strong class="card-title">Insurance Summary</strong>
                             </div>
                             <div class="card-body">
                             <form id="myform" enctype="multipart/form-data" method="post" action="">                	                   
@@ -116,43 +117,34 @@
                                 <table id="general_table" class="table table-striped table-bordered">
                                     <thead>
                                         <tr>
-                                        	<th rowspan="2">No.</th>
+                                        	<th colspan="2" style="text-align: center">Date</th>											
+                                            <th rowspan="2">Reg No.</th>										
 											<th rowspan="2">Company</th>
-                                            <th rowspan="2">Reg No.</th>
-											<th rowspan="2">LPKP (date)</th>											
-											<th colspan="2" style="text-align: center">Period of Insurance</th>
-											<th rowspan="2">Premium (RM)</th>
-											<th rowspan="2">NCD (%)</th>
+<!-- 											<th rowspan="2">Insurer</th> -->
+<!-- 											<th rowspan="2">CN/Policy No.</th> -->
+											<th rowspan="2">Amount (RM)</th>											
 											<th rowspan="2">Sum Insured (RM)</th>
-											<th rowspan="2">Excess</th>
-											<th rowspan="2">Capacity</th>
-											<th rowspan="2">Puspakom</th>
-                                            <th colspan="3" style="text-align: center">Road Tax</th>                                            
-                                            <th rowspan="2">Period</th>
+											<th rowspan="2">NCD (%)</th>
+											<th rowspan="2">Excess (RM)</th>
+											<th rowspan="2">Type of Cover</th>											
+											<th rowspan="2">Payment Details</th>                                            
                                         </tr>
                                         <tr>
                                             <th>From</th>
-											<th>To</th>
-											<th>From</th>
-											<th>To</th>
-											<th>Amount(RM)</th>
+											<th>To</th>											
                                         </tr>
                                     </thead>
                                     <tbody>                                                    
                                     </tbody>
                                     <tfoot>
                                         <tr>
-                                            <td colspan="6" class="text-right font-weight-bold">Total</td>
-                                            <td class="text-right font-weight-bold">Premium Total</td>
-                                            <td>&nbsp;</td>
-                                            <td>&nbsp;</td>                                            
-                                            <td class="text-right font-weight-bold">Excess Total</td>
-                                            <td>&nbsp;</td>
-                                            <td>&nbsp;</td>
-                                            <td>&nbsp;</td>
-                                            <td>&nbsp;</td>
-                                            <td class="text-right font-weight-bold">Amount Total</td>
-                                            <td>&nbsp;</td>
+                                            <th colspan="4" class="text-right font-weight-bold">Total</th>                                            
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
                                         </tr>
                                     </tfoot>
                                 </table>
@@ -167,7 +159,7 @@
         <!-- Footer -->
         <?PHP include('../footer.php')?>
         <!-- /.site-footer -->
-    <!-- from right panel page -->
+    </div> <!-- from right panel page -->
     <!-- /#right-panel -->
 
     <!-- link to the script-->
@@ -191,19 +183,19 @@
                 "serverSide": true,
                 "searching": false,
                 "ajax":{
-                 "url": "general.table.ajax.php",     
-                 "type":"POST",      	
+                 "url": "insurance.ajax.php",    
+                 "type": "POST",            	
                  "data" : function ( data ){	
                 	 	data.date_start = '<?=$date_start?>';
-						data.date_end = '<?=$date_end?>';
-						data.select_company = '<?=$select_c?>';									
+						data.date_end = '<?=$date_end?>';	
+						data.select_company = '<?=$select_c?>';								
                      }
                 },
                 "footerCallback": function( tfoot, data, start, end, display ) {
     				var api = this.api(), data;
     				var numFormat = $.fn.dataTable.render.number( '\,', '.', 2, '' ).display;
 
-					api.columns([6,9,14], { page: 'current'}).every(function() {
+					api.columns([4,7], { page: 'current'}).every(function() {
 							var sum = this
 						    .data()
 						    .reduce(function(a, b) {
@@ -218,12 +210,12 @@
     			},
     			'columnDefs': [
                 	  {
-                	      "targets": [6,8,9,14], // your case first column
+                	      "targets": [4,5,7], // your case first column
                 	      "className": "text-right", 
                 	      "render": $.fn.dataTable.render.number(',', '.', 2, '')               	                      	        	     
                 	 },
                 	 {
-               	      "targets": [1,7,10,11], // your case first column
+               	      "targets": [4,5,7,8], // your case first column
                	      "className": "text-center",                	                  	                      	        	     
                	 	}
 				],
@@ -236,7 +228,7 @@
 	             },
 	             {
 	            	extend: 'print',
-	            	messageTop: 'General Table',
+	            	messageTop: 'Insurance Summary',
 	            	footer: true,
 	            	customize: function ( win ) {
 	                    $(win.document.body)

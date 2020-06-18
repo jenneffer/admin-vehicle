@@ -70,11 +70,15 @@
                             <div class="col-sm-4">
                                 <label for="or_no" class=" form-control-label"><small class="form-text text-muted">Official Receipt No.</small></label>
                                 <input type="text" id="or_no" name="or_no" class="form-control" autocomplete="off">
-                            </div>                                                                                
+                            </div>  
+                            <div class="col-sm-4">
+                                <label for="cheque_no" class=" form-control-label"><small class="form-text text-muted">Cheque No.</small></label>
+                                <input type="text" id="cheque_no" name="cheque_no" class="form-control" autocomplete="off">
+                            </div>                                                                              
                         </div>    
                         <div class="row form-group col-sm-12">
                         	<div class="col-sm-4">
-                                <label for="bill_invoice_no" class=" form-control-label"><small class="form-text text-muted">Invoice No.</small></label>
+                                <label for="bill_invoice_no" class=" form-control-label"><small class="form-text text-muted">Invoice / Reference No.</small></label>
                                 <input type="text" id="bill_invoice_no" name="bill_invoice_no" class="form-control" autocomplete="off">
                             </div>
                         	<div class="col-sm-4">
@@ -105,7 +109,56 @@
             </div>
             <div id="collapseTwo" class="panel-collapse collapse">
                 <div class="panel-body">
-                    <p>Bootstrap is a sleek, intuitive, and powerful front-end framework for faster and easier web development. It is a collection of CSS and HTML conventions. <a href="https://www.tutorialrepublic.com/twitter-bootstrap-tutorial/" target="_blank">Learn more.</a></p>
+                    <div>
+                    	<div class="row form-group col-sm-12">
+                        	<div class="col-sm-4">
+                                <label for="description" class=" form-control-label"><small class="form-text text-muted">Description</small></label>
+                                <input type="text" id="description" name="description" class="form-control" autocomplete="off">
+                            </div>
+                            <div class="col-sm-4">
+                                <label for="payment" class=" form-control-label"><small class="form-text text-muted">Payment (RM)</small></label>
+                                <input type="text" id="payment" name="payment" class="form-control" autocomplete="off">
+                            </div>
+                            <div class="col-sm-4">
+                            	<label for="payment_mode" class=" form-control-label"><small class="form-text text-muted">Payment Mode</small></label>
+                            	<select id="payment_mode" name="payment_mode" class="form-control">
+                            		<option value="">- Select -</option>
+                            		<option value="cash">Cash</option>
+                            		<option value="ibg">IBG</option>
+                            	</select>
+                            </div>                                 
+                        </div>
+                        <div class="row form-group col-sm-12">
+                            <div class="col-sm-4">
+                                <label for="or_no" class=" form-control-label"><small class="form-text text-muted">Official Receipt No.</small></label>
+                                <input type="text" id="or_no" name="or_no" class="form-control" autocomplete="off">
+                            </div>  
+                            <div class="col-sm-4">
+                                <label for="cheque_no" class=" form-control-label"><small class="form-text text-muted">Cheque No.</small></label>
+                                <input type="text" id="cheque_no" name="cheque_no" class="form-control" autocomplete="off">
+                            </div>                                                                              
+                        </div>    
+                        <div class="row form-group col-sm-12">
+                        	<div class="col-sm-4">
+                                <label for="bill_invoice_no" class=" form-control-label"><small class="form-text text-muted">Invoice / Reference No.</small></label>
+                                <input type="text" id="bill_invoice_no" name="bill_invoice_no" class="form-control" autocomplete="off">
+                            </div>
+                        	<div class="col-sm-4">
+                                <label for="payment_date" class=" form-control-label"><small class="form-text text-muted">Payment Date</small></label>
+                                <div class="input-group">
+                                    <input type="text" id="payment_date" name="payment_date" class="form-control" autocomplete="off">
+                                    <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <label for="receive_date" class=" form-control-label"><small class="form-text text-muted">Received Date</small></label>
+                                <div class="input-group">
+                                    <input type="text" id="receive_date" name="receive_date" class="form-control" autocomplete="off">
+                                    <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
+                                </div>
+                            </div>                                            
+                        </div>                                    	
+                    </div>
                 </div>
             </div>
         </div>

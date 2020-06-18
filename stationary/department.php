@@ -96,8 +96,9 @@
                                     <thead>
                                         <tr>
                                             <th>No.</th>
+                                            <th>Code</th>
 											<th>Department</th>
-											<th>&nbsp;</th>
+											<th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -112,10 +113,11 @@
                                                     ?>
                                                     <tr>
                                                         <td><?=$count?>.</td>
+                                                        <td><?=$row['department_code']?></td>
                                                         <td><?=$row['department_name']?></td>
-                                                        <td>
+                                                        <td class="text-center">
                                                         	<span id="<?=$row['department_id']?>" data-toggle="modal" class="edit_data" data-target="#editItem"><i class="fa fa-edit"></i></span>
-                                                        	<span id="<?=$row['department_id']?>" data-toggle="modal" class="delete_data" data-target="#deleteItem"><i class="fas fa-trash-alt"></i></span>
+                                                        	<!-- <span id="<?=$row['department_id']?>" data-toggle="modal" class="delete_data" data-target="#deleteItem"><i class="fas fa-trash-alt"></i></span> -->
                                                         </td>
                                                     </tr>
                                     <?php
@@ -144,9 +146,9 @@
                     <input type="hidden" id="item_id" name="item_id" value="">
                     <div class="form-group row col-sm-12">
                     	<div class="col-sm-12">
-                            <label for="department_name" class=" form-control-label"><small class="form-text text-muted">Department</small></label>
+                            <label for="department_code" class=" form-control-label"><small class="form-text text-muted">Department</small></label>
                             <div>
-                            	<input type="text" id="department_name" name="department_name" placeholder="Enter department name" class="form-control">
+                            	<input type="text" id="department_code" name="department_code" placeholder="Enter department name" class="form-control">
                         	</div>
                         </div>
                     </div>
@@ -236,8 +238,9 @@
         $('#item-data-table').DataTable({
         	"columnDefs": [
         	    { "width": "10%", "targets": 0 },
-        	    { "width": "80%", "targets": 1 },
-        	    { "width": "10%", "targets": 2 }
+        	    { "width": "20%", "targets": 1 },
+        	    { "width": "60%", "targets": 2 },
+        	    { "width": "10%", "targets": 3 }
         	  ]
   	  	});
         
@@ -250,7 +253,7 @@
         			dataType:"json",
         			success:function(data){         			
         				$('#id').val(id);					
-                        $('#department').val(data.department_name);                           
+                        $('#department').val(data.department_code);                           
                         $('#editItem').modal('show');
         			}
         		});
@@ -296,7 +299,7 @@
         
         $('#add_form').on("submit", function(event){  
             event.preventDefault();  
-            if($('#department_name').val() == ""){  
+            if($('#department_code').val() == ""){  
                  alert("Department name is required");  
             }     
             else{  

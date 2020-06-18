@@ -7,6 +7,7 @@
     $action = isset($_POST['action']) && $_POST['action'] !="" ? $_POST['action'] : "";    
     $date_start = isset($_POST['date_start']) ? $_POST['date_start'] : date('01-m-Y');
     $date_end = isset($_POST['date_end']) ? $_POST['date_end'] : date('t-m-Y');    
+    $company = isset($_POST['select_company']) ? $_POST['select_company'] : "";
     if( $action != "" ){
         switch ($action){
             
@@ -27,7 +28,7 @@
                 break;
                 
             case 'roadtax_summary':                
-                roadtax_summary_report( $date_start, $date_end );
+                roadtax_summary_report( $date_start, $date_end, $company );
                 break;
             default:
                 break;
@@ -57,7 +58,7 @@
         }
     }
     
-    function roadtax_summary_report( $date_start, $date_end ){
+    function roadtax_summary_report( $date_start, $date_end, $company){
         global $conn_admin_db;
         
         $sql_query = "SELECT * FROM vehicle_roadtax
@@ -65,7 +66,11 @@
                 INNER JOIN company ON company.id = vehicle_vehicle.company_id
                 LEFT JOIN vehicle_puspakom ON vehicle_puspakom.vv_id = vehicle_vehicle.vv_id
                 LEFT JOIN vehicle_insurance ON vehicle_insurance.vv_id = vehicle_vehicle.vv_id
-                WHERE vrt_roadTax_dueDate BETWEEN '".dateFormat($date_start)."' AND '".dateFormat($date_end)."' ";
+                WHERE vrt_roadTax_fromDate BETWEEN '".dateFormat($date_start)."' AND '".dateFormat($date_end)."' ";
+        
+        if(!empty($company)){
+            $sql_query .=" AND vehicle_vehicle.company_id = '$company'";    
+        }
         
         $rst  = mysqli_query($conn_admin_db, $sql_query)or die(mysqli_error($conn_admin_db));
         
@@ -92,7 +97,7 @@
                 $fitness_date = !empty($row['vp_fitnessDate']) ? dateFormatRev($row['vp_fitnessDate']) : '-';
                 
                 $data = array(
-                    $count,
+                    $count .".",
                     $row['vv_vehicleNo'],
                     $row['code'],
                     dateFormatRev($row['vrt_lpkpPermit_dueDate']),

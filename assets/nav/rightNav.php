@@ -52,18 +52,17 @@ function stationary_notification($today, $upcoming_renewal){
 }
 
 function fire_extinguisher_notification($today, $upcoming_renewal){
-    $today = '2020-04-01';
-    $upcoming_renewal = '2020-12-31';
+//     $today = '2020-04-01';
+//     $upcoming_renewal = '2020-12-31';
 
     global $conn_admin_db;
     $count = 0;
     $datas = array();
     
-    $query = "SELECT fli.id, serial_no AS reference, expiry_date AS due_date, c.code AS company_code FROM fireextinguisher_listing fli
-        INNER JOIN fireextinguisher_location flo ON flo.location_id = fli.location
-        INNER JOIN company c ON c.id = fli.company_id
-        INNER JOIN credential cr ON cr.cr_id = fli.added_by
-        WHERE expiry_date BETWEEN '".$today."' AND '".$upcoming_renewal."'";
+    $query = "SELECT fli.id, serial_no AS reference, expiry_date AS due_date, c.code AS company_code FROM fe_master_listing fli
+        INNER JOIN fe_location flo ON flo.location_id = fli.location_id
+        INNER JOIN company c ON c.id = fli.company_id        
+        WHERE expiry_date BETWEEN '".$today."' AND '".$upcoming_renewal."' AND fli.status !='3'";
     
     $rst  = mysqli_query($conn_admin_db, $query)or die(mysqli_error($conn_admin_db));
     while( $row = mysqli_fetch_assoc( $rst ) ){
@@ -173,10 +172,11 @@ function vehicle_notification($today, $upcoming_renewal) {
                                 <p class="red">You have <?=$data['count']?> Notification</p>
                                 
                                 	<?php foreach ($data['data'] as $row){?>
-                                	<a class="dropdown-item media" target="_blank" href="../notification_details.php?id=<?=$row['id']?>">
+                                	<!-- <a class="dropdown-item media" target="_blank" href="../notification_details.php?id=<?=$row['id']?>"> -->
+                                	<a class="dropdown-item media">
                                     <i class="fa fa-check"></i>                                    
-                                    <p><?=$row['company_code'] ." - ".$row['reference']?><br>
-                                    Renewal due date on <b><?=dateFormatRev($row['due_date'])?></b></p>
+                                    <span><?=$row['company_code'] ." - ".$row['reference']?><br>
+                                    Renewal due date on <b><?=dateFormatRev($row['due_date'])?></b></span>
                                     </a>
                                     <?php }?>
                                 

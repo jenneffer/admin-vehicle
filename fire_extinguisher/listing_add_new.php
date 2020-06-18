@@ -126,7 +126,7 @@
                                             <label class="control-label"><small class="form-text text-muted">Location</small></label>
                                             <div class="input-group">
                                                 <?php
-                                                $location = mysqli_query ( $conn_admin_db, "SELECT location_id, location_name FROM fireextinguisher_location");
+                                                $location = mysqli_query ( $conn_admin_db, "SELECT location_id, location_name FROM fe_location");
                                                 db_select ($location, 'location', '','','-select-','form-control','');
                                             ?>
 <!--                                             <div class="input-group-addon" data-toggle="modal" data-target="#add_new_location"><i class="fas fa-plus-circle"></i></div>  -->
@@ -138,7 +138,7 @@
                                             <label class="control-label"><small class="form-text text-muted">Person in charge</small></label>
                                              <div class="input-group">
                                                 <?php
-                                                $pic = mysqli_query ( $conn_admin_db, "SELECT pic_id, pic_name FROM fireextinguisher_person_incharge");
+                                                $pic = mysqli_query ( $conn_admin_db, "SELECT pic_id, pic_name FROM fe_person_incharge");
                                                 db_select ($pic, 'pic', '','','-select-','form-control','');
                                             ?>
 <!--                                             <div class="input-group-addon add_new_pic" data-toggle="modal" data-target="#add_new_pic"><i class="fas fa-plus-circle"></i></div>  -->

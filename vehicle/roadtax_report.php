@@ -1,27 +1,27 @@
 <?php
-	require_once('../assets/config/database.php');
-	require_once('../function.php');
-	require_once('../check_login.php');
-	global $conn_admin_db;
+require_once('../assets/config/database.php');
+require_once('../function.php');
+require_once('../check_login.php');
+global $conn_admin_db;
 // 	if(isset($_SESSION['cr_id'])) {
 // 		$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
 // 		$url = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 // 		$query = parse_url($url, PHP_URL_QUERY);
 // 		parse_str($query, $params);
-		
+
 // 		// get id
 // 		$userId = $_SESSION['cr_id'];
 // 		$name = $_SESSION['cr_name'];
-		
+
 // 	} else {
 // 		$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
 // 		$url = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 // 		$PrevURL= $url;
 // 		header("Location: ../login.php?RecLock=".$PrevURL);
 // 	}
-	
-	$date_start = isset($_POST['date_start']) ? $_POST['date_start'] : '';
-	$date_end = isset($_POST['date_end']) ? $_POST['date_end'] : '';
+
+$date_start = isset($_POST['date_start']) ? $_POST['date_start'] : '';
+$date_end = isset($_POST['date_end']) ? $_POST['date_end'] : '';
 ?>
 
 <!doctype html>
@@ -98,30 +98,30 @@
                                 <strong class="card-title">Road Tax</strong>
                             </div>
                             <!-- Filter -->
-<!--                             <div class="card-body"> -->
-<!--                             <form id="myform" enctype="multipart/form-data" method="post" action="">                	                    -->
-<!--                 	            <div class="form-group row col-sm-12"> -->
-<!--                                     <div class="col-sm-3"> -->
-<!--                                         <label for="date_start" class="form-control-label"><small class="form-text text-muted">Date Start</small></label> -->
-<!--                                         <div class="input-group"> -->
-<!--                                         <input type="text" id="date_start" name="date_start" class="form-control" value="<?=$date_start?>" autocomplete="off">
-<!--                                           <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></i></div> -->
-<!--                                         </div>                             -->
-<!--                                     </div> -->
-<!--                                     <div class="col-sm-3"> -->
-<!--                                         <label for="date_end" class="form-control-label"><small class="form-text text-muted">Date End</small></label> -->
-<!--                                         <div class="input-group"> -->
-<!--                                          <input type="text" id="date_end" name="date_end" class="form-control" value="<?=$date_end?>" autocomplete="off">
-<!--                                           <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></i></div> -->
-<!--                                         </div>                              -->
-<!--                                     </div> -->
-<!--                                     <div class="col-sm-4">                                    	 -->
-<!--                                     	<button type="submit" class="btn btn-primary button_search ">Submit</button> -->
-<!--                                     </div> -->
-<!--                                  </div>     -->
-<!--                             </form> -->
-<!--                             </div> -->
-<!--                             <hr> -->
+							<div class="card-body">
+                                <form id="myform" enctype="multipart/form-data" method="post" action="">                	                   
+                    	            <div class="form-group row col-sm-12">
+                                        <div class="col-sm-3">
+                                            <label for="date_start" class="form-control-label"><small class="form-text text-muted">Date Start</small></label>
+                                            <div class="input-group">
+                                              <input type="text" id="date_start" name="date_start" class="form-control" value="<?=$date_start?>" autocomplete="off">
+                                              <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
+                                            </div>                            
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <label for="date_end" class="form-control-label"><small class="form-text text-muted">Date End</small></label>
+                                            <div class="input-group">
+                                              <input type="text" id="date_end" name="date_end" class="form-control" value="<?=$date_end?>" autocomplete="off">
+                                              <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
+                                            </div>                             
+                                        </div>
+                                        <div class="col-sm-4">                                    	
+                                        	<button type="submit" class="btn btn-primary button_search ">Submit</button>
+                                        </div>
+                                     </div>    
+                                </form>
+                            </div>
+                            <hr>
                             <div class="card-body">
                                 <table id="roadtax_datatable" class="table table-striped table-bordered">
                                     <thead>
@@ -132,8 +132,8 @@
 											<th>LPKP Permit</th>
 <!-- 											<th>Fitness Test</th> -->
 											<th colspan="2" style="text-align: center">Insurance</th>
-											<th colspan="4" style="text-align: center">Road Tax</th>
-                                            <th rowspan="2">&nbsp;</th>
+											<th colspan="3" style="text-align: center">Road Tax</th>
+                                            <th>Road Tax</th>                                            
                                         </tr>
                                         <tr>
                                             <th>Company</th>
@@ -322,6 +322,7 @@
              	"processing": true,
              	"serverSide": true,
              	"searching": false,
+             	"paging": false,
                 "ajax":{
                	 	"url": "roadtax.all.ajax.php",   
                	 	"type":"POST",       	        	

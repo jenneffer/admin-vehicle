@@ -3,7 +3,7 @@
     require_once('../function.php');
     require_once('../check_login.php');
 	global $conn_admin_db;
-	
+	$acc_id = isset($_GET['id']) ? $_GET['id'] : '';
 ?>
 
 <!doctype html>
@@ -70,9 +70,9 @@
 
 <body>
     <!--Left Panel -->
-	<?php  include('../assets/nav/leftNav.php')?>
+	<?php // include('../assets/nav/leftNav.php')?>
     <!-- Right Panel -->
-    <?php include('../assets/nav/rightNav.php')?>
+    <?php //include('../assets/nav/rightNav.php')?>
     <!-- /#header -->
     <!-- Content -->
         <div id="right-panel" class="right-panel">
@@ -85,6 +85,7 @@
                                 <strong class="card-title">Add New Water Bill</strong>
                             </div>
                             <form id="add_water_bill" role="form" action="" method="post">
+                            	<input type="hidden" id="acc_id" name="acc_id" class="form-control">
                                 <div class="card-body card-block">
                                     <div class="form-group row col-sm-12"> 
                                         <div class="col-sm-3">
@@ -153,7 +154,7 @@
 										<div class="col-sm-3">
                                             <label for="description" class=" form-control-label"><small class="form-text text-muted">Description</small></label>                                            
                                             <div class="input-group">
-                                                <input id="description" name="description" class="form-control" autocomplete="off">                                                
+                                                <textarea id="description" name="description" class="form-control" autocomplete="off"></textarea>                                                
                                             </div>  
                                         </div>  
                                         <div class="col-sm-3">
@@ -234,47 +235,44 @@
     <script src="../assets/js/select2.min.js"></script>
 	<script type="text/javascript">
     $(document).ready(function() {
-        //declare empty array to temporary save the data in table
-        var TELEPHONE_LIST = [];
-        
-    	$('.billing').hide();
-    	$('#bill_type').change(function(){
-    		$('.billing').hide();
-			$('#'+$(this).val()).show();
-
-        });
-
-        $('#telefon_bill').on("submit", function(e){ 
-            e.preventDefault();
-            var telefon = $("input[name='telefon']").val();
-            var type = $("input[name='type']").val();
-         	var usage = $("input[name='usage']").val();
-         	
-            $(".data-table tbody").append("<tr data-telefon='"+telefon+"' data-type='"+type+"' data-usage='"+usage+"'><td>"+telefon+"</td><td>"+type+"</td><td>"+usage+"</td><td><button class='btn btn-info btn-xs btn-edit'>Edit</button><button class='btn btn-danger btn-xs btn-delete'>Delete</button></td></tr>");
-
-            //push data into array
-            TELEPHONE_LIST.push({
-				telefon: telefon,
-				type: type,
-				usage: usage
-            });
-            console.log(TELEPHONE_LIST);
-            $("input[name='telefon']").val('');
-            $("input[name='type']").val('');
-            $("input[name='usage']").val('');
-        });
-    	
+        var acc_id = '<?=$acc_id?>';
         $('#add_water_bill').on("submit", function(event){  
-            event.preventDefault();     
-            console.log(TELEPHONE_LIST);         
-            $.ajax({  
-                url:"add_bill.ajax.php",  
-                method:"POST",  
-                data:{action:'add_water_bill', data : $('#add_water_bill').serialize(), telefon_list:TELEPHONE_LIST},  
-                success:function(data){ 
-//                     location.reload();                                                        	 
-                }  
-           });    
+            event.preventDefault();    
+            $('#acc_id').val(acc_id); 
+            if($('#receive_date').val() == ""){  
+                alert("Received date is required");  
+            }   
+            else if($('#payment_mode').val() == ""){  
+                alert("Payment mode is required");  
+            }
+            else if($('#from_date').val() == ""){  
+                alert("From date is required");  
+            }
+            else if($('#to_date').val() == ""){  
+                alert("To date is required");  
+            }
+            else if($('#paid_date').val() == ""){  
+                alert("Payment date is required");  
+            }
+            else if($('#previous_mr').val() == ""){  
+                alert("Previous meter reading is required");  
+            }
+            else if($('#current_mr').val() == ""){  
+                alert("Current meter reading is required");  
+            }
+            else if($('#charged_amt').val() == ""){  
+                alert("Charge amount is required");  
+            } 
+            else{              
+                $.ajax({  
+                    url:"add_bill.ajax.php",  
+                    method:"POST",  
+                    data:{action:'add_water_bill', data : $('#add_water_bill').serialize()},  
+                    success:function(data){ 
+                        location.reload();                                                                              	 
+                    }  
+               });  
+           	}  
         });
 
         $('#from_date, #to_date, #paid_date, #due_date, #invoice_date, #receive_date').datepicker({
@@ -283,31 +281,6 @@
             orientation: "top left",
             todayHighlight: true
         });
-
-        //onchange billtype
-        $("#bill_type").change(function(){
-            var bill_type = $(this).val();
-
-            $.ajax({
-                url: 'get_account.ajax.php',
-                type: 'post',
-                data: {bill_type:bill_type},
-                dataType: 'json',
-                success:function(response){
-                    console.log(response);
-                    var len = response.length;
-                    $("#sel_account").empty();
-                    for( var i = 0; i<len; i++){
-                        var acc_id = response[i]['acc_id'];
-                        var description = response[i]['description'];
-                        
-                        $("#sel_account").append("<option value='"+acc_id+"'>"+description+"</option>");
-
-                    }
-                }
-            });
-        });
-        
     });
 
     function isNumberKey(evt){

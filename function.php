@@ -1,4 +1,5 @@
 <?php
+error_reporting(0);
 // select input - retrieve data from database
     function db_select($query,$txt_name,$txt_value,$function,$default,$class,$tabindex, $readonly = NULL){
     	echo "<select id='$txt_name' name='$txt_name' onchange='$function' class='$class'  $readonly>\n";
@@ -52,6 +53,7 @@
     function selectMonth($txt_name, $txt_value, $function, $default, $class, $tabindex){
         // set the month array
         $formattedMonthArray = array(
+            "" => "-Select-",
             "1" => "January", 
             "2" => "February", 
             "3" => "March", 
@@ -82,7 +84,7 @@
     function itemName($query){
         global $conn_admin_db;
         $sql_query = mysqli_query($conn_admin_db,$query) or die ('Error: '.mysqli_error ($conn_admin_db));
-        $item = mysqli_fetch_array($sql_query);
+        $item = mysqli_fetch_array($sql_query);          
         return $item[0];
     }
     

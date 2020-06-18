@@ -8,6 +8,7 @@
 	$company_id = isset($_GET['company_id']) ? $_GET['company_id'] : "";
 	$company_name = itemName("SELECT name FROM company WHERE id='".$company_id."'");
 	$total = isset($_GET['total_amount']) ? $_GET['total_amount'] : 0;
+	$staff_claim_id = isset($_GET['staff_claim_id']) ? $_GET['staff_claim_id'] : "";
 ?>
 
 <!doctype html><html class="no-js" lang="">
@@ -60,6 +61,7 @@
                     <div class="col-md-12">
                     	<form id="rq_form" method="POST" action="add_requisition.php">
                     	<input type="hidden" name="company_id" value="<?=$company_id?>"/>
+                    	<input type="hidden" name="staff_claim_id" value="<?=$staff_claim_id?>"/>
                         <div class="card">     
                            <div class="card-body"> 
                            		<div class="text-center">

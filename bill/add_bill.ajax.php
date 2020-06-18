@@ -65,6 +65,7 @@ function add_premium_insurance($data){
     $param = array();
     parse_str($data, $param); //unserialize jquery string data
     
+    $acc_id = $param['acc_id'];
     $date_from = $param['date_from'];
     $date_to = $param['date_to'];
     $invoice_no = $param['invoice_no'];
@@ -74,7 +75,8 @@ function add_premium_insurance($data){
     $paid_date = $param['paid_date'];
     $description = $param['description'];
     
-    $query = "INSERT INTO bill_insurance_premium SET 
+    $query = "INSERT INTO bill_management_insurance SET 
+            acc_id = '$acc_id',
             invoice_no = '$invoice_no',
             description = '$description',
             payment = '$charged_amt',
@@ -92,6 +94,7 @@ function add_quit_rent_billing($data){
     $param = array();
     parse_str($data, $param); //unserialize jquery string data
     
+    $acc_id = $param['acc_id'];
     $invoice_no = $param['invoice_no'];
     $invoice_date = $param['invoice_date'];
     $paid_date = $param['paid_date'];
@@ -102,7 +105,8 @@ function add_quit_rent_billing($data){
     $received_date = $param['received_date'];
     $remark = $param['remark'];
     
-    $query = "INSERT INTO bill_quit_rent_billing SET
+    $query = "INSERT INTO bill_management_quit_rent SET
+            acc_id = '$acc_id',
             inv_no = '$invoice_no',
             invoice_date = '".dateFormat($invoice_date)."',
             payment = '$charged_amt',
@@ -120,7 +124,7 @@ function add_late_interest_charge($data){
     global $conn_admin_db;
     $param = array();
     parse_str($data, $param); //unserialize jquery string data
-    
+    $acc_id = $param['acc_id'];
     $bill_date = $param['bill_date'];
     $invoice_no = $param['invoice_no'];
     $payment_due_date = $param['payment_due_date'];
@@ -129,7 +133,8 @@ function add_late_interest_charge($data){
     $or_no = $param['or_no'];
     $description = $param['description'];
     
-    $query = "INSERT INTO bill_late_interest_charge SET
+    $query = "INSERT INTO bill_management_late_interest_charge SET
+            acc_id = '".$acc_id."',
             bill_date = '".dateFormat($bill_date)."',
             inv_no = '$invoice_no',
             payment_due_date = '".dateFormat($payment_due_date)."',
@@ -144,8 +149,8 @@ function add_late_interest_charge($data){
 function insert_billing_water($data){
     global $conn_admin_db;
     $param = array();
-    parse_str($data, $param); //unserialize jquery string data
-    
+    parse_str($data, $param); //unserialize jquery string data    
+    $acc_id = $param['acc_id'];
     $invoice_no = $param['invoice_no'];
     $invoice_date = $param['invoice_date'];
     $receive_date = $param['receive_date'];
@@ -157,17 +162,17 @@ function insert_billing_water($data){
     $previous_mr = $param['previous_mr'];
     $current_mr = $param['current_mr'];
     $charged_amt = $param['charged_amt'];
-    $surcharge = $param['surcharge'];
-    $adjustment = $param['adjustment'];
+    $surcharge = $param['surcharge'];    
     $payment_mode = $param['payment_mode'];
     $or_no = $param['or_no'];
     $total_consume = $current_mr - $previous_mr;
-    $total = $charged_amt + $surcharge + $adjustment;
+    $total = $charged_amt + $surcharge;
     
     $rounded = round_up($total);
     $adjustment = number_format(($rounded-$total), 2);
     
-    $query = "INSERT INTO bill_water SET 
+    $query = "INSERT INTO bill_management_water SET 
+            acc_id = '".$acc_id."',
             date_from = '".dateFormat($from_date)."',
             date_to = '".dateFormat($to_date)."',
             invoice_no = '$invoice_no',
@@ -181,7 +186,7 @@ function insert_billing_water($data){
             surcharge = '$surcharge',
             adjustment = '$adjustment',
             total = '$total',
-            paid_date = '".dateFormat($paid_date)."',
+            payment_date = '".dateFormat($paid_date)."',
             payment_mode = '$payment_mode',
             or_no = '$or_no',
             received_date = '".dateFormat($receive_date)."'";

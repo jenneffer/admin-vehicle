@@ -129,7 +129,7 @@
                                             <th rowspan="2">No.</th>
 											<th rowspan="2">Vehicle Reg No.</th>
                                             <th rowspan="2">Company</th>
-											<th colspan="2">Task</th>
+											<th colspan="2" class="text-center">Task</th>
 											<th rowspan="2">Runner</th>
 											<th rowspan="2">&nbsp;</th>
                                         </tr>

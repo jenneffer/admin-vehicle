@@ -61,7 +61,7 @@
                             	    <div class="col-sm-3">                                        
                                         <?php
                                             $select_company = mysqli_query ( $conn_admin_db, "SELECT id, code FROM company WHERE status='1'");
-                                            db_select ($select_company, 'select_company', $select_c,'','All Company','form-control','');
+                                            db_select ($select_company, 'select_company', $select_c,'submit()','All Company','form-control','');
                                         ?>                              
                                     </div>
                                     <div class="col-sm-1">                                    	
@@ -116,7 +116,11 @@
                                                 while($row = mysqli_fetch_array($sql_result)){ 
                                                     $count++;
                                                     $vpr_due_date = ($row['vpr_due_date'] == '0000-00-00') || empty($row['vpr_due_date']) ? "-" : dateFormatRev($row['vpr_due_date']);
-                                                    $category = itemName("SELECT vc_type FROM vehicle_category WHERE vc_id='".$row['vv_category']."'");
+                                                    $category = "";
+                                                    if(!empty($row['vv_category'])){
+                                                        $category = itemName("SELECT vc_type FROM vehicle_category WHERE vc_id='".$row['vv_category']."'");
+                                                    }
+                                                    
                                                     $vehicle_details = "<span><b>Make</b> : ".$row['vv_brand']."</span><br>
                                                             <span><b>Model</b> : ".$row['vv_model']."</span><br>
                                                             <span><b>Engine No.</b> : ".$row['vv_engine_no']."</span><br>

@@ -71,7 +71,7 @@ global $conn_admin_db;
                                             $sql_result = mysqli_query($conn_admin_db, $sql_query)or die(mysqli_error($conn_admin_db));
                                                 while($row = mysqli_fetch_array($sql_result)){ 
                                                     $count++;
-                                                    $department = itemName("SELECT department_name FROM stationary_department WHERE department_id='".$row['department_id']."'");
+                                                    $department = itemName("SELECT department_code FROM stationary_department WHERE department_id='".$row['department_id']."'");
                                                     $item = itemName("SELECT item_name FROM om_stock_item WHERE id='".$row['item_id']."'")
                                                     ?>
                                                     <tr>
@@ -118,7 +118,7 @@ global $conn_admin_db;
                             <label for="department" class=" form-control-label"><small class="form-text text-muted">Department</small></label>
                             <div>
                                 <?php
-                                $department = mysqli_query ( $conn_admin_db, "SELECT department_id, department_name FROM stationary_department");
+                                $department = mysqli_query ( $conn_admin_db, "SELECT department_id, department_code FROM stationary_department");
                                 db_select ($department, 'department', '','','-select-','form-control','');
                                 ?>
                             </div>
@@ -180,8 +180,8 @@ global $conn_admin_db;
                             <label for="department" class=" form-control-label"><small class="form-text text-muted">Department</small></label>
                             <div>
                                 <?php
-                                $department_name = mysqli_query ( $conn_admin_db, "SELECT department_id, department_name FROM stationary_department");
-                                db_select ($department_name, 'department_name', '','','-select-','form-control','');
+                                $department_code = mysqli_query ( $conn_admin_db, "SELECT department_id, department_code FROM stationary_department");
+                                db_select ($department_code, 'department_code', '','','-select-','form-control','');
                                 ?>
                             </div>
                         </div>
@@ -300,7 +300,7 @@ global $conn_admin_db;
         			success:function(data){            			 
             			var date = dateFormat(data.date_taken);        			
         				$('#id').val(id);					
-                        $('#department_name').val(data.department_id);    
+                        $('#department_code').val(data.department_id);    
                         $('#item_name').val(data.item_id);     
                         $('#qty').val(data.quantity);    
                         $('#date').val(date);                        

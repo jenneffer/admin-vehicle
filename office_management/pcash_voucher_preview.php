@@ -4,10 +4,8 @@
 	require_once('../check_login.php');
 	global $conn_admin_db;
 	
-	$cv_id = $_GET['cv_id'];
-	$cv_status = isset($_GET['status']) ? $_GET['status'] : "";
-	$readonly = $cv_status == 0 ? "" : "readonly";
-	$disabled = $cv_status == 0 ? "" : "disabled";
+	$cv_id = $_GET['cv_id'];	
+	
 	$query = "SELECT *, (SELECT NAME FROM company WHERE company.id = om_pcash_voucher.company_id ) AS company_name, 
             (SELECT cr_name FROM credential WHERE cr_id=om_pcash_voucher.user_id) AS prepared_by FROM om_pcash_voucher WHERE id='$cv_id'";
 	
@@ -18,7 +16,9 @@
 	$prepared_by = $row['prepared_by'];
 	$cv_no = $row['cv_no'];
 	$date = dateFormatRev($row['cv_date']);	
-	$status = $row['workflow_status'];// 0-pending, 1-confirm, 2-rejected/cancelled
+	$status = isset($_GET['status']) ? $_GET['status'] : $row['workflow_status'];// 0-pending, 1-confirm, 2-rejected/cancelled, 3-claimed
+	$readonly = $status == 0 ? "" : "readonly";
+	$disabled = $status == 0 ? "" : "disabled";
 	
 	//get the particular details
 	$particular_query = "SELECT * FROM om_pcash_voucher_item WHERE cv_id='$cv_id'";

@@ -4,16 +4,17 @@
     global $conn_admin_db;
     session_start();
     
-    $date_start = isset($_GET['date_start']) ? $_GET['date_start'] : date('01-m-Y');
-    $date_end = isset($_GET['date_end']) ? $_GET['date_end'] : date('t-m-Y');
+    $date_start = isset($_POST['date_start']) ? $_POST['date_start'] : date('01-m-Y');
+    $date_end = isset($_POST['date_end']) ? $_POST['date_end'] : date('t-m-Y');
     $id = isset($_POST['id']) ? $_POST['id'] : "";
     $task = isset($_POST['task']) ? $_POST['task'] : "";    
     $action = isset($_POST['action']) ? $_POST['action'] : "";
+    $select_company = isset($_POST['select_company']) ? $_POST['select_company'] : "";
     
     if( $action != "" ){
         switch ($action){            
             case 'renewing_vehicle_schedule':
-                renewing_vehicle_schedule($date_start, $date_end, $task, $id);
+                renewing_vehicle_schedule($date_start, $date_end, $select_company, $task, $id);
                 break;
                 
             case 'renewing_next_due_date':
@@ -26,12 +27,12 @@
    
 
     
-    function renewing_vehicle_schedule( $date_start, $date_end, $task, $id){
+    function renewing_vehicle_schedule( $date_start, $date_end, $company, $task, $id){
         global $conn_admin_db;
         
         $sql_query = "SELECT * FROM (SELECT vrt.vrt_id AS id, c.code AS company_code, vv.vv_vehicleNo AS vehicle_no,
                 vrt.vrt_amount AS var1, vrt.vrt_roadTax_fromDate AS var2, vrt.vrt_roadTax_dueDate AS var3, 'Road Tax' AS task,
-                vrt.vrt_roadTax_dueDate AS n_date, vrt.vrt_next_dueDate AS next_due_date
+                vrt.vrt_roadTax_dueDate AS n_date, vrt.vrt_next_dueDate AS next_due_date, vv.company_id
                 FROM vehicle_vehicle vv
                 INNER JOIN vehicle_roadtax vrt ON vrt.vv_id = vv.vv_id
                 INNER JOIN company c ON c.id = vv.company_id
@@ -40,7 +41,7 @@
             
                 SELECT vi.vi_id AS id, c.code AS company_code, vv.vv_vehicleNo AS vehicle_no,
                 vi.vi_sum_insured AS var1, vi.vi_ncd AS var2, '' AS var3, 'Insurance' AS task,
-                vi.vi_insurance_dueDate AS n_date, vi.vi_next_dueDate AS next_due_date
+                vi.vi_insurance_dueDate AS n_date, vi.vi_next_dueDate AS next_due_date, vv.company_id
                 FROM vehicle_vehicle vv
                 INNER JOIN vehicle_insurance vi ON vi.vv_id = vv.vv_id
                 INNER JOIN company c ON c.id = vv.company_id
@@ -49,7 +50,7 @@
             
                 SELECT vp.vp_id AS id, c.code AS company_code, vv.vv_vehicleNo AS vehicle_no,
                 vp.vp_runner AS var1, '' AS var2, '' AS var3, 'Fitness Test'
-                AS task, vp.vp_fitnessDate AS n_date, vp.vp_next_dueDate AS next_due_date
+                AS task, vp.vp_fitnessDate AS n_date, vp.vp_next_dueDate AS next_due_date, vv.company_id
                 FROM vehicle_vehicle vv
                 INNER JOIN vehicle_puspakom vp ON vp.vv_id = vv.vv_id
                 INNER JOIN company c ON c.id = vv.company_id)t
@@ -59,6 +60,9 @@
             $sql_query .= " AND t.id='".$id."' AND t.task='".$task."' ";
         }
         
+        if(!empty($company)){
+            $sql_query .= " AND t.company_id='".$company."' ";
+        }
         
         $rst  = mysqli_query($conn_admin_db, $sql_query)or die(mysqli_error($conn_admin_db));
         
