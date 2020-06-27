@@ -129,10 +129,12 @@
             
             $item_id =  mysqli_real_escape_string( $conn_admin_db,$param['item']);
             $stock_in =  mysqli_real_escape_string( $conn_admin_db,$param['stock_in']);
+            $date_in = dateFormat($param['date']);
             
             $query = "INSERT INTO stationary_stock 
                     SET item_id='$item_id',
                     stock_in='$stock_in',
+                    date_stock_in='$date_in',
                     date_added = now()";
             
             $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));

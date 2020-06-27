@@ -11,7 +11,7 @@
 	$sql_query = "SELECT * FROM vehicle_vehicle  vv
                 INNER JOIN company c ON c.id = vv.company_id
                 INNER JOIN vehicle_insurance vi ON vi.vv_id = vv.vv_id
-                WHERE vi.vi_insurance_fromDate BETWEEN '".dateFormat($date_start)."' AND '".dateFormat($date_end)."'";
+                WHERE vi.vi_insurance_dueDate BETWEEN '".dateFormat($date_start)."' AND '".dateFormat($date_end)."'";
 	
 	if(!empty($company)){
 	    $sql_query .=" AND vv.company_id='$company'";

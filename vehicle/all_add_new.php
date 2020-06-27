@@ -100,10 +100,10 @@
                             <div class="card-body">
 						      	<div class="form-group row col-sm-12">
     						      	<div class="col-sm-12">
-                                        <label for="vehicle_reg_no" class=" form-control-label"><small class="form-text text-muted">Vehicle Reg No.</small></label>
+                                        <label for="vehicle_reg_no" class=" form-control-label"><small class="form-text text-muted">Vehicle Reg No.<span class="color-red">*</span></small></label>
                                         <?php
                                             $vehicle = mysqli_query ( $conn_admin_db, "SELECT vv_id, UPPER(vv_vehicleNo) FROM vehicle_vehicle WHERE status='1'");
-                                            db_select ($vehicle, 'vehicle_reg_no', '','','-select-','form-control','');
+                                            db_select ($vehicle, 'vehicle_reg_no', '','','-select-','form-control','','required');
                                         ?>
                                     </div> 
 <!--                                     <div class="col-sm-6"> -->
@@ -116,24 +116,24 @@
 						      	</div>
 						      	<div class="form-group row col-sm-12">
 						      	<div class="col-sm-6">
-                                    <label for="roadtax_from_date" class="form-control-label"><small class="form-text text-muted">Roadtax from date</small></label>
+                                    <label for="roadtax_from_date" class="form-control-label"><small class="form-text text-muted">Roadtax from date<span class="color-red">*</span></small></label>
                                     <div class="input-group">
-                                        <input id="roadtax_from_date" name="roadtax_from_date" class="form-control" autocomplete="off">
+                                        <input id="roadtax_from_date" name="roadtax_from_date" class="form-control" autocomplete="off" required>
                                         <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
-                                    <label for="roadtax_due_date" class="form-control-label"><small class="form-text text-muted">Roadtax due date</small></label>
+                                    <label for="roadtax_due_date" class="form-control-label"><small class="form-text text-muted">Roadtax due date<span class="color-red">*</span></small></label>
                                     <div class="input-group">
-                                        <input id="roadtax_due_date" name="roadtax_due_date" class="form-control" autocomplete="off">
+                                        <input id="roadtax_due_date" name="roadtax_due_date" class="form-control" autocomplete="off" required>
                                         <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
                                     </div>
                                 </div>   
 						      	</div>
                                 <div class="form-group row col-sm-12"> 
                                     <div class="col-sm-6">
-                                        <label for="roadtax_amount" class=" form-control-label"><small class="form-text text-muted">Roadtax Amount(RM)</small></label>
-                                        <input type="text" id="roadtax_amount" name="roadtax_amount" onkeypress="return isNumberKey(event)" placeholder="e.g 50.00" class="form-control">
+                                        <label for="roadtax_amount" class=" form-control-label"><small class="form-text text-muted">Roadtax Amount(RM)<span class="color-red">*</span></small></label>
+                                        <input type="text" id="roadtax_amount" name="roadtax_amount" onkeypress="return isNumberKey(event)" placeholder="e.g 50.00" class="form-control" required>
                                     </div> 
                                 </div>                  
                             </div>
@@ -169,24 +169,24 @@
                             <div class="card-body">
                             	<div class="form-group row col-sm-12"> 
                                 	<div class="col-sm-6">
-                                        <label for="insurance_from_date" class="form-control-label"><small class="form-text text-muted">Insurance from date</small></label>
+                                        <label for="insurance_from_date" class="form-control-label"><small class="form-text text-muted">Insurance from date<span class="color-red">*</span></small></label>
                                         <div class="input-group">
-                                            <input id="insurance_from_date" name="insurance_from_date" class="form-control" autocomplete="off">
+                                            <input id="insurance_from_date" name="insurance_from_date" class="form-control" autocomplete="off" required>
                                             <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>                                                
                                         </div>                                                                                        
                                     </div>
                                     <div class="col-sm-6">
-                                        <label for="insurance_due_date" class="form-control-label"><small class="form-text text-muted">Insurance due date</small></label>
+                                        <label for="insurance_due_date" class="form-control-label"><small class="form-text text-muted">Insurance due date<span class="color-red">*</span></small></label>
                                         <div class="input-group">
-                                            <input id="insurance_due_date" name="insurance_due_date" class="form-control" autocomplete="off">
+                                            <input id="insurance_due_date" name="insurance_due_date" class="form-control" autocomplete="off" required>
                                             <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>                                                
                                         </div>                                           
                                     </div>
                             	</div>
                             	<div class="form-group row col-sm-12"> 
                                 	<div class="col-sm-6">
-                                        <label for="premium_amount" class=" form-control-label"><small class="form-text text-muted">Premium (RM)</small></label>
-                                        <input type="text" id="premium_amount" name="premium_amount" onkeypress="return isNumberKey(event)" placeholder="e.g 1000.00" class="form-control">
+                                        <label for="premium_amount" class=" form-control-label"><small class="form-text text-muted">Premium (RM)<span class="color-red">*</span></small></label>
+                                        <input type="text" id="premium_amount" name="premium_amount" onkeypress="return isNumberKey(event)" placeholder="e.g 1000.00" class="form-control" required>
                                     </div>
                                     <div class="col-sm-6">
                                         <label for="ncd" class=" form-control-label"><small class="form-text text-muted">NCD (%)</small></label>

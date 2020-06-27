@@ -7,10 +7,20 @@ global $conn_admin_db;
     $date_start = isset($_POST['date_start']) ? $_POST['date_start'] : date('01-m-Y');
     $date_end = isset($_POST['date_end']) ? $_POST['date_end'] : date('t-m-Y');
 
-    $query = "SELECT si.id, si.item_name, department_id, SUM(quantity) AS quantity, date_taken 
-            FROM stationary_item si
-            LEFT JOIN stationary_stock_take sst ON sst.item_id = si.id
-            WHERE date_taken BETWEEN '".dateFormat($date_start)."' AND '".dateFormat($date_end)."' GROUP BY si.id,department_id ORDER BY quantity DESC";
+//     $query = "SELECT si.id, si.item_name, department_id, SUM(quantity) AS quantity, date_taken 
+//             FROM stationary_item si
+//             INNER JOIN stationary_stock_take sst ON sst.item_id = si.id
+//             WHERE date_taken BETWEEN '".dateFormat($date_start)."' AND '".dateFormat($date_end)."' GROUP BY si.id,department_id ORDER BY quantity DESC
+            
+//             UNION 
+//             SELECT sd.id, si.item_name, '' AS department_id, '' AS quantity, '' AS date_taken
+//             FROM stationary_item si WHERE si.id NOT IN (SELECT item_id FROM stationary_stock_take WHERE date_taken BETWEEN '".dateFormat($date_start)."' AND '".dateFormat($date_end)."')";
+    
+    $query = "SELECT * FROM (SELECT si.id, si.item_name, department_id, SUM(quantity) AS quantity, date_taken FROM stationary_item si INNER JOIN stationary_stock_take sst ON sst.item_id = si.id WHERE date_taken BETWEEN '".dateFormat($date_start)."' AND '".dateFormat($date_end)."' GROUP BY si.id,department_id 
+            UNION ALL 
+            SELECT stationary_item.id, stationary_item.item_name, '' AS department_id, 0 AS quantity, '' AS date_taken FROM stationary_item  WHERE stationary_item.id NOT IN (SELECT item_id FROM stationary_stock_take WHERE date_taken BETWEEN '".dateFormat($date_start)."' AND '".dateFormat($date_end)."'))t
+            ORDER BY t.quantity DESC";
+    
     $result = mysqli_query ( $conn_admin_db,$query);
     $arr_data = [];
     while($row = mysqli_fetch_assoc($result)){
@@ -44,8 +54,11 @@ global $conn_admin_db;
         left:    0;
         bottom:   0;
     }
-    h6#title{
-        font-color:blue;
+    a#title{
+        color:blue;
+    }
+    a:hover {
+        cursor: pointer;
     }
 /*      .accordion-toggle:after { */
 /*         /* symbol for "opening" panels */ */
@@ -88,14 +101,14 @@ global $conn_admin_db;
 <!-- /#header -->
 <!-- Content -->
 <div id="right-panel" class="right-panel">
-<div class="content" id="printableArea">
+<div class="content">
     <div class="animated fadeIn">
         <div class="row">
             <div class="col-md-12">
-                <div class="card">
+                <div class="card" id="printableArea">
                     <div class="card-header">
                         <strong class="card-title">Stock Take (By Department)</strong>
-                    </div>                            
+                    </div>                                                
                     <div class="card-body">
                         <form id="myform" enctype="multipart/form-data" method="post" action="">                	                   
             	            <div class="form-group row col-sm-12">
@@ -143,7 +156,7 @@ global $conn_admin_db;
                                     $total_quantity += $quantity;
                                     $tbody_ext .="<td>".$quantity."</td>";
                                 }         
-                                $tbody .="<tr><td><span id='$item_id' href='#' data-toggle='modal' data-target='#chartModal'>".$item_name."</span></td>".$tbody_ext."<td>".$total_quantity."</td></tr>";
+                                $tbody .="<tr><td><a id='$item_id' href='#' data-toggle='modal' data-target='#chartModal'>".$item_name."</a></td>".$tbody_ext."<td>".$total_quantity."</td></tr>";
                             }
                             
                             $theader .= "<thead><tr><th>ITEM</th>".$header_ext."<th class='rotate'>TOTAL</th></tr></thead>";     
@@ -184,7 +197,7 @@ global $conn_admin_db;
                     <div class="panel-group" id="accordion">
                         <div class="panel panel-default">
 							<div class="panel-heading collapsed text-center" data-toggle="collapse" data-parent="#accordion" data-target="#collapseOne">
-                 				<h6 id="title" class="panel-title accordion-toggle">Item Summary &nbsp;<i class="fas fa-chevron-down"></i></h6>   				
+                 				<a id="title" class="panel-title accordion-toggle">Item Summary &nbsp;<i class="fas fa-chevron-down"></i></a>   				
 							</div>       
                             <div id="collapseOne" class="panel-collapse collapse in">
                                 <div class="panel-body">
@@ -272,8 +285,7 @@ $(document).ready(function() {
 			method:"POST",
 			data:{action:'get_chart_data', id:id, date_start:date_start, date_end:date_end},
 			dataType:"json",
-			cache: false,
-			
+			cache: false,			
 			success:function(response){  
 				console.log(response);
 				var chart_data = response.chart_data;
@@ -286,8 +298,13 @@ $(document).ready(function() {
 				label.push(item.label);
                   datas.push(item.data);
                   backgroundColor.push(item.backgroundColor);
-                  item_name = item.item_name;
+                  item_name = item.item_name +" From "+date_start+" - "+date_end;
                 });  
+
+				var i_name = '';
+				if(item_name !=''){
+					i_name = item_name;
+				}
                 
                 //Check whether the chart variable is already initialized as Chart, if so, destroy it and create a new one, even you can create another one on the same name
 				if(window.myChart instanceof Chart){
@@ -309,7 +326,7 @@ $(document).ready(function() {
 			            responsive: true,
 			            title: {
 			                display: true,
-			                text: item_name +" From "+date_start+" - "+date_end,
+			                text: i_name,
 			                fontSize : 16
 			            },
 			            legend: {
@@ -393,7 +410,7 @@ function fnExcelReport(){
 </body>
 <style>
 #printableArea{ 
-     font-size:11px; 
+     font-size:12px; 
      margin:0px; 
      padding:.5rem; 
 } 

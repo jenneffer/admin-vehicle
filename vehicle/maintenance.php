@@ -3,22 +3,6 @@
 	require_once('../function.php');
 	require_once('../check_login.php');
 	global $conn_admin_db;
-// 	if(isset($_SESSION['cr_id'])) {
-// 		$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-// 		$url = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-// 		$query = parse_url($url, PHP_URL_QUERY);
-// 		parse_str($query, $params);
-		
-// 		// get id
-// 		$userId = $_SESSION['cr_id'];
-// 		$name = $_SESSION['cr_name'];
-		
-// 	} else {
-// 		$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-// 		$url = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-// 		$PrevURL= $url;
-// 		header("Location: ../login.php?RecLock=".$PrevURL);
-// 	}
 ?>
 
 <!doctype html>
@@ -84,7 +68,7 @@
             <div class="animated fadeIn">
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="card">
+                        <div class="card" id="printableArea">
                             <div class="card-header">
                                 <strong class="card-title">Vehicle Maintenance</strong>
                             </div>
@@ -105,7 +89,7 @@
 										<?php 
                                         $sql_query = "SELECT vm_id, vm.vv_id,vv_vehicleNo, vm_date, vm_description, vm_amount, vm_ref_no, company_id,
                                                     (SELECT code FROM company WHERE id=vv.company_id) AS company_name FROM vehicle_maintenance vm
-                                                    INNER JOIN vehicle_vehicle vv ON vv.vv_id = vm.vv_id";
+                                                    INNER JOIN vehicle_vehicle vv ON vv.vv_id = vm.vv_id WHERE vm.status='1'";
                                         
                                         if(mysqli_num_rows(mysqli_query($conn_admin_db,$sql_query)) > 0){
                                             $count = 0;
@@ -361,4 +345,11 @@
     }
   </script>
 </body>
+<style>
+ #printableArea{ 
+     font-size:14px; 
+     margin:0px; 
+     padding:.5rem; 
+} 
+</style>
 </html>

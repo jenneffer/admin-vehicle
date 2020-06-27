@@ -7,6 +7,7 @@ session_start();
 $action = isset($_POST['action']) && $_POST['action'] !="" ? $_POST['action'] : ""; 
 $data = isset($_POST['data']) ? $_POST['data'] : ""; 
 $id = isset($_POST['id']) ? $_POST['id'] : "";
+$company = isset($_POST['company']) ? $_POST['company'] : "";
 
 if( $action != "" ){
     switch ($action){
@@ -25,9 +26,29 @@ if( $action != "" ){
         case 'add_new_bill':
             add_new_bill($data);
             break;
+            
+        case 'get_location':
+            get_location($company);
+            break;
         default:
             break;
     }
+}
+
+function get_location($company){
+    global $conn_admin_db;
+    $query = "SELECT location,UPPER(location) AS location_name FROM bill_jabatan_air_account WHERE company_id='$company' AND status='1' GROUP BY location";
+    $result = mysqli_query($conn_admin_db, $query);    
+    $location_arr = array();   
+    while( $row = mysqli_fetch_array($result) ){
+        $location_arr[] = array(
+            "loc" => $row['location'],
+            "loc_name" => $row['location_name']
+        );
+    }
+    
+    // encoding array to json format
+    echo json_encode($location_arr);
 }
 
 function add_new_bill($data){

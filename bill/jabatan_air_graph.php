@@ -6,19 +6,27 @@ global $conn_admin_db;
 
 $year_select = isset($_POST['year_select']) ? $_POST['year_select'] : date("Y");
 $tariff = isset($_POST['tariff']) ? $_POST['tariff'] : "";
+$select_company = isset($_POST['company']) ? $_POST['company'] : "1";
+$select_location = isset($_POST['location']) ? $_POST['location'] : "";
 ob_start();
 selectYear('year_select',$year_select,'submit()','','form-control','','');
 $html_year_select = ob_get_clean();
 
 $query = "SELECT * FROM bill_jabatan_air_account 
         INNER JOIN bill_jabatan_air ON bill_jabatan_air_account.id = bill_jabatan_air.acc_id 
-        WHERE YEAR(date_end)='$year_select'";
-        
+        WHERE YEAR(date_end)='$year_select' AND company_id='$select_company'";
+
 if(!empty($tariff)){
-    $query .=" AND bill_sesb_account.tarif = '$tariff'";
+    $query .=" AND bill_jabatan_air_account.kod_tariff = '$tariff'";
+}
+
+if(!empty($select_location)){
+    $query .=" AND bill_jabatan_air_account.location = '$select_location'";
 }
 
 $query .= " ORDER BY date_end ASC";
+
+$comp_name = itemName("SELECT UPPER(name) FROM company WHERE id='".$select_company."'");
 
 //initialise monthly value
 $month_map = array(
@@ -47,28 +55,16 @@ while ($row = mysqli_fetch_array($rst)) {
     
     for ( $m=1; $m<=$month; $m++ ){               
         if($m == $ins_m){
-            if (isset($arr_data[$row['company']][$m])){
-                $arr_data[$row['company']][$m] += $row['amount'];
-//                 $arr_data[$m] += $row['amount'];
+            if (isset($arr_data[$row['location']][$m])){
+                $arr_data[$row['location']][$m] += $row['amount'];
             }else{
-                $arr_data[$row['company']][$m] = $row['amount'];
-//                 $arr_data[$m] = $row['amount'];
+                $arr_data[$row['location']][$m] = $row['amount'];
             }            
         }
     }
     $data_monthly = $arr_data;    
 }
-// var_dump($data_monthly);
-function randomColor(){
-    //Create a loop.
-    $rgbColor = array();
-    foreach(array('r', 'g', 'b') as $color){
-        //Generate a random number between 0 and 255.
-        $rgbColor[$color] = mt_rand(0, 255);
-    }
-    $rgbColor = "rgb(".implode(",", $rgbColor).")";
-    return $rgbColor;
-}
+
 $datasets = [];
 foreach ($data_monthly as $label => $data){
     $month_data = array_replace($month_map, $data);
@@ -79,10 +75,6 @@ foreach ($data_monthly as $label => $data){
         'borderColor' => randomColor(),
         'borderWidth' => 3,
         'lineTension' => 0,
-//         'pointStyle' => 'circle',
-//         'pointRadius' => 5,
-//         'pointBorderColor' => 'transparent',
-//         'pointBackgroundColor' => randomColor(),
         'data' => array_values($month_data)
     );
 }
@@ -140,7 +132,11 @@ tr:nth-child(even) {
         <div class="animated fadeIn">
         	<form action="" method="post">
             	<div class="form-group row col-sm-12">
-            		<div class="col-sm-3">
+            		<div class="col-sm-2">
+                  		<label for="year_select" class="form-control-label"><small class="form-text text-muted">Year</small></label>
+                  		<?=$html_year_select?>
+                  	</div>
+                  	<div class="col-sm-2">
             			<label for="tariff" class="form-control-label"><small class="form-text text-muted">Tariff</small></label>
                 		<select name="tariff" id="tariff" class="form-control" onchange="this.form.submit()">
                 			<option value="">All</option>
@@ -150,10 +146,21 @@ tr:nth-child(even) {
                 			<option value="ID2" <?php if($tariff=="ID2") echo "selected"; else echo ""; ?>>ID2</option>
                 		</select>
                   	</div>
-                  	<div class="col-sm-3">
-                  		<label for="year_select" class="form-control-label"><small class="form-text text-muted">Year</small></label>
-                  		<?=$html_year_select?>
-                  	</div>
+            	    <div class="col-sm-4">
+            		<label for="tariff" class="form-control-label"><small class="form-text text-muted">Company</small></label>
+            		<?php                                            
+                        $company = mysqli_query ( $conn_admin_db, "SELECT id, UPPER(name) FROM company WHERE status='1' ORDER BY name ASC ");
+                        db_select ($company, 'company',$select_company,'submit()','-select-','form-control','');
+                    ?>
+            		</div>
+            		<div class="col-sm-4">
+            		<label for="location" class="form-control-label"><small class="form-text text-muted">Location</small></label>
+            		<?php 
+            		
+                        $location = mysqli_query ( $conn_admin_db, "SELECT location,UPPER(location) FROM bill_jabatan_air_account WHERE company_id='$select_company' AND status='1' GROUP BY location");
+                        db_select ($location, 'location',$select_location,'submit()','All','form-control','');
+                    ?>
+            		</div>            		
             	</div>
         	</form>
         	<br>
@@ -186,7 +193,8 @@ tr:nth-child(even) {
     <script src="../assets/js/script/bootstrap-datepicker.min.js"></script>
 	<script type="text/javascript">
         $(document).ready(function() {
-            var select_company = '<?=$select_c?>';                    	
+        	var select_company = '<?=$comp_name?>'; 
+			var year = '<?=$year_select?>';         	
         	var ctx = document.getElementById( "chart1" );        	
             ctx.height = 'auto';
             var chart1 = new Chart( ctx, {
@@ -243,12 +251,11 @@ tr:nth-child(even) {
                     },
                     title: {
                         display: true,
-                        text: 'Water Usage by Company'
+                        text: 'WATER USAGE BY '+select_company+ ' for YEAR ' +year
                     },
                     
                 }
             } );
-
         });            
 </script>
 </body>

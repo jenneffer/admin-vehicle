@@ -74,11 +74,12 @@ global $conn_admin_db;
                                             $count = 0;
                                             $sql_result = mysqli_query($conn_admin_db, $sql_query)or die(mysqli_error($conn_admin_db));
                                                 while($row = mysqli_fetch_array($sql_result)){ 
-                                                    $count++;                                                    
+                                                    $count++;        
+                                                    $comp_name = itemName("SELECT UPPER(name) FROM company WHERE id='".$row['company_id']."'")
                                                     ?>
                                                     <tr>
                                                         <td><?=$count?>.</td>
-                                                        <td><?=strtoupper($row['company'])?></td>
+                                                        <td><?=$comp_name?></td>
                                                         <td><a href="telekom_account_details.php?id=<?=$row['id']?>" target="_blank" style="color:blue;"><?=$row['account_no']?></a></td>
                                                         <td><?=$row['owner']?></td>
                                                         <td><?=$row['location']?></td>                                                        

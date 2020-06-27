@@ -91,9 +91,9 @@
         <div id="right-panel" class="right-panel">
         <div class="content">
             <div class="animated fadeIn">
-                <div class="row">
+                <div class="row" >
                     <div class="col-md-12">
-                        <div class="card">
+                        <div class="card" id="printableArea">
                             <div class="card-header">
                                 <strong class="card-title">Puspakom</strong>
                             </div>
@@ -116,7 +116,7 @@
                                         </div>                             
                                     </div>
                                     <div class="col-sm-4">                                    	
-                                    	<button type="submit" class="btn btn-primary button_search ">Submit</button>
+                                    	<button type="submit" class="btn btn-primary button_search ">View</button>
                                     </div>
                                  </div>    
                             </form>
@@ -363,4 +363,11 @@
     }
   </script>
 </body>
+<style>
+ #printableArea{ 
+     font-size:14px; 
+     margin:0px; 
+     padding:.5rem; 
+} 
+</style>
 </html>

@@ -13,7 +13,7 @@
                 LEFT JOIN vehicle_puspakom vp ON vp.vv_id = vv.vv_id
                 LEFT JOIN vehicle_insurance vi ON vi.vv_id = vv.vv_id
                 LEFT JOIN vehicle_permit vpr ON vv.vv_id = vpr.vv_id
-                WHERE vrt.vrt_roadTax_fromDate BETWEEN '".dateFormat($date_start)."' AND '".dateFormat($date_end)."'";
+                WHERE vrt.vrt_roadTax_dueDate BETWEEN '".dateFormat($date_start)."' AND '".dateFormat($date_end)."'";
 	
 	if(!empty($company)){
 	    $sql_query .= " AND vv.company_id='$company'";
@@ -44,23 +44,22 @@
 			$fitness_test = !empty($row['vp_fitnessDate']) ? dateFormatRev($row['vp_fitnessDate']) : "-";
 
 			$data = array(
-			        $count,
-					$row['code'],
-					$row['vv_vehicleNo'],					
-			        dateFormatRev($row['vpr_due_date']),
-			        dateFormatRev($row['vi_insurance_fromDate']),
-    			    dateFormatRev($row['vi_insurance_dueDate']),
-			        $row['vi_premium_amount'],
-    			    $row['vi_ncd'] * 100,
-			        $row['vi_sum_insured'],
-			        $row['vi_excess'],
-    			    $row['vv_capacity'],
-			        $fitness_test,
-    			    dateFormatRev($row['vrt_roadTax_fromDate']),
-    			    dateFormatRev($row['vrt_roadTax_dueDate']),
-			        $row['vrt_amount'],
-			        $period,
-		
+                        $count,
+                        $row['code'],
+                        $row['vv_vehicleNo'],					
+                        $row['vpr_due_date'] != NULL ? dateFormatRev($row['vpr_due_date']) : "-", 
+                        $row['vi_insurance_fromDate'] != NULL ? dateFormatRev($row['vi_insurance_fromDate']) : "-",
+                        $row['vi_insurance_dueDate'] != NULL ? dateFormatRev($row['vi_insurance_dueDate']) : "-", 
+                        $row['vi_premium_amount'],
+                        $row['vi_ncd'] * 100,
+                        $row['vi_sum_insured'],
+                        $row['vi_excess'],
+                        $row['vv_capacity'],
+                        $fitness_test,
+                        $row['vrt_roadTax_fromDate'] != NULL ? dateFormatRev($row['vrt_roadTax_fromDate']) : "-",
+                        $row['vrt_roadTax_dueDate'] != NULL ? dateFormatRev($row['vrt_roadTax_dueDate']) : "-",
+                        $row['vrt_amount'],
+                        $period
 			);
 
 			$arr_data[] = $data;

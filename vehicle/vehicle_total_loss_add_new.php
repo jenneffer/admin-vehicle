@@ -52,33 +52,33 @@
                             <div class="card-body card-block">
                             	<div class="form-group row col-sm-12">
                                     <div class="col-sm-4">
-                                        <label for="vehicle_reg_no" class=" form-control-label"><small class="form-text text-muted">Vehicle Reg No.</small></label>
+                                        <label for="vehicle_reg_no" class=" form-control-label"><small class="form-text text-muted">Vehicle Reg No.<span class="color-red">*</span></small></label>
                                         <?php
                                             $vehicle = mysqli_query ( $conn_admin_db, "SELECT vv_id, UPPER(vv_vehicleNo) FROM vehicle_vehicle WHERE status='1'");
-                                            db_select ($vehicle, 'vehicle_reg_no', '','','-select-','form-control','');
+                                            db_select ($vehicle, 'vehicle_reg_no', '','','-select-','form-control','','required');
                                         ?>
                                     </div>
                                     <div class="col-sm-4">
-                                        <label for="insurance" class=" form-control-label"><small class="form-text text-muted">Insurance</small></label>
-                                        <input type="text" id="insurance" name="insurance" placeholder="Enter insurance name" class="form-control">
+                                        <label for="insurance" class=" form-control-label"><small class="form-text text-muted">Insurance <span class="color-red">*</span></small></label>
+                                        <input type="text" id="insurance" name="insurance" placeholder="Enter insurance name" class="form-control" required>
                                     </div>
                                     <div class="col-sm-4">
-                                        <label for="amount" class=" form-control-label"><small class="form-text text-muted">Amount (RM)</small></label>
-                                		<input type="text" id="amount" name="amount" onkeypress="return isNumberKey(event)" placeholder="e.g 50.00" class="form-control">
+                                        <label for="amount" class=" form-control-label"><small class="form-text text-muted">Amount (RM)<span class="color-red">*</span></small></label>
+                                		<input type="text" id="amount" name="amount" onkeypress="return isNumberKey(event)" placeholder="e.g 50.00" class="form-control" required>
                                     </div>
                                 </div>
                                 <div class="form-group row col-sm-12">                                        
                                     <div class="col-sm-4">
-                                        <label for="offer_letter_date" class=" form-control-label"><small class="form-text text-muted">Offer Letter Date</small></label>
+                                        <label for="offer_letter_date" class=" form-control-label"><small class="form-text text-muted">Offer Letter Date<span class="color-red">*</span></small></label>
                                         <div class="input-group">
-                                            <input id="offer_letter_date" name="offer_letter_date" class="form-control" autocomplete="off">
+                                            <input id="offer_letter_date" name="offer_letter_date" class="form-control" autocomplete="off" required>
                                             <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
                                         </div>
                                     </div>
                                     <div class="col-sm-4">
-                                        <label for="payment_advice_date" class=" form-control-label"><small class="form-text text-muted">Payment Advice Date</small></label>
+                                        <label for="payment_advice_date" class=" form-control-label"><small class="form-text text-muted">Payment Advice Date<span class="color-red">*</span></small></label>
                                         <div class="input-group">
-                                            <input id="payment_advice_date" name="payment_advice_date" class="form-control" autocomplete="off">
+                                            <input id="payment_advice_date" name="payment_advice_date" class="form-control" autocomplete="off" required>
                                             <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
                                         </div>
                                     </div>
@@ -86,12 +86,12 @@
                                 </div>                                    
                                 <div class="form-group row col-sm-12">                                        
                                     <div class="col-sm-4">
-                                        <label for="beneficiary_bank" class=" form-control-label"><small class="form-text text-muted">Beneficiary Bank</small></label>
-                                        <input type="text" id="beneficiary_bank" name="beneficiary_bank" placeholder="Enter beneficiary bank" class="form-control">
+                                        <label for="beneficiary_bank" class=" form-control-label"><small class="form-text text-muted">Beneficiary Bank<span class="color-red">*</span></small></label>
+                                        <input type="text" id="beneficiary_bank" name="beneficiary_bank" placeholder="Enter beneficiary bank" class="form-control" required>
                                     </div>
                                     <div class="col-sm-4">
-                                        <label for="transaction_ref_no" class=" form-control-label"><small class="form-text text-muted">Transaction Reference No.</small></label>
-                                        <input type="text" id="transaction_ref_no" name="transaction_ref_no" class="form-control">
+                                        <label for="transaction_ref_no" class=" form-control-label"><small class="form-text text-muted">Transaction Reference No.<span class="color-red">*</span></small></label>
+                                        <input type="text" id="transaction_ref_no" name="transaction_ref_no" class="form-control" required>
                                     </div>
                                     <div class="col-sm-4">
                                         <label for="driver" class=" form-control-label"><small class="form-text text-muted">Driver</small></label>

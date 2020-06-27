@@ -82,9 +82,9 @@
         <div id="right-panel" class="right-panel">
         <div class="content">
             <div class="animated fadeIn">
-                <div class="row">
+                <div class="row" >
                     <div class="col-md-12">
-                        <div class="card">
+                        <div class="card" id="printableArea">
                             <div class="card-header">
                                 <strong class="card-title">Vehicle Summons</strong>
                             </div>
@@ -569,4 +569,5 @@
     }
   </script>
 </body>
+
 </html>

@@ -76,7 +76,7 @@
                 <div class="row">
 
                     <div class="col-md-12">
-                        <div class="card">
+                        <div class="card" id="printableArea">
                             <div class="card-header">
                                 <strong class="card-title">Renewing Vehicle Schedule</strong>
                             </div>
@@ -86,7 +86,7 @@
                     	            	<div class="col-sm-3">
                                 			<label for="company_dd" class="form-control-label"><small class="form-text text-muted">Company</small></label>
                                     		<?php
-                                                $select_company = mysqli_query ( $conn_admin_db, "SELECT id, code FROM company WHERE status='1'");
+                                                $select_company = mysqli_query ( $conn_admin_db, "SELECT id, UPPER(name) FROM company WHERE vehicle_used='1' ORDER BY name ASC");
                                                 db_select ($select_company, 'select_company', $select_c,'submit()','All','form-control','');                        
                                             ?>
                                       	</div>
@@ -105,13 +105,13 @@
                                             </div>                             
                                         </div>
                                         <div class="col-sm-3">                                    	
-                                        	<button type="submit" class="btn btn-primary button_search ">Submit</button>
+                                        	<button type="submit" class="btn btn-primary button_search ">View</button>
                                         </div>
                                      </div>    
                                 </form>
                             </div>
                             <hr>
-                            <div class="card-body" id="printableArea">
+                            <div class="card-body" >
                                 <table id="vehicle_schedule" class="table table-striped table-bordered">
                                     <thead>
                                         <tr>
@@ -121,7 +121,8 @@
 											<th>R-Tax, Sum & NCD</th>
 											<th>Task</th>
 											<th>Due Date</th>
-                                            <th>Next Due Date</th>            
+                                            <th>Remarks</th>
+                                            <th>Action</th>            
                                             <th>&nbsp;</th>                                
                                         </tr>
                                     </thead>
@@ -136,10 +137,10 @@
         </div><!-- .content -->
         <!-- Modal edit next due date  -->
         <div id="editItem" class="modal fade">
-        <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Edit Schedule</h4>
+                    <h4 class="modal-title">Update</h4>
                 </div>
                 <div class="modal-body">
                     <form role="form" method="POST" action="" id="update_form">
@@ -147,10 +148,15 @@
                         <input type="hidden" id="id" name="id" value="">
                         <input type="hidden" id="task" name="task" value="">
                         <div class="form-group row col-sm-12">
-                            <label for="next_due_date" class="form-control-label"><small class="form-text text-muted">Next due date</small></label>  
+                            <label for="remark" class="form-control-label"><small class="form-text text-muted">Remark</small></label>  
                             <div class="input-group">
-                              <input type="text" id="next_due_date" name="next_due_date" class="form-control" autocomplete="off">
-                              <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
+                              <input type="text" id="remark" name="remark" class="form-control" autocomplete="off">                              
+                            </div>                            
+                        </div>
+                        <div class="form-group row col-sm-12">
+                            <label for="action" class="form-control-label"><small class="form-text text-muted">Action</small></label>  
+                            <div class="input-group">
+                              <input type="text" id="action" name="action" class="form-control" autocomplete="off">                              
                             </div>                            
                         </div>
                         <div class="modal-footer">
@@ -226,12 +232,6 @@
              }
             ],
           });
-
-          //retrieve data
-          $(document).on('click', '.edit_data', function(){
-  			var id = $(this).attr("id");
-
-        	});
         //update form
           $('#update_form').on("submit", function(event){  
               event.preventDefault();  
@@ -242,7 +242,7 @@
                    $.ajax({  
                         url:"renewing.vehicle.schedule.ajax.php",  
                         method:"POST",  
-                        data:{action:'renewing_next_due_date', data:$('#update_form').serialize()},  
+                        data:{action:'update_renewal_status', data:$('#update_form').serialize()},  
                         success:function(data){   
                              $('#editItem').modal('hide');  
                              $('#vehicle_schedule').html(data);
@@ -272,15 +272,17 @@
        });
 
       function editFunction(id, task){	
+            $('#id').val(id);	
+            $('#task').val(task);
     		$.ajax({
     				url:"renewing.vehicle.schedule.ajax.php",
     				method:"POST",
-    				data:{action :'renewing_vehicle_schedule', id:id, task: task},
+    				data:{action :'retrieve_data', id:id, task: task},
     				dataType:"json",
-    				success:function(data){	  	  					
-      					$('#next_due_date').val(data.aaData[0][6]);	
-      					$('#id').val(id);	
-      					$('#task').val(data.aaData[0][4]);	
+    				success:function(data){	        				  	
+        				console.log(data);  					
+      					$('#remark').val(data.remark);	
+      					$('#action').val(data.renewal_status);		
                     	$('#editItem').modal('show');
     			}
     		});

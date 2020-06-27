@@ -5,20 +5,28 @@ require_once('../check_login.php');
 global $conn_admin_db;
 
 $year_select = isset($_POST['year_select']) ? $_POST['year_select'] : date("Y");
-$tariff = isset($_POST['tariff']) ? $_POST['tariff'] : "";
+$tariff = isset($_POST['tariff']) ? $_POST['tariff'] : "CM1";
+$select_company = isset($_POST['company']) ? $_POST['company'] : "1";
+$select_location = isset($_POST['location']) ? $_POST['location'] : "";
 ob_start();
 selectYear('year_select',$year_select,'submit()','','form-control','','');
 $html_year_select = ob_get_clean();
 
 $query = "SELECT * FROM bill_sesb_account
         INNER JOIN bill_sesb ON bill_sesb_account.id = bill_sesb.acc_id
-        WHERE YEAR(date_end)='$year_select'";
+        WHERE company_id='$select_company' AND YEAR(date_end)='$year_select'";
         
 if(!empty($tariff)){
     $query .=" AND bill_sesb_account.tarif = '$tariff'";
 }
 
+if(!empty($select_location)){
+    $query .=" AND bill_sesb_account.location = '$select_location'";
+}
+
 $query .= " ORDER BY date_end ASC";
+
+$comp_name = itemName("SELECT UPPER(name) FROM company WHERE id='".$select_company."'");
 
 //initialise monthly value
 $month_map = array(
@@ -37,35 +45,28 @@ $month_map = array(
 );
 
 $rst = mysqli_query($conn_admin_db, $query);
+// var_dump($rst);
 $arr_data = [];
 $data_monthly = [];
 $month = 12;
-while ($row = mysqli_fetch_array($rst)) {    
+while ($row = mysqli_fetch_assoc($rst)) {
+//     var_dump($row);
     $date_end = $row['date_end'];
     $month_data = date_parse_from_format("Y-m-d", $date_end);
     $ins_m = $month_data["month"];   
     
     for ( $m=1; $m<=$month; $m++ ){               
         if($m == $ins_m){
-            if (isset($arr_data[$row['company']][$m])){
-                $arr_data[$row['company']][$m] += $row['amount'];
+            if (isset($arr_data[$row['location']][$m])){
+                $arr_data[$row['location']][$m] += $row['amount'];
             }else{
-                $arr_data[$row['company']][$m] = $row['amount'];
+                $arr_data[$row['location']][$m] = $row['amount'];
             }            
         }
     }
     $data_monthly = $arr_data;    
 }
-function randomColor(){
-    //Create a loop.
-    $rgbColor = array();
-    foreach(array('r', 'g', 'b') as $color){
-        //Generate a random number between 0 and 255.
-        $rgbColor[$color] = mt_rand(0, 255);
-    }
-    $rgbColor = "rgb(".implode(",", $rgbColor).")";
-    return $rgbColor;
-}
+
 $datasets = [];
 foreach ($data_monthly as $label => $data){
     $month_data = array_replace($month_map, $data);
@@ -76,10 +77,6 @@ foreach ($data_monthly as $label => $data){
         'borderColor' => randomColor(),
         'borderWidth' => 3,
         'lineTension' => 0,
-//         'pointStyle' => 'circle',
-//         'pointRadius' => 5,
-//         'pointBorderColor' => 'transparent',
-//         'pointBackgroundColor' => randomColor(),
         'data' => array_values($month_data)
     );
 }
@@ -136,21 +133,34 @@ tr:nth-child(even) {
     <div class="content">        
         <div class="animated fadeIn">
         	<form action="" method="post">
-            	<div class="form-group row col-sm-12">
-            		<div class="col-sm-3">
+            	<div class="form-group row col-sm-12">            		
+                  	<div class="col-sm-2">
+                  		<label for="year_select" class="form-control-label"><small class="form-text text-muted">Year</small></label>
+                  		<?=$html_year_select?>
+                  	</div>
+                  	<div class="col-sm-2">
             			<label for="tariff" class="form-control-label"><small class="form-text text-muted">Tariff</small></label>
                 		<select name="tariff" id="tariff" class="form-control" onchange="this.form.submit()">
-                			<option value="">All</option>
                 			<option value="CM1" <?php if($tariff=="CM1") echo "selected"; else echo ""; ?>>CM1</option>
                 			<option value="DM" <?php if($tariff=="DM") echo "selected"; else echo ""; ?>>DM</option>
                 			<option value="ID1" <?php if($tariff=="ID1") echo "selected"; else echo ""; ?>>ID1</option>
                 			<option value="ID2" <?php if($tariff=="ID2") echo "selected"; else echo ""; ?>>ID2</option>
                 		</select>
                   	</div>
-                  	<div class="col-sm-3">
-                  		<label for="year_select" class="form-control-label"><small class="form-text text-muted">Year</small></label>
-                  		<?=$html_year_select?>
-                  	</div>
+                  	<div class="col-sm-4">
+            		<label for="tariff" class="form-control-label"><small class="form-text text-muted">Company</small></label>
+            		<?php                                            
+                        $company = mysqli_query ( $conn_admin_db, "SELECT id, UPPER(name) FROM company WHERE status='1' ORDER BY name ASC");
+                        db_select ($company, 'company',$select_company,'submit()','-select-','form-control','');
+                    ?>
+            		</div>
+            		<div class="col-sm-4">
+            		<label for="location" class="form-control-label"><small class="form-text text-muted">Location</small></label>
+            		<?php                                            
+                        $location = mysqli_query ( $conn_admin_db, "SELECT location,UPPER(location) FROM bill_sesb_account WHERE company_id='$select_company' AND tarif='$tariff' AND status='1' GROUP BY location");
+                        db_select ($location, 'location',$select_location,'submit()','All','form-control','');
+                    ?>
+            		</div>
             	</div>
         	</form>
         	<br>
@@ -183,7 +193,9 @@ tr:nth-child(even) {
     <script src="../assets/js/script/bootstrap-datepicker.min.js"></script>
 	<script type="text/javascript">
         $(document).ready(function() {
-            var select_company = '<?=$select_c?>';                    	
+            var select_company = '<?=$comp_name?>';
+            var tarif = '<?=$tariff?>';
+            console.log(tarif);                    	
         	var ctx = document.getElementById( "chart1" );        	
             ctx.height = 'auto';
             var chart1 = new Chart( ctx, {
@@ -240,7 +252,7 @@ tr:nth-child(even) {
                     },
                     title: {
                         display: true,
-                        text: 'Electricity Usage by Company'
+                        text: 'Electricity Usage by ' +select_company+" ( "+tarif+" )"
                     },
                     
                 }

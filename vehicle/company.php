@@ -84,7 +84,7 @@
             <div class="animated fadeIn">
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="card">
+                        <div class="card" id="printableArea">
                             <div class="card-header">
                                 <strong class="card-title">Company List</strong>
                             </div>
@@ -299,4 +299,10 @@
     }
   </script>
 </body>
+<style>
+ #printableArea{ 
+     font-size:14px; 
+     margin:0px;      
+} 
+</style>
 </html>

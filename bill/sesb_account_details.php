@@ -15,7 +15,7 @@
     $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
     $row = mysqli_fetch_assoc($result);
     $acc_id = $row['id'];
-    $company = $row['company'];
+    $company = itemName("SELECT code FROM company WHERE id='".$row['company_id']."'");
     $location = $row['location'];
     $deposit = $row['deposit'] + $row['additional_deposit'];
     $account_no = $row['account_no'];

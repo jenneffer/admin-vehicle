@@ -17,22 +17,24 @@
                 renewing_vehicle_schedule($date_start, $date_end, $select_company, $task, $id);
                 break;
                 
-            case 'renewing_next_due_date':
-                renewing_next_due_date($_POST);
+            case 'update_renewal_status':
+                update_renewal_status($_POST);
                 break;
+                
+            case 'retrieve_data':
+                retrieve_data($id, $task);
+                break;
+                
             default:
                 break;
         }
     }
    
-
-    
-    function renewing_vehicle_schedule( $date_start, $date_end, $company, $task, $id){
+    function retrieve_data($id, $task){
         global $conn_admin_db;
-        
         $sql_query = "SELECT * FROM (SELECT vrt.vrt_id AS id, c.code AS company_code, vv.vv_vehicleNo AS vehicle_no,
                 vrt.vrt_amount AS var1, vrt.vrt_roadTax_fromDate AS var2, vrt.vrt_roadTax_dueDate AS var3, 'Road Tax' AS task,
-                vrt.vrt_roadTax_dueDate AS n_date, vrt.vrt_next_dueDate AS next_due_date, vv.company_id
+                vrt.vrt_roadTax_dueDate AS n_date, vrt.vrt_remark AS remark, vv.company_id, vrt.vrt_renewal_status AS renewal_status
                 FROM vehicle_vehicle vv
                 INNER JOIN vehicle_roadtax vrt ON vrt.vv_id = vv.vv_id
                 INNER JOIN company c ON c.id = vv.company_id
@@ -41,7 +43,7 @@
             
                 SELECT vi.vi_id AS id, c.code AS company_code, vv.vv_vehicleNo AS vehicle_no,
                 vi.vi_sum_insured AS var1, vi.vi_ncd AS var2, '' AS var3, 'Insurance' AS task,
-                vi.vi_insurance_dueDate AS n_date, vi.vi_next_dueDate AS next_due_date, vv.company_id
+                vi.vi_insurance_dueDate AS n_date, vi.vi_remark AS remark, vv.company_id,vi.vi_renewal_status AS renewal_status
                 FROM vehicle_vehicle vv
                 INNER JOIN vehicle_insurance vi ON vi.vv_id = vv.vv_id
                 INNER JOIN company c ON c.id = vv.company_id
@@ -50,7 +52,40 @@
             
                 SELECT vp.vp_id AS id, c.code AS company_code, vv.vv_vehicleNo AS vehicle_no,
                 vp.vp_runner AS var1, '' AS var2, '' AS var3, 'Fitness Test'
-                AS task, vp.vp_fitnessDate AS n_date, vp.vp_next_dueDate AS next_due_date, vv.company_id
+                AS task, vp.vp_fitnessDate AS n_date, vp.vp_remark AS remark, vv.company_id,vp.vp_renewal_status AS renewal_status
+                FROM vehicle_vehicle vv
+                INNER JOIN vehicle_puspakom vp ON vp.vv_id = vv.vv_id
+                INNER JOIN company c ON c.id = vv.company_id)t
+                WHERE t.id='".$id."' AND t.task='".$task."' ";
+        
+        $rst  = mysqli_query($conn_admin_db, $sql_query)or die(mysqli_error($conn_admin_db));
+        $row = mysqli_fetch_assoc( $rst );
+        echo json_encode($row);
+        
+    }    
+    function renewing_vehicle_schedule( $date_start, $date_end, $company, $task, $id){
+        global $conn_admin_db;        
+        $sql_query = "SELECT * FROM (SELECT vrt.vrt_id AS id, c.code AS company_code, vv.vv_vehicleNo AS vehicle_no,
+                vrt.vrt_amount AS var1, vrt.vrt_roadTax_fromDate AS var2, vrt.vrt_roadTax_dueDate AS var3, 'Road Tax' AS task,
+                vrt.vrt_roadTax_dueDate AS n_date, vrt.vrt_remark AS remark, vv.company_id, vrt.vrt_renewal_status AS renewal_status
+                FROM vehicle_vehicle vv
+                INNER JOIN vehicle_roadtax vrt ON vrt.vv_id = vv.vv_id
+                INNER JOIN company c ON c.id = vv.company_id
+            
+                UNION ALL
+            
+                SELECT vi.vi_id AS id, c.code AS company_code, vv.vv_vehicleNo AS vehicle_no,
+                vi.vi_sum_insured AS var1, vi.vi_ncd AS var2, '' AS var3, 'Insurance' AS task,
+                vi.vi_insurance_dueDate AS n_date, vi.vi_remark AS remark, vv.company_id,vi.vi_renewal_status AS renewal_status
+                FROM vehicle_vehicle vv
+                INNER JOIN vehicle_insurance vi ON vi.vv_id = vv.vv_id
+                INNER JOIN company c ON c.id = vv.company_id
+            
+                UNION ALL
+            
+                SELECT vp.vp_id AS id, c.code AS company_code, vv.vv_vehicleNo AS vehicle_no,
+                vp.vp_runner AS var1, '' AS var2, '' AS var3, 'Fitness Test'
+                AS task, vp.vp_fitnessDate AS n_date, vp.vp_remark AS remark, vv.company_id,vp.vp_renewal_status AS renewal_status
                 FROM vehicle_vehicle vv
                 INNER JOIN vehicle_puspakom vp ON vp.vv_id = vv.vv_id
                 INNER JOIN company c ON c.id = vv.company_id)t
@@ -108,18 +143,19 @@
                 
                 
                 $remark = $variable1 .$variable2;
-                $next_due_date = !empty($row['next_due_date']) ? dateFormatRev($row['next_due_date']) : "-";
+                
                 
                 $action = '<span id='.$row['id'].' data-toggle="modal"  class="edit_data" data-target="#editItem" onclick="editFunction('.$row['id'].', '."'".$row['task']."'".')"><i class="menu-icon fa fa-edit"></i>
                         </span>';
                 $data = array(
-                    $count,
+                    $count.".",
                     $row['company_code'],
                     $row['vehicle_no'],
                     $remark,
                     $row['task'],
                     dateFormatRev($row['n_date']),
-                    $next_due_date,
+                    $row['remark'],
+                    $row['renewal_status'],
                     $action
                     
                 );
@@ -136,25 +172,25 @@
         echo json_encode($arr_result);
         
     }
-    function renewing_next_due_date($params) {
+    function update_renewal_status($params) {
         //unserialize jquery string data
         $param = array();
         parse_str($params['data'], $param);  
-        
+        var_dump($param);
         if( !empty($param)){
             $id = isset($param['id']) ? $param['id'] : "";
             $task = isset($param['task']) ? $param['task'] : "";
-            $new_date = isset($param['next_due_date']) ? $param['next_due_date'] : "";
-            
+            $remark = isset($param['remark']) ? $param['remark'] : "";
+            $action = isset($param['action']) ? $param['action'] : "";            
             switch ($task) {
                 case 'Road Tax':
-                    updateRoadTax($id, $new_date);
+                    updateRoadTax($id, $remark, $action);
                     break;
                 case 'Insurance':
-                    updateInsurance($id, $new_date);
+                    updateInsurance($id, $remark, $action);
                     break;
                 case 'Fitness Test':
-                    updateFitnessTest($id, $new_date);
+                    updateFitnessTest($id, $remark, $action);
                     break;
                 default:
                     break;
@@ -162,9 +198,9 @@
         }
     }
     
-    function updateRoadTax($id, $new_date){
+    function updateRoadTax($id, $remark, $action){
         global $conn_admin_db;
-        $sql_query = "UPDATE vehicle_roadtax SET vrt_next_dueDate='".dateFormat($new_date)."' WHERE vrt_id='".$id."'";
+        $sql_query = "UPDATE vehicle_roadtax SET vrt_remark='".$remark."', vrt_renewal_status='$action' WHERE vrt_id='".$id."'";
         
         $result = mysqli_query($conn_admin_db, $sql_query) or die(mysqli_error($conn_admin_db));
         if ($result) {
@@ -173,9 +209,9 @@
         
     }
     
-    function updateInsurance($id, $new_date){
+    function updateInsurance($id, $remark, $action){
         global $conn_admin_db;
-        $sql_query = "UPDATE vehicle_insurance SET vi_next_dueDate='".dateFormat($new_date)."' WHERE vi_id='".$id."'";
+        $sql_query = "UPDATE vehicle_insurance SET vi_remark='$remark', vi_renewal_status='$action' WHERE vi_id='".$id."'";
         
         $result = mysqli_query($conn_admin_db, $sql_query) or die(mysqli_error($conn_admin_db));
         if ($result) {
@@ -183,9 +219,9 @@
         }
     }
     
-    function updateFitnessTest($id, $new_date){
+    function updateFitnessTest($id, $remark, $action){
         global $conn_admin_db;
-        $sql_query = "UPDATE vehicle_puspakom SET vp_next_dueDate='".dateFormat($new_date)."' WHERE vp_id='".$id."'";
+        $sql_query = "UPDATE vehicle_puspakom SET vp_remark='$remark', vp_renewal_status='$action' WHERE vp_id='".$id."'";
         $result = mysqli_query($conn_admin_db, $sql_query) or die(mysqli_error($conn_admin_db));
         if ($result) {
             alert ("Updated successfully","renewing_vehicle_schedule_report.php");

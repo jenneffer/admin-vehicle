@@ -90,10 +90,9 @@
         <div id="right-panel" class="right-panel">
         <div class="content">
             <div class="animated fadeIn">
-                <div class="row">
-
+                <div class="row" >
                     <div class="col-md-12">
-                        <div class="card">
+                        <div class="card" id="printableArea">
                             <div class="card-header">
                                 <strong class="card-title">Road Tax</strong>
                             </div>
@@ -116,7 +115,7 @@
 <!--                                         </div>                              -->
 <!--                                     </div> -->
 <!--                                     <div class="col-sm-4">                                    	 -->
-<!--                                     	<button type="submit" class="btn btn-primary button_search ">Submit</button> -->
+<!--                                     	<button type="submit" class="btn btn-primary button_search ">View</button> -->
 <!--                                     </div> -->
 <!--                                  </div>     -->
 <!--                             </form> -->
@@ -320,8 +319,11 @@
         $(document).ready(function() {
         	var table = $('#roadtax_datatable').DataTable({
              	"processing": true,
-             	"serverSide": true,
-             	"searching": false,
+//              	"serverSide": true,
+             	"searching": true,
+             	"paging":true,
+             	"lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+//              	"pageLength": 5,
                 "ajax":{
                	 	"url": "roadtax.all.ajax.php",   
                	 	"type":"POST",       	        	
@@ -352,11 +354,12 @@
   					data:{action:'retrive_roadtax', vrt_id:vrt_id},
   					dataType:"json",
   					success:function(data){	
-  	  					var lpkp_date = dateFormat(data.vrt_lpkpPermit_dueDate);
-  	  					var insurance_from_date = dateFormat(data.vi_insurance_fromDate);
-  	  					var insurance_due_date = dateFormat(data.vi_insurance_dueDate);
-  	  					var roadtax_from_date = dateFormat(data.vrt_roadTax_fromDate);
-  	  					var roadtax_due_date = dateFormat(data.vrt_roadTax_dueDate);
+  	  					console.log(data);
+  	  					var lpkp_date = data.vrt_lpkpPermit_dueDate!= null ? dateFormat(data.vrt_lpkpPermit_dueDate) : "";
+  	  					var insurance_from_date = data.vi_insurance_fromDate != null ? dateFormat(data.vi_insurance_fromDate) : "";
+  	  					var insurance_due_date = data.vi_insurance_dueDate != null ? dateFormat(data.vi_insurance_dueDate) : "";
+  	  					var roadtax_from_date = data.vrt_roadTax_fromDate != null ? dateFormat(data.vrt_roadTax_fromDate) : "";
+  	  					var roadtax_due_date = data.vrt_roadTax_dueDate != null ? dateFormat(data.vrt_roadTax_dueDate) : "";
   	  					
                         $('#vrt_id').val(data.vrt_id);					
                         $('#vehicle_reg_no').val(data.vv_id);  
@@ -486,4 +489,11 @@
     }
   </script>
 </body>
+<style>
+ #printableArea{ 
+     font-size:14px; 
+     margin:0px; 
+     padding:.5rem; 
+} 
+</style>
 </html>

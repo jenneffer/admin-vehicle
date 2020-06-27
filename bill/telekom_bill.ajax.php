@@ -9,6 +9,7 @@ $data = isset($_POST['data']) ? $_POST['data'] : "";
 $id = isset($_POST['id']) ? $_POST['id'] : "";
 
 $telefon_list = isset($_POST['telefon_list']) ? $_POST['telefon_list'] : "";
+$telco_acc_id = isset($_POST['telco_acc_id']) ? $_POST['telco_acc_id'] : "";
 if( $action != "" ){
     switch ($action){
         case 'add_new_account':
@@ -22,9 +23,73 @@ if( $action != "" ){
         case 'delete_account':
             delete_account($id);
             break;
+            
+        case 'add_new_telefon':
+            add_new_telefon($telco_acc_id, $telefon_list);
+            break;
+            
+        case 'retrieve_telefon_list':
+            retrieve_telefon_list($telco_acc_id);
+            break;
+            
+        case 'add_new_bill':
+            add_new_bill($data);
+            break;
         default:
             break;
     }
+}
+
+function add_new_bill($data){
+    
+    $param = array();
+    parse_str($data, $param); //unserialize jquery string data 
+    
+    $telco_acc_id = $param['telco_acc_id'];
+    $tel_count = $param['tel_count'];
+    $from_date = $param['from_date'];
+    $to_date = $param['to_date'];
+    $paid_date = $param['paid_date'];
+    $due_date = $param['due_date'];
+    $bill_no = $param['bill_no'];
+    $monthly_fee = $param['monthly_fee'];
+    $cr_adj = $param['cr_adjustment'];
+    
+    $phone_usage = [];
+    for ($i=1; $i <= $tel_count; $i++){
+        $phone_usage[] = $param['name_'.$i];
+    }
+    
+    
+    
+}
+
+function retrieve_telefon_list($telco_acc_id){
+    global $conn_admin_db;
+    $query = "SELECT * FROM bill_telefon_list WHERE bt_id='$telco_acc_id'";
+    $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
+    $data = [];
+    while ($row = mysqli_fetch_assoc($result)) {
+        $data[] = $row;
+    }
+    echo json_encode($data);
+}
+
+function add_new_telefon($telco_acc_id, $telefon_list){
+    global $conn_admin_db;
+    foreach ($telefon_list as $tel){
+        $telefon = $tel['telefon'];
+        $type = $tel['type'];
+        
+        
+        $values[] = "('$telco_acc_id', '$telefon', '$type')";
+        
+    }
+    
+    $values = implode(",", $values);
+    $query = "INSERT INTO bill_telefon_list (bt_id, tel_no, phone_type) VALUES" .$values;
+    $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
+    echo json_encode($result);
 }
 
 function add_new_account($data, $telefon_list){

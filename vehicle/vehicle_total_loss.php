@@ -50,7 +50,7 @@
             <div class="animated fadeIn">
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="card">
+                        <div class="card" id="printableArea">
                             <div class="card-header">
                                 <strong class="card-title">Vehicle Total Loss</strong>
                             </div>
@@ -60,17 +60,17 @@
                             	<div class="form-group row col-sm-12">
                             	    <div class="col-sm-3">                                        
                                         <?php
-                                            $select_company = mysqli_query ( $conn_admin_db, "SELECT id, code FROM company WHERE status='1'");
+                                            $select_company = mysqli_query ( $conn_admin_db, "SELECT id, UPPER(name) FROM company WHERE vehicle_used='1' ORDER BY name ASC");
                                             db_select ($select_company, 'select_company', $select_c,'','All Company','form-control','');
                                         ?>                              
                                     </div>
                                     <div class="col-sm-1">                                    	
-                                    	<button type="submit" class="btn btn-primary button_search ">Submit</button>
+                                    	<button type="submit" class="btn btn-primary button_search ">View</button>
                                     </div>
                             	</div>     
 							</form>
 							</div>
-                            <div class="card-body" id="printableArea">
+                            <div class="card-body" >
                                 <table id="vehicle_table" class="table table-striped table-bordered">
                                     <thead>
                                         <tr>

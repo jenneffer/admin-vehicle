@@ -71,189 +71,245 @@
 </head>
 
 <body>
-    <!--Left Panel -->
-	<?php  include('../assets/nav/leftNav.php')?>
-    <!-- Right Panel -->
-    <?php include('../assets/nav/rightNav.php')?>
-    <!-- /#header -->
-    <!-- Content -->
-        <div id="right-panel" class="right-panel">
-        <div class="content">
-            <div class="animated fadeIn">
-                <div class="row">
-                	<div class="col-md-12">
-                        <div class="card">
-                            <div class="card-header">                            
-                                <strong class="card-title">Account Details</strong>
-                            </div>     
-                            <div class="card-body">                                       
-                                <div class="col-sm-12">
-                                    <label for="company" class=" form-control-label"><small class="form-text text-muted">Company : <?=$company?></small></label>                                        
+<!--Left Panel -->
+<?php  include('../assets/nav/leftNav.php')?>
+<!-- Right Panel -->
+<?php include('../assets/nav/rightNav.php')?>
+<!-- /#header -->
+<!-- Content -->
+<div id="right-panel" class="right-panel">
+<div class="content">
+    <div class="animated fadeIn">
+        <div class="row">
+        	<div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">                            
+                        <strong class="card-title">Account Details</strong>
+                    </div>     
+                    <div class="card-body">                                       
+                        <div class="col-sm-12">
+                            <label for="company" class=" form-control-label"><small class="form-text text-muted">Company : <?=$company?></small></label>                                        
+                        </div>
+                        <div class="col-sm-12">
+                        	<label for="account_no" class=" form-control-label"><small class="form-text text-muted">Account No. : <?=$account_no?></small></label>                                    
+                        </div>   
+                        <div class="col-sm-12">
+                        	<label for="owner" class=" form-control-label"><small class="form-text text-muted">Owner : <?=$owner?></small></label>
+                            
+                        </div>
+                        <div class="col-sm-12">
+                        	<label for="ref_no" class=" form-control-label"><small class="form-text text-muted">Ref No. : <?=$ref_no?></small></label>                                    	
+                        </div>                                                                    
+                    	<hr>
+                    	<form action="" method="post">
+                        	<div class="form-group row col-sm-12">           
+                            	<div class="col-sm-3">
+                            		<b>Monthly Expenses</b>
+                            	</div>                                    	
+                            	<div class="col-sm-3">
+                            		<?=$html_year_select?>
+                            	</div>
+                            	<div class="col-sm-3">
+                            		<button type="button" class="btn btn btn-primary button_add" data-toggle="modal" data-target="#addItem">Add New Record</button>
+                            	</div>
+                            	<div class="col-sm-3">
+                                	<button type="button" class="btn btn-success" data-toggle="modal" data-target="#add_phone">Add telephone bill</button>
                                 </div>
-                                <div class="col-sm-12">
-                                	<label for="account_no" class=" form-control-label"><small class="form-text text-muted">Account No. : <?=$account_no?></small></label>                                    
-                                </div>   
-                                <div class="col-sm-12">
-                                	<label for="owner" class=" form-control-label"><small class="form-text text-muted">Owner : <?=$owner?></small></label>
-                                    
-                                </div>
-                                <div class="col-sm-12">
-                                	<label for="ref_no" class=" form-control-label"><small class="form-text text-muted">Ref No. : <?=$ref_no?></small></label>                                    	
-                                </div>                                                                    
-                            	<hr>
-                            	<form action="" method="post">
-                                	<div class="form-group row col-sm-12">           
-                                    	<div class="col-sm-4">
-                                    		<b>Monthly Expenses</b>
-                                    	</div>                                    	
-                                    	<div class="col-sm-4">
-                                    		<?=$html_year_select?>
-                                    	</div>
-                                    	<div class="col-sm-4">
-                                    		<button type="button" class="btn btn btn-primary button_add" data-toggle="modal" data-target="#addItem">Add New Record</button>
-                                    	</div>
-                                	</div>
-                            	</form>                            	
-                            	<div>     
-                                    <table class="table table-striped table-bordered">
-                                        <tr>
-                                            <th scope="col" class="text-center">Month</th>
-                                            <th scope="col" class="text-center">Period</th>
-                                            <th scope="col" class="text-center">Bill No.</th>
-                                            <th scope="col" class="text-center">Monthly (RM)</th>
-                                            <th scope="col" class="text-center">Rebate (RM)</th>
-                                            <th scope="col" class="text-center">Credit Adj. (RM)</th>
-                                            <th scope="col" class="text-center">GST/SST (6%)</th>
-                                            <th scope="col" class="text-center">Adj.</th>
-                                            <th scope="col" class="text-center">Total (RM)</th>
-                                            <th scope="col" class="text-center">Due date</th>
-                                            <th scope="col" class="text-center">Cheque No.</th>
-                                            <th scope="col" class="text-center">Payment date</th>
-                                        </tr>                                                                                                            
-                                    </table>
-                                </div>                                                                                                            
-                          	 
-                           	</div> 
-                           	<br>                      
-                        </div>
-                    </div>
-                </div>
-            </div><!-- .animated -->
-        </div><!-- .content -->
-        </div>
-        <!-- Modal add new telekom bill -->
-        <div class="modal fade" id="addItem">
-            <div class="modal-dialog modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                    <h4 class="modal-title">Add New</h4>
-                </div>
-                <div class="modal-body">
-                    <form role="form" method="POST" action="" id="add_form">  
-                    <input type="hidden" id="telco_acc_id" name="telco_acc_id" value="">    
-                    <div class="form-group row col-sm-12">
-                    	<div class="col-sm-12">
-                        	<label class=" form-control-label"><small class="form-text text-muted">Period</small></label>       
-                        </div>
-                    	<div class="col-sm-6">
-                            <label for="from_date" class=" form-control-label"><small class="form-text text-muted">From date</small></label>                                            
-                            <div class="input-group">
-                                <input id="from_date" name="from_date" class="form-control" autocomplete="off">
-                                <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
-                            </div>  
-                        </div>       
-                        <div class="col-sm-6">
-                            <label for="to_date" class=" form-control-label"><small class="form-text text-muted">To date</small></label>                                            
-                            <div class="input-group">
-                                <input id="to_date" name="to_date" class="form-control" autocomplete="off">
-                                <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
-                            </div>  
-                        </div>
-                    </div> 
-                    <div class="form-group row col-sm-12"> 
-                        <div class="col-sm-6">
-                            <label for="paid_date" class=" form-control-label"><small class="form-text text-muted">Paid date</small></label>                                            
-                            <div class="input-group">
-                                <input id="paid_date" name="paid_date" class="form-control" autocomplete="off">
-                                <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
-                            </div>  
-                        </div>       
-                        <div class="col-sm-6">
-                            <label for="due_date" class=" form-control-label"><small class="form-text text-muted">Due date</small></label>                                            
-                            <div class="input-group">
-                                <input id="due_date" name="due_date" class="form-control" autocomplete="off">
-                                <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
-                            </div>  
-                        </div>                                     
-                    </div>           
-                    <div class="row form-group col-sm-12">                                     	
-                        <div class="col-sm-6">
-                            <label for="bill_no" class=" form-control-label"><small class="form-text text-muted">Bill No.</small></label>
-                            <input type="text" id="bill_no" name="bill_no" class="form-control">
-                        </div>  
-                        <div class="col-sm-6">
-                            <label for="monthly_fee" class=" form-control-label"><small class="form-text text-muted">Monthly (RM)</small></label>
-                            <input type="text" id="monthly_fee" name="monthly_fee" class="form-control">
-                        </div>
-                    </div>
-                    <div class="row form-group col-sm-12">
-                        <div class="col-sm-6">
-                            <label for="rebate" class=" form-control-label"><small class="form-text text-muted">Rebate (RM)</small></label>
-                            <input type="text" id="rebate" name="rebate" class="form-control">
-                        </div>
-                        <div class="col-sm-6">
-                            <label for="cr_adjustment" class=" form-control-label"><small class="form-text text-muted">Credit Adjustment (RM)</small></label>
-                            <input type="text" id="cr_adjustment" name="cr_adjustment" class="form-control">
-                        </div>      
-                    </div>    
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary save_data ">Save</button>
-                    </div>
-                    </form>
-                </div>
+                        	</div>
+                    	</form>                            	
+                    	<div>     
+                            <table class="table table-striped table-bordered">
+                                <tr>
+                                    <th scope="col" class="text-center">Month</th>
+                                    <th scope="col" class="text-center">Period</th>
+                                    <th scope="col" class="text-center">Bill No.</th>
+                                    <th scope="col" class="text-center">Monthly (RM)</th>
+                                    <th scope="col" class="text-center">Rebate (RM)</th>
+                                    <th scope="col" class="text-center">Credit Adj. (RM)</th>
+                                    <th scope="col" class="text-center">GST/SST (6%)</th>
+                                    <th scope="col" class="text-center">Adj.</th>
+                                    <th scope="col" class="text-center">Total (RM)</th>
+                                    <th scope="col" class="text-center">Due date</th>
+                                    <th scope="col" class="text-center">Cheque No.</th>
+                                    <th scope="col" class="text-center">Payment date</th>
+                                </tr>                                                                                                            
+                            </table>
+                        </div>                                                                                                            
+                  	 
+                   	</div> 
+                   	<br>                      
                 </div>
             </div>
         </div>
-    <div class="clearfix"></div>
-    <!-- Footer -->
-    <?PHP include('../footer.php')?>
-        <!-- /.site-footer -->
-    <!-- /#right-panel -->
+    </div><!-- .animated -->
+</div><!-- .content -->
+</div>
+<!-- Modal add new telekom bill -->
+<div class="modal fade" id="addItem">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h4 class="modal-title">Add New</h4>
+        </div>
+        <div class="modal-body">
+            <form role="form" method="POST" action="" id="add_form">  
+            <input type="hidden" id="telco_acc_id" name="telco_acc_id" value="">    
+            <input type="hidden" id="tel_count" name="tel_count">   
+            <div class="form-group row col-sm-12">
+            	<div class="col-sm-12">
+                	<label class=" form-control-label"><small class="form-text text-muted">Period</small></label>       
+                </div>
+            	<div class="col-sm-6">
+                    <label for="from_date" class=" form-control-label"><small class="form-text text-muted">From date</small></label>                                            
+                    <div class="input-group">
+                        <input id="from_date" name="from_date" class="form-control" autocomplete="off">
+                        <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
+                    </div>  
+                </div>       
+                <div class="col-sm-6">
+                    <label for="to_date" class=" form-control-label"><small class="form-text text-muted">To date</small></label>                                            
+                    <div class="input-group">
+                        <input id="to_date" name="to_date" class="form-control" autocomplete="off">
+                        <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
+                    </div>  
+                </div>
+            </div> 
+            <div class="form-group row col-sm-12"> 
+                <div class="col-sm-6">
+                    <label for="paid_date" class=" form-control-label"><small class="form-text text-muted">Paid date</small></label>                                            
+                    <div class="input-group">
+                        <input id="paid_date" name="paid_date" class="form-control" autocomplete="off">
+                        <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
+                    </div>  
+                </div>       
+                <div class="col-sm-6">
+                    <label for="due_date" class=" form-control-label"><small class="form-text text-muted">Due date</small></label>                                            
+                    <div class="input-group">
+                        <input id="due_date" name="due_date" class="form-control" autocomplete="off">
+                        <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
+                    </div>  
+                </div>                                     
+            </div>           
+            <div class="row form-group col-sm-12">                                     	
+                <div class="col-sm-6">
+                    <label for="bill_no" class=" form-control-label"><small class="form-text text-muted">Bill No.</small></label>
+                    <input type="text" id="bill_no" name="bill_no" class="form-control">
+                </div>  
+                <div class="col-sm-6">
+                    <label for="monthly_fee" class=" form-control-label"><small class="form-text text-muted">Monthly (RM)</small></label>
+                    <input type="text" id="monthly_fee" name="monthly_fee" class="form-control">
+                </div>
+            </div>
+            <div class="row form-group col-sm-12">
+                <div class="col-sm-6">
+                    <label for="rebate" class=" form-control-label"><small class="form-text text-muted">Rebate (RM)</small></label>
+                    <input type="text" id="rebate" name="rebate" class="form-control">
+                </div>
+                <div class="col-sm-6">
+                    <label for="cr_adjustment" class=" form-control-label"><small class="form-text text-muted">Credit Adjustment (RM)</small></label>
+                    <input type="text" id="cr_adjustment" name="cr_adjustment" class="form-control">
+                </div>      
+            </div>    
+            <div class="row form-group col-sm-12">
+            	<table id="telefon_usage" class="table table-bordered data-table">
+            	<thead>
+                	<tr>
+                        <th>Telephone No.</th>
+                        <th>Usage (RM)</th>                                                
+                  	</tr>
+                </thead>
+                <tbody>
+                
+                </tbody>
+            	</table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary save_data ">Save</button>
+            </div>
+            </form>
+        </div>
+        </div>
+    </div>
+</div>
+<!-- Modal add telefon list  -->
+<div id="add_phone" class="modal fade">
+<div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title">Add Telephone List</h4>
+        </div>
+        <div class="modal-body">
+            <form id="telefon_bill">        
+                <div class="row form-group col-sm-12">
+                    <div class="col-sm-3">
+                        <label><small class="form-text text-muted">Telephone No.</small></label>
+                        <input type="text" name="telefon" class="form-control">
+                    </div>
+                    <div class="col-sm-3">
+                        <label><small class="form-text text-muted">Type</small></label>
+                        <input type="text" name="type" class="form-control">
+                    </div> 
+                    <div class="col-sm-1">
+                    	<button type="submit" class="btn btn-success button_add">Add</button>                            	
+                    </div> 
+                    <div class="col-sm-1">
+                    	<button type="button" data-dismiss="modal" class="btn btn-secondary button_add">Cancel</button>
+                    </div>                         
+                </div>                                                                             
+          	</form>
+          	<table id="telefon_list" class="table table-bordered data-table">
+                <thead>
+                	<tr>
+                        <th>Telephone No.</th>
+                        <th>Type</th>                        
+                        <th width="200px">Action</th>
+                  	</tr>
+                </thead>
+                <tbody>
+                
+                </tbody>
+            </table>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary save_telefon">Save</button>
+        </div>
+    </div><!-- /.modal-content -->
+</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<div class="clearfix"></div>
+<!-- Footer -->
+<?PHP include('../footer.php')?>
+    <!-- /.site-footer -->
+<!-- /#right-panel -->
 
-    <!-- link to the script-->
-	<?php include ('../allScript2.php')?>
-	<!-- Datatables -->
-	<script src="../assets/js/lib/data-table/datatables.min.js"></script>
-    <script src="../assets/js/lib/data-table/dataTables.bootstrap.min.js"></script>
-    <script src="../assets/js/lib/data-table/dataTables.buttons.min.js"></script>
-    <script src="../assets/js/lib/data-table/buttons.bootstrap.min.js"></script>
-    <script src="../assets/js/lib/data-table/jszip.min.js"></script>
-    <script src="../assets/js/lib/data-table/vfs_fonts.js"></script>
-    <script src="../assets/js/lib/data-table/buttons.html5.min.js"></script>
-    <script src="../assets/js/lib/data-table/buttons.print.min.js"></script>
-    <script src="../assets/js/lib/data-table/buttons.colVis.min.js"></script>
-    <script src="../assets/js/init/datatables-init.js"></script>
-    <script src="../assets/js/script/bootstrap-datepicker.min.js"></script>
-    <script src="../assets/js/select2.min.js"></script>
-	
-	<script type="text/javascript">
-    $(document).ready(function() {
-		
-		var telco_acc_id = '<?=$id?>';
+<!-- link to the script-->
+<?php include ('../allScript2.php')?>
+<!-- Datatables -->
+<script src="../assets/js/lib/data-table/datatables.min.js"></script>
+<script src="../assets/js/lib/data-table/dataTables.bootstrap.min.js"></script>
+<script src="../assets/js/lib/data-table/dataTables.buttons.min.js"></script>
+<script src="../assets/js/lib/data-table/buttons.bootstrap.min.js"></script>
+<script src="../assets/js/lib/data-table/jszip.min.js"></script>
+<script src="../assets/js/lib/data-table/vfs_fonts.js"></script>
+<script src="../assets/js/lib/data-table/buttons.html5.min.js"></script>
+<script src="../assets/js/lib/data-table/buttons.print.min.js"></script>
+<script src="../assets/js/lib/data-table/buttons.colVis.min.js"></script>
+<script src="../assets/js/init/datatables-init.js"></script>
+<script src="../assets/js/script/bootstrap-datepicker.min.js"></script>
+<script src="../assets/js/select2.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+	//declare empty array to temporary save the data in table
+    var TELEPHONE_LIST = [];
+	var telco_acc_id = '<?=$id?>';
 			
-        $('#item-data-table').DataTable({
-        	"columnDefs": [
-//         	    { "width": "10%", "targets": 0 },
-//         	    { "width": "80%", "targets": 1 },
-//         	    { "width": "10%", "targets": 2 }
-        	  ]
-  	  	});
         $('#add_form').on("submit", function(event){  
-            event.preventDefault();  
-            
+            event.preventDefault();                        
             $('#telco_acc_id').val(telco_acc_id);
-
+            
             if($('#date_entered').val() == ""){  
                  alert("Date is required");  
             } 
@@ -262,24 +318,86 @@
             }                                          
             else{  
                  $.ajax({  
-                      url:"telco_bill.ajax.php",  
+                      url:"telekom_bill.ajax.php",  
                       method:"POST",  
                       data:{action:'add_new_bill', data: $('#add_form').serialize()},  
                       success:function(data){   
                            $('#editItem').modal('hide');  
                            $('#bootstrap-data-table').html(data);
-                           location.reload();  
+//                            location.reload();  
                       }  
                  });  
             }  
           });
 
-        $('#date_entered').datepicker({
+        $('#from_date, #to_date, #paid_date, #due_date').datepicker({
               format: "dd-mm-yyyy",
               autoclose: true,
               orientation: "top left",
               todayHighlight: true
         });
+
+        $('#telefon_bill').on("submit", function(e){ 
+            e.preventDefault();
+            var telefon = $("input[name='telefon']").val();
+            var type = $("input[name='type']").val();   
+            if(telefon != '' && type !=''){
+            	$(".data-table tbody").append("<tr data-telefon='"+telefon+"' data-type='"+type+"'><td>"+telefon+"</td><td>"+type+"</td><td><button class='btn btn-info btn-xs btn-edit'>Edit</button><button class='btn btn-danger btn-xs btn-delete'>Delete</button></td></tr>");
+            }
+            else{
+				alert('Please fill in the field!');
+            }      	
+         	
+            //push data into array
+            TELEPHONE_LIST.push({
+				telefon: telefon,
+				type: type
+
+            });
+            console.log(TELEPHONE_LIST);
+            $("input[name='telefon']").val('');
+            $("input[name='type']").val('');
+        });
+        
+        $('.save_telefon').on("click", function(event){  
+            event.preventDefault();     
+            console.log(TELEPHONE_LIST);    
+            if(TELEPHONE_LIST.length != 0){
+            	$.ajax({  
+                    url:"telekom_bill.ajax.php",  
+                    method:"POST",  
+                    data:{action:'add_new_telefon', telco_acc_id:telco_acc_id, telefon_list:TELEPHONE_LIST},  
+                    success:function(data){ 
+                        location.reload();  
+                        if(data){
+							alert("Successfully added!");
+                        }                                                      	 
+                    }  
+               	});
+            }                     
+        });
+
+        //retrieve phone list on adding new data modal
+        $(".button_add").on("click", function(){
+        	$.ajax({  
+                url:"telekom_bill.ajax.php",  
+                method:"POST",  
+                data:{action:'retrieve_telefon_list', telco_acc_id:telco_acc_id},  
+                success:function(data){                     
+                    response = $.parseJSON(data);
+                    console.log(response.length);
+                    $("#tel_count").val(response.length);
+                    $.each(response, function(i, item) {
+                    	$(".data-table tbody").append("<tr data-telefon_id='"+item.id+"' data-telefon_no='"+item.tel_no+"'><td>"+item.tel_no+"</td><td><input type='text' class='txtedit form-control' name='name_"+item.id+"' id='name_"+item.id+"'></td></tr>");
+                    });
+//                     location.reload();  
+//                     if(data){
+// 						alert("Successfully added!");
+//                     }                                                      	 
+                }  
+           	});
+           	
+		});
       
         function isNumberKey(evt){
         	var charCode = (evt.which) ? evt.which : evt.keyCode;

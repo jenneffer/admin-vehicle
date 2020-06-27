@@ -41,7 +41,7 @@
             <div class="animated fadeIn">
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="card">
+                        <div class="card" id="printableArea">
                             <div class="card-header">
                                 <strong class="card-title">List of Stock</strong>
                             </div>     
@@ -56,7 +56,7 @@
                                             <th>No.</th>
 											<th>Item</th>
 											<th class="text-center">Stock In</th>
-											<th class="text-center">Date added</th>
+											<th class="text-center">Stock in Date</th>
 											<th class="text-center">Action</th>
                                         </tr>
                                     </thead>
@@ -75,7 +75,7 @@
                                                         <td><?=$count?>.</td>
                                                         <td><?=$item?></td>
                                                         <td class="text-center"><?=$row['stock_in']?></td>
-                                                        <td class="text-center"><?=dateFormatRev($row['date_added'])?></td>
+                                                        <td class="text-center"><?=dateFormatRev($row['date_stock_in'])?></td>
                                                         <td class="text-center">
                                                         	<span id="<?=$row['id']?>" data-toggle="modal" class="edit_data" data-target="#editItem"><i class="fa fa-edit"></i></span>
                                                         	<!-- <span id="<?=$row['id']?>" data-toggle="modal" class="delete_data" data-target="#deleteItem"><i class="fas fa-trash-alt"></i></span> -->
@@ -120,7 +120,13 @@
                             <label for="stock_in" class=" form-control-label"><small class="form-text text-muted">Stock In</small></label>
                             <input type="text" id="stock_in" name="stock_in" class="form-control">
                         </div>
-                    </div>                    
+                    </div> 
+                    <div class="col-sm-6">
+                        <label for="date" class="form-control-label"><small class="form-text text-muted">Date</small></label>
+                        <div class="input-group">
+                            <input id="date" name="date" class="form-control" autocomplete="off">                            
+                        </div>                                            
+                    </div>                   
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                         <button type="submit" class="btn btn-primary save_data ">Save</button>
@@ -306,6 +312,13 @@
                  });  
             }  
           });
+
+        $('#date').datepicker({
+            format: "dd-mm-yyyy",
+            autoclose: true,
+            orientation: "top left",
+            todayHighlight: true
+        });
         
         function isNumberKey(evt){
         	var charCode = (evt.which) ? evt.which : evt.keyCode;

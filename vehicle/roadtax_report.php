@@ -116,7 +116,7 @@ $date_end = isset($_POST['date_end']) ? $_POST['date_end'] : '';
                                             </div>                             
                                         </div>
                                         <div class="col-sm-4">                                    	
-                                        	<button type="submit" class="btn btn-primary button_search ">Submit</button>
+                                        	<button type="submit" class="btn btn-primary button_search ">View</button>
                                         </div>
                                      </div>    
                                 </form>

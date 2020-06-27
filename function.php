@@ -108,4 +108,15 @@ error_reporting(0);
         }
         return $num.'th';
     }
+    
+    function randomColor(){
+        //Create a loop.
+        $rgbColor = array();
+        foreach(array('r', 'g', 'b') as $color){
+            //Generate a random number between 0 and 255.
+            $rgbColor[$color] = mt_rand(0, 255);
+        }
+        $rgbColor = "rgb(".implode(",", $rgbColor).")";
+        return $rgbColor;
+    }
 ?>

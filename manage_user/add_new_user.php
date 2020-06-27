@@ -4,12 +4,6 @@ require_once('../function.php');
 require_once('../check_login.php');
 global $conn_admin_db;
 
-$arr_item_unit = array(
-    'pieces' => 'Pieces',
-    'packet' => 'Packet',
-    'box' => 'Box'
-);
-
 ?>
 
 <!doctype html><html class="no-js" lang="">

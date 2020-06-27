@@ -62,11 +62,11 @@ $arr_item_unit = array(
     <!-- /#header -->
     <!-- Content -->
         <div id="right-panel" class="right-panel">
-        <div class="content" id="printableArea">
+        <div class="content" >
             <div class="animated fadeIn">
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="card">
+                        <div class="card" id="printableArea">
                             <div class="card-header">
                                 <strong class="card-title">Stock Take Summary</strong>
                             </div>
@@ -198,7 +198,7 @@ $arr_item_unit = array(
 </body>
 <style>
  #printableArea{ 
-     font-size:11px; 
+     font-size:14px; 
      margin:0px; 
      padding:.5rem; 
 } 

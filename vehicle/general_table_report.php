@@ -77,7 +77,7 @@
                 <div class="row">
 
                     <div class="col-md-12">
-                        <div class="card">
+                        <div class="card" id="printableArea">
                             <div class="card-header">
                                 <strong class="card-title">General Table</strong>
                             </div>
@@ -106,13 +106,13 @@
                                         </div>                             
                                     </div>
                                     <div class="col-sm-3">                                    	
-                                    	<button type="submit" class="btn btn-primary button_search ">Submit</button>
+                                    	<button type="submit" class="btn btn-primary button_search ">View</button>
                                     </div>
                                  </div>    
                             </form>
                             </div>
                             <hr>
-                            <div class="card-body" id="printableArea">                            	
+                            <div class="card-body">                            	
                                 <table id="general_table" class="table table-striped table-bordered">
                                     <thead>
                                         <tr>

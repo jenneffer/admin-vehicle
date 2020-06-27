@@ -3,22 +3,6 @@
     require_once('../function.php');
     require_once('../check_login.php');
 	global $conn_admin_db;
-// 	if(isset($_SESSION['cr_id'])) {
-// 		$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-// 		$url = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-// 		$query = parse_url($url, PHP_URL_QUERY);
-// 		parse_str($query, $params);
-		
-// 		// get id
-// 		$userId = $_SESSION['cr_id'];
-// 		$name = $_SESSION['cr_name'];
-		
-// 	} else {
-// 		$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-// 		$url = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-// 		$PrevURL= $url;
-// 		header("Location: ../login.php?RecLock=".$PrevURL);
-//     }
 ?>
 
 <!doctype html>
@@ -101,50 +85,50 @@
                                 <div class="card-body card-block">
                                 	<div class="form-group row col-sm-12">
                                         <div class="col-sm-4">
-                                            <label for="vehicle_reg_no" class=" form-control-label"><small class="form-text text-muted">Vehicle Reg No.</small></label>
-                                            <input type="text" id="vehicle_reg_no" name="vehicle_reg_no" placeholder="Enter vehicle registration no." class="form-control">
+                                            <label for="vehicle_reg_no" class=" form-control-label"><small class="form-text text-muted">Vehicle Reg No. <span class="color-red">*</span></small></label>
+                                            <input type="text" id="vehicle_reg_no" name="vehicle_reg_no" placeholder="Enter vehicle registration no." class="form-control" required>
                                         </div>
                                         <div class="col-sm-4">
-                                            <label for="category" class=" form-control-label"><small class="form-text text-muted">Vehicle Category</small></label>
+                                            <label for="category" class=" form-control-label"><small class="form-text text-muted">Vehicle Category <span class="color-red">*</span></small></label>
                                             <?php
                                                 $cat = mysqli_query ( $conn_admin_db, "SELECT vc_id, vc_type FROM vehicle_category");
-                                                db_select ($cat, 'category', '','','-select-','form-control','');
+                                                db_select ($cat, 'category', '','','-select-','form-control','','required');
                                             ?>
                                         </div>
                                         <div class="col-sm-4">
-                                            <label for="company" class=" form-control-label"><small class="form-text text-muted">Company</small></label>
+                                            <label for="company" class=" form-control-label"><small class="form-text text-muted">Company <span class="color-red">*</span></small></label>
                                             <?php
-                                                $company = mysqli_query ( $conn_admin_db, "SELECT id, code FROM company");
-                                                db_select ($company, 'company', '','','-select-','form-control','');
+                                                $company = mysqli_query ( $conn_admin_db, "SELECT id, UPPER(name) FROM company WHERE vehicle_used='1'");
+                                                db_select ($company, 'company', '','','-select-','form-control','','required');
                                             ?>
                                         </div>
                                     </div>
                                     <div class="form-group row col-sm-12">
                                         <div class="col-sm-4">
-                                            <label for="brand" class=" form-control-label"><small class="form-text text-muted">Make</small></label>
-                                            <input type="text" id="brand" name="brand" placeholder="Enter vehicle brand" class="form-control">
+                                            <label for="brand" class=" form-control-label"><small class="form-text text-muted">Make <span class="color-red">*</span></small></label>
+                                            <input type="text" id="brand" name="brand" placeholder="Enter vehicle brand" class="form-control" required>
                                         </div>
                                         <div class="col-sm-4">
-                                            <label for="model" class=" form-control-label"><small class="form-text text-muted">Model</small></label>
-                                            <input type="text" id="model" name="model" placeholder="Enter vehicle model" class="form-control">
+                                            <label for="model" class=" form-control-label"><small class="form-text text-muted">Model <span class="color-red">*</span></small></label>
+                                            <input type="text" id="model" name="model" placeholder="Enter vehicle model" class="form-control" required>
                                         </div>
                                         <div class="col-sm-4">
-                                            <label for="yearMade" class=" form-control-label"><small class="form-text text-muted">Year Made</small></label>
-                                    		<input type="text" id="yearMade" name="yearMade" onkeypress="return isNumberKey(event)" placeholder="e.g 2010" class="form-control">
+                                            <label for="yearMade" class=" form-control-label"><small class="form-text text-muted">Year Made <span class="color-red">*</span></small></label>
+                                    		<input type="text" id="yearMade" name="yearMade" onkeypress="return isNumberKey(event)" placeholder="e.g 2010" class="form-control" required>
                                         </div>
                                     </div>                                    
                                     <div class="form-group row col-sm-12">
                                         <div class="col-sm-4">
-                                            <label for="engine_no" class=" form-control-label"><small class="form-text text-muted">Engine No.</small></label>
-                                            <input type="text" id="engine_no" name="engine_no" placeholder="Enter engine no." class="form-control">
+                                            <label for="engine_no" class=" form-control-label"><small class="form-text text-muted">Engine No. <span class="color-red">*</span></small></label>
+                                            <input type="text" id="engine_no" name="engine_no" placeholder="Enter engine no." class="form-control" required>
                                         </div>
                                         <div class="col-sm-4">
-                                            <label for="chasis_no" class=" form-control-label"><small class="form-text text-muted">Chasis No.</small></label>
-                                            <input type="text" id="chasis_no" name="chasis_no" placeholder="Enter chasis no." class="form-control">
+                                            <label for="chasis_no" class=" form-control-label"><small class="form-text text-muted">Chasis No. <span class="color-red">*</span></small></label>
+                                            <input type="text" id="chasis_no" name="chasis_no" placeholder="Enter chasis no." class="form-control" required>
                                         </div>
                                         <div class="col-sm-4">
-                                            <label for="capacity" class=" form-control-label"><small class="form-text text-muted">Goods Capacity (CC)</small></label>
-                                            <input type="text" id="capacity" name="capacity" class="form-control">
+                                            <label for="capacity" class=" form-control-label"><small class="form-text text-muted">Goods Capacity (CC) <span class="color-red">*</span></small></label>
+                                            <input type="text" id="capacity" name="capacity" class="form-control" required>
                                         </div>
                                     </div>      
                                     <div class="form-group row col-sm-12">

@@ -2503,6 +2503,11 @@ footer.site-footer {
     left: inherit !important;
     right: 20px !important; }
 
+ #printableArea{ 
+     font-size:14px; 
+     margin:0px; 
+     padding:.5rem; 
+}
     
 
 

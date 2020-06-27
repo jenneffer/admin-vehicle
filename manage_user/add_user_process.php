@@ -28,7 +28,7 @@
 
 	    $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db)); 
 	    if($result){
-	        alert("Successfully added!","/admin");
+	        alert("Successfully added!","/admin/manage_user/user_list.php");
 	    }
 		
 	} else { // if submit button does not clicked

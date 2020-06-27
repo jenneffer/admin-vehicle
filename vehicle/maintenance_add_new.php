@@ -101,14 +101,14 @@
                                 <div class="card-body card-block">
                                 	<div class="form-group row col-sm-12">
                                 		<div class="col-sm-6">
-                                            <label for="vehicle_reg_no" class=" form-control-label"><small class="form-text text-muted">Vehicle Reg No.</small></label>
+                                            <label for="vehicle_reg_no" class=" form-control-label"><small class="form-text text-muted">Vehicle Reg No.<span class="color-red">*</span></small></label>
                                             <?php
                                                 $vehicle = mysqli_query ( $conn_admin_db, "SELECT vv_id, UPPER(vv_vehicleNo) FROM vehicle_vehicle WHERE status='1'");
                                                 db_select ($vehicle, 'vehicle_reg_no', '','','-select-','form-control','','required');
                                             ?>
                                         </div>
                                         <div class="col-sm-6"> 
-                                    		<label for="date" class=" form-control-label"><small class="form-text text-muted">Date</small></label>
+                                    		<label for="date" class=" form-control-label"><small class="form-text text-muted">Date<span class="color-red">*</span></small></label>
                                             <div class="input-group">
                                                 <input id="date" name="date" class="form-control" autocomplete="off" required>
                                                 <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
@@ -118,17 +118,17 @@
                                     
                                     <div class="form-group row col-sm-12">
                                     	<div class="col-sm-6"> 
-                                            <label for="ref_no" class=" form-control-label"><small class="form-text text-muted">Reference No.</small></label>
+                                            <label for="ref_no" class=" form-control-label"><small class="form-text text-muted">Reference No.<span class="color-red">*</span></small></label>
                                             <input type="text" id="ref_no" name="ref_no" placeholder="Enter reference number" class="form-control" required>
                                     	</div>
                                     	<div class="col-sm-6">                                        
-                                            <label for="amount" class=" form-control-label"><small class="form-text text-muted">Amount (RM)</small></label>
+                                            <label for="amount" class=" form-control-label"><small class="form-text text-muted">Amount (RM)<span class="color-red">*</span></small></label>
                                     		<input type="text" id="amount" name="amount" onkeypress="return isNumberKey(event)" class="form-control" required>
                                     	</div>
                                     </div>
                                     <div class="form-group row col-sm-12">
                                     	<div class="col-sm-6"> 
-                                            <label for="desc" class=" form-control-label"><small class="form-text text-muted">Description</small></label>
+                                            <label for="desc" class=" form-control-label"><small class="form-text text-muted">Description<span class="color-red">*</span></small></label>
                                             <textarea id="desc" name="desc" placeholder="Enter description" class="form-control" required></textarea>
                                     	</div>
                                 	</div> 

@@ -74,7 +74,7 @@ global $conn_admin_db;
             <div class="animated fadeIn">
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="card">
+                        <div class="card" id="printableArea">
                             <div class="card-header">
                                 <strong class="card-title">Stock Take (By Department)</strong>
                             </div>                            
@@ -108,7 +108,7 @@ global $conn_admin_db;
                                 </form>
                             </div>
                             <hr>
-                            <div class="card-body" id="printableArea">
+                            <div class="card-body" >
                                 <table id="department_summary" class="table table-striped table-bordered">
                                     <?php 
                                     

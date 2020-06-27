@@ -15,7 +15,7 @@
     $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
     $row = mysqli_fetch_array($result);
     $telco_acc_id = $row['id'];
-    $company = $row['company'];
+    $company = itemName("SELECT name FROM company WHERE id='".$row['company_id']."'");
     $user = $row['user'];
     $position = $row['position'];
     $account_no = $row['account_no'];
@@ -74,85 +74,85 @@
     <?php include('../assets/nav/rightNav.php')?>
     <!-- /#header -->
     <!-- Content -->
-        <div id="right-panel" class="right-panel">
-        <div class="content">
-            <div class="animated fadeIn">
-                <div class="row">
-                	<div class="col-md-12">
-                        <div class="card">
-                            <div class="card-header">                            
-                                <strong class="card-title">Account Details</strong>
-                            </div>     
-                            <div class="card-body">                                       
-                                <div class="col-sm-12">
-                                    <label for="company" class=" form-control-label"><small class="form-text text-muted">Company : <?=$company?></small></label>                                        
-                                </div>
-                                <div class="col-sm-12">
-                                	<label for="account_no" class=" form-control-label"><small class="form-text text-muted">Account No. : <?=$account_no?></small></label>                                    
-                                </div>   
-                                <div class="col-sm-12">
-                                	<label for="user" class=" form-control-label"><small class="form-text text-muted">User : <?=$user?></small></label>
-                                    
-                                </div>
-                                <div class="col-sm-12">
-                                	<label for="position" class=" form-control-label"><small class="form-text text-muted">Position : <?=$position?></small></label>                                    	
-                                </div>                                                                    
-                            	<hr>
-                            	<form action="" method="post">
-                                	<div class="form-group row col-sm-12">           
-                                    	<div class="col-sm-4">
-                                    		<b>Monthly Expenses</b>
-                                    	</div>                                    	
-                                    	<div class="col-sm-4">
-                                    		<?=$html_year_select?>
-                                    	</div>
-                                    	<div class="col-sm-4">
-                                    		<button type="button" class="btn btn btn-primary button_add" data-toggle="modal" data-target="#addItem">Add New Record</button>
-                                    	</div>
+    <div id="right-panel" class="right-panel">
+    <div class="content">
+        <div class="animated fadeIn">
+            <div class="row">
+            	<div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">                            
+                            <strong class="card-title">Account Details</strong>
+                        </div>     
+                        <div class="card-body">                                       
+                            <div class="col-sm-12">
+                                <label for="company" class=" form-control-label"><small class="form-text text-muted">Company : <?=$company?></small></label>                                        
+                            </div>
+                            <div class="col-sm-12">
+                            	<label for="account_no" class=" form-control-label"><small class="form-text text-muted">Account No. : <?=$account_no?></small></label>                                    
+                            </div>   
+                            <div class="col-sm-12">
+                            	<label for="user" class=" form-control-label"><small class="form-text text-muted">User : <?=$user?></small></label>
+                                
+                            </div>
+                            <div class="col-sm-12">
+                            	<label for="position" class=" form-control-label"><small class="form-text text-muted">Position : <?=$position?></small></label>                                    	
+                            </div>                                                                    
+                        	<hr>
+                        	<form action="" method="post">
+                            	<div class="form-group row col-sm-12">           
+                                	<div class="col-sm-4">
+                                		<b>Monthly Expenses</b>
+                                	</div>                                    	
+                                	<div class="col-sm-4">
+                                		<?=$html_year_select?>
                                 	</div>
-                            	</form>                            	
-                            	<div>     
-                                    <table class="table table-striped table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th scope="col" class="text-center" width="40%">Month</th>
-                                                <th scope="col" class="text-center">Amount(RM)</th>
-                                        	</tr>
-                                        </thead>
-                                        <tbody>
-                                        <?php 
-                                        $total_amount = 0;
-                                        if(!empty($arr_data)){
-                                            foreach ($arr_data as $data){
-                                                $total_amount += $data['amount_rm'];
-                                            ?>                               
-                                            <tr>
-                                                <td class="text-center"><?=$data['month_name']?></td>
-                                                <td class="text-right"><?=number_format($data['amount_rm'],2)?></td>
-    
-                                            </tr>                                             
-                                            <?php } ?>
-                                            <tr>
-                                            	<th class="text-center">Total (RM)</th>
-                                            	<th class="text-right"><?=number_format($total_amount,2)?></th>
-                                            </tr>
-                                        <?php }else {?>
+                                	<div class="col-sm-4">
+                                		<button type="button" class="btn btn btn-primary button_add" data-toggle="modal" data-target="#addItem">Add New Record</button>
+                                	</div>
+                            	</div>
+                        	</form>                            	
+                        	<div>     
+                                <table class="table table-striped table-bordered">
+                                    <thead>
                                         <tr>
-                                        	<td colspan="2" class="text-center"> No records found.</td>
-                                        </tr>                                        
-                                        <?php }?>  
-                                        </tbody>                                                                   
-                                    </table>
-                                </div>                                                                                                            
-                          	 
-                           	</div> 
-                           	<br>                      
-                        </div>
+                                            <th scope="col" class="text-center" width="40%">Month</th>
+                                            <th scope="col" class="text-center">Amount(RM)</th>
+                                    	</tr>
+                                    </thead>
+                                    <tbody>
+                                    <?php 
+                                    $total_amount = 0;
+                                    if(!empty($arr_data)){
+                                        foreach ($arr_data as $data){
+                                            $total_amount += $data['amount_rm'];
+                                        ?>                               
+                                        <tr>
+                                            <td class="text-center"><?=$data['month_name']?></td>
+                                            <td class="text-right"><?=number_format($data['amount_rm'],2)?></td>
+
+                                        </tr>                                             
+                                        <?php } ?>
+                                        <tr>
+                                        	<th class="text-center">Total (RM)</th>
+                                        	<th class="text-right"><?=number_format($total_amount,2)?></th>
+                                        </tr>
+                                    <?php }else {?>
+                                    <tr>
+                                    	<td colspan="2" class="text-center"> No records found.</td>
+                                    </tr>                                        
+                                    <?php }?>  
+                                    </tbody>                                                                   
+                                </table>
+                            </div>                                                                                                            
+                      	 
+                       	</div> 
+                       	<br>                      
                     </div>
                 </div>
-            </div><!-- .animated -->
-        </div><!-- .content -->
-        </div>
+            </div>
+        </div><!-- .animated -->
+    </div><!-- .content -->
+    </div>
         <!-- Modal add new telco bill -->
         <div class="modal fade" id="addItem">
             <div class="modal-dialog modal-lg" role="document">

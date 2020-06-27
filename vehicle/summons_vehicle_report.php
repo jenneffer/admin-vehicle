@@ -28,7 +28,7 @@
                 INNER JOIN vehicle_summon_type ON vehicle_summon_type.st_id = vehicle_summons.vs_summon_type
                 INNER JOIN vehicle_vehicle ON vehicle_vehicle.vv_id = vehicle_summons.vv_id
                 INNER JOIN company ON company.id = vehicle_vehicle.company_id
-                WHERE vehicle_summons.vs_summon_date BETWEEN '".dateFormat($date_start)."' AND '".dateFormat($date_end)."'";
+                WHERE vehicle_summons.vs_summon_date BETWEEN '".dateFormat($date_start)."' AND '".dateFormat($date_end)."' AND vehicle_summons.status='1'";
 	
 	$rst  = mysqli_query($conn_admin_db, $sql_query)or die(mysqli_error($conn_admin_db));
 	$arr_data = array();
@@ -137,7 +137,7 @@
                 <div class="row">
 
                     <div class="col-md-12">
-                        <div class="card">
+                        <div class="card" id="printableArea">
                             <div class="card-header">
                                 <strong class="card-title">Vehicle Summons</strong>
                             </div>
@@ -159,7 +159,7 @@
                                             </div>                             
                                         </div>
                                         <div class="col-sm-4">                                    	
-                                        	<button type="submit" class="btn btn-primary button_search ">Submit</button>
+                                        	<button type="submit" class="btn btn-primary button_search ">View</button>
                                         </div>
                                      </div>    
                                 </form>
@@ -172,6 +172,7 @@
                                         	<th rowspan="2">No.</th>
 											<th rowspan="2">Vehicle No.</th>
                                             <th rowspan="2">Summon's No.</th>
+                                            <th rowspan="2">Summon's date</th>
 											<th rowspan="2">Driver's name</th>
 											<th rowspan="2">Company</th>
 											<th rowspan="2">Summon Type</th>
@@ -188,9 +189,10 @@
                                     
                                     foreach ($arr_data as $summon_data){
                                         echo "<tr>";
-                                        echo "<td>".$summon_data['count']."</td>";
+                                        echo "<td>".$summon_data['count'].".</td>";
                                         echo "<td>".strtoupper($summon_data['vehicle_no'])."</td>";
                                         echo "<td>".strtoupper($summon_data['vs_summon_no'])."</td>";
+                                        echo "<td>".strtoupper($summon_data['vs_summon_date'])."</td>";
                                         echo "<td>".strtoupper($summon_data['vs_driver_name'])."</td>";
                                         echo "<td>".$summon_data['code']."</td>";
                                         echo "<td>".$summon_data['vs_summon_type']."</td>";
@@ -253,30 +255,30 @@
 	
 	<script type="text/javascript">
       $(document).ready(function() {
-//           $('#vehicle_summon').DataTable({
-//               "searching": false,
-//         	  "dom": 'Bfrtip',
-//               "buttons": [ 
-//                { 
-//               	extend: 'excelHtml5', 
-//               	messageTop: 'Vehicle Summon ',
-//               	footer: true 
-//                },
-//                {
-//               	extend: 'print',
-//               	messageTop: 'Vehicle Summon ',
-//               	footer: true,
-//               	customize: function ( win ) {
-//                       $(win.document.body)
-//                           .css( 'font-size', '10pt' );
+          $('#vehicle_summon').DataTable({
+              "searching": false,
+        	  "dom": 'Bfrtip',
+              "buttons": [ 
+               { 
+              	extend: 'excelHtml5', 
+              	messageTop: 'Vehicle Summon ',
+              	footer: true 
+               },
+               {
+              	extend: 'print',
+              	messageTop: 'Vehicle Summon ',
+              	footer: true,
+              	customize: function ( win ) {
+                      $(win.document.body)
+                          .css( 'font-size', '10pt' );
               
-//                       $(win.document.body).find( 'table' )
-//                           .addClass( 'compact' )
-//                           .css( 'font-size', 'inherit' );
-//                   }
-//                }
-//               ],
-//            });
+                      $(win.document.body).find( 'table' )
+                          .addClass( 'compact' )
+                          .css( 'font-size', 'inherit' );
+                  }
+               }
+              ],
+           });
           $('#date_start, #date_end').datepicker({
               format: "dd-mm-yyyy",
               autoclose: true,
@@ -286,4 +288,11 @@
       });
   </script>
 </body>
+<style>
+ #printableArea{ 
+     font-size:14px; 
+     margin:0px; 
+     padding:.5rem; 
+} 
+</style>
 </html>
