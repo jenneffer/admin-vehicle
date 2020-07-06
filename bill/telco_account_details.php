@@ -7,7 +7,7 @@
     $id = isset($_GET['id']) ? $_GET['id'] : "";
     $year_select = isset($_POST['year_select']) ? $_POST['year_select'] : date('Y');
     ob_start();
-    selectYear('year_select',$year_select,'submit()','','form-control','','');
+    selectYear('year_select',$year_select,'submit()','','form-control form-control-sm','','');
     $html_year_select = ob_get_clean();
     
     $query = "SELECT * FROM bill_telco_account WHERE bill_telco_account.id = '$id'";
@@ -79,23 +79,23 @@
         <div class="animated fadeIn">
             <div class="row">
             	<div class="col-md-12">
-                    <div class="card">
+                    <div class="card" id="printableArea">
                         <div class="card-header">                            
                             <strong class="card-title">Account Details</strong>
                         </div>     
                         <div class="card-body">                                       
                             <div class="col-sm-12">
-                                <label for="company" class=" form-control-label"><small class="form-text text-muted">Company : <?=$company?></small></label>                                        
+                                <label for="company" class=" form-control-label">Company : <?=$company?></label>                                        
                             </div>
                             <div class="col-sm-12">
-                            	<label for="account_no" class=" form-control-label"><small class="form-text text-muted">Account No. : <?=$account_no?></small></label>                                    
+                            	<label for="account_no" class=" form-control-label">Account No. : <?=$account_no?></label>                                    
                             </div>   
                             <div class="col-sm-12">
-                            	<label for="user" class=" form-control-label"><small class="form-text text-muted">User : <?=$user?></small></label>
+                            	<label for="user" class=" form-control-label">User : <?=$user?></label>
                                 
                             </div>
                             <div class="col-sm-12">
-                            	<label for="position" class=" form-control-label"><small class="form-text text-muted">Position : <?=$position?></small></label>                                    	
+                            	<label for="position" class=" form-control-label">Position : <?=$position?></label>                                    	
                             </div>                                                                    
                         	<hr>
                         	<form action="" method="post">
@@ -107,7 +107,7 @@
                                 		<?=$html_year_select?>
                                 	</div>
                                 	<div class="col-sm-4">
-                                		<button type="button" class="btn btn btn-primary button_add" data-toggle="modal" data-target="#addItem">Add New Record</button>
+                                		<button type="button" class="btn btn-sm btn-primary button_add" data-toggle="modal" data-target="#addItem">Add New Record</button>
                                 	</div>
                             	</div>
                         	</form>                            	

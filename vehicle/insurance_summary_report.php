@@ -88,25 +88,23 @@
                             			<label for="company_dd" class="form-control-label"><small class="form-text text-muted">Company</small></label>
                                 		<?php
                                             $select_company = mysqli_query ( $conn_admin_db, "SELECT id, UPPER(name) FROM company WHERE vehicle_used='1' ORDER BY name ASC");
-                                            db_select ($select_company, 'select_company', $select_c,'submit()','All','form-control','');                        
+                                            db_select ($select_company, 'select_company', $select_c,'submit()','All','form-control form-control-sm','');                        
                                         ?>
                                   	</div>
                                     <div class="col-sm-3">
                                         <label for="date_start" class="form-control-label"><small class="form-text text-muted">Date Start</small></label>
                                         <div class="input-group">
-                                          <input type="text" id="date_start" name="date_start" class="form-control" value="<?=$date_start?>" autocomplete="off">
-                                          <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
+                                          <input type="text" id="date_start" name="date_start" class="form-control form-control-sm" value="<?=$date_start?>" autocomplete="off">                                          
                                         </div>                            
                                     </div>
                                     <div class="col-sm-3">
                                         <label for="date_end" class="form-control-label"><small class="form-text text-muted">Date End</small></label>
                                         <div class="input-group">
-                                          <input type="text" id="date_end" name="date_end" class="form-control" value="<?=$date_end?>" autocomplete="off">
-                                          <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
+                                          <input type="text" id="date_end" name="date_end" class="form-control form-control-sm" value="<?=$date_end?>" autocomplete="off">
                                         </div>                             
                                     </div>
                                     <div class="col-sm-3">                                    	
-                                    	<button type="submit" class="btn btn-primary button_search ">View</button>
+                                    	<button type="submit" class="btn btn-sm btn-primary button_search ">View</button>
                                     </div>
                                  </div>    
                             </form>
@@ -256,11 +254,4 @@
       });
   </script>
 </body>
-<style>
- #printableArea{ 
-     font-size:14px; 
-     margin:0px; 
-     padding:.5rem; 
-} 
-</style>
 </html>

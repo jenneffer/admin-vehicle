@@ -6,7 +6,7 @@ global $conn_admin_db;
 
 $year_select = isset($_POST['year_select']) ? $_POST['year_select'] : "2019";
 // $tariff = isset($_POST['tariff']) ? $_POST['tariff'] : "CM1";
-$select_company = isset($_POST['company']) ? $_POST['company'] : "23";
+$select_company = isset($_POST['company']) ? $_POST['company'] : "13";
 $select_location = isset($_POST['location']) ? $_POST['location'] : "";
 $report_type = isset($_POST['report_type']) ? $_POST['report_type'] : "year";
 ob_start();
@@ -53,56 +53,57 @@ $month = array(
 
 $month_str = implode("','", $month);
 
-function get_sesb_data_yearly($year){
+function get_ja_data_yearly($year){
     global $conn_admin_db;
     
-    $query = "SELECT * FROM bill_sesb_account
-        INNER JOIN bill_sesb ON bill_sesb_account.id = bill_sesb.acc_id
+    $query = "SELECT * FROM bill_jabatan_air_account 
+        INNER JOIN bill_jabatan_air ON bill_jabatan_air_account.id = bill_jabatan_air.acc_id 
         WHERE YEAR(date_end)='$year'";
     
     $sql_result = mysqli_query($conn_admin_db, $query)or die(mysqli_error($conn_admin_db));
     $data = [];
     while($row = mysqli_fetch_assoc($sql_result)){
         $data[$row['company_id']][] = array(
-            'sesb_data' => $row['amount']
+            'ja_data' => $row['amount']
         );
     }
-    $datasets_sesb_yearly = [];
+    $datasets_ja_yearly = [];
     foreach ($data as $key => $value) {
         $code = itemName("SELECT code FROM company WHERE id='$key'");
         $company[] = $code;
         foreach ($value as $val) {
-            if(isset($datasets_sesb_yearly[$key])){
-                $datasets_sesb_yearly[$key] += $val['sesb_data'];
+            if(isset($datasets_ja_yearly[$key])){
+                $datasets_ja_yearly[$key] += $val['ja_data'];
             }else{
-                $datasets_sesb_yearly[$key] = $val['sesb_data'];
+                $datasets_ja_yearly[$key] = $val['ja_data'];
             }
         }
     }
     
     return array(
-        'sesb_yearly' => $datasets_sesb_yearly,
+        'ja_yearly' => $datasets_ja_yearly,
         'company_str' => $company
     );
 
 }
 
-function get_sesb_data_monthly($year, $company, $location){
+function get_ja_data_monthly($year, $company, $location){
     global $conn_admin_db;
     global $month_map;
     
-    $query = "SELECT * FROM bill_sesb_account
-        INNER JOIN bill_sesb ON bill_sesb_account.id = bill_sesb.acc_id
+    $query = "SELECT * FROM bill_jabatan_air_account 
+        INNER JOIN bill_jabatan_air ON bill_jabatan_air_account.id = bill_jabatan_air.acc_id 
         WHERE YEAR(date_end)='$year'";
 
     if(!empty($company)){
         $query .=" AND company_id='$company'";
     }
     if(!empty($location)){
-        $query .=" AND bill_sesb_account.location = '$location'";
+        $query .=" AND bill_jabatan_air_account.location = '$location'";
     }
     
     $query .= " ORDER BY date_end ASC";
+    
     $sql_result = mysqli_query($conn_admin_db, $query)or die(mysqli_error($conn_admin_db));
     $data = []; //show all company
     $arr_data_sesb = [];
@@ -136,11 +137,12 @@ function get_sesb_data_monthly($year, $company, $location){
     }
     
     //sesb monthly
-    $datasets_sesb_monthly = [];
+    $datasets_ja_monthly = [];
     foreach ($data_monthly as $data){
-        foreach ($data as $location => $val){
-            $month_data = array_replace($month_map, $val);
-            $datasets_sesb_monthly[] = array(
+       
+        foreach ($data as $location => $val){            
+            $month_data = array_replace($month_map, $val);            
+            $datasets_ja_monthly[] = array(
                 'label' => $location,
                 'backgroundColor' => 'transparent',
                 'borderColor' => randomColor(),
@@ -152,20 +154,21 @@ function get_sesb_data_monthly($year, $company, $location){
     }
    
     return array(
-        'sesb_monthly' => $datasets_sesb_monthly
+        'ja_monthly' => $datasets_ja_monthly
     );
 }
 
 //get yearly data
-$yearly_data = get_sesb_data_yearly($year_select);
-$data_sesb = array_values($yearly_data['sesb_yearly']);
-$data_sesb_yearly = implode(",", $data_sesb);
+$yearly_data = get_ja_data_yearly($year_select);
+
+$data_ja = array_values($yearly_data['ja_yearly']);
+$data_ja_yearly = implode(",", $data_ja);
 $company_str = !empty($yearly_data['company_str']) ? implode("','",$yearly_data['company_str']) : "";
 
 //get monthly data
-$monthly_data = get_sesb_data_monthly($year_select, $select_company, $select_location);
-$data_sesb_month = $monthly_data['sesb_monthly'];
-$datasets_sesb_monthly = json_encode($data_sesb_month);
+$monthly_data = get_ja_data_monthly($year_select, $select_company, $select_location);
+$data_ja_month = $monthly_data['ja_monthly'];
+$datasets_ja_monthly = json_encode($data_ja_month);
 
 ?>
 <html>
@@ -200,76 +203,67 @@ tr:nth-child(even) {
     <div class="content">        
         <div class="animated fadeIn">
         <div class="row">
-            <div class="col-md-12">
-                <div class="card" id="printableArea">
-                    <div class="card-header text-center">
-                        <strong class="card-title">ELECTRICITY USAGE</strong>
+        <div class="col-md-12">
+            <div class="card" id="printableArea">
+                <div class="card-header text-center">
+                    <strong class="card-title">WATER USAGE</strong>
+                </div>     
+                <div class="card-body">
+                <form action="" method="post">
+                	<div class="form-group row col-sm-12">  
+                		<div class="col-sm-2">
+                			<label for="report_type" class="form-control-label"><small class="form-text text-muted">Report Type</small></label>
+                			<select name="report_type" id="report_type" class="form-control" onchange="this.form.submit()">
+                			<?php foreach ($arr_report_type as $key => $rt){						
+                			    $selected = ($key == $report_type) ? 'selected' : '';						    
+                			    echo "<option $selected value='$key'>".$rt."</option>";
+                            }?>
+                            </select>
+                		</div>        		
+                      	<div class="col-sm-2">
+                      		<label for="year_select" class="form-control-label"><small class="form-text text-muted">Year</small></label>
+                      		<?=$html_year_select?>
+                      	</div>
+                      	<div class="col-sm-4 monthly-div">
+                		<label for="company" class="form-control-label"><small class="form-text text-muted">Company</small></label>
+                		<?php                                            
+                            $company = mysqli_query ( $conn_admin_db, "SELECT id, UPPER(name) FROM company WHERE status='1' ORDER BY name ASC");
+                            db_select ($company, 'company',$select_company,'submit()','','form-control','');
+                        ?>
+                		</div>
+                		<div class="col-sm-4 monthly-div">
+                		<label for="location" class="form-control-label"><small class="form-text text-muted">Account No./Location</small></label>
+                		<?php                                            
+                    		$location = mysqli_query ( $conn_admin_db, "SELECT location,UPPER(location) FROM bill_jabatan_air_account WHERE company_id='$select_company' AND status='1' GROUP BY location");
+                    		db_select ($location, 'location',$select_location,'submit()','All','form-control','');
+                        ?>
+                		</div>
+                	</div>
+                </form>
+                <br>
+                <div class="row">
+                    <div class="col-sm-12 ja-yearly">            	
+<!--                         <div class="card">                	 -->
+<!--                             <div class="card-body">                         -->
+                                <canvas id="ja-yearly"></canvas>                        
+<!--                             </div> -->
+<!--                         </div> -->
+                    </div>           
+                    <div class="col-sm-12 ja-monthly">            	
+<!--                         <div class="card">                	 -->
+<!--                             <div class="card-body">                         -->
+                                <canvas id="ja-monthly"></canvas>                        
+<!--                             </div> -->
+<!--                         </div> -->
                     </div>     
-                   <div class="card-body">
-                    	<form action="" method="post">
-                        	<div class="form-group row col-sm-12">  
-                        		<div class="col-sm-2">
-            						<label for="report_type" class="form-control-label"><small class="form-text text-muted">Report Type</small></label>
-            						<select name="report_type" id="report_type" class="form-control" onchange="this.form.submit()">
-            						<?php foreach ($arr_report_type as $key => $rt){						
-            						    $selected = ($key == $report_type) ? 'selected' : '';						    
-            						    echo "<option $selected value='$key'>".$rt."</option>";
-                                    }?>
-                                    </select>
-            					</div>        		
-                              	<div class="col-sm-2">
-                              		<label for="year_select" class="form-control-label"><small class="form-text text-muted">Year</small></label>
-                              		<?=$html_year_select?>
-                              	</div>
-            <!--                   	<div class="col-sm-2"> -->
-            <!--             			<label for="tariff" class="form-control-label"><small class="form-text text-muted">Tariff</small></label> -->
-            <!--                 		<select name="tariff" id="tariff" class="form-control" onchange="this.form.submit()"> -->
-            <!--                			<option value="CM1" <?php if($tariff=="CM1") echo "selected"; else echo ""; ?>>CM1</option>
-            <!--                			<option value="DM" <?php if($tariff=="DM") echo "selected"; else echo ""; ?>>DM</option>
-            <!--                			<option value="ID1" <?php if($tariff=="ID1") echo "selected"; else echo ""; ?>>ID1</option>
-            <!--                			<option value="ID2" <?php if($tariff=="ID2") echo "selected"; else echo ""; ?>>ID2</option>
-            <!--                 		</select> -->
-            <!--                   	</div> -->
-                              	<div class="col-sm-4 monthly-div">
-                        		<label for="company" class="form-control-label"><small class="form-text text-muted">Company</small></label>
-                        		<?php                                            
-                                    $company = mysqli_query ( $conn_admin_db, "SELECT id, UPPER(name) FROM company WHERE status='1' ORDER BY name ASC");
-                                    db_select ($company, 'company',$select_company,'submit()','','form-control','');
-                                ?>
-                        		</div>
-                        		<div class="col-sm-4 monthly-div">
-                        		<label for="location" class="form-control-label"><small class="form-text text-muted">Account No./Location</small></label>
-                        		<?php                                            
-                                    $location = mysqli_query ( $conn_admin_db, "SELECT location,UPPER(location) FROM bill_sesb_account WHERE company_id='$select_company' AND status='1' GROUP BY location");
-                                    db_select ($location, 'location',$select_location,'submit()','All','form-control','');
-                                ?>
-                        		</div>
-                        	</div>
-                    	</form>
-                    	<br>
-                        <div class="row">
-                            <div class="col-sm-12 sesb-yearly">            	
-            <!--                     <div class="card">                	 -->
-            <!--                         <div class="card-body">                         -->
-                                        <canvas id="sesb-yearly"></canvas>                        
-            <!--                         </div> -->
-            <!--                     </div> -->
-                            </div>           
-                            <div class="col-sm-12 sesb-monthly">            	
-            <!--                     <div class="card">                	 -->
-            <!--                         <div class="card-body">                         -->
-                                        <canvas id="sesb-monthly"></canvas>                        
-            <!--                         </div> -->
-            <!--                     </div> -->
-                            </div>     
-                		</div>  
-    				</div>
-				</div>
+                </div> 
 			</div>
-			</div>  					
-    	</div>
+            </div>
+        	</div>
+    	</div>   					
     </div>
-    </div>
+</div>
+</div>
 
 <!-- link to the script-->
 <?php require_once ('../allScript2.php')?>
@@ -291,33 +285,28 @@ tr:nth-child(even) {
             var report_type = '<?=$report_type?>';
             var year = '<?=$year_select?>';
             $('.monthly-div').hide();
-            $('.sesb-monthly').hide();
-            $('.sesb-yearly').show();
+            $('.ja-monthly').hide();
+            $('.ja-yearly').show();
             if(report_type == 'month'){   
             	$('.monthly-div').show();
-            	$('.sesb-monthly').show();
-            	$('.sesb-yearly').hide();
+            	$('.ja-monthly').show();
+            	$('.ja-yearly').hide();
 			}
 			else if ( report_type == 'year'){
 				$('#company').val('');
 			}
-            //SESB monthly                  	
-        	var ctx = document.getElementById( "sesb-monthly" );
+            //JA monthly                  	
+        	var ctx = document.getElementById( "ja-monthly" );
             ctx.height = 100;
             var myChart = new Chart( ctx, {           
                 type: 'line',        	            	
                 data: {   
                 	labels: [ '<?php echo $month_str;?>' ],
                 	defaultFontFamily: 'Montserrat',         	
-                    datasets: <?=$datasets_sesb_monthly?>
+                    datasets: <?=$datasets_ja_monthly?>
                         
                 },
                 options: {
-                	layout: {
-                        padding: {
-                           bottom: 150  //set that fits the best
-                        }
-                    },
                     responsive: true,
                     tooltips: {
                         mode: 'index',
@@ -368,8 +357,8 @@ tr:nth-child(even) {
                 }
             } );
             
-			//SESB yearly
-            var ctx = document.getElementById( "sesb-yearly" );        	
+			//JA yearly
+            var ctx = document.getElementById( "ja-yearly" );        	
             ctx.height = 100;
             var chart1 = new Chart( ctx, {
                 type: 'bar',
@@ -378,8 +367,8 @@ tr:nth-child(even) {
                     defaultFontFamily: 'Montserrat',
                     datasets: [ 
                         {
-                            label: "Electricity Usage (RM)",
-                            data: [ <?php echo $data_sesb_yearly;?> ], //premium
+                            label: "Water Usage (RM)",
+                            data: [ <?php echo $data_ja_yearly;?> ], //premium
                                     backgroundColor: 'rgba(220,53,69,0.55)',
                                     borderColor: 'rgba(220,53,69,0.75)',
                                     borderWidth: 0                            

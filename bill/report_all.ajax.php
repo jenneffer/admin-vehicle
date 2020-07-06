@@ -13,17 +13,17 @@ if( $action != "" ){
             get_report_sesb($filter, $year);
             break;
             
-        case 'report_jabatan_air':
-            get_report_jabatan_air($filter, $year);
-            break;
+//         case 'report_jabatan_air':
+//             get_report_jabatan_air($filter, $year);
+//             break;
             
         case 'report_celcom':
             get_report_celcom($filter, $year);
             break;
             
-        case 'report_photocopy_machine':
-            get_report_photocopy_machine($filter, $year);
-            break;
+//         case 'report_photocopy_machine':
+//             get_report_photocopy_machine($filter, $year);
+//             break;
             
         case 'report_management_fee':
             get_report_management_fee($filter, $year);
@@ -48,9 +48,218 @@ if( $action != "" ){
         case 'insurance_premium':
             get_insurance_premium($year);
             break;
+            
+        case 'report_photocopy':
+            get_monthly_bill_photocopy($filter, $year);
+            break;
+            
+        case 'report_monthly_jabatan_air':
+            get_monthly_jabatan_air($filter, $year);
+            break;
+            
+        case 'report_monthly_sesb':
+            get_report_monthly_sesb($filter, $year);
+            break;
+            
         default:
             break;
     }
+}
+
+function get_report_monthly_sesb($filter, $year){
+    global $conn_admin_db;
+    $monthto = 12;
+    $arr_result = array(
+        'sEcho' => 0,
+        'iTotalRecords' => 0,
+        'iTotalDisplayRecords' => 0,
+        'aaData' => array()
+    );
+    
+    $sql_query = "SELECT id,company_id, owner,account_no,location FROM bill_sesb_account";
+    if(!empty($filter)){
+        $sql_query .= " WHERE company_id = '".$filter."' ";
+    }
+    $rst  = mysqli_query($conn_admin_db, $sql_query)or die(mysqli_error($conn_admin_db));
+    
+    while ($row = mysqli_fetch_assoc($rst)) {
+        $acc_id = $row['id'];
+        $arr_bills = get_monthly_bill_sesb($acc_id, $year, $monthto);
+        $arr_bills_monthly[$acc_id] = $arr_bills;
+    }
+    $total_found_rows = 0;
+    $arr_data = array();
+    $count = 0;
+    foreach ($arr_bills_monthly as $id => $data){
+        $count++;
+        $total_found_rows++;
+        $acc_no = itemName("SELECT account_no FROM bill_sesb_account  WHERE id='$id'");
+        $owner = itemName("SELECT owner FROM bill_sesb_account  WHERE id='$id'");
+        $location = itemName("SELECT location FROM bill_sesb_account  WHERE id='$id'");
+        $total = 0;
+        for( $i=1; $i<=$monthto; $i++){
+            $total += $data[$i];
+        }
+        
+        $datas = array(            
+            $acc_no,
+            $owner,
+            $location,
+            $data[1],
+            $data[2],
+            $data[3],
+            $data[4],
+            $data[5],
+            $data[6],
+            $data[7],
+            $data[8],
+            $data[9],
+            $data[10],
+            $data[11],
+            $data[12],
+            $total
+            
+        );
+        $arr_data[] = $datas;
+    }
+    $arr_result = array(
+        'sEcho' => 0,
+        'iTotalRecords' => $total_found_rows,
+        'iTotalDisplayRecords' => $total_found_rows,
+        'aaData' => $arr_data
+    );
+    
+    echo json_encode($arr_result);
+}
+
+function get_monthly_jabatan_air($filter, $year){
+    global $conn_admin_db;
+    $monthto = 12;
+    $arr_result = array(
+        'sEcho' => 0,
+        'iTotalRecords' => 0,
+        'iTotalDisplayRecords' => 0,
+        'aaData' => array()
+    );
+    
+    $sql_query = "SELECT id,company_id, owner,account_no,location FROM bill_jabatan_air_account";
+    if(!empty($filter)){
+        $sql_query .= " WHERE company_id = '".$filter."' ";
+    }
+    $rst  = mysqli_query($conn_admin_db, $sql_query)or die(mysqli_error($conn_admin_db));
+    
+    while ($row = mysqli_fetch_assoc($rst)) {
+        $acc_id = $row['id'];
+        $arr_bills = get_monthly_bill_jabatan_air($acc_id, $year, $monthto);
+        $arr_bills_monthly[$acc_id] = $arr_bills;
+    }
+    $total_found_rows = 0;
+    $arr_data = array();
+    $count = 0;
+    foreach ($arr_bills_monthly as $id => $data){
+        $count++;
+        $total_found_rows++;
+        $acc_no = itemName("SELECT account_no FROM bill_jabatan_air_account  WHERE id='$id'");
+        $owner = itemName("SELECT owner FROM bill_jabatan_air_account  WHERE id='$id'");
+        $location = itemName("SELECT location FROM bill_jabatan_air_account  WHERE id='$id'");
+        $total = 0;
+        for( $i=1; $i<=$monthto; $i++){
+            $total += $data[$i];
+        }
+        
+        $datas = array(
+            $acc_no,
+            $owner,
+            $location,
+            $data[1],
+            $data[2],
+            $data[3],
+            $data[4],
+            $data[5],
+            $data[6],
+            $data[7],
+            $data[8],
+            $data[9],
+            $data[10],
+            $data[11],
+            $data[12],
+            $total
+            
+        );
+        $arr_data[] = $datas;
+    }
+    $arr_result = array(
+        'sEcho' => 0,
+        'iTotalRecords' => $total_found_rows,
+        'iTotalDisplayRecords' => $total_found_rows,
+        'aaData' => $arr_data
+    );
+    
+    echo json_encode($arr_result);
+}
+
+function get_monthly_bill_photocopy($filter, $year){
+    global $conn_admin_db;
+    $monthto = 12;
+    $arr_result = array(
+        'sEcho' => 0,
+        'iTotalRecords' => 0,
+        'iTotalDisplayRecords' => 0,
+        'aaData' => array()
+    );
+    
+    $sql_query = "SELECT id,company,serial_no,location FROM bill_fuji_xerox_account";
+    if(!empty($filter)){
+        $sql_query .= " WHERE company = '".$filter."' ";
+    }
+    $rst  = mysqli_query($conn_admin_db, $sql_query)or die(mysqli_error($conn_admin_db));
+    
+    while ($row = mysqli_fetch_assoc($rst)) {
+        $acc_id = $row['id'];
+        $arr_bills = get_monthly_bill_fx($acc_id, $year, $monthto);
+        $arr_bills_monthly[$acc_id] = $arr_bills;
+    }
+    $total_found_rows = 0;
+    $arr_data = array();
+    $count = 0;
+    foreach ($arr_bills_monthly as $id => $data){
+        $count++;
+        $total_found_rows++;
+        $serial_no = itemName("SELECT serial_no FROM bill_fuji_xerox_account  WHERE id='$id'");
+        $location = itemName("SELECT location FROM bill_fuji_xerox_account  WHERE id='$id'");        
+        $total = 0;
+        for( $i=1; $i<=$monthto; $i++){
+            $total += $data[$i];
+        }
+        
+        $datas = array(
+            $serial_no,            
+            $location,
+            $data[1],
+            $data[2],
+            $data[3],
+            $data[4],
+            $data[5],
+            $data[6],
+            $data[7],
+            $data[8],
+            $data[9],
+            $data[10],
+            $data[11],
+            $data[12],
+            $total
+            
+        );
+        $arr_data[] = $datas;
+    }
+    $arr_result = array(
+        'sEcho' => 0,
+        'iTotalRecords' => $total_found_rows,
+        'iTotalDisplayRecords' => $total_found_rows,
+        'aaData' => $arr_data
+    );
+    
+    echo json_encode($arr_result);
 }
 
 function get_insurance_premium($year){
@@ -319,55 +528,55 @@ function get_report_management_fee($filter, $year){
     echo json_encode($arr_result);
 }
 
-function get_report_photocopy_machine($filter, $year){
-    global $conn_admin_db;
-    $query = "SELECT (DATE_FORMAT(date,'%M')) month_name, full_color, black_white, color_a3, copy, print, fax, date  FROM bill_photocopy_machine
-            INNER JOIN bill_account_setup ON bill_account_setup.acc_id = bill_photocopy_machine.acc_id WHERE bill_photocopy_machine.acc_id = '$filter'
-            AND DATE_FORMAT(date,'%Y') = '$year'";
+// function get_report_photocopy_machine($filter, $year){
+//     global $conn_admin_db;
+//     $query = "SELECT (DATE_FORMAT(date,'%M')) month_name, full_color, black_white, color_a3, copy, print, fax, date  FROM bill_photocopy_machine
+//             INNER JOIN bill_account_setup ON bill_account_setup.acc_id = bill_photocopy_machine.acc_id WHERE bill_photocopy_machine.acc_id = '$filter'
+//             AND DATE_FORMAT(date,'%Y') = '$year'";
     
-    $query .= " ORDER BY date ASC";
+//     $query .= " ORDER BY date ASC";
       
-    $rst  = mysqli_query($conn_admin_db, $query)or die(mysqli_error($conn_admin_db));
-    $arr_result = array(
-        'sEcho' => 0,
-        'iTotalRecords' => 0,
-        'iTotalDisplayRecords' => 0,
-        'aaData' => array()
-    );
-    $total_found_rows = 0;
-    $arr_data = array();
-    if ( mysqli_num_rows($rst) ){
-        while( $row = mysqli_fetch_assoc( $rst ) ){
-            $row_found = mysqli_fetch_row(mysqli_query($conn_admin_db,"SELECT FOUND_ROWS()"));
-            $total_found_rows = $row_found[0];
-            $total = $row['full_color'] + $row['black_white'] + $row['copy'] + $row['print'] + $row['fax'];
+//     $rst  = mysqli_query($conn_admin_db, $query)or die(mysqli_error($conn_admin_db));
+//     $arr_result = array(
+//         'sEcho' => 0,
+//         'iTotalRecords' => 0,
+//         'iTotalDisplayRecords' => 0,
+//         'aaData' => array()
+//     );
+//     $total_found_rows = 0;
+//     $arr_data = array();
+//     if ( mysqli_num_rows($rst) ){
+//         while( $row = mysqli_fetch_assoc( $rst ) ){
+//             $row_found = mysqli_fetch_row(mysqli_query($conn_admin_db,"SELECT FOUND_ROWS()"));
+//             $total_found_rows = $row_found[0];
+//             $total = $row['full_color'] + $row['black_white'] + $row['copy'] + $row['print'] + $row['fax'];
             
-            $data = array(
-                $row['month_name'],
-                $row['full_color'],
-                $row['black_white'],
-                $row['color_a3'],
-                $row['copy'],
-                $row['print'],
-                $row['fax'],
-                $total,
-                $row['date']
-            );
+//             $data = array(
+//                 $row['month_name'],
+//                 $row['full_color'],
+//                 $row['black_white'],
+//                 $row['color_a3'],
+//                 $row['copy'],
+//                 $row['print'],
+//                 $row['fax'],
+//                 $total,
+//                 $row['date']
+//             );
             
-            $arr_data[] = $data;
-        }
+//             $arr_data[] = $data;
+//         }
         
-    }
+//     }
     
-    $arr_result = array(
-        'sEcho' => 0,
-        'iTotalRecords' => $total_found_rows,
-        'iTotalDisplayRecords' => $total_found_rows,
-        'aaData' => $arr_data
-    );
+//     $arr_result = array(
+//         'sEcho' => 0,
+//         'iTotalRecords' => $total_found_rows,
+//         'iTotalDisplayRecords' => $total_found_rows,
+//         'aaData' => $arr_data
+//     );
     
-    echo json_encode($arr_result);
-}
+//     echo json_encode($arr_result);
+// }
 
 function get_report_celcom($filter, $year){
     global $conn_admin_db;
@@ -379,15 +588,15 @@ function get_report_celcom($filter, $year){
         'aaData' => array()
     );
     
-    $sql_query = "SELECT acc_id,account_no,user,position FROM bill_account_setup WHERE bill_type='4'";
+    $sql_query = "SELECT id,account_no,user,position FROM bill_telco_account";
     if(!empty($filter)){
-        $sql_query .= " AND company_id = '".$filter."' ";
+        $sql_query .= " WHERE company_id = '".$filter."' ";
     }
     $rst  = mysqli_query($conn_admin_db, $sql_query)or die(mysqli_error($conn_admin_db));
     
     while ($row = mysqli_fetch_assoc($rst)) {
-        $acc_id = $row['acc_id'];
-        $arr_bills = get_monthly_bill($acc_id, $year, $monthto);
+        $acc_id = $row['id'];
+        $arr_bills = get_monthly_bill_celcom($acc_id, $year, $monthto);
         $arr_bills_monthly[$acc_id] = $arr_bills;
     }
     $total_found_rows = 0;
@@ -396,16 +605,15 @@ function get_report_celcom($filter, $year){
     foreach ($arr_bills_monthly as $id => $data){
         $count++;
         $total_found_rows++;
-        $user = itemName("SELECT user FROM bill_account_setup  WHERE acc_id='$id'");
-        $position = itemName("SELECT position FROM bill_account_setup  WHERE acc_id='$id'");
-        $acc_no = itemName("SELECT account_no FROM bill_account_setup  WHERE acc_id='$id'");
+        $user = itemName("SELECT user FROM bill_telco_account  WHERE id='$id'");
+        $position = itemName("SELECT position FROM bill_telco_account  WHERE id='$id'");
+        $acc_no = itemName("SELECT account_no FROM bill_telco_account  WHERE id='$id'");
         $total = 0;
         for( $i=1; $i<=$monthto; $i++){
             $total += $data[$i];
         }
         
         $datas = array(
-            $count .".",
             $user,
             $position,
             $acc_no,
@@ -436,120 +644,120 @@ function get_report_celcom($filter, $year){
     echo json_encode($arr_result);
 }
 
-function get_report_jabatan_air($filter, $year){
-    global $conn_admin_db;
-    $query = "SELECT (DATE_FORMAT(date_end,'%M')) month_name, meter_reading_from, meter_reading_to, 
-            (meter_reading_to - meter_reading_from) AS total_usage, usage_70, rate_70,usage_71, rate_71,credit_adjustment, 
-            adjustment,date_start, date_end,amount,due_date, cheque_no,paid_date  FROM bill_jabatan_air
-            INNER JOIN bill_account_setup ON bill_account_setup.acc_id = bill_jabatan_air.acc_id WHERE bill_jabatan_air.acc_id = '$filter' AND DATE_FORMAT(date_end,'%Y') = '$year'";
+// function get_report_jabatan_air($filter, $year){
+//     global $conn_admin_db;
+//     $query = "SELECT (DATE_FORMAT(date_end,'%M')) month_name, meter_reading_from, meter_reading_to, 
+//             (meter_reading_to - meter_reading_from) AS total_usage, usage_70, rate_70,usage_71, rate_71,credit_adjustment, 
+//             adjustment,date_start, date_end,amount,due_date, cheque_no,paid_date  FROM bill_jabatan_air
+//             INNER JOIN bill_account_setup ON bill_account_setup.acc_id = bill_jabatan_air.acc_id WHERE bill_jabatan_air.acc_id = '$filter' AND DATE_FORMAT(date_end,'%Y') = '$year'";
     
-    $rst  = mysqli_query($conn_admin_db, $query)or die(mysqli_error($conn_admin_db));
-    $arr_result = array(
-        'sEcho' => 0,
-        'iTotalRecords' => 0,
-        'iTotalDisplayRecords' => 0,
-        'aaData' => array()
-    );
-    $total_found_rows = 0;
-    $arr_data = array();
-    if ( mysqli_num_rows($rst) ){
-        while( $row = mysqli_fetch_assoc( $rst ) ){
-            $row_found = mysqli_fetch_row(mysqli_query($conn_admin_db,"SELECT FOUND_ROWS()"));
-            $total_found_rows = $row_found[0];
+//     $rst  = mysqli_query($conn_admin_db, $query)or die(mysqli_error($conn_admin_db));
+//     $arr_result = array(
+//         'sEcho' => 0,
+//         'iTotalRecords' => 0,
+//         'iTotalDisplayRecords' => 0,
+//         'aaData' => array()
+//     );
+//     $total_found_rows = 0;
+//     $arr_data = array();
+//     if ( mysqli_num_rows($rst) ){
+//         while( $row = mysqli_fetch_assoc( $rst ) ){
+//             $row_found = mysqli_fetch_row(mysqli_query($conn_admin_db,"SELECT FOUND_ROWS()"));
+//             $total_found_rows = $row_found[0];
             
-            $data = array(
-                $row['month_name'],
-                $row['meter_reading_from'],
-                $row['meter_reading_to'],
-                $row['total_usage'],
-                $row['usage_70'],
-                $row['rate_70'],
-                $row['usage_71'],
-                $row['rate_71'],
-                $row['credit_adjustment'],
-                $row['adjustment'],
-                $row['date_start'],
-                $row['date_end'],
-                $row['cheque_no'],
-                $row['paid_date'],
-                $row['amount']
-            );
+//             $data = array(
+//                 $row['month_name'],
+//                 $row['meter_reading_from'],
+//                 $row['meter_reading_to'],
+//                 $row['total_usage'],
+//                 $row['usage_70'],
+//                 $row['rate_70'],
+//                 $row['usage_71'],
+//                 $row['rate_71'],
+//                 $row['credit_adjustment'],
+//                 $row['adjustment'],
+//                 $row['date_start'],
+//                 $row['date_end'],
+//                 $row['cheque_no'],
+//                 $row['paid_date'],
+//                 $row['amount']
+//             );
             
-            $arr_data[] = $data;
-        }
+//             $arr_data[] = $data;
+//         }
         
-    }
+//     }
     
-    $arr_result = array(
-        'sEcho' => 0,
-        'iTotalRecords' => $total_found_rows,
-        'iTotalDisplayRecords' => $total_found_rows,
-        'aaData' => $arr_data
-    );
+//     $arr_result = array(
+//         'sEcho' => 0,
+//         'iTotalRecords' => $total_found_rows,
+//         'iTotalDisplayRecords' => $total_found_rows,
+//         'aaData' => $arr_data
+//     );
     
-    echo json_encode($arr_result);
-}
+//     echo json_encode($arr_result);
+// }
 
-function get_report_sesb($filter, $year){
-    global $conn_admin_db;
+// function get_report_sesb($filter, $year){
+//     global $conn_admin_db;
     
-    $query = "SELECT (DATE_FORMAT(date_end,'%M')) month_name, meter_reading_from, meter_reading_to, 
-            total_usage, current_usage, kwtbb, penalty,power_factor,additional_deposit, other_charges,adjustment,date_start, date_end,
-            amount,due_date, cheque_no,paid_date  FROM bill_sesb
-            INNER JOIN bill_account_setup ON bill_account_setup.acc_id = bill_sesb.acc_id WHERE bill_sesb.acc_id = '$filter' AND DATE_FORMAT(date_end,'%Y') = '$year'";
+//     $query = "SELECT (DATE_FORMAT(date_end,'%M')) month_name, meter_reading_from, meter_reading_to, 
+//             total_usage, current_usage, kwtbb, penalty,power_factor,additional_deposit, other_charges,adjustment,date_start, date_end,
+//             amount,due_date, cheque_no,paid_date  FROM bill_sesb
+//             INNER JOIN bill_account_setup ON bill_account_setup.acc_id = bill_sesb.acc_id WHERE bill_sesb.acc_id = '$filter' AND DATE_FORMAT(date_end,'%Y') = '$year'";
     
     
-    $rst  = mysqli_query($conn_admin_db, $query)or die(mysqli_error($conn_admin_db));
-    $arr_result = array(
-        'sEcho' => 0,
-        'iTotalRecords' => 0,
-        'iTotalDisplayRecords' => 0,
-        'aaData' => array()
-    );
-    $total_found_rows = 0;
-    $arr_data = array();
-    if ( mysqli_num_rows($rst) ){
-        while( $row = mysqli_fetch_assoc( $rst ) ){
-            $row_found = mysqli_fetch_row(mysqli_query($conn_admin_db,"SELECT FOUND_ROWS()"));
-            $total_found_rows = $row_found[0];
+//     $rst  = mysqli_query($conn_admin_db, $query)or die(mysqli_error($conn_admin_db));
+//     $arr_result = array(
+//         'sEcho' => 0,
+//         'iTotalRecords' => 0,
+//         'iTotalDisplayRecords' => 0,
+//         'aaData' => array()
+//     );
+//     $total_found_rows = 0;
+//     $arr_data = array();
+//     if ( mysqli_num_rows($rst) ){
+//         while( $row = mysqli_fetch_assoc( $rst ) ){
+//             $row_found = mysqli_fetch_row(mysqli_query($conn_admin_db,"SELECT FOUND_ROWS()"));
+//             $total_found_rows = $row_found[0];
             
-            $data = array(
-                $row['month_name'],
-                $row['meter_reading_from'],
-                $row['meter_reading_to'],
-                $row['total_usage'],
-                $row['current_usage'],
-                $row['kwtbb'],
-                $row['penalty'],
-//                 $row['power_factor'],
-                $row['additional_deposit'],
-                $row['other_charges'],
-                $row['adjustment'],
-                $row['date_start'],
-                $row['date_end'],
-                $row['amount'],
-                $row['due_date'],
-                $row['cheque_no'],
-                $row['paid_date']
-            );
+//             $data = array(
+//                 $row['month_name'],
+//                 $row['meter_reading_from'],
+//                 $row['meter_reading_to'],
+//                 $row['total_usage'],
+//                 $row['current_usage'],
+//                 $row['kwtbb'],
+//                 $row['penalty'],
+// //                 $row['power_factor'],
+//                 $row['additional_deposit'],
+//                 $row['other_charges'],
+//                 $row['adjustment'],
+//                 $row['date_start'],
+//                 $row['date_end'],
+//                 $row['amount'],
+//                 $row['due_date'],
+//                 $row['cheque_no'],
+//                 $row['paid_date']
+//             );
             
-            $arr_data[] = $data;
-        }
+//             $arr_data[] = $data;
+//         }
         
-    }
+//     }
 
-    $arr_result = array(
-        'sEcho' => 0,
-        'iTotalRecords' => $total_found_rows,
-        'iTotalDisplayRecords' => $total_found_rows,
-        'aaData' => $arr_data
-    );
+//     $arr_result = array(
+//         'sEcho' => 0,
+//         'iTotalRecords' => $total_found_rows,
+//         'iTotalDisplayRecords' => $total_found_rows,
+//         'aaData' => $arr_data
+//     );
     
-    echo json_encode($arr_result);
-}
+//     echo json_encode($arr_result);
+// }
 
 function get_monthly_bill_telekom($filter, $year){
-//     global $conn_admin_db;
+    global $conn_admin_db;
     $monthto = 12;
     $arr_result = array(
         'sEcho' => 0,
@@ -557,32 +765,36 @@ function get_monthly_bill_telekom($filter, $year){
         'iTotalDisplayRecords' => 0,
         'aaData' => array()
     );
+    $sql_query = "SELECT id,account_no,owner FROM bill_telekom_account";
+    if(!empty($filter)){
+        $sql_query .= " WHERE company_id = '".$filter."' ";
+    }
+    $rst  = mysqli_query($conn_admin_db, $sql_query)or die(mysqli_error($conn_admin_db));
     
-//     $sql_query = "SELECT acc_id,account_no,user,position FROM bill_account_setup WHERE bill_type='3'";
-//     $rst  = mysqli_query($conn_admin_db, $sql_query)or die(mysqli_error($conn_admin_db));
-    
-//     while ($row = mysqli_fetch_assoc($rst)) {
-//         $acc_id = $row['acc_id'];
-//         $arr_bills = get_telekom_bill($acc_id, $year, $monthto);        
-//     }
-    $arr_bills = get_telekom_bill($filter, $year, $monthto);     
-
+    while ($row = mysqli_fetch_assoc($rst)) {
+        $acc_id = $row['id'];
+        $arr_bills = get_telekom_monthly_bill($acc_id, $year, $monthto);
+        $arr_bills_monthly[$acc_id] = $arr_bills;
+    }
     $total_found_rows = 0;
     $arr_data = array();
-    foreach ($arr_bills as $item_desc => $data){
-        $total_found_rows++;        
+    $count = 0;
+    foreach ($arr_bills_monthly as $id => $data){
+        $count++;
+        $total_found_rows++;
+        $acc_no = itemName("SELECT account_no FROM bill_telekom_account  WHERE id='$id'");
+        $owner = itemName("SELECT owner FROM bill_telekom_account WHERE id='$id'");
+        $company = itemName("SELECT code FROM company WHERE id IN (SELECT company_id FROM bill_telekom_account WHERE bill_telekom_account.id='$id' )");
         $total = 0;
-        if($item_desc != 'Payment Due Date' && $item_desc != 'Cheque No' && $item_desc != 'Payment Date' ){
-            for( $i=1; $i<=$monthto; $i++){
-//                 var_dump($data[$i]);
-                $total += is_null($data[$i]) ? 0 : (float)$data[$i];
-            }
-            $total = number_format($total,2);
-
+        for( $i=1; $i<=$monthto; $i++){
+            $total += $data[$i];
         }
         
         $datas = array(
-            '<b>'.$item_desc.'<b>',
+            $count .".",
+            $acc_no,
+            $company,
+            $owner,
             $data[1],
             $data[2],
             $data[3],
@@ -595,12 +807,11 @@ function get_monthly_bill_telekom($filter, $year){
             $data[10],
             $data[11],
             $data[12],
-            '<b>'.$total.'<b>'
-    
+            $total
+            
         );
         $arr_data[] = $datas;
     }
-    
     $arr_result = array(
         'sEcho' => 0,
         'iTotalRecords' => $total_found_rows,
@@ -611,11 +822,50 @@ function get_monthly_bill_telekom($filter, $year){
     echo json_encode($arr_result);
 }
 
-function get_monthly_bill($acc_id, $year, $monthto){
+function get_telekom_monthly_bill($acc_id, $year, $monthto){ // telekom
     $result = array();
     
     for($m = 1; $m <= $monthto; $m++){
-        $amount = itemName("SELECT bill_amount FROM bill_celcom WHERE acc_id='$acc_id' AND year(date)='$year' AND month(date)='$m'");
+        echo "SELECT amount FROM bill_telekom WHERE acc_id='$acc_id' AND year(date_start)='$year' AND month(date_start)='$m'<br>";
+        $amount = itemName("SELECT amount FROM bill_telekom WHERE acc_id='$acc_id' AND year(date_start)='$year' AND month(date_start)='$m'");
+        $result[$m] = $amount;
+    }
+    
+    return $result;
+}
+
+function get_monthly_bill_celcom($acc_id, $year, $monthto){
+    $result = array();
+    
+    for($m = 1; $m <= $monthto; $m++){
+        $amount = itemName("SELECT amount_rm FROM bill_telco_billing WHERE telco_acc_id='$acc_id' AND year(date)='$year' AND month(date)='$m'");
+        $result[$m] = $amount;
+    }
+    return $result;
+}
+
+function get_monthly_bill_fx($acc_id, $year, $monthto){
+    $result = array();
+    for($m = 1; $m <= $monthto; $m++){
+        $amount = itemName("SELECT amount FROM bill_fuji_xerox_invoice WHERE acc_id='$acc_id' AND year(invoice_date)='$year' AND month(invoice_date)='$m'");
+        $result[$m] = $amount;
+    }
+    return $result;
+}
+
+function get_monthly_bill_jabatan_air($acc_id, $year, $monthto){
+    $result = array();
+    for($m = 1; $m <= $monthto; $m++){
+        $amount = itemName("SELECT amount FROM bill_jabatan_air WHERE acc_id='$acc_id' AND year(date_end)='$year' AND month(date_end)='$m'");
+        $result[$m] = $amount;
+    }
+    return $result;
+}
+
+function get_monthly_bill_sesb($acc_id, $year, $monthto){
+    $result = array();
+    for($m = 1; $m <= $monthto; $m++){
+        $amount = itemName("SELECT amount FROM bill_sesb WHERE acc_id='$acc_id' AND year(date_end)='$year' AND month(date_end)='$m'");
         $result[$m] = $amount;
     }
     return $result;
@@ -737,8 +987,9 @@ function get_bill_monthly($tel_no, $monthto){
         $result[$m] = number_format($amount,2);
     }
     
-    return $result;
-    
+    return $result;    
 }
+
+
 
 ?>

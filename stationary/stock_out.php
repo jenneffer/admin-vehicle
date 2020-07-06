@@ -47,9 +47,11 @@
                             </div>     
                            <div class="card-body">
                            <br>                            
-                            <button type="button" class="btn btn-primary mb-1 col-md-2" data-toggle="modal" data-target="#addItem">
+                            <div class="form-group">
+                            <button type="button" class="btn btn-sm btn-primary mb-1 col-md-2" data-toggle="modal" data-target="#addItem">
                                Add New 
 							</button>
+                            </div>
                                 <table id="item-data-table" class="table table-striped table-bordered">
                                     <thead>
                                         <tr>
@@ -109,10 +111,10 @@
                     <form role="form" method="POST" action="" id="add_form"> 
                     <div class="form-group row col-sm-12">
                     	<div class="col-sm-12">
-                            <label for="department" class=" form-control-label"><small class="form-text text-muted">Department</small></label>
+                            <label for="department" class=" form-control-label"><small class="form-text text-muted">Department <span class="color-red">*</span></small></label>
                             <div>
                                 <?php
-                                $department = mysqli_query ( $conn_admin_db, "SELECT department_id, department_code FROM stationary_department");
+                                $department = mysqli_query ( $conn_admin_db, "SELECT department_id, department_name FROM stationary_department");
                                 db_select ($department, 'department', '','','-select-','form-control','');
                                 ?>
                             </div>
@@ -120,7 +122,7 @@
                     </div>                   
                     <div class="form-group row col-sm-12">
                     	<div class="col-sm-12">
-                            <label for="item" class=" form-control-label"><small class="form-text text-muted">Item</small></label>
+                            <label for="item" class=" form-control-label"><small class="form-text text-muted">Item <span class="color-red">*</span></small></label>
                             <div>
                                 <?php
                                 $item = mysqli_query ( $conn_admin_db, "SELECT si.id AS id, item_name FROM stationary_stock ss
@@ -132,17 +134,17 @@
                     </div>
                     <div class="form-group row col-sm-12">
                     	<div class="col-sm-6">
-                            <label for="quantity" class=" form-control-label"><small class="form-text text-muted">Quantity</small></label>
+                            <label for="quantity" class=" form-control-label"><small class="form-text text-muted">Quantity <span class="color-red">*</span></small></label>
                             <input type="text" id="quantity" name="quantity" class="form-control">
                         </div>
                         <div class="col-sm-6">
-                            <label for="staff_name" class=" form-control-label"><small class="form-text text-muted">Staff Name</small></label>
+                            <label for="staff_name" class=" form-control-label"><small class="form-text text-muted">Staff Name <span class="color-red">*</span></small></label>
                             <input type="text" id="staff_name" name="staff_name" class="form-control">
                         </div>
                     </div> 
                     <div class="form-group row col-sm-12"> 
                         <div class="col-sm-6">
-                            <label for="date_taken" class="form-control-label"><small class="form-text text-muted">Date taken</small></label>
+                            <label for="date_taken" class="form-control-label"><small class="form-text text-muted">Date taken <span class="color-red">*</span></small></label>
                             <div class="input-group">
                                 <input id="date_taken" name="date_taken" class="form-control" autocomplete="off">
                                 <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
@@ -171,10 +173,10 @@
                         <input type="hidden" id="id" name="id" value="">
                         <div class="form-group row col-sm-12">
                     	<div class="col-sm-12">
-                            <label for="department" class=" form-control-label"><small class="form-text text-muted">Department</small></label>
+                            <label for="department" class=" form-control-label"><small class="form-text text-muted">Department <span class="color-red">*</span></small></label>
                             <div>
                                 <?php
-                                $department_code = mysqli_query ( $conn_admin_db, "SELECT department_id, department_code FROM stationary_department");
+                                $department_code = mysqli_query ( $conn_admin_db, "SELECT department_id, department_name FROM stationary_department");
                                 db_select ($department_code, 'department_code', '','','-select-','form-control','');
                                 ?>
                             </div>
@@ -182,7 +184,7 @@
                         </div>                   
                         <div class="form-group row col-sm-12">
                         	<div class="col-sm-12">
-                                <label for="item" class=" form-control-label"><small class="form-text text-muted">Item</small></label>
+                                <label for="item" class=" form-control-label"><small class="form-text text-muted">Item <span class="color-red">*</span></small></label>
                                 <div>
                                     <?php
                                     $item_name = mysqli_query ( $conn_admin_db, "SELECT id, item_name FROM stationary_item");
@@ -193,17 +195,17 @@
                         </div>
                         <div class="form-group row col-sm-12">
                         	<div class="col-sm-6">
-                                <label for="qty" class=" form-control-label"><small class="form-text text-muted">Quantity</small></label>
+                                <label for="qty" class=" form-control-label"><small class="form-text text-muted">Quantity <span class="color-red">*</span></small></label>
                                 <input type="text" id="qty" name="qty" class="form-control">
                             </div>
                             <div class="col-sm-6">
-                                <label for="s_name" class=" form-control-label"><small class="form-text text-muted">Staff Name</small></label>
+                                <label for="s_name" class=" form-control-label"><small class="form-text text-muted">Staff Name <span class="color-red">*</span></small></label>
                                 <input type="text" id="s_name" name="s_name" class="form-control">
                             </div>
                         </div> 
                         <div class="form-group row col-sm-12"> 
                             <div class="col-sm-6">
-                                <label for="date" class="form-control-label"><small class="form-text text-muted">Date taken</small></label>
+                                <label for="date" class="form-control-label"><small class="form-text text-muted">Date taken <span class="color-red">*</span></small></label>
                                 <div class="input-group">
                                     <input id="date" name="date" class="form-control" autocomplete="off">
                                     <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>

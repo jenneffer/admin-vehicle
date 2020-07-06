@@ -345,11 +345,4 @@
     }
   </script>
 </body>
-<style>
- #printableArea{ 
-     font-size:14px; 
-     margin:0px; 
-     padding:.5rem; 
-} 
-</style>
 </html>

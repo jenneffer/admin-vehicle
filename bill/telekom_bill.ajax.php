@@ -9,7 +9,7 @@ $data = isset($_POST['data']) ? $_POST['data'] : "";
 $id = isset($_POST['id']) ? $_POST['id'] : "";
 
 $telefon_list = isset($_POST['telefon_list']) ? $_POST['telefon_list'] : "";
-$telco_acc_id = isset($_POST['telco_acc_id']) ? $_POST['telco_acc_id'] : "";
+$acc_id = isset($_POST['acc_id']) ? $_POST['acc_id'] : "";
 if( $action != "" ){
     switch ($action){
         case 'add_new_account':
@@ -25,11 +25,11 @@ if( $action != "" ){
             break;
             
         case 'add_new_telefon':
-            add_new_telefon($telco_acc_id, $telefon_list);
+            add_new_telefon($acc_id, $telefon_list);
             break;
             
         case 'retrieve_telefon_list':
-            retrieve_telefon_list($telco_acc_id);
+            retrieve_telefon_list($acc_id);
             break;
             
         case 'add_new_bill':
@@ -41,32 +41,54 @@ if( $action != "" ){
 }
 
 function add_new_bill($data){
-    
+    global $conn_admin_db;
     $param = array();
     parse_str($data, $param); //unserialize jquery string data 
-    
-    $telco_acc_id = $param['telco_acc_id'];
+    $acc_id = $param['acc_id'];
     $tel_count = $param['tel_count'];
-    $from_date = $param['from_date'];
-    $to_date = $param['to_date'];
-    $paid_date = $param['paid_date'];
-    $due_date = $param['due_date'];
+    $from_date = dateFormat($param['from_date']);
+    $to_date = dateFormat($param['to_date']);
+    $paid_date = dateFormat($param['paid_date']);
+    $due_date = dateFormat($param['due_date']);
     $bill_no = $param['bill_no'];
     $monthly_fee = $param['monthly_fee'];
     $cr_adj = $param['cr_adjustment'];
-    
+    $rebate = $param['rebate'];
+    $cheque_no = $param['cheque_no'];
+    $other_charges = $param['other_charges'];    
     $phone_usage = [];
+    $total_phone_usage = 0;
     for ($i=1; $i <= $tel_count; $i++){
-        $phone_usage[] = $param['name_'.$i];
+        $total_phone_usage += $param['name_'.$i];
+        $phone_usage[$param['phone_'.$i]] = $param['name_'.$i];
     }
+
+    $gst_sst = number_format(($monthly_fee + $other_charges + $total_phone_usage) * 6/100, 2);
+    $amount = $monthly_fee + $other_charges + $total_phone_usage + $gst_sst + $rebate + $cr_adj;
+    $rounded = round_up($amount);
+    $adjustment = number_format(($rounded-$amount), 2);
+    $total_amt = $amount + $adjustment;
+    $query = "INSERT INTO bill_telekom (acc_id, bill_no, cheque_no, date_start, date_end, paid_date, due_date, monthly_bill, credit_adjustment,gst_sst, amount, rebate, adjustment, other_charges)
+             VALUES('$acc_id','$bill_no', '$cheque_no','$from_date', '$to_date','$paid_date', '$due_date', '$monthly_fee', '$cr_adj','$gst_sst','$total_amt', '$rebate', '$adjustment','$other_charges')";
     
+    $result = mysqli_query($conn_admin_db, $query);
     
+    if(!empty($phone_usage)){
+        $value = [];
+        foreach ($phone_usage as $telefon_id => $telefon_usage){
+            $value[] = "('$telefon_id', '$acc_id', '$to_date',now(), '$telefon_usage')";
+        }
+        $values = implode(",", $value);
+        $qry = "INSERT INTO bill_telefon_usage (telefon_id, acc_id, date, date_added, usage_rm) VALUES".$values;
+        
+        $rst = mysqli_query($conn_admin_db, $qry) or die(mysqli_error($conn_admin_db));
+    }
     
 }
 
-function retrieve_telefon_list($telco_acc_id){
+function retrieve_telefon_list($acc_id){
     global $conn_admin_db;
-    $query = "SELECT * FROM bill_telefon_list WHERE bt_id='$telco_acc_id'";
+    $query = "SELECT * FROM bill_telefon_list WHERE bt_id='$acc_id' AND status='1'";
     $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
     $data = [];
     while ($row = mysqli_fetch_assoc($result)) {
@@ -75,14 +97,14 @@ function retrieve_telefon_list($telco_acc_id){
     echo json_encode($data);
 }
 
-function add_new_telefon($telco_acc_id, $telefon_list){
+function add_new_telefon($acc_id, $telefon_list){
     global $conn_admin_db;
     foreach ($telefon_list as $tel){
         $telefon = $tel['telefon'];
         $type = $tel['type'];
         
         
-        $values[] = "('$telco_acc_id', '$telefon', '$type')";
+        $values[] = "('$acc_id', '$telefon', '$type')";
         
     }
     

@@ -41,21 +41,27 @@ global $conn_admin_db;
             <div class="animated fadeIn">
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="card">
+                        <div class="card" id="printableArea">
                             <div class="card-header">
                                 <strong class="card-title">Jabatan Air</strong>
                             </div>     
-                           <div class="card-body">
-                           <br>                            
-                            <button type="button" class="btn btn-primary mb-1 col-md-2" data-toggle="modal" data-target="#addItem">
-                               Add New 
-							</button>
+                           <div class="card-body">                                                       
+							<div class="form-group row col-sm-12">
+								<div class="col-sm-2">
+									<button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addItem">
+                                       Add New Accounts
+        							</button>
+								</div>
+								<div>
+									<span class="color-red"> ** To add new record of usage, please click the hyperlink in Reference No. column</span>
+								</div>								
+							</div>
                                 <table id="item-data-table" class="table table-striped table-bordered">
+                                	
                                     <thead>
                                         <tr>
-                                            <th>No.</th>
-											<th>Company</th>
-											<th>Account No.</th>
+                                            <th>Reference No.</th>
+											<th>Company</th>											
 											<th>Owner</th>
 											<th>Location</th>
 											<th>Deposit (RM)</th>
@@ -73,9 +79,8 @@ global $conn_admin_db;
                                                     $count++;                                                    
                                                     ?>
                                                     <tr>
-                                                        <td><?=$count?>.</td>
+                                                    	<td><a href="jabatan_air_account_details.php?id=<?=$row['id']?>" target="_blank" style="color:blue;"><?=$row['account_no']?></a></td>                                                        
                                                         <td><?=strtoupper($row['company'])?></td>
-                                                        <td><a href="jabatan_air_account_details.php?id=<?=$row['id']?>" target="_blank" style="color:blue;"><?=$row['account_no']?></a></td>
                                                         <td><?=$row['owner']?></td>
                                                         <td><?=$row['location']?></td>
                                                         <td><?=$row['deposit']?></td>
@@ -103,7 +108,7 @@ global $conn_admin_db;
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title">Add New</h4>
+                        <h4 class="modal-title">Add New Account</h4>
                     </div>
                     <div class="modal-body">
                     <form role="form" method="POST" action="" id="add_form">                    
@@ -112,7 +117,7 @@ global $conn_admin_db;
                             <label for="company" class=" form-control-label"><small class="form-text text-muted">Company</small></label>
                             <div>
                                 <?php
-                                    $company = mysqli_query ( $conn_admin_db, "SELECT id, code FROM company");
+                                    $company = mysqli_query ( $conn_admin_db, "SELECT id, UPPER(name) FROM company");
                                     db_select ($company, 'company', '','','-select-','form-control','');
                                 ?>
                             </div>
@@ -297,7 +302,7 @@ global $conn_admin_db;
         $('#item-data-table').DataTable({
         	'columnDefs': [
           	  {
-          	      "targets": [5], // your case first column
+          	      "targets": [4], // your case first column
           	      "className": "text-right", 
           	      "render": $.fn.dataTable.render.number(',', '.', 2, '')               	                      	        	     
           	 }
@@ -311,7 +316,8 @@ global $conn_admin_db;
         			method:"POST",
         			data:{action:'retrieve_account', id:id},
         			dataType:"json",
-        			success:function(data){            			        			
+        			success:function(data){ 
+            			console.log(data);           			        			
         				$('#id').val(id);					
                         $('#item_id').val(data.item_id);      
                         $('#stk_in').val(data.stock_in);                        

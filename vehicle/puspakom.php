@@ -3,24 +3,6 @@
 	require_once('../function.php');
 	require_once('../check_login.php');
 	global $conn_admin_db;
-// 	if(isset($_SESSION['cr_id'])) {
-// 		$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-// 		$url = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-// 		$query = parse_url($url, PHP_URL_QUERY);
-// 		parse_str($query, $params);
-		
-// 		// get id
-// 		$userId = $_SESSION['cr_id'];
-// 		$name = $_SESSION['cr_name'];
-		
-// 	} else {
-// 		$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-// 		$url = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-// 		$PrevURL= $url;
-// 		header("Location: ../login.php?RecLock=".$PrevURL);
-// 	}
-	
-	
 	$date_start = isset($_POST['date_start']) ? $_POST['date_start'] : date('01-m-Y');
 	$date_end = isset($_POST['date_end']) ? $_POST['date_end'] : date('t-m-Y');
 ?>
@@ -104,19 +86,17 @@
                                     <div class="col-sm-3">
                                         <label for="date_start" class="form-control-label"><small class="form-text text-muted">Date Start</small></label>
                                         <div class="input-group">
-                                          <input type="text" id="date_start" name="date_start" class="form-control" value="<?=$date_start?>" autocomplete="off">
-                                          <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
+                                          <input type="text" id="date_start" name="date_start" class="form-control form-control-sm" value="<?=$date_start?>" autocomplete="off">                                          
                                         </div>                            
                                     </div>
                                     <div class="col-sm-3">
                                         <label for="date_end" class="form-control-label"><small class="form-text text-muted">Date End</small></label>
                                         <div class="input-group">
-                                          <input type="text" id="date_end" name="date_end" class="form-control" value="<?=$date_end?>" autocomplete="off">
-                                          <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
+                                          <input type="text" id="date_end" name="date_end" class="form-control form-control-sm " value="<?=$date_end?>" autocomplete="off">                                          
                                         </div>                             
                                     </div>
                                     <div class="col-sm-4">                                    	
-                                    	<button type="submit" class="btn btn-primary button_search ">View</button>
+                                    	<button type="submit" class="btn btn-sm btn-primary button_search ">View</button>
                                     </div>
                                  </div>    
                             </form>
@@ -130,8 +110,8 @@
 											<th rowspan="2">Vehicle Reg No.</th>
                                             <th rowspan="2">Company</th>
 											<th colspan="2" class="text-center">Task</th>
-											<th rowspan="2">Runner</th>
-											<th rowspan="2">&nbsp;</th>
+											<th rowspan="2">Remark</th>
+											<th rowspan="2">Action</th>
                                         </tr>
                                         <tr>
 											<th>Puspakom</th>
@@ -163,29 +143,30 @@
                             <div class="form-group col-6">
                                 <label for="vehicle_reg_no" class=" form-control-label"><small class="form-text text-muted">Vehicle Reg No.</small></label>
                                 <?php
-                                    $vehicle = mysqli_query ( $conn_admin_db, "SELECT vv_id, UPPER(vv_vehicleNo) FROM vehicle_vehicle WHERE status='1'");
+                                    $vehicle = mysqli_query ( $conn_admin_db, "SELECT vv_id, UPPER(vv_vehicleNo) FROM vehicle_vehicle WHERE status='1' AND vv_category='2'"); //display lorry only
                                     db_select ($vehicle, 'vehicle_reg_no', '','','-select-','form-control','');
                                 ?>
-                            </div>   
-                            <div class="form-group col-6">
-                                <label for="runner" class=" form-control-label"><small class="form-text text-muted">Runner</small></label>
-                                <input type="text" id="runner" name="runner" class="form-control">
-                            </div>                                     
-                        </div>
-                        <div class="form-group row col-sm-12">
+                            </div>  
                             <div class="col-sm-6">
                                 <label for="fitness_date" class="form-control-label"><small class="form-text text-muted">Fitness due date</small></label>
                                 <div class="input-group">
                                   <input type="text" id="fitness_date" name="fitness_date" class="form-control" autocomplete="off">
                                   <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
                                 </div>                       
-                            </div>
+                            </div> 
+                                                                 
+                        </div>
+                        <div class="form-group row col-sm-12">                            
                             <div class="col-sm-6">
                                 <label for="roadtax_due_date" class="form-control-label"><small class="form-text text-muted">Roadtax due date</small></label>
                                 <div class="input-group">
                                   <input type="text" id="roadtax_due_date" name="roadtax_due_date" class="form-control" autocomplete="off">
                                   <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
                                 </div> 
+                            </div>
+                            <div class="form-group col-6">
+                                <label for="remark" class=" form-control-label"><small class="form-text text-muted">Remark</small></label>
+                                <textarea id="remark" name="remark" class="form-control"></textarea>
                             </div>
                          </div>
                     <div class="modal-footer">
@@ -252,8 +233,6 @@
             var company = this.value;
             $('#company').val(company);
         });
-
-        
     	var table = $('#puspakom_datatable').DataTable({
          	"processing": true,
          	"serverSide": true,
@@ -276,7 +255,7 @@
 			$.ajax({
 					url:"puspakom.all.ajax.php",
 					method:"POST",
-					data:{action:'retrive_puspakom', vp_id:vp_id},
+					data:{action:'retrive_puspakom', id:vp_id},
 					dataType:"json",
 					success:function(data){	
                         var fitnessDate = dateFormat(data.vp_fitnessDate);
@@ -285,7 +264,7 @@
                         $('#vehicle_reg_no').val(data.vv_id);  
                         $('#fitness_date').val(fitnessDate);  
                         $('#roadtax_due_date').val(rTaxdueDate);  
-                        $('#runner').val(data.vp_runner);                        
+                        $('#remark').val(data.vp_remark);                        
                         $('#editItem').modal('show');
 	  				}
 				});
@@ -322,19 +301,20 @@
           }  
           else if($('#roadtax_due_date').val() == ''){  
                alert("Road tax due date is required");  
-          }  
-          else if($('#runner').val() == ''){  
-               alert("Runner name is required");  
-          }          
+          }                      
           else{  
                $.ajax({  
                     url:"puspakom.all.ajax.php",  
                     method:"POST",  
                     data:{action:'update_puspakom', data : $('#update_form').serialize()},  
                     success:function(data){   
-                         $('#editItem').modal('hide');  
-                         $('#bootstrap-data-table').html(data); 
-                         location.reload();		 
+                        console.log(data);
+                        if(data){
+                        	$('#editItem').modal('hide');  
+                        	alert("Added Successfully!");
+                        	location.reload();		
+                            window.location = "puspakom.php";  
+						}                             
                     }  
                });  
           }  
@@ -363,11 +343,4 @@
     }
   </script>
 </body>
-<style>
- #printableArea{ 
-     font-size:14px; 
-     margin:0px; 
-     padding:.5rem; 
-} 
-</style>
 </html>

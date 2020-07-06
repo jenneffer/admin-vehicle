@@ -46,21 +46,26 @@ global $conn_admin_db;
             <div class="animated fadeIn">
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="card">
+                        <div class="card" id="printableArea">
                             <div class="card-header">
                                 <strong class="card-title">TELCO (DIGI,CELCOM,MAXIS)</strong>
                             </div>     
-                           <div class="card-body">
-                           <br>                            
-                            <button type="button" class="btn btn-primary mb-1 col-md-2" data-toggle="modal" data-target="#addItem">
-                               Add New 
-							</button>
+                           <div class="card-body">                         
+                            	<div class="form-group row col-sm-12">
+    								<div class="col-sm-2">
+    									<button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addItem">
+                                           Add New Accounts
+            							</button>
+    								</div>
+    								<div>
+    									<span class="color-red"> ** To add new record of usage, please click the hyperlink in Reference No. column</span>
+    								</div>								
+    							</div>
                                 <table id="item-data-table" class="table table-striped table-bordered">
                                     <thead>
                                         <tr>
-                                            <th>No.</th>
-											<th>Company</th>
-											<th>Account No.</th>
+                                            <th>Reference No.</th>
+											<th>Company</th>											
 											<th>Telco</th>
 											<th>User</th>
 											<th>Position</th>
@@ -79,9 +84,8 @@ global $conn_admin_db;
                                                     $comp_name = itemName("SELECT name FROM company WHERE id='".$row['company_id']."'")
                                                     ?>
                                                     <tr>
-                                                        <td><?=$count?>.</td>
+                                                    	<td><a href="telco_account_details.php?id=<?=$row['id']?>" target="_blank" style="color:blue;"><?=$row['account_no']?></a></td>
                                                         <td><?=$comp_name?></td>
-                                                        <td><a href="telco_account_details.php?id=<?=$row['id']?>" target="_blank" style="color:blue;"><?=$row['account_no']?></a></td>
                                                         <td><?=ucfirst($row['telco_type'])?></td>
                                                         <td><?=$row['user']?></td>
                                                         <td><?=$row['position']?></td>                                                        
@@ -116,7 +120,7 @@ global $conn_admin_db;
                             <label for="company" class=" form-control-label"><small class="form-text text-muted">Company</small></label>
                             <div>
                                 <?php
-                                    $company = mysqli_query ( $conn_admin_db, "SELECT id, code FROM company");
+                                    $company = mysqli_query ( $conn_admin_db, "SELECT id, UPPER(name) FROM company");
                                     db_select ($company, 'company', '','','-select-','form-control','');
                                 ?>
                             </div>

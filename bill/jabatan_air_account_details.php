@@ -7,7 +7,7 @@
     $id = isset($_GET['id']) ? $_GET['id'] : "";
     $year_select = isset($_POST['year_select']) ? $_POST['year_select'] : date('Y');
     ob_start();
-    selectYear('year_select',$year_select,'submit()','','form-control','','');
+    selectYear('year_select',$year_select,'submit()','','form-control form-control-sm','','');
     $html_year_select = ob_get_clean();
     
     $query = "SELECT * FROM bill_jabatan_air_account WHERE bill_jabatan_air_account.id = '$id'";
@@ -21,9 +21,7 @@
     $location = $row['location'];
     $account_no = $row['account_no'];
     $total_deposit = $row['deposit'] + $row['additional_deposit'];
-    
-    //get the telefon_list
-    
+
     $details_query = "SELECT MONTHNAME(date_end) AS month_name, meter_reading_from, meter_reading_to, 
             (meter_reading_to - meter_reading_from) AS total_usage, usage_70, rate_70,usage_71, rate_71,credit_adjustment, 
             adjustment,date_start, date_end,amount,due_date, cheque_no,paid_date
@@ -84,25 +82,25 @@
             <div class="animated fadeIn">
                 <div class="row">
                 	<div class="col-md-12">
-                        <div class="card">
+                        <div class="card" id="printableArea">
                             <div class="card-header">                            
                                 <strong class="card-title">Account Details</strong>
                             </div>     
                             <div class="card-body">                                       
                                 <div class="col-sm-12">
-                                    <label for="company" class=" form-control-label"><small class="form-text text-muted">Company : <?=$company?></small></label>                                        
+                                    <label for="company" class=" form-control-label">Company : <?=$company?></label>                                        
                                 </div>
                                 <div class="col-sm-12">
-                                	<label for="owner" class=" form-control-label"><small class="form-text text-muted">Owner : <?=$owner?></small></label>                                    
+                                	<label for="owner" class=" form-control-label">Owner : <?=$owner?></label>                                    
                                 </div>
                                 <div class="col-sm-12">
-                                	<label for="location" class=" form-control-label"><small class="form-text text-muted">Location : <?=$location?></small></label>                                    	
+                                	<label for="location" class=" form-control-label">Location : <?=$location?></label>                                    	
                                 </div>
                                 <div class="col-sm-12">
-                                	<label for="account_no" class=" form-control-label"><small class="form-text text-muted">Account No. : <?=$account_no?></small></label>                                    
+                                	<label for="account_no" class=" form-control-label">Account No. : <?=$account_no?></label>                                    
                                 </div>     
                                 <div class="col-sm-12">
-                                	<label for="deposit" class=" form-control-label"><small class="form-text text-muted">Deposit : RM<?=$total_deposit?></small></label>                                    
+                                	<label for="deposit" class=" form-control-label">Deposit : RM<?=$total_deposit?></label>                                    
                                 </div>                                                               
                             	<hr>
                             	<form action="" method="post">
@@ -114,7 +112,7 @@
                                     		<?=$html_year_select?>
                                     	</div>
                                     	<div class="col-sm-4">
-                                    		<button type="button" class="btn btn btn-primary button_add" data-toggle="modal" data-target="#addItem">Add New Record</button>
+                                    		<button type="button" class="btn btn-sm btn btn-primary button_add" data-toggle="modal" data-target="#addItem">Add New Record</button>
                                     	</div>
                                 	</div>
                             	</form>                            	
@@ -216,7 +214,7 @@
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                    <h4 class="modal-title">Add New</h4>
+                    <h4 class="modal-title">Add New Record</h4>
                 </div>
                 <div class="modal-body">
                     <form role="form" method="POST" action="" id="add_form">  

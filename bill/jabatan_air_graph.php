@@ -136,16 +136,16 @@ tr:nth-child(even) {
                   		<label for="year_select" class="form-control-label"><small class="form-text text-muted">Year</small></label>
                   		<?=$html_year_select?>
                   	</div>
-                  	<div class="col-sm-2">
-            			<label for="tariff" class="form-control-label"><small class="form-text text-muted">Tariff</small></label>
-                		<select name="tariff" id="tariff" class="form-control" onchange="this.form.submit()">
-                			<option value="">All</option>
-                			<option value="CM1" <?php if($tariff=="CM1") echo "selected"; else echo ""; ?>>CM1</option>
-                			<option value="DM" <?php if($tariff=="DM") echo "selected"; else echo ""; ?>>DM</option>
-                			<option value="ID1" <?php if($tariff=="ID1") echo "selected"; else echo ""; ?>>ID1</option>
-                			<option value="ID2" <?php if($tariff=="ID2") echo "selected"; else echo ""; ?>>ID2</option>
-                		</select>
-                  	</div>
+<!--                   	<div class="col-sm-2"> -->
+<!--             			<label for="tariff" class="form-control-label"><small class="form-text text-muted">Tariff</small></label> -->
+<!--                 		<select name="tariff" id="tariff" class="form-control" onchange="this.form.submit()"> -->
+<!--                 			<option value="">All</option> -->
+<!--                			<option value="CM1" <?php if($tariff=="CM1") echo "selected"; else echo ""; ?>>CM1</option>
+<!--                			<option value="DM" <?php if($tariff=="DM") echo "selected"; else echo ""; ?>>DM</option>
+<!--                			<option value="ID1" <?php if($tariff=="ID1") echo "selected"; else echo ""; ?>>ID1</option>
+<!--                			<option value="ID2" <?php if($tariff=="ID2") echo "selected"; else echo ""; ?>>ID2</option>
+<!--                 		</select> -->
+<!--                   	</div> -->
             	    <div class="col-sm-4">
             		<label for="tariff" class="form-control-label"><small class="form-text text-muted">Company</small></label>
             		<?php                                            
@@ -154,7 +154,7 @@ tr:nth-child(even) {
                     ?>
             		</div>
             		<div class="col-sm-4">
-            		<label for="location" class="form-control-label"><small class="form-text text-muted">Location</small></label>
+            		<label for="location" class="form-control-label"><small class="form-text text-muted">Account No./Location</small></label>
             		<?php 
             		
                         $location = mysqli_query ( $conn_admin_db, "SELECT location,UPPER(location) FROM bill_jabatan_air_account WHERE company_id='$select_company' AND status='1' GROUP BY location");

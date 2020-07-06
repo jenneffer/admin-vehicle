@@ -41,12 +41,11 @@ global $conn_admin_db;
             <div class="animated fadeIn">
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="card">
+                        <div class="card" id="printableArea">
                             <div class="card-header">
                                 <strong class="card-title">Management Fee</strong>
                             </div>     
-                           <div class="card-body">
-                           <br>                            
+                           <div class="card-body">                          
                             <button type="button" class="btn btn-primary mb-1 col-md-2" data-toggle="modal" data-target="#addItem">
                                Add New 
 							</button>

@@ -139,26 +139,26 @@
                             </div>
                         </div>
                         
-                        <div class="card">
-                                <div class="card-header">
-                                    <strong class="card-title">Puspakom</strong>
-                                </div>
-                                <div class="card-body">
-                                    <div class="form-group row col-sm-12"> 
-                                    <div class="col-sm-6">
-                                        <label for="fitness_date" class="form-control-label"><small class="form-text text-muted">Fitness due date</small></label>
-                                        <div class="input-group">
-                                            <input id="fitness_date" name="fitness_date" class="form-control" autocomplete="off" >
-                                            <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
-                                        </div>                                            
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <label for="runner" class=" form-control-label"><small class="form-text text-muted">Runner</small></label>
-                                        <input type="text" id="runner" name="runner" placeholder="Enter runner's name" class="form-control">
-                                    </div>
-                                    </div>
-                                </div>
-                            </div>
+<!--                         <div class="card"> -->
+<!--                                 <div class="card-header"> -->
+<!--                                     <strong class="card-title">Puspakom</strong> -->
+<!--                                 </div> -->
+<!--                                 <div class="card-body"> -->
+<!--                                     <div class="form-group row col-sm-12">  -->
+<!--                                     <div class="col-sm-6"> -->
+<!--                                         <label for="fitness_date" class="form-control-label"><small class="form-text text-muted">Fitness due date</small></label> -->
+<!--                                         <div class="input-group"> -->
+<!--                                             <input id="fitness_date" name="fitness_date" class="form-control" autocomplete="off" > -->
+<!--                                             <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div> -->
+<!--                                         </div>                                             -->
+<!--                                     </div> -->
+<!--                                     <div class="col-sm-6"> -->
+<!--                                         <label for="runner" class=" form-control-label"><small class="form-text text-muted">Runner</small></label> -->
+<!--                                         <input type="text" id="runner" name="runner" placeholder="Enter runner's name" class="form-control"> -->
+<!--                                     </div> -->
+<!--                                     </div> -->
+<!--                                 </div> -->
+<!--                             </div> -->
                     </div>
 
                     <div class="col-md-6">

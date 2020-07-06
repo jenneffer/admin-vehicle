@@ -4,20 +4,12 @@ require_once('../function.php');
 require_once('../check_login.php');
 global $conn_admin_db;
 
-$select_account = isset($_POST['acc_no']) ? $_POST['acc_no'] : "";
+$select_company = isset($_POST['company']) ? $_POST['company'] : "";
 $year_select = isset($_POST['year_select']) ? $_POST['year_select'] : date("Y");
 ob_start();
 selectYear('year_select',$year_select,'','','form-control','','');
 $html_year_select = ob_get_clean();
 
-$company_name = "";
-$acc_no = "";
-$ref_no = "";
-if(!empty($select_account)){
-    $company_name = itemName("SELECT name FROM company WHERE id IN (SELECT company_id FROM bill_account_setup WHERE acc_id = '$select_account')");
-    $acc_no = itemName("SELECT account_no FROM bill_account_setup WHERE acc_id='$select_account'");
-    $ref_no = itemName("SELECT reference FROM bill_account_setup WHERE acc_id='$select_account'");
-}
 ?>
 
 <!doctype html>
@@ -59,7 +51,7 @@ if(!empty($select_account)){
                 <div class="row">
 
                     <div class="col-md-12">
-                        <div class="card">
+                        <div class="card" id="printableArea">
                             <div class="card-header">
                                 <strong class="card-title">Telekom</strong>
                             </div>
@@ -67,10 +59,10 @@ if(!empty($select_account)){
                                 <form id="myform" enctype="multipart/form-data" method="post" action="">                	                   
 									<div class="form-group row col-sm-12">
 										<div class="col-sm-3">
-                                            <label for="date_start" class="form-control-label"><small class="form-text text-muted">Account No.</small></label>
+                                            <label for="date_start" class="form-control-label"><small class="form-text text-muted">Company</small></label>
                                             <?php
-                                                $jabatan_air_acc = mysqli_query ( $conn_admin_db, "SELECT acc_id , CONCAT((SELECT c.code FROM company c WHERE c.id = bill_account_setup.company_id),' - ',bill_account_setup.account_no ) AS comp_acc FROM bill_account_setup WHERE bill_type='3'");
-                                                db_select ($jabatan_air_acc, 'acc_no', $select_account,'','-select-','form-control','');
+                                                $company = mysqli_query ( $conn_admin_db, "SELECT company_id,(SELECT UPPER(name) FROM company WHERE id=bill_telekom_account.company_id)company_name FROM bill_telekom_account GROUP BY company_id");
+                                                db_select ($company, 'company', $select_company,'submit()','ALL','form-control','');
                                             ?>                           
                                         </div>
                                         <div class="col-sm-2">
@@ -88,7 +80,10 @@ if(!empty($select_account)){
                                 <table id="telekom_table" class="table table-striped table-bordered">
                                     <thead>
                                         <tr>
-                                       		<th>Description</th>
+                                        	<th>No.</th>
+                                       		<th>Account No.</th>
+                                       		<th>Company</th>
+                                       		<th>Owner</th>
                         					<th scope='col'>Jan</th>
                                             <th scope='col'>Feb</th>
                                             <th scope='col'>Mar</th>
@@ -105,7 +100,25 @@ if(!empty($select_account)){
                                         </tr>                                        									
                                     </thead>
                                     <tbody>                                      
-                                    </tbody>                                   
+                                    </tbody> 
+                                    <tfoot>
+                                    	<tr>
+                                            <th colspan="4" class="text-right">Grand Total</th>
+                                            <th class="text-right"></th>
+                                            <th class="text-right"></th>
+                                            <th class="text-right"></th>
+                                            <th class="text-right"></th>
+                                            <th class="text-right"></th>
+                                            <th class="text-right"></th>
+                                            <th class="text-right"></th>
+                                            <th class="text-right"></th>
+                                            <th class="text-right"></th>
+                                            <th class="text-right"></th>
+                                            <th class="text-right"></th>
+                                            <th class="text-right"></th>
+                                            <th class="text-right"></th>
+                                        </tr>
+                                    </tfoot>                                   
                                 </table>
                             </div>
                         </div>
@@ -138,11 +151,11 @@ if(!empty($select_account)){
 	
 	<script type="text/javascript">
       $(document).ready(function() {
-    	  var company_name = '<?=$company_name;?>';
+    	  var company_name = '';
           var year = '<?=$year_select;?>';
           var res = company_name.concat('_'+year);
-          var acc_no = '<?=$acc_no;?>';
-          var ref_no = '<?=$ref_no?>';
+          var acc_no = '';
+          var ref_no = '';
 
 //           if ( config.header) {
 //               var tablecaption = [config.message];
@@ -228,15 +241,31 @@ if(!empty($select_account)){
                   "type":"POST",       	        	
              	 	"data" : function ( data ) {
       					data.action = 'report_telekom';		
-      					data.filter = '<?=$select_account?>';
+      					data.filter = '<?=$select_company?>';
       					data.year = '<?=$year_select?>';		
          	        }         	                 
                  },
+                 "footerCallback": function( tfoot, data, start, end, display ) {
+        				var api = this.api(), data;
+        				var numFormat = $.fn.dataTable.render.number( '\,', '.', 2, '' ).display;
+
+       				api.columns([4,5,6,7,8,9,10,11,12,13,14,15,16], { page: 'current'}).every(function() {
+       					var sum = this
+       				    .data()
+       				    .reduce(function(a, b) {
+       				    var x = parseFloat(a) || 0;
+       				    var y = parseFloat(b) || 0;
+       				    	return x + y;
+       				    }, 0);			
+       				       
+       				    $(this.footer()).html(numFormat(sum));
+       				}); 
+        			},
              'columnDefs': [
            	  {
-           	      "targets": [1,2,3,4,5,6,7,8,9,10,11,12,13], // your case first column
+           	      "targets": [4,5,6,7,8,9,10,11,12,13,14,15,16], // your case first column
            	      "className": "text-right", 
-           	      //"render": $.fn.dataTable.render.number(',', '.', 2, '')               	                      	        	     
+           	      "render": $.fn.dataTable.render.number(',', '.', 2, '')               	                      	        	     
            	 }
  			],
            });

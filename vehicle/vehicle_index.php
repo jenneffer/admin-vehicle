@@ -67,9 +67,13 @@ global $conn_admin_db;
                             <div><b>REPORT</b></div>
                             <div class="row">
                                 <div class="col-sm-2">&nbsp;</div>
-                                <div class="col-sm-8">To view the table report of each data category such as vehicle summons, roadtax, insurance, renewing schedule and also the expense graph by month, year or by company.</div>
+                                <div class="col-sm-8">To view the table report of each data category such as vehicle summons, roadtax, insurance and renewing schedule by month, year or by company.</div>
                                 <div class="col-sm-2">&nbsp;</div>
                             </div>
+                        </div>
+                        <div class="form-group col-sm-12 text-center">                      
+                            <div><b>GRAPH ANALYSIS</b></div>
+                            <div>To view graph analysis monthly, yearly or by company expenses</div>
                         </div>                        
                     </div>
                 </div>
@@ -105,11 +109,4 @@ $(document).ready(function() {
 });
 </script>
 </body>
-<style>
- #printableArea{ 
-     font-size:14px; 
-     margin:0px; 
-     padding:.5rem; 
-} 
-</style>
 </html>

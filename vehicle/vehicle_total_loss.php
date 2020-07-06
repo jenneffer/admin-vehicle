@@ -61,11 +61,11 @@
                             	    <div class="col-sm-3">                                        
                                         <?php
                                             $select_company = mysqli_query ( $conn_admin_db, "SELECT id, UPPER(name) FROM company WHERE vehicle_used='1' ORDER BY name ASC");
-                                            db_select ($select_company, 'select_company', $select_c,'','All Company','form-control','');
+                                            db_select ($select_company, 'select_company', $select_c,'submit()','All Company','form-control form-control-sm','');
                                         ?>                              
                                     </div>
                                     <div class="col-sm-1">                                    	
-                                    	<button type="submit" class="btn btn-primary button_search ">View</button>
+                                    	<button type="submit" class="btn btn-sm btn-primary button_search ">View</button>
                                     </div>
                             	</div>     
 							</form>
@@ -441,11 +441,4 @@
  	}
   </script>
 </body>
-<style>
- #printableArea{ 
-     font-size:14px; 
-     margin:0px; 
-     padding:.5rem; 
-} 
-</style>
 </html>

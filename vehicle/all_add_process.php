@@ -24,8 +24,8 @@
         $insurance_amount = $_POST['insurance_amount'];
         
         //puspakom
-        $fitness_date = isset($_POST['fitness_date']) ? dateFormat($_POST['fitness_date']) : '';
-        $runner = isset($_POST['runner']) ? $_POST['runner'] : '';
+//         $fitness_date = isset($_POST['fitness_date']) ? dateFormat($_POST['fitness_date']) : '';
+//         $runner = isset($_POST['runner']) ? $_POST['runner'] : '';
         
         //calculate the roadtax period
         $diff = abs(strtotime($roadtax_due_date) - strtotime($roadtax_from_date));
@@ -64,14 +64,14 @@
                             vi_updatedBy = '".$_SESSION['cr_id']."'") or die(mysqli_error($conn_admin_db));
         
         //insert into puspakom table
-        $sql_insert = mysqli_query($conn_admin_db, "INSERT INTO vehicle_puspakom SET
-                            vv_id = '".$vehicle_reg_no."',
-                            vp_vrt_id = '".$last_insert_id."',
-                            vp_fitnessDate = '".$fitness_date."',
-                            vp_roadtaxDueDate = '".$roadtax_due_date."',
-                            vp_runner = '".$runner."',
-                            vp_lastUpdated = now(),
-                            vp_updatedBy = '".$_SESSION['cr_id']."'") or die(mysqli_error($conn_admin_db));
+//         $sql_insert = mysqli_query($conn_admin_db, "INSERT INTO vehicle_puspakom SET
+//                             vv_id = '".$vehicle_reg_no."',
+//                             vp_vrt_id = '".$last_insert_id."',
+//                             vp_fitnessDate = '".$fitness_date."',
+//                             vp_roadtaxDueDate = '".$roadtax_due_date."',
+//                             vp_runner = '".$runner."',
+//                             vp_lastUpdated = now(),
+//                             vp_updatedBy = '".$_SESSION['cr_id']."'") or die(mysqli_error($conn_admin_db));
         
         if ($sql_insert && $sql_insert_ins) {
             alert ("Added successfully","roadtax.php");

@@ -13,7 +13,7 @@ $select_company = isset($_POST['company']) ? $_POST['company'] : "";
 
 $company_name = itemName("SELECT code FROM company WHERE id='$select_company'");
 ob_start();
-selectYear('year_select',$year_select,'submit()','','form-control','','');
+selectYear('year_select',$year_select,'submit()','','form-control form-control-sm','','');
 $html_year_select = ob_get_clean();
 
 $arr_report_type = array(
@@ -149,114 +149,89 @@ tr:nth-child(even) {
     <div id="right-panel" class="right-panel">
     <div class="content">            
         <div class="animated fadeIn">
-        	<form action="" method="post">
-            	<div class="form-group row col-sm-12">
-					<div class="col-sm-3">
-						<label for="report_type" class="form-control-label"><small class="form-text text-muted">Report Type</small></label>
-						<select name="report_type" id="report_type" class="form-control" onchange="this.form.submit()">
-						<?php foreach ($arr_report_type as $key => $rt){						
-						    $selected = ($key == $report_type) ? 'selected' : '';						    
-						    echo "<option $selected value='$key'>".$rt."</option>";
-                        }?>
-                        </select>
-					</div>
-					<div class="col-sm-4 by_company">
-                  		<label for="company" class="form-control-label"><small class="form-text text-muted">Company</small></label>
-                  		<?php
-                            $company = mysqli_query ( $conn_admin_db, "SELECT id,UPPER(name) FROM company WHERE vehicle_used='1' ORDER BY name ASC ");
-                            db_select ($company, 'company', $select_company,'submit()','All','form-control','','');
-                        ?>
-                  	</div>
-                  	<div class="col-sm-2">
-                  		<label for="year_select" class="form-control-label"><small class="form-text text-muted">Year</small></label>
-                  		<?=$html_year_select?>
-                  	</div>
-                  	<div class="col-sm-2">
-                  		<label for="category" class="form-control-label"><small class="form-text text-muted">Category</small></label>
-                  		<?php
-                            $category = mysqli_query ( $conn_admin_db, "SELECT vc_id,UPPER(vc_type) FROM vehicle_category ORDER BY vc_type ASC ");
-                            db_select ($category, 'category', $select_category,'submit()','All','form-control','','');
-                        ?>
-                  	</div>
-            	</div>
-        	</form>
-        	<br>
-            <div class="row">
-                <div class="col-sm-6 premium">            	
-                    <div class="card">                	
-                        <div class="card-body">                        
-                            <canvas id="premium-yearly"></canvas>                        
-                        </div>
+        <div class="row">
+        <div class="col-md-12">
+            <div class="card" id="printableArea">
+                <div class="card-header text-center">
+                    <strong class="card-title">WATER USAGE</strong>
+                </div>     
+                <div class="card-body">
+            	<form action="" method="post">
+                	<div class="form-group row col-sm-12">
+    					<div class="col-sm-3">
+    						<label for="report_type" class="form-control-label"><small class="form-text text-muted">Report Type</small></label>
+    						<select name="report_type" id="report_type" class="form-control form-control-sm" onchange="this.form.submit()">
+    						<?php foreach ($arr_report_type as $key => $rt){						
+    						    $selected = ($key == $report_type) ? 'selected' : '';						    
+    						    echo "<option $selected value='$key'>".$rt."</option>";
+                            }?>
+                            </select>
+    					</div>
+    					<div class="col-sm-4 by_company">
+                      		<label for="company" class="form-control-label"><small class="form-text text-muted">Company</small></label>
+                      		<?php
+                                $company = mysqli_query ( $conn_admin_db, "SELECT id,UPPER(name) FROM company WHERE vehicle_used='1' ORDER BY name ASC ");
+                                db_select ($company, 'company', $select_company,'submit()','All','form-control form-control-sm','','');
+                            ?>
+                      	</div>
+                      	<div class="col-sm-2">
+                      		<label for="year_select" class="form-control-label"><small class="form-text text-muted">Year</small></label>
+                      		<?=$html_year_select?>
+                      	</div>
+                      	<div class="col-sm-2">
+                      		<label for="category" class="form-control-label"><small class="form-text text-muted">Category</small></label>
+                      		<?php
+                                $category = mysqli_query ( $conn_admin_db, "SELECT vc_id,UPPER(vc_type) FROM vehicle_category ORDER BY vc_type ASC ");
+                                db_select ($category, 'category', $select_category,'submit()','All','form-control form-control-sm','','');
+                            ?>
+                      	</div>
+                	</div>
+            	</form>
+            	<br>
+                <div class="row">
+                    <div class="col-sm-6 premium">            	
+                        <canvas id="premium-yearly"></canvas>        
                     </div>
-                </div>
-                <div class="col-sm-6 sum_insured">
-                    <div class="card">
-                        <div class="card-body">                        
-                            <canvas id="sum-insured-yearly"></canvas>
-                        </div>
+                    <div class="col-sm-6 sum_insured">
+                        <canvas id="sum-insured-yearly"></canvas>
                     </div>
-                </div>
-    		</div>
-    		<div class="row">
-    			<div class="col-sm-6 roadtax">           	
-                    <div class="card">                	
-                        <div class="card-body">                        
-                            <canvas id="roadtax-yearly"></canvas>                        
-                        </div>
-                    </div>                    
-                </div>                
-    		</div>
-    		<div class="row">
-        		<div class="col-sm-6 company-monthly">            	
-        			<div class="card">                	 
-                        <div class="card-body">                         
-        					<canvas id="chart-premium-monthly"></canvas>                         
-                    	</div> 
-                    </div>                      
-                </div>
-                <div class="col-sm-6 company-monthly">            	
-        			<div class="card">                	 
-                        <div class="card-body">                         
-        					<canvas id="chart-sum-insured-monthly"></canvas>                         
-                    	</div> 
-                    </div>                      
-                </div>
-    		</div>	
-    		<div class="row">
-    			<div class="col-sm-6 company-monthly">            	
-        			<div class="card">                	 
-                        <div class="card-body">                         
-        					<canvas id="chart-roadtax-monthly"></canvas>                         
-                    	</div> 
-                    </div>                      
-                </div>
-    		</div>
-    		<div class="row">
-        		<div class="col-sm-6 monthly-by-company">            	
-        			<div class="card">                	 
-                        <div class="card-body">                         
-        					<canvas id="chart-company-monthly-premium"></canvas>                         
-                    	</div> 
-                    </div>                      
-                </div>
-                <div class="col-sm-6 monthly-by-company">            	
-        			<div class="card">                	 
-                        <div class="card-body">                         
-        					<canvas id="chart-company-monthly-si"></canvas>                         
-                    	</div> 
-                    </div>                      
-                </div>
-    		</div>
-    		<div class="row">
-    			<div class="col-sm-6 monthly-by-company">            	
-        			<div class="card">                	 
-                        <div class="card-body">                         
-        					<canvas id="chart-company-monthly-roadtax"></canvas>                         
-                    	</div> 
-                    </div>                      
-                </div>
-    		</div>		
-    	</div>
+        		</div>
+        		<div class="row">
+        			<div class="col-sm-6 roadtax">           	
+                        <canvas id="roadtax-yearly"></canvas>                          
+                    </div>                
+        		</div>
+        		<div class="row">
+            		<div class="col-sm-6 company-monthly">            	
+            			<canvas id="chart-premium-monthly"></canvas>                      
+                    </div>
+                    <div class="col-sm-6 company-monthly">            	
+            			<canvas id="chart-sum-insured-monthly"></canvas>                        
+                    </div>
+        		</div>	
+        		<div class="row">
+        			<div class="col-sm-6 company-monthly">            	
+            			<canvas id="chart-roadtax-monthly"></canvas>                      
+                    </div>
+        		</div>
+        		<div class="row">
+            		<div class="col-sm-6 monthly-by-company">            	
+            			<canvas id="chart-company-monthly-premium"></canvas>                            
+                    </div>
+                    <div class="col-sm-6 monthly-by-company">            	
+            			<canvas id="chart-company-monthly-si"></canvas>                           
+                    </div>
+        		</div>
+        		<div class="row">
+        			<div class="col-sm-6 monthly-by-company">            	
+            			<canvas id="chart-company-monthly-roadtax"></canvas>                      
+                    </div>
+        		</div>		
+        	</div>
+        	</div>
+        	</div>
+        	</div>
+        </div>
     </div>
     </div>
 

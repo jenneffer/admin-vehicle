@@ -4,24 +4,17 @@ require_once('../function.php');
 require_once('../check_login.php');
 global $conn_admin_db;
 
-$select_account = isset($_POST['acc_no']) ? $_POST['acc_no'] : "";
-
+$select_company = isset($_POST['company']) ? $_POST['company'] : "";
 $year_select = isset($_POST['year_select']) ? $_POST['year_select'] : date("Y");
 ob_start();
-selectYear('year_select',$year_select,'','','form-control','','');
+selectYear('year_select',$year_select,'submit()','','form-control form-control-sm','','');
 $html_year_select = ob_get_clean();
+
 $company_name = "";
-$acc_no = "";
-$location_name = "";
-$deposit = "";
-$tariff = "";
-if(!empty($select_account)){
-    $company_name = itemName("SELECT name FROM company WHERE id IN (SELECT company_id FROM bill_account_setup WHERE acc_id = '$select_account')");
-    $acc_no = itemName("SELECT account_no FROM bill_account_setup WHERE acc_id='$select_account'");
-    $tariff = itemName("SELECT tariff FROM bill_account_setup WHERE acc_id='$select_account'");
-    $deposit = itemName("SELECT deposit FROM bill_account_setup WHERE acc_id='$select_account'");
-    $location_name = itemName("SELECT (SELECT location_name FROM fireextinguisher_location WHERE location_id = bill_account_setup.location_id ) FROM bill_account_setup WHERE acc_id='$select_account'");
+if(!empty($select_company)){
+    $company_name = itemName("SELECT name FROM company WHERE id = '$select_company'");
 }
+
 ?>
 
 <!doctype html>
@@ -51,7 +44,7 @@ if(!empty($select_account)){
 
 <body>
     <!--Left Panel -->
-	<?php  include('../assets/nav/leftNav.php')?>
+	<?php include('../assets/nav/leftNav.php')?>
     <!-- Right Panel -->
     <?php include('../assets/nav/rightNav.php')?>
     <!-- /#header -->
@@ -61,9 +54,8 @@ if(!empty($select_account)){
         <div class="content">
             <div class="animated fadeIn">
                 <div class="row">
-
                     <div class="col-md-12">
-                        <div class="card">
+                        <div class="card" id="printableArea">
                             <div class="card-header">
                                 <strong class="card-title">SESB</strong>
                             </div>
@@ -71,71 +63,65 @@ if(!empty($select_account)){
                                 <form id="myform" enctype="multipart/form-data" method="post" action="">                	                   
                     	            <div class="form-group row col-sm-12">
                                         <div class="col-sm-3">
-                                            <label for="acc_no" class="form-control-label"><small class="form-text text-muted">Account No.</small></label>
+                                            <label for="date_start" class="form-control-label"><small class="form-text text-muted">Company</small></label>
                                             <?php
-                                                $sesb_acc = mysqli_query ( $conn_admin_db, "SELECT acc_id , CONCAT((SELECT c.code FROM company c WHERE c.id = bill_account_setup.company_id),' - ',bill_account_setup.account_no ) AS comp_acc FROM bill_account_setup WHERE bill_type='1'");
-                                                db_select ($sesb_acc, 'acc_no', $select_account,'','-select-','form-control','');
+                                                $company = mysqli_query ( $conn_admin_db, "SELECT id,(SELECT UPPER(name) FROM company WHERE id=bill_sesb_account.company_id)company_name FROM bill_sesb_account GROUP BY company_id");
+                                                db_select ($company, 'company', $select_company,'submit()','ALL','form-control form-control-sm','');
                                             ?>                           
                                         </div>
-                                        <div class="col-sm-1">
+                                        <div class="col-sm-2">
                                         	<label for="acc_no" class="form-control-label"><small class="form-text text-muted">Year</small></label>
                                         	<?=$html_year_select;?>
                                         </div>
                                         <div class="col-sm-4">                                    	
-                                        	<button type="submit" class="btn btn-primary button_search ">Submit</button>
+                                        	<button type="submit" class="btn btn-sm btn-primary button_search ">View</button>
                                         </div>
                                      </div>    
                                 </form>
                             </div>
                             <hr>
                             <div class="card-body">
-                                <table id="sesb_table" class="table table-striped table-bordered">                                
+                                <table id="telekom_table" class="table table-striped table-bordered">
                                     <thead>
-                                        <tr>
-                                        	<th>Description</th>
-											<th colspan="3" class="text-center" >Meter Reading</th>
-                                            <th rowspan="2">Current Usage (RM)</th>
-											<th rowspan="2">KWTBB (RM)</th>
-											<th rowspan="2">Penalty (RM)</th>											
-<!-- 											<th rowspan="2">Power Factor Below 0.85</th> -->
-											<th rowspan="2">Additional Deposit (RM)</th>
-											<th rowspan="2">Other Charges (RM)</th>											
-                                            <th rowspan="2">Adjustment</th>
-                                            <th colspan="2" class="text-center">Period Date</th>
-                                            <th rowspan="2">Amount (RM)</th>
-                                            <th rowspan="2">Due Date</th>
-                                            <th rowspan="2">Cheque No.</th>
-                                            <th rowspan="2">Payment Date</th>
-                                        </tr>
-                                        <tr>
-                                        	<th>Month</th>
-                                        	<th>From</th>
-                                        	<th>To</th>
-                                        	<th>Total Usage (KWH)</th>
-                                        	<th>From</th>
-                                        	<th>To</th>                                        	
-                                        </tr>										
+                                        <tr>                                        	
+                                        	<th>Account No.</th>	
+											<th>Owner</th>
+											<th>Location</th>
+											<th scope='col'>Jan</th>
+                                            <th scope='col'>Feb</th>
+                                            <th scope='col'>Mar</th>
+                                            <th scope='col'>Apr</th>
+                                            <th scope='col'>May</th>
+                                            <th scope='col'>Jun</th>
+                                            <th scope='col'>Jul</th>
+                                            <th scope='col'>Aug</th>
+                                            <th scope='col'>Sep</th>
+                                            <th scope='col'>Oct</th>
+                                            <th scope='col'>Nov</th>
+                                            <th scope='col'>Dec</th>
+											<th scope='col'>TOTAL</th>
+                                        </tr>                                        									
                                     </thead>
                                     <tbody>                                      
-                                    </tbody> 
+                                    </tbody>  
                                     <tfoot>
-                                        <tr>
-                                            <td colspan="3" class="text-right font-weight-bold">Grand Total</td>
-                                            <td class="text-right font-weight-bold"></td>
-                                            <td class="text-right font-weight-bold"></td>
-                                            <td class="text-right font-weight-bold"></td>
-                                            <td class="text-right font-weight-bold"></td>
-                                            <td class="text-right font-weight-bold"></td>
-                                            <td class="text-right font-weight-bold"></td>
-                                            <td class="text-right font-weight-bold"></td>
-                                            <td class="text-right font-weight-bold"></td>
-                                            <td class="text-right font-weight-bold"></td>
-                                            <td class="text-right font-weight-bold"></td>
-                                            <td class="text-right font-weight-bold"></td>
-                                            <td class="text-right font-weight-bold"></td>
-                                            <td class="text-right font-weight-bold"></td>
+                                    	<tr>
+                                            <th colspan="3" class="text-right">Grand Total</th>
+                                            <th class="text-right"></th>
+                                            <th class="text-right"></th>
+                                            <th class="text-right"></th>
+                                            <th class="text-right"></th>
+                                            <th class="text-right"></th>
+                                            <th class="text-right"></th>
+                                            <th class="text-right"></th>
+                                            <th class="text-right"></th>
+                                            <th class="text-right"></th>
+                                            <th class="text-right"></th>
+                                            <th class="text-right"></th>
+                                            <th class="text-right"></th>
+                                            <th class="text-right"></th>
                                         </tr>
-                                    </tfoot>                                  
+                                    </tfoot>                                 
                                 </table>
                             </div>
                         </div>
@@ -168,27 +154,55 @@ if(!empty($select_account)){
 	
 	<script type="text/javascript">
       $(document).ready(function() {
-    	  var company_name = '<?=$company_name;?>';
+          var company_name = '<?=$company_name;?>';
           var year = '<?=$year_select;?>';
           var res = company_name.concat('_'+year);
-          var acc_no = '<?=$acc_no;?>';
-          var location_name = '<?=$location_name;?>';
-          var deposit = '<?=$deposit;?>';
-          var tariff = '<?=$tariff;?>';
           
-          $('#sesb_table').DataTable({
+          $('#telekom_table').DataTable({
               "searching": true,
-              "order" : [[ 10, "asc" ]],              
+              "order": [[ 15, "desc" ]],
+              "ajax":{
+                  "url": "report_all.ajax.php",  
+                  "type":"POST",       	        	
+             	 	"data" : function ( data ) {
+      					data.action = 'report_monthly_sesb';
+      					data.filter = '<?=$select_company?>';		
+      					data.year = '<?=$year_select?>';		
+         	        }         	                 
+                 },
+                 "footerCallback": function( tfoot, data, start, end, display ) {
+       				var api = this.api(), data;
+       				var numFormat = $.fn.dataTable.render.number( '\,', '.', 2, '' ).display;
+
+      				api.columns([3,4,5,6,7,8,9,10,11,12,13,14,15], { page: 'current'}).every(function() {
+      					var sum = this
+      				    .data()
+      				    .reduce(function(a, b) {
+      				    var x = parseFloat(a) || 0;
+      				    var y = parseFloat(b) || 0;
+      				    	return x + y;
+      				    }, 0);			
+      				       
+      				    $(this.footer()).html(numFormat(sum));
+      				}); 
+       			},
+      			'columnDefs': [
+                	  {
+                	      "targets": [3,4,5,6,7,8,9,10,11,12,13,14,15], // your case first column
+                	      "className": "text-right", 
+                	      "render": $.fn.dataTable.render.number(',', '.', 2, '')               	                      	        	     
+                	 }
+      			],
         	  "dom": 'Bfrtip',
               "buttons": [ 
                { 
               	extend: 'excelHtml5', 
-              	title: 'SESB_'+res,
+              	title: 'Celcom Mobile_' + res,
               	footer: true,
               	customize: function ( xlsx ) {
               		console.log(xlsx);
                     var sheet = xlsx.xl.worksheets['sheet1.xml'];
-                    var downrows = 5;
+                    var downrows = 2;
                     var clRow = $('row', sheet);
                     //update Row
                     clRow.each(function () {
@@ -224,83 +238,45 @@ if(!empty($select_account)){
              
                     //insert
                     var r1 = Addrow(1, [{ k: 'A', v: 'Company' }, { k: 'B', v: company_name }]);
-                    var r2 = Addrow(2, [{ k: 'A', v: 'Location' }, { k: 'B', v: location_name }]);
-                    var r3 = Addrow(3, [{ k: 'A', v: 'Account No.' }, { k: 'B', v: acc_no }]);
-                    var r4 = Addrow(4, [{ k: 'A', v: 'Deposit' }, { k: 'B', v: 'RM '+deposit }]);
-                    var r5 = Addrow(5, [{ k: 'A', v: 'Tariff' }, { k: 'B', v: tariff}]);
-                    
-                    sheet.childNodes[0].childNodes[1].innerHTML = r1 + r2 + r3 + r4 + r5 + sheet.childNodes[0].childNodes[1].innerHTML;
-                
+                     
+                    sheet.childNodes[0].childNodes[1].innerHTML = r1 + sheet.childNodes[0].childNodes[1].innerHTML;                
                }
                },
                {
               	extend: 'print',
-              	title: 'Company : '+company_name+'<br>'+'Account No. : '+acc_no,              	
+              	text: 'Print',
+              	title: company_name,
               	footer: true,
               	customize: function ( win ) {
-                            $(win.document.body).find('h1').css('font-size', '12pt'); 
-                            $(win.document.body)
-                              .css( 'font-size', '10pt' );
-                            
-                            $(win.document.body).find( 'table' )
-                              .addClass( 'compact' ).css( 'font-size', 'inherit' );
+              		  $(win.document.body).find('h1').css('font-size', '12pt');              	     
+                      $(win.document.body).css( 'font-size', '10pt' );              
+                      $(win.document.body).find( 'table' ).addClass( 'compact' )
+                          .css( 'font-size', 'inherit' );
 
-                            var last = null;
-                            var current = null;
-                            var bod = [];
-             
-                            var css = '@page { size: landscape; }',
-                                head = win.document.head || win.document.getElementsByTagName('head')[0],
-                                style = win.document.createElement('style');
-             
-                            style.type = 'text/css';
-                            style.media = 'print';
-             
-                            if (style.styleSheet)
-                            {
-                              style.styleSheet.cssText = css;
-                            }
-                            else
-                            {
-                              style.appendChild(win.document.createTextNode(css));
-                            }
-             
-                            head.appendChild(style);
+                      var last = null;
+                      var current = null;
+                      var bod = [];
+       
+                      var css = '@page { size: landscape; }',
+                          head = win.document.head || win.document.getElementsByTagName('head')[0],
+                          style = win.document.createElement('style');
+       
+                      style.type = 'text/css';
+                      style.media = 'print';
+       
+                      if (style.styleSheet)
+                      {
+                        style.styleSheet.cssText = css;
+                      }
+                      else
+                      {
+                        style.appendChild(win.document.createTextNode(css));
+                      }
+       
+                      head.appendChild(style);
                   }
                }
-              ],
-              "ajax":{
-                  "url": "report_all.ajax.php",  
-                  "type":"POST",       	        	
-             	 	"data" : function ( data ) {
-      					data.action = 'report_sesb';	
-      					data.filter = '<?=$select_account?>';
-      					data.year = '<?=$year_select?>';			
-         	        }         	                 
-                 },
-             "footerCallback": function( tfoot, data, start, end, display ) {
- 				var api = this.api(), data;
- 				var numFormat = $.fn.dataTable.render.number( '\,', '.', 2, '' ).display;
-
-				api.columns([3,4,5,6,7,8,9,12], { page: 'current'}).every(function() {
-					var sum = this
-				    .data()
-				    .reduce(function(a, b) {
-				    var x = parseFloat(a) || 0;
-				    var y = parseFloat(b) || 0;
-				    	return x + y;
-				    }, 0);			
-				       
-				    $(this.footer()).html(numFormat(sum));
-				}); 
- 			},
- 			'columnDefs': [
-          	  {
-          	      "targets": [3,4,5,6,7,8,9,12], // your case first column
-          	      "className": "text-right", 
-          	      "render": $.fn.dataTable.render.number(',', '.', 2, '')               	                      	        	     
-          	 }
-			],
+              ],              
            });
 //           $('#date_start, #date_end').datepicker({
 //               format: "dd-mm-yyyy",

@@ -3,25 +3,6 @@
 	require_once('../function.php');	
 	require_once('../check_login.php');
 	global $conn_admin_db;
-// 	session_start();
-// 	if(isset($_SESSION['cr_id'])) {
-// 		$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-// 		$url = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-// 		$query = parse_url($url, PHP_URL_QUERY);
-// 		parse_str($query, $params);
-		
-// 		// get id
-// 		$userId = $_SESSION['cr_id'];
-// 		$name = $_SESSION['cr_name'];
-		
-// 	} else {
-// 		$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-// 		$url = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-// 		$PrevURL= $url;
-// 		header("Location: ../login.php?RecLock=".$PrevURL);
-// 	}
-	
-	
 ?>
 
 <!doctype html><html class="no-js" lang="">
@@ -87,9 +68,8 @@
                             <div class="card-header">
                                 <strong class="card-title">List of Department</strong>
                             </div>     
-                           <div class="card-body">
-                           <br>                            
-                            <button type="button" class="btn btn-primary mb-1 col-md-2" data-toggle="modal" data-target="#addItem">
+                           <div class="card-body">                         
+                            <button type="button" class="btn btn-sm btn-primary mb-1 col-md-2" data-toggle="modal" data-target="#addItem">
                                Add New 
 							</button>
                                 <table id="item-data-table" class="table table-striped table-bordered">
@@ -146,7 +126,7 @@
                     <input type="hidden" id="item_id" name="item_id" value="">
                     <div class="form-group row col-sm-12">
                     	<div class="col-sm-12">
-                            <label for="department_code" class=" form-control-label"><small class="form-text text-muted">Department</small></label>
+                            <label for="department_code" class=" form-control-label"><small class="form-text text-muted">Department <span class="color-red">*</span></small></label>
                             <div>
                             	<input type="text" id="department_code" name="department_code" placeholder="Enter department name" class="form-control">
                         	</div>
@@ -174,7 +154,7 @@
                         <input type="hidden" id="id" name="id" value="">
                         <div class="form-group row col-sm-12">
                         	<div class="col-sm-12">
-                                <label for="department" class=" form-control-label"><small class="form-text text-muted">Department </small></label>
+                                <label for="department" class=" form-control-label"><small class="form-text text-muted">Department <span class="color-red">*</span></small></label>
                                 <div>
                                 	<input type="text" id="department" name="department" class="form-control">
                             	</div>

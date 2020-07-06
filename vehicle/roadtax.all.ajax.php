@@ -64,7 +64,7 @@
         $sql_query = "SELECT * FROM vehicle_roadtax
                 INNER JOIN vehicle_vehicle ON vehicle_vehicle.vv_id = vehicle_roadtax.vv_id
                 INNER JOIN company ON company.id = vehicle_vehicle.company_id
-                LEFT JOIN vehicle_puspakom ON vehicle_puspakom.vv_id = vehicle_vehicle.vv_id
+                LEFT JOIN vehicle_puspakom ON vehicle_puspakom.vv_id = vehicle_vehicle.vv_id AND vehicle_puspakom.status='1'
                 LEFT JOIN vehicle_insurance ON vehicle_insurance.vv_id = vehicle_vehicle.vv_id
                 WHERE vrt_roadTax_dueDate BETWEEN '".dateFormat($date_start)."' AND '".dateFormat($date_end)."' ";
         

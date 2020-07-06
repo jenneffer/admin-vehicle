@@ -76,9 +76,8 @@
                             <div class="card-header">
                                 <strong class="card-title">List of Item</strong>
                             </div>     
-                           <div class="card-body">
-                           <br>                            
-                            <button type="button" class="btn btn-primary mb-1 col-md-2" data-toggle="modal" data-target="#addItem">
+                           <div class="card-body">                                                      
+                            <button type="button" class="btn btn-sm btn-primary mb-1 col-md-2" data-toggle="modal" data-target="#addItem">
                                Add New Item
 							</button>
                                 <table id="item-data-table" class="table table-striped table-bordered">
@@ -139,7 +138,7 @@
                     <input type="hidden" id="item_id" name="item_id" value="">
                     <div class="form-group row col-sm-12">
                     	<div class="col-sm-12">
-                            <label for="item_name" class=" form-control-label"><small class="form-text text-muted">Item </small></label>
+                            <label for="item_name" class=" form-control-label"><small class="form-text text-muted">Item <span class="color-red">*</span></small></label>
                             <div>
                             	<input type="text" id="item_name" name="item_name" placeholder="Enter item name" class="form-control">
                         	</div>
@@ -147,7 +146,7 @@
                     </div>
                     <div class="form-group row col-sm-12">
                     	<div class="col-sm-12">
-                            <label for="category" class=" form-control-label"><small class="form-text text-muted">Category </small></label>
+                            <label for="category" class=" form-control-label"><small class="form-text text-muted">Category <span class="color-red">*</span></small></label>
                             <div>
                                 <?php
                                 $category = mysqli_query ( $conn_admin_db, "SELECT id, name FROM stationary_category");

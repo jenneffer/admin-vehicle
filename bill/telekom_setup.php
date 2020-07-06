@@ -46,21 +46,26 @@ global $conn_admin_db;
             <div class="animated fadeIn">
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="card">
+                        <div class="card" id="printableArea">
                             <div class="card-header">
                                 <strong class="card-title">TELEKOM</strong>
                             </div>     
-                           <div class="card-body">
-                           <br>                            
-                            <button type="button" class="btn btn-primary mb-1 col-md-2" data-toggle="modal" data-target="#addItem">
-                               Add New 
-							</button>
+                           <div class="card-body">                         
+                            	<div class="form-group row col-sm-12">
+    								<div class="col-sm-2">
+    									<button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addItem">
+                                           Add New Accounts
+            							</button>
+    								</div>
+    								<div>
+    									<span class="color-red"> ** To add new record of usage, please click the hyperlink in Reference No. column</span>
+    								</div>								
+    							</div>
                                 <table id="item-data-table" class="table table-striped table-bordered">
                                     <thead>
                                         <tr>
-                                            <th>No.</th>
-											<th>Company</th>
-											<th>Account No.</th>
+                                            <th>Reference No.</th>
+											<th>Company</th>											
 											<th>Owner</th>
 											<th>Location</th>
 											<th>Action</th>
@@ -78,9 +83,8 @@ global $conn_admin_db;
                                                     $comp_name = itemName("SELECT UPPER(name) FROM company WHERE id='".$row['company_id']."'")
                                                     ?>
                                                     <tr>
-                                                        <td><?=$count?>.</td>
+                                                    	<td><a href="telekom_account_details.php?id=<?=$row['id']?>" target="_blank" style="color:blue;"><?=$row['account_no']?></a></td>                                                        
                                                         <td><?=$comp_name?></td>
-                                                        <td><a href="telekom_account_details.php?id=<?=$row['id']?>" target="_blank" style="color:blue;"><?=$row['account_no']?></a></td>
                                                         <td><?=$row['owner']?></td>
                                                         <td><?=$row['location']?></td>                                                        
                                                         <td>
@@ -114,7 +118,7 @@ global $conn_admin_db;
                             <label for="company" class=" form-control-label"><small class="form-text text-muted">Company</small></label>
                             <div>
                                 <?php
-                                    $company = mysqli_query ( $conn_admin_db, "SELECT id, code FROM company");
+                                    $company = mysqli_query ( $conn_admin_db, "SELECT id, UPPER(name) FROM company");
                                     db_select ($company, 'company', '','','-select-','form-control','');
                                 ?>
                             </div>
@@ -151,29 +155,29 @@ global $conn_admin_db;
                             <textarea id="remark" name="remark" class="form-control"></textarea>
                         </div>
                     </div>      
-                    <div class="row form-group col-sm-12">
-                    	<div class="col-sm-3">
-                        	<button type="button" class="btn btn-success" data-toggle="modal" data-target="#add_phone">Add telephone bill</button>
-                        </div>
-                        <div class="col-sm-9 text-right">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn btn-primary save_data ">Save</button>
-                        </div>
-                    </div>
-                    <br/>
-                    <table id="telefon_list" class="table table-bordered data-table">
-                    <thead>
-                      <th>Telephone No.</th>
-                      <th>Type</th>                      
-                    </thead>
-                    <tbody>
-                    
-                    </tbody>
-                    </table>        
-<!--                     <div class="modal-footer"> -->
-<!--                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button> -->
-<!--                         <button type="submit" class="btn btn-primary save_data ">Save</button> -->
+<!--                     <div class="row form-group col-sm-12"> -->
+<!--                     	<div class="col-sm-3"> -->
+<!--                         	<button type="button" class="btn btn-success" data-toggle="modal" data-target="#add_phone">Add telephone bill</button> -->
+<!--                         </div> -->
+<!--                         <div class="col-sm-9 text-right"> -->
+<!--                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button> -->
+<!--                             <button type="submit" class="btn btn-primary save_data ">Save</button> -->
+<!--                         </div> -->
 <!--                     </div> -->
+<!--                     <br/> -->
+<!--                     <table id="telefon_list" class="table table-bordered data-table"> -->
+<!--                     <thead> -->
+<!--                       <th>Telephone No.</th> -->
+<!--                       <th>Type</th>                       -->
+<!--                     </thead> -->
+<!--                     <tbody> -->
+                    
+<!--                     </tbody> -->
+<!--                     </table>         -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary save_data ">Save</button>
+                    </div>
                     </form>
                 </div>
                 </div>
@@ -349,7 +353,7 @@ global $conn_admin_db;
         			success:function(data){
             			console.log(data);            			        			
         				$('#id').val(id);					
-                        $('#company_edit').val(data.company);      
+                        $('#company_edit').val(data.company_id);      
                         $('#acc_no_edit').val(data.account_no);  
                         $('#location_edit').val(data.location);          
                         $('#owner_edit').val(data.owner);    
@@ -417,7 +421,7 @@ global $conn_admin_db;
                  $.ajax({  
                       url:"telekom_bill.ajax.php",  
                       method:"POST",  
-                      data:{action:'add_new_account', data: $('#add_form').serialize(), telefon_list:TELEPHONE_LIST},  
+                      data:{action:'add_new_account', data: $('#add_form').serialize()},  
                       success:function(data){   
                            $('#editItem').modal('hide');  
                            $('#bootstrap-data-table').html(data);

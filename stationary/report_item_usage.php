@@ -6,10 +6,10 @@ global $conn_admin_db;
 
 $year_select = isset($_POST['year_select']) ? $_POST['year_select'] : date("Y");
 ob_start();
-selectYear('year_select',$year_select,'submit()','','form-control','','');
+selectYear('year_select',$year_select,'submit()','','form-control form-control-sm','','');
 $html_year_select = ob_get_clean();
 
-$select_department = isset($_POST['department']) ? $_POST['department'] : "";
+$select_department = isset($_POST['department']) ? $_POST['department'] : "1";
 $select_item = isset($_POST['item']) ? $_POST['item'] : "All";
 
 $dept_name = itemName("SELECT department_name FROM stationary_department WHERE department_id='$select_department'");
@@ -160,8 +160,10 @@ tr:nth-child(even) {
                             </form>
                         </div>
                         <hr>
-                        <div class="card-body">
-                        	<canvas id="chart-item-usage"></canvas> 
+                        <div class="row">
+                        	<div class="col-sm-12">
+                        		<canvas id="chart-item-usage"></canvas> 
+                        	</div>
                         </div>
                     </div>
                 </div>
@@ -192,12 +194,14 @@ $(document).ready(function() {
     });
 	select2.data('select2').$selection.css('height', '38px');
 	select2.data('select2').$selection.css('border', '1px solid #ced4da');
+	
 
 	var select3 = $("#department").select2({
 	    selectOnClose: true
     });
 	select3.data('select2').$selection.css('height', '38px');
 	select3.data('select2').$selection.css('border', '1px solid #ced4da');
+	
 
 	var dept_name = '<?=$dept_name?>';
 	var year = '<?=$year_select?>';
@@ -205,7 +209,7 @@ $(document).ready(function() {
 	if(item_name == '') item_name = 'All item';
 	
 	var ctx = document.getElementById( "chart-item-usage" );
-    ctx.height = 100;
+    ctx.height = 150;
     myChart = new Chart( ctx, {
         type: 'line',
         data: {
@@ -215,6 +219,11 @@ $(document).ready(function() {
             datasets: JSON.parse('<?=$datasets?>')
         },
         options: {
+        	layout: {
+                padding: {
+                   bottom: 100  //set that fits the best
+                }
+             },
             responsive: true,
             tooltips: {
                 mode: 'index',

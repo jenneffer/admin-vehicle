@@ -115,19 +115,19 @@ global $conn_admin_db;
                                 <div class="col-sm-3">
                                     <label for="date_start" class="form-control-label"><small class="form-text text-muted">Date Start</small></label>
                                     <div class="input-group">
-                                      <input type="text" id="date_start" name="date_start" class="form-control" value="<?=$date_start?>" autocomplete="off">
+                                      <input type="text" id="date_start" name="date_start" class="form-control form-control-sm" value="<?=$date_start?>" autocomplete="off">
 <!--                                               <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div> -->
                                     </div>                            
                                 </div>
                                 <div class="col-sm-3">
                                     <label for="date_end" class="form-control-label"><small class="form-text text-muted">Date End</small></label>
                                     <div class="input-group">
-                                      <input type="text" id="date_end" name="date_end" class="form-control" value="<?=$date_end?>" autocomplete="off">
+                                      <input type="text" id="date_end" name="date_end" class="form-control form-control-sm" value="<?=$date_end?>" autocomplete="off">
 <!--                                               <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div> -->
                                     </div>                             
                                 </div>
                                 <div class="col-sm-1">                                    	
-                                	<button type="submit" class="btn btn-primary button_search ">View</button>                                        	
+                                	<button type="submit" class="btn btn-sm btn-primary button_search ">View</button>                                        	
                                 </div>
 <!--                                         <div class="col-sm-1">                                    	 -->
 <!--                                        	<button type="button" class="btn btn-primary button_search" onclick="printDiv('printableArea')">Print</button>
@@ -139,7 +139,7 @@ global $conn_admin_db;
                         </form>
                     </div>
                     <hr>
-                    <div class="card-body" id="printableArea">
+                    <div class="card-body">
                         <table id="department_summary" class="table table-striped table-bordered">
                             <?php 
                             $theader = "";
@@ -156,7 +156,7 @@ global $conn_admin_db;
                                     $total_quantity += $quantity;
                                     $tbody_ext .="<td>".$quantity."</td>";
                                 }         
-                                $tbody .="<tr><td><a id='$item_id' href='#' data-toggle='modal' data-target='#chartModal'>".$item_name."</a></td>".$tbody_ext."<td>".$total_quantity."</td></tr>";
+                                $tbody .="<tr><td><a id='$item_id' href='#' data-toggle='modal' data-target='#chartModal' style='color:blue;'>".$item_name."</a></td>".$tbody_ext."<td>".$total_quantity."</td></tr>";
                             }
                             
                             $theader .= "<thead><tr><th>ITEM</th>".$header_ext."<th class='rotate'>TOTAL</th></tr></thead>";     
@@ -252,6 +252,7 @@ $(document).ready(function() {
     $('#department_summary').DataTable({
       "searching": true,
       "paging": false,
+      "order":[[19, "desc"]],
       "dom": 'Bfrtip',
       "buttons": [ 
        { 
@@ -409,11 +410,6 @@ function fnExcelReport(){
   </script> 
 </body>
 <style>
-#printableArea{ 
-     font-size:12px; 
-     margin:0px; 
-     padding:.5rem; 
-} 
 
 #item-summary-div{
     font-size:11px; 

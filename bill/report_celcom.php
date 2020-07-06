@@ -7,7 +7,7 @@ global $conn_admin_db;
 $select_company = isset($_POST['company']) ? $_POST['company'] : "";
 $year_select = isset($_POST['year_select']) ? $_POST['year_select'] : date("Y");
 ob_start();
-selectYear('year_select',$year_select,'','','form-control','','');
+selectYear('year_select',$year_select,'submit()','','form-control form-control-sm','','');
 $html_year_select = ob_get_clean();
 
 $company_name = "";
@@ -44,7 +44,7 @@ if(!empty($select_company)){
 
 <body>
     <!--Left Panel -->
-	<?php  include('../assets/nav/leftNav.php')?>
+	<?php include('../assets/nav/leftNav.php')?>
     <!-- Right Panel -->
     <?php include('../assets/nav/rightNav.php')?>
     <!-- /#header -->
@@ -54,9 +54,8 @@ if(!empty($select_company)){
         <div class="content">
             <div class="animated fadeIn">
                 <div class="row">
-
                     <div class="col-md-12">
-                        <div class="card">
+                        <div class="card" id="printableArea">
                             <div class="card-header">
                                 <strong class="card-title">Celcom Mobile</strong>
                             </div>
@@ -66,8 +65,8 @@ if(!empty($select_company)){
                                         <div class="col-sm-3">
                                             <label for="date_start" class="form-control-label"><small class="form-text text-muted">Company</small></label>
                                             <?php
-                                                $company = mysqli_query ( $conn_admin_db, "SELECT id, code FROM company");
-                                                db_select ($company, 'company', $select_company,'','-select-','form-control','');
+                                                $company = mysqli_query ( $conn_admin_db, "SELECT id,(SELECT UPPER(name) FROM company WHERE id=bill_telco_account.company_id)company_name FROM bill_telco_account GROUP BY company_id");
+                                                db_select ($company, 'company', $select_company,'submit()','ALL','form-control form-control-sm','');
                                             ?>                           
                                         </div>
                                         <div class="col-sm-2">
@@ -75,7 +74,7 @@ if(!empty($select_company)){
                                         	<?=$html_year_select;?>
                                         </div>
                                         <div class="col-sm-4">                                    	
-                                        	<button type="submit" class="btn btn-primary button_search ">Submit</button>
+                                        	<button type="submit" class="btn btn-sm btn-primary button_search ">View</button>
                                         </div>
                                      </div>    
                                 </form>
@@ -85,17 +84,9 @@ if(!empty($select_company)){
                                 <table id="telekom_table" class="table table-striped table-bordered">
                                     <thead>
                                         <tr>
-                                        	<th>No.</th>
                                         	<th>User</th>	
 											<th>Position/Dept</th>
-<!--                                             <th>HP No.</th> -->
 											<th>Acc No.</th>
-<!-- 											<th>Celcom Limit</th>	 -->
-<!-- 											<th>Package</th>										 -->
-<!-- 											<th>Latest Package</th>	 -->
-<!-- 											<th>Limit (RM)</th>	 -->
-<!-- 											<th>Data</th>																			 -->
-<!--                                             <th>Remarks</th>                                             -->
                         					<th scope='col'>Jan</th>
                                             <th scope='col'>Feb</th>
                                             <th scope='col'>Mar</th>
@@ -115,7 +106,7 @@ if(!empty($select_company)){
                                     </tbody>  
                                     <tfoot>
                                     	<tr>
-                                            <td colspan="4" class="text-right font-weight-bold">Grand Total</td>
+                                            <td colspan="3" class="text-right font-weight-bold">Grand Total</td>
                                             <td class="text-right font-weight-bold"></td>
                                             <td class="text-right font-weight-bold"></td>
                                             <td class="text-right font-weight-bold"></td>
@@ -169,6 +160,39 @@ if(!empty($select_company)){
           
           $('#telekom_table').DataTable({
               "searching": true,
+              "order": [[ 15, "desc" ]],
+              "ajax":{
+                  "url": "report_all.ajax.php",  
+                  "type":"POST",       	        	
+             	 	"data" : function ( data ) {
+      					data.action = 'report_celcom';
+      					data.filter = '<?=$select_company?>';		
+      					data.year = '<?=$year_select?>';		
+         	        }         	                 
+                 },
+                 "footerCallback": function( tfoot, data, start, end, display ) {
+       				var api = this.api(), data;
+       				var numFormat = $.fn.dataTable.render.number( '\,', '.', 2, '' ).display;
+
+      				api.columns([3,4,5,6,7,8,9,10,11,12,13,14,15], { page: 'current'}).every(function() {
+      					var sum = this
+      				    .data()
+      				    .reduce(function(a, b) {
+      				    var x = parseFloat(a) || 0;
+      				    var y = parseFloat(b) || 0;
+      				    	return x + y;
+      				    }, 0);			
+      				       
+      				    $(this.footer()).html(numFormat(sum));
+      				}); 
+       			},
+      			'columnDefs': [
+                	  {
+                	      "targets": [3,4,5,6,7,8,9,10,11,12,13,14,15], // your case first column
+                	      "className": "text-right", 
+                	      "render": $.fn.dataTable.render.number(',', '.', 2, '')               	                      	        	     
+                	 }
+      			],
         	  "dom": 'Bfrtip',
               "buttons": [ 
                { 
@@ -252,40 +276,7 @@ if(!empty($select_company)){
                       head.appendChild(style);
                   }
                }
-              ],
-              "ajax":{
-                  "url": "report_all.ajax.php",  
-                  "type":"POST",       	        	
-             	 	"data" : function ( data ) {
-      					data.action = 'report_celcom';
-      					data.filter = '<?=$select_company?>';		
-      					data.year = '<?=$year_select?>';		
-         	        }         	                 
-                 },
-                 "footerCallback": function( tfoot, data, start, end, display ) {
-       				var api = this.api(), data;
-       				var numFormat = $.fn.dataTable.render.number( '\,', '.', 2, '' ).display;
-
-      				api.columns([4,5,6,7,8,9,10,11,12,13,14,15,16], { page: 'current'}).every(function() {
-      					var sum = this
-      				    .data()
-      				    .reduce(function(a, b) {
-      				    var x = parseFloat(a) || 0;
-      				    var y = parseFloat(b) || 0;
-      				    	return x + y;
-      				    }, 0);			
-      				       
-      				    $(this.footer()).html(numFormat(sum));
-      				}); 
-       			},
-      			'columnDefs': [
-                	  {
-                	      "targets": [4,5,6,7,8,9,10,11,12,13,14,15,16], // your case first column
-                	      "className": "text-right", 
-                	      "render": $.fn.dataTable.render.number(',', '.', 2, '')               	                      	        	     
-                	 }
-      			],
-
+              ],              
            });
 //           $('#date_start, #date_end').datepicker({
 //               format: "dd-mm-yyyy",

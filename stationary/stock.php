@@ -45,11 +45,12 @@
                             <div class="card-header">
                                 <strong class="card-title">List of Stock</strong>
                             </div>     
-                           <div class="card-body">
-                           <br>                            
-                            <button type="button" class="btn btn-primary mb-1 col-md-2" data-toggle="modal" data-target="#addItem">
-                               Add New 
-							</button>
+                           <div class="card-body">                    
+                            <div class="form-group">
+                                <button type="button" class="btn btn-sm btn-primary mb-1 col-md-2" data-toggle="modal" data-target="#addItem">
+                                   Add New Stock
+    							</button>
+                            </div>                           
                                 <table id="item-data-table" class="table table-striped table-bordered">
                                     <thead>
                                         <tr>
@@ -95,7 +96,7 @@
         </div><!-- .content -->
         </div>
         
-        <!-- Modal Add new department -->
+        <!-- Modal Add new stock -->
         <div id="addItem" class="modal fade">
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
@@ -106,7 +107,7 @@
                     <form role="form" method="POST" action="" id="add_form">                    
                     <div class="form-group row col-sm-12">
                     	<div class="col-sm-12">
-                            <label for="item" class=" form-control-label"><small class="form-text text-muted">Item</small></label>
+                            <label for="item" class=" form-control-label"><small class="form-text text-muted">Item <span class="color-red">*</span></small></label>
                             <div>
                                 <?php
                                     $item = mysqli_query ( $conn_admin_db, "SELECT id, item_name FROM stationary_item");
@@ -117,12 +118,12 @@
                     </div>
                     <div class="form-group row col-sm-12">
                     	<div class="col-sm-12">
-                            <label for="stock_in" class=" form-control-label"><small class="form-text text-muted">Stock In</small></label>
+                            <label for="stock_in" class=" form-control-label"><small class="form-text text-muted">Stock In <span class="color-red">*</span></small></label>
                             <input type="text" id="stock_in" name="stock_in" class="form-control">
                         </div>
                     </div> 
                     <div class="col-sm-6">
-                        <label for="date" class="form-control-label"><small class="form-text text-muted">Date</small></label>
+                        <label for="date" class="form-control-label"><small class="form-text text-muted">Date <span class="color-red">*</span></small></label>
                         <div class="input-group">
                             <input id="date" name="date" class="form-control" autocomplete="off">                            
                         </div>                                            
@@ -160,7 +161,7 @@
                         </div>
                         <div class="form-group row col-sm-12">
                         	<div class="col-sm-12">
-                                <label for="stk_in" class=" form-control-label"><small class="form-text text-muted">Stock In</small></label>
+                                <label for="stk_in" class=" form-control-label"><small class="form-text text-muted">Stock In <span class="color-red">*</span></small></label>
                                 <input type="text" id="stk_in" name="stk_in" class="form-control">
                             </div>
                         </div> 
@@ -298,6 +299,9 @@
             } 
             else if($('#stock_in').val() == ""){  
                  alert("Stock in is required");  
+            } 
+            else if($('#date').val() == ""){  
+                alert("Date is required");  
             }     
             else{  
                  $.ajax({  
