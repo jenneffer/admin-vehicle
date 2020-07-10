@@ -30,8 +30,73 @@ if( $action != "" ){
         case 'get_location':
             get_location($company);
             break;
+            
+        case 'delete_account_details_item':
+            delete_account_details_item($id);
+            break;
+            
+        case 'retrieve_account_details':
+            retrieve_account_details($id);
+            break;
+        case 'update_account':
+            update_account($data);
+            break;
         default:
             break;
+    }
+}
+
+function update_account($data){
+    global $conn_admin_db;
+    if (!empty($data)) {
+        $param = array();
+        parse_str($data, $param); //unserialize jquery string data
+        $id = $param['id'];
+        $company = isset($param['company_edit']) ? $param['company_edit'] : "";
+        $acc_no =  isset($param['acc_no_edit']) ? $param['acc_no_edit'] : "";
+        $location =  isset($param['location_edit']) ? $param['location_edit'] : "";
+        $deposit =  isset($param['deposit_edit']) ? $param['deposit_edit'] : "";
+        $tariff =  isset($param['tariff_edit']) ? $param['tariff_edit'] : "";
+        $owner =  isset($param['owner_edit']) ? $param['owner_edit'] : "";
+        $remark =  isset($param['remark_edit']) ? $param['remark_edit'] : "";
+        $jenis_bacaan =  isset($param['jenis_bacaan_edit']) ? $param['jenis_bacaan_edit'] :"";
+        $jenis_premis =  isset($param['jenis_premis_edit']) ? $param['jenis_premis_edit'] : "";
+        
+        $query = "UPDATE bill_jabatan_air_account
+                    SET company_id='$company',
+                    account_no='$acc_no',
+                    owner='$owner',
+                    location='$location',
+                    deposit='$deposit',
+                    kod_tariff='$tariff',
+                    remark='$remark',
+                    jenis_bacaan='$jenis_bacaan',
+                    jenis_premis='$jenis_premis' WHERE id='$id'";
+        
+        $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
+        echo json_encode($result);
+    }
+}
+
+function retrieve_account_details($id){
+    global $conn_admin_db;
+    if (!empty($id)) {
+        $query = "SELECT * FROM bill_jabatan_air WHERE id = '$id'";
+        $rst  = mysqli_query($conn_admin_db, $query)or die(mysqli_error($conn_admin_db));
+        
+        $row = mysqli_fetch_assoc($rst);
+        echo json_encode($row);
+    }
+}
+
+function delete_account_details_item($id){
+    global $conn_admin_db;
+    if (!empty($id)) {
+        $query = "DELETE FROM bill_jabatan_air WHERE id = '".$id."' ";
+        $result = mysqli_query($conn_admin_db, $query);
+        if ($result) {
+            alert ("Deleted successfully", "jabatan_air_setup.php");
+        }
     }
 }
 
@@ -66,9 +131,11 @@ function add_new_bill($data){
         $read_to = $param['read_to'];
         $usage_1 = $param['usage_1'];
         $usage_2 = $param['usage_2'];
+        $rate_1 = $param['rate_1'];
+        $rate_2 = $param['rate_2'];
         $credit = $param['credit'];
-        $rate_70 = $usage_1 * 1.60;
-        $rate_71 = $usage_2 * 2.00;
+        $rate_70 = $usage_1 * $rate_1;
+        $rate_71 = $usage_2 * $rate_2;
         $amount = $rate_70 + $rate_71;
         $rounded = round_up($amount);
         $adjustment = number_format(($rounded-$amount), 2);
@@ -80,7 +147,9 @@ function add_new_bill($data){
                     meter_reading_to = '$read_to',
                     usage_70 = '$usage_1',
                     usage_71 = '$usage_2',
-                    rate_70 = '$rate_70',
+                    rate_1 = '$rate_1',
+                    rate_2 = '$rate_2',
+                    rate_70 = '$rate_70', 
                     rate_71 = '$rate_71',
                     credit_adjustment = '$credit',
                     amount = '$total_amt',
@@ -90,8 +159,9 @@ function add_new_bill($data){
                     date_end = '".dateFormat($to_date)."',
                     paid_date = '".dateFormat($paid_date)."',
                     due_date = '".dateFormat($due_date)."'";
-        
-        mysqli_query($conn_admin_db, $query_insert_ja) or die(mysqli_error($conn_admin_db));
+       
+        $result = mysqli_query($conn_admin_db, $query_insert_ja) or die(mysqli_error($conn_admin_db));
+        echo json_encode($result);
     }   
 }
 
@@ -112,7 +182,7 @@ function add_new_account($data){
         $jenis_premis =  mysqli_real_escape_string( $conn_admin_db,$param['jenis_premis']);
         
         $query = "INSERT INTO bill_jabatan_air_account
-                    SET company='$company',
+                    SET company_id='$company',
                     account_no='$acc_no',
                     owner='$owner',
                     location='$location',

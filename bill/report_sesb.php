@@ -80,8 +80,8 @@ if(!empty($select_company)){
                                 </form>
                             </div>
                             <hr>
-                            <div class="card-body">
-                                <table id="telekom_table" class="table table-striped table-bordered">
+                            <div class="card-body" style="font-size: 11px">
+                                <table id="telekom_table" class="table table-striped table-bordered" >
                                     <thead>
                                         <tr>                                        	
                                         	<th>Account No.</th>	
@@ -104,7 +104,7 @@ if(!empty($select_company)){
                                     </thead>
                                     <tbody>                                      
                                     </tbody>  
-                                    <tfoot>
+                                    <tfoot style="display:none">
                                     	<tr>
                                             <th colspan="3" class="text-right">Grand Total</th>
                                             <th class="text-right"></th>

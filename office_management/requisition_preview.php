@@ -82,7 +82,7 @@
                 <div class="row">
                 <form id="rq_form">
                     <div class="col-md-12">
-                        <div class="card">
+                        <div class="card" id="printableArea">
                             <div class="card-header">                            
                                 <strong class="card-title">Requisition Preview</strong>
                             </div>     

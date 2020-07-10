@@ -117,8 +117,8 @@ function add_new_invoice($data){
         $remark = isset($param['remark_add']) ? $param['remark_add'] : "";
         $added_by = isset($_SESSION['cr_id']) ? $_SESSION['cr_id'] : "";
         
-        $query = "INSERT INTO bill_fuji_xerox_invoice (acc_id, company_id,invoice_date, date_added, invoice_no, particular, amount, remark, added_by)
-                VALUES ('$acc_id','$company_id', '$inv_date', NOW(), '$inv_no','$particular', '$amount', '$remark','$added_by')";
+        $query = "INSERT INTO bill_fuji_xerox_invoice (acc_id, company_id,invoice_date, date_added,payment,rq_date, invoice_no, particular, amount, remark, added_by)
+                VALUES ('$acc_id','$company_id', '$inv_date', NOW(), NOW(), '$inv_no','$particular', '$amount', '$remark','$added_by')";
         
         $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
         

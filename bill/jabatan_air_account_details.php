@@ -22,7 +22,7 @@
     $account_no = $row['account_no'];
     $total_deposit = $row['deposit'] + $row['additional_deposit'];
 
-    $details_query = "SELECT MONTHNAME(date_end) AS month_name, meter_reading_from, meter_reading_to, 
+    $details_query = "SELECT id, MONTHNAME(date_end) AS month_name, meter_reading_from, meter_reading_to, 
             (meter_reading_to - meter_reading_from) AS total_usage, usage_70, rate_70,usage_71, rate_71,credit_adjustment, 
             adjustment,date_start, date_end,amount,due_date, cheque_no,paid_date
             FROM bill_jabatan_air WHERE acc_id = '$jabatan_air_acc_id' AND YEAR(date_end) = '$year_select'";
@@ -87,21 +87,23 @@
                                 <strong class="card-title">Account Details</strong>
                             </div>     
                             <div class="card-body">                                       
-                                <div class="col-sm-12">
-                                    <label for="company" class=" form-control-label">Company : <?=$company?></label>                                        
-                                </div>
-                                <div class="col-sm-12">
-                                	<label for="owner" class=" form-control-label">Owner : <?=$owner?></label>                                    
-                                </div>
-                                <div class="col-sm-12">
-                                	<label for="location" class=" form-control-label">Location : <?=$location?></label>                                    	
-                                </div>
-                                <div class="col-sm-12">
-                                	<label for="account_no" class=" form-control-label">Account No. : <?=$account_no?></label>                                    
-                                </div>     
-                                <div class="col-sm-12">
-                                	<label for="deposit" class=" form-control-label">Deposit : RM<?=$total_deposit?></label>                                    
-                                </div>                                                               
+                                <div style="font-weight: bold;">
+                                    <div class="col-sm-12">
+                                        <label for="company" class=" form-control-label">Company : <?=$company?></label>                                        
+                                    </div>
+                                    <div class="col-sm-12">
+                                    	<label for="owner" class=" form-control-label">Owner : <?=$owner?></label>                                    
+                                    </div>
+                                    <div class="col-sm-12">
+                                    	<label for="location" class=" form-control-label">Location : <?=$location?></label>                                    	
+                                    </div>
+                                    <div class="col-sm-12">
+                                    	<label for="account_no" class=" form-control-label">Account No. : <?=$account_no?></label>                                    
+                                    </div>     
+                                    <div class="col-sm-12">
+                                    	<label for="deposit" class=" form-control-label">Deposit : RM<?=$total_deposit?></label>                                    
+                                    </div> 
+                                </div>                                                              
                             	<hr>
                             	<form action="" method="post">
                                 	<div class="form-group row col-sm-12">           
@@ -130,6 +132,7 @@
                                                 <th rowspan="2">Cheque No.</th>
                                                 <th rowspan="2">Payment Date</th>
                                                 <th rowspan="2">Amount (RM)</th>
+                                                <th rowspan="2">Action</th>
                                             </tr>
                                             <tr>
                                             	<th>Month</th>
@@ -176,6 +179,10 @@
                                             <td class="text-center"><?=$data['cheque_no']?></td>                                            
                                             <td class="text-right"><?=$data['paid_date']?></td>
                                             <td class="text-center"><?=number_format($data['amount'],2)?></td>
+                                            <td class="text-center">
+                                            	<span id="<?=$data['id']?>" data-toggle="modal" class="edit_data" data-target="#editItem"><i class="fa fa-edit"></i></span>
+                                                <span id="<?=$data['id']?>" data-toggle="modal" class="delete_data" data-target="#deleteItem"><i class="fas fa-trash-alt"></i></span>
+                                            </td>
                                         </tr>
                                     	<?php }?>
                                     	</tbody>  
@@ -196,6 +203,7 @@
                                             <th class="text-center">&nbsp;</th>                                            
                                             <th class="text-right">&nbsp;</th>
                                             <th class="text-center"><?=number_format($sum_amount,2)?></th>
+                                            <th class="text-right">&nbsp;</th>
                                         </tr>
                                     	</tfoot>                                                                                                       
                                     </table>
@@ -217,8 +225,8 @@
                     <h4 class="modal-title">Add New Record</h4>
                 </div>
                 <div class="modal-body">
-                    <form role="form" method="POST" action="" id="add_form">  
-                    <input type="hidden" id="acc_id" name="acc_id" value="">    
+                    <form role="form" method="POST" action="" id="add_form">    
+                    <input type="hidden" id="acc_id" name="acc_id">                 
                     <div class="form-group row col-sm-12">
                     	<div class="col-sm-12">
                         	<label class=" form-control-label"><small class="form-text text-muted">Period</small></label>       
@@ -271,10 +279,20 @@
                         <div class="col-sm-6">
                             <label for="usage_1" class=" form-control-label"><small class="form-text text-muted">M3 (0-70)</small></label>
                             <input type="text" id="usage_1" name="usage_1" class="form-control">
-                        </div>        
+                        </div> 
                         <div class="col-sm-6">
+                            <label for="rate_1" class=" form-control-label"><small class="form-text text-muted">Rate(0-70)</small></label>
+                            <input type="text" id="rate_1" name="rate_1" class="form-control">
+                        </div>                               
+                    </div>
+                    <div class="row form-group col-sm-12">
+                    	<div class="col-sm-6">
                             <label for="usage_2" class=" form-control-label"><small class="form-text text-muted">M3 (>70)</small></label>
                             <input type="text" id="usage_2" name="usage_2" class="form-control">
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="rate_2" class=" form-control-label"><small class="form-text text-muted">Rate (>70)</small></label>
+                            <input type="text" id="rate_2" name="rate_2" class="form-control">
                         </div>
                     </div>
                     <div class="row form-group col-sm-12">  
@@ -283,12 +301,13 @@
                             <input type="text" id="cheque_no" name="cheque_no"class="form-control">
                         </div>                                   	
                         <div class="col-sm-6">
-                            <label for="credit" class=" form-control-label"><small class="form-text text-muted">Credit (RM)</small></label>
+                            <label for="credit" class=" form-control-label"><small class="form-text text-muted">Credit Adjustment (RM)</small></label>
                             <input type="text" id="credit" name="credit" class="form-control">
                         </div>        
                     </div>    
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
                         <button type="submit" class="btn btn-primary save_data ">Save</button>
                     </div>
                     </form>
@@ -296,6 +315,125 @@
                 </div>
             </div>
         </div>
+        
+        <div id="editItem" class="modal fade">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Edit Record</h4>
+                </div>
+                <div class="modal-body">
+                    <form role="form" method="POST" action="" id="update_form">  
+                    <input type="hidden" id="id" name="id" value="">    
+                    <div class="form-group row col-sm-12">
+                    	<div class="col-sm-12">
+                        	<label class=" form-control-label"><small class="form-text text-muted">Period</small></label>       
+                        </div>
+                    	<div class="col-sm-6">
+                            <label for="from_date_edit" class=" form-control-label"><small class="form-text text-muted">From date</small></label>                                            
+                            <div class="input-group">
+                                <input id="from_date_edit" name="from_date_edit" class="form-control" autocomplete="off">
+                                <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
+                            </div>  
+                        </div>       
+                        <div class="col-sm-6">
+                            <label for="to_date_edit" class=" form-control-label"><small class="form-text text-muted">To date</small></label>                                            
+                            <div class="input-group">
+                                <input id="to_date_edit" name="to_date_edit" class="form-control" autocomplete="off">
+                                <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
+                            </div>  
+                        </div>
+                    </div> 
+                    <div class="form-group row col-sm-12"> 
+                        <div class="col-sm-6">
+                            <label for="paid_date_edit" class=" form-control-label"><small class="form-text text-muted">Paid date</small></label>                                            
+                            <div class="input-group">
+                                <input id="paid_date_edit" name="paid_date_edit" class="form-control" autocomplete="off">
+                                <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
+                            </div>  
+                        </div>       
+                        <div class="col-sm-6">
+                            <label for="due_date_edit" class=" form-control-label"><small class="form-text text-muted">Due date</small></label>                                            
+                            <div class="input-group">
+                                <input id="due_date_edit" name="due_date_edit" class="form-control" autocomplete="off">
+                                <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
+                            </div>  
+                        </div>                                     
+                    </div>           
+                    <div class="col-sm-12">
+                    	<label class=" form-control-label"><small class="form-text text-muted">Meter Reading</small></label>       
+                    </div>
+                    <div class="row form-group col-sm-12">
+                        <div class="col-sm-6">
+                            <label for="read_from_edit" class=" form-control-label"><small class="form-text text-muted">From</small></label>
+                            <input type="text" id="read_from_edit" name="read_from_edit" class="form-control">
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="read_to_edit" class=" form-control-label"><small class="form-text text-muted">To</small></label>
+                            <input type="text" id="read_to_edit" name="read_to_edit" class="form-control">
+                        </div>
+                    </div>
+                    <div class="row form-group col-sm-12">
+                        <div class="col-sm-6">
+                            <label for="usage_1_edit" class=" form-control-label"><small class="form-text text-muted">M3 (0-70)</small></label>
+                            <input type="text" id="usage_1_edit" name="usage_1_edit" class="form-control">
+                        </div> 
+                        <div class="col-sm-6">
+                            <label for="rate_1_edit" class=" form-control-label"><small class="form-text text-muted">Rate(0-70)</small></label>
+                            <input type="text" id="rate_1_edit" name="rate_1_edit" class="form-control">
+                        </div>                               
+                    </div>
+                    <div class="row form-group col-sm-12">
+                    	<div class="col-sm-6">
+                            <label for="usage_2_edit" class=" form-control-label"><small class="form-text text-muted">M3 (>70)</small></label>
+                            <input type="text" id="usage_2_edit" name="usage_2_edit" class="form-control">
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="rate_2_edit" class=" form-control-label"><small class="form-text text-muted">Rate (>70)</small></label>
+                            <input type="text" id="rate_2_edit" name="rate_2_edit" class="form-control">
+                        </div>
+                    </div>
+                    <div class="row form-group col-sm-12">  
+                    	<div class="col-sm-6">
+                            <label for="cheque_no_edit" class=" form-control-label"><small class="form-text text-muted">Cheque No.</small></label>
+                            <input type="text" id="cheque_no_edit" name="cheque_no_edit"class="form-control">
+                        </div>                                   	
+                        <div class="col-sm-6">
+                            <label for="credit_adj_edit" class=" form-control-label"><small class="form-text text-muted">Credit Adjustment (RM)</small></label>
+                            <input type="text" id="credit_adj_edit" name="credit_adj_edit" class="form-control">
+                        </div>        
+                    </div>    
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        <button type="submit" class="btn btn-primary save_data ">Save</button>
+                    </div>
+                    </form>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+    <div class="modal fade" id="deleteItem">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticModalLabel">Delete Item</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>
+                       Are you sure you want to delete?
+                   </p>
+               </div>
+               <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" id="delete_record" class="btn btn-primary">Confirm</button>
+            	</div>
+        	</div>
+    	</div>
+    </div>
     <div class="clearfix"></div>
     <!-- Footer -->
     <?PHP include('../footer.php')?>
@@ -331,10 +469,8 @@
         	  ]
   	  	});
         $('#add_form').on("submit", function(event){  
-            event.preventDefault();  
-            
+            event.preventDefault();              
             $('#acc_id').val(acc_id);
-
             if($('#from_date').val() == ""){  
                  alert("From date is required");  
             } 
@@ -355,9 +491,15 @@
            	} 
             else if($('#usage_1').val() == ""){  
                 alert("M3(0-70) is required");  
+           	}
+            else if($('#rate_1').val() == ""){  
+                alert("Rate (0-70) is required");  
            	} 
             else if($('#usage_2').val() == ""){  
                 alert("M3(>70) is required");  
+            }
+            else if($('#rate_2').val() == ""){  
+                alert("Rate (>70) is required");  
             }
             else if($('#cheque_no').val() == ""){  
                 alert("Cheque number is required");  
@@ -367,15 +509,61 @@
                       url:"jabatan_air_bill.ajax.php",  
                       method:"POST",  
                       data:{action:'add_new_bill', data: $('#add_form').serialize()},  
-                      success:function(data){   
-                           $('#editItem').modal('hide');  
-                           $('#bootstrap-data-table').html(data);
-                           location.reload();  
+                      success:function(data){  
+                          if(data){
+                        	  $('#editItem').modal('hide');  
+                              location.reload();  
+                          }                            
                       }  
                  });  
             }  
           });
-
+        
+        $(document).on('click', '.edit_data', function(){
+        	var id = $(this).attr("id");        	
+        	$.ajax({
+        			url:"jabatan_air_bill.ajax.php",
+        			method:"POST",
+        			data:{action:'retrieve_account_details', id:id},
+        			dataType:"json",
+        			success:function(data){ 
+            			console.log(data);           			        			
+        				$('#id').val(id);					
+                        $('#from_date_edit').val(data.date_start);      
+                        $('#to_date_edit').val(data.date_end); 
+                        $('#paid_date_edit').val(data.paid_date);      
+                        $('#due_date_edit').val(data.due_date); 
+                        $('#read_from_edit').val(data.meter_reading_from);      
+                        $('#read_to_edit').val(data.meter_reading_to); 
+                        $('#usage_1_edit').val(data.usage_70);      
+                        $('#rate_1_edit').val(data.rate_1); 
+                        $('#usage_2_edit').val(data.usage_71);      
+                        $('#rate_2_edit').val(data.rate_2);          
+                        $('#cheque_no_edit').val(data.cheque_no);                        
+                        $('#editItem').modal('show');
+        			}
+        		});
+        });
+        $(document).on('click', '.delete_data', function(){
+        	var id = $(this).attr("id");
+        	$('#delete_record').data('id', id); //set the data attribute on the modal button
+        
+        });
+      	
+    	$( "#delete_record" ).click( function() {
+    		var ID = $(this).data('id');
+    		
+    		$.ajax({
+    			url:"jabatan_air_bill.ajax.php",
+    			method:"POST",    
+    			data:{action:'delete_account_details_item', id:ID},
+    			success:function(data){	  						
+    				$('#deleteItem').modal('hide');		
+    				location.reload();		
+    			}
+    		});
+    	});
+    	
         $('#from_date, #to_date, #paid_date, #due_date').datepicker({
             format: "dd-mm-yyyy",
             autoclose: true,

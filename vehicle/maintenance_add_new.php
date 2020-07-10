@@ -3,29 +3,11 @@
     require_once('../function.php');
     require_once('../check_login.php');
 	global $conn_admin_db;
-// 	if(isset($_SESSION['cr_id'])) {
-// 		$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-// 		$url = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-// 		$query = parse_url($url, PHP_URL_QUERY);
-// 		parse_str($query, $params);
-		
-// 		// get id
-// 		$userId = $_SESSION['cr_id'];
-// 		$name = $_SESSION['cr_name'];
-		
-// 	} else {
-// 		$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-// 		$url = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-// 		$PrevURL= $url;
-// 		header("Location: ../login.php?RecLock=".$PrevURL);
-//     }
+
 ?>
 
 <!doctype html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang=""> <!--<![endif]-->
+<html class="no-js" lang="">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -100,14 +82,21 @@
                             </div>                            
                                 <div class="card-body card-block">
                                 	<div class="form-group row col-sm-12">
-                                		<div class="col-sm-6">
+                                		<div class="col-sm-4">
                                             <label for="vehicle_reg_no" class=" form-control-label"><small class="form-text text-muted">Vehicle Reg No.<span class="color-red">*</span></small></label>
                                             <?php
                                                 $vehicle = mysqli_query ( $conn_admin_db, "SELECT vv_id, UPPER(vv_vehicleNo) FROM vehicle_vehicle WHERE status='1'");
                                                 db_select ($vehicle, 'vehicle_reg_no', '','','-select-','form-control','','required');
                                             ?>
                                         </div>
-                                        <div class="col-sm-6"> 
+                                        <div class="col-sm-4">
+                                            <label for="vehicle_reg_no" class=" form-control-label"><small class="form-text text-muted">Vehicle Reg No.<span class="color-red">*</span></small></label>
+                                            <?php
+                                                $workshop = mysqli_query ( $conn_admin_db, "SELECT id, UPPER(name) FROM vehicle_workshop");
+                                                db_select ($workshop, 'workshop', '','','-select-','form-control','','required');
+                                            ?>
+                                        </div>
+                                        <div class="col-sm-4"> 
                                     		<label for="date" class=" form-control-label"><small class="form-text text-muted">Date<span class="color-red">*</span></small></label>
                                             <div class="input-group">
                                                 <input id="date" name="date" class="form-control" autocomplete="off" required>
@@ -118,22 +107,45 @@
                                     
                                     <div class="form-group row col-sm-12">
                                     	<div class="col-sm-6"> 
-                                            <label for="ref_no" class=" form-control-label"><small class="form-text text-muted">Reference No.<span class="color-red">*</span></small></label>
-                                            <input type="text" id="ref_no" name="ref_no" placeholder="Enter reference number" class="form-control" required>
+                                            <label for="irf_no" class=" form-control-label"><small class="form-text text-muted">IRF No.<span class="color-red">*</span></small></label>
+                                            <input type="text" id="irf_no" name="irf_no" class="form-control" required>
+                                    	</div>
+                                    	<div class="col-sm-6"> 
+                                            <label for="irf_date" class=" form-control-label"><small class="form-text text-muted">IRF Date<span class="color-red">*</span></small></label>
+                                            <input type="text" id="irf_date" name="irf_date" class="form-control" required>
+                                    	</div>
+                                    </div>
+                                    <div class="form-group row col-sm-12">
+                                    	<div class="col-sm-6"> 
+                                            <label for="po_no" class=" form-control-label"><small class="form-text text-muted">P.O No.<span class="color-red">*</span></small></label>
+                                            <input type="text" id="po_no" name="po_no" class="form-control" required>
+                                    	</div>
+                                    	<div class="col-sm-6"> 
+                                            <label for="po_date" class=" form-control-label"><small class="form-text text-muted">P.O Date<span class="color-red">*</span></small></label>
+                                            <input type="text" id="po_date" name="po_date" class="form-control" required>
+                                    	</div>                                    	                                    	
+                                    </div>
+                                     <div class="form-group row col-sm-12">
+                                     	<div class="col-sm-6">                                        
+                                            <label for="inv_no" class=" form-control-label"><small class="form-text text-muted">Invoice No.<span class="color-red">*</span></small></label>
+                                    		<input type="text" id="inv_no" name="inv_no" class="form-control" required>
                                     	</div>
                                     	<div class="col-sm-6">                                        
                                             <label for="amount" class=" form-control-label"><small class="form-text text-muted">Amount (RM)<span class="color-red">*</span></small></label>
                                     		<input type="text" id="amount" name="amount" onkeypress="return isNumberKey(event)" class="form-control" required>
                                     	</div>
-                                    </div>
+                                     </div>
                                     <div class="form-group row col-sm-12">
+                                        <div class="col-sm-6">                                        
+                                                <label for="user" class=" form-control-label"><small class="form-text text-muted">User<span class="color-red">*</span></small></label>
+                                    		<input type="text" id="user" name="user" class="form-control" required>
+                                    	</div>
                                     	<div class="col-sm-6"> 
-                                            <label for="desc" class=" form-control-label"><small class="form-text text-muted">Description<span class="color-red">*</span></small></label>
-                                            <textarea id="desc" name="desc" placeholder="Enter description" class="form-control" required></textarea>
+                                            <label for="desc" class=" form-control-label"><small class="form-text text-muted">Remarks<span class="color-red"></span></small></label>
+                                            <textarea id="desc" name="desc" class="form-control"></textarea>
                                     	</div>
                                 	</div> 
-                                </div>   
-                                                        
+                                </div>                                                           
                         </div>  
                      </div>         
                 </div>
@@ -171,14 +183,21 @@
     <script src="../assets/js/select2.min.js"></script>
 	<script type="text/javascript">
     $(document).ready(function() {
-    	// Initialize select2
+    	// Initialize select2 
     	var select2 = $("#vehicle_reg_no").select2({
     	    selectOnClose: true
         });
+    	
     	select2.data('select2').$selection.css('height', '38px');
     	select2.data('select2').$selection.css('border', '1px solid #ced4da');
 
-    	$('#date').datepicker({
+    	var select3 = $("#workshop").select2({
+    	    selectOnClose: true
+        });
+    	select3.data('select2').$selection.css('height', '38px');
+    	select3.data('select2').$selection.css('border', '1px solid #ced4da');
+
+    	$('#date,#po_date, #irf_date').datepicker({
         	format: 'dd-mm-yyyy',
         	autoclose: true,
         	todayHighlight: true,

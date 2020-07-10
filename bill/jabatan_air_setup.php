@@ -76,11 +76,12 @@ global $conn_admin_db;
                                             $count = 0;
                                             $sql_result = mysqli_query($conn_admin_db, $sql_query)or die(mysqli_error($conn_admin_db));
                                                 while($row = mysqli_fetch_array($sql_result)){ 
-                                                    $count++;                                                    
+                                                    $count++;                     
+                                                    $company = itemName("SELECT name FROM company WHERE id='".$row['company_id']."'");
                                                     ?>
                                                     <tr>
                                                     	<td><a href="jabatan_air_account_details.php?id=<?=$row['id']?>" target="_blank" style="color:blue;"><?=$row['account_no']?></a></td>                                                        
-                                                        <td><?=strtoupper($row['company'])?></td>
+                                                        <td><?=strtoupper($company)?></td>
                                                         <td><?=$row['owner']?></td>
                                                         <td><?=$row['location']?></td>
                                                         <td><?=$row['deposit']?></td>
@@ -165,7 +166,7 @@ global $conn_admin_db;
                     </div>              
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary save_data ">Save</button>
+                        <button type="submit" class="btn btn-primary save_data">Save</button>
                     </div>
                     </form>
                     </div>
@@ -316,11 +317,18 @@ global $conn_admin_db;
         			method:"POST",
         			data:{action:'retrieve_account', id:id},
         			dataType:"json",
-        			success:function(data){ 
-            			console.log(data);           			        			
-        				$('#id').val(id);					
-                        $('#item_id').val(data.item_id);      
-                        $('#stk_in').val(data.stock_in);                        
+        			success:function(data){  
+            			console.log(data);    
+						$('#id').val(id);            			       			       			        			
+        				$('#company_edit').val(data.company_id);					
+                        $('#acc_no_edit').val(data.account_no);      
+                        $('#location_edit').val(data.location);
+                        $('#deposit_edit').val(data.deposit);					
+                        $('#tariff_edit').val(data.kod_tariff);      
+                        $('#jenis_bacaan_edit').val(data.jenis_bacaan);
+                        $('#jenis_premis_edit').val(data.jenis_premis);					
+                        $('#owner_edit').val(data.owner);      
+                        $('#remark_edit').val(data.remark);                        
                         $('#editItem').modal('show');
         			}
         		});
@@ -347,18 +355,28 @@ global $conn_admin_db;
     
         $('#update_form').on("submit", function(event){  
           event.preventDefault();  
-          if($('#stk_in').val() == ""){  
-              alert("Stock in is required");  
-          }    
+          if($('#company_edit').val() == ""){  
+              alert("Company is required");  
+         } 
+         else if($('#acc_no_edit').val() == ""){  
+              alert("Account number is required");  
+         }    
+         else if($('#location_edit').val() == ""){  
+             alert("Location is required");  
+        	}             
+         else if($('#deposit_edit').val() == ""){  
+             alert("Deposit is required");  
+        	} 
           else{  
                $.ajax({  
                     url:"jabatan_air_bill.ajax.php",  
                     method:"POST",  
-                    data:{action:'update_stock', data: $('#update_form').serialize()},  
-                    success:function(data){   
-                         $('#editItem').modal('hide');  
-                         $('#bootstrap-data-table').html(data);
-                         location.reload();  
+                    data:{action:'update_account', data: $('#update_form').serialize()},  
+                    success:function(data){  
+                        if(data){
+                        	$('#editItem').modal('hide');  
+                        	location.reload();  
+                        }                          
                     }  
                });  
           }  

@@ -70,40 +70,55 @@
                     <div class="col-md-12">
                         <div class="card" id="printableArea">
                             <div class="card-header">
-                                <strong class="card-title">Vehicle Maintenance</strong>
+                                <strong class="card-title">VEHICLE MAINTENANCE RECORD</strong>
                             </div>
                             <div class="card-body">
                                 <table id="maintenance-table" class="table table-striped table-bordered">
                                     <thead>
                                         <tr>
                                         	<th>No.</th>
-											<th>Vehicle No.</th>                                            
+											<th>Vehicle No.</th>    											                                        
 											<th>Company</th>
-											<th>Ref No.</th>
-											<th>Description</th>
-											<th>Amount (RM)</th>								                                            
+											<th>Workshop</th>
+											<th>IRF No.</th>
+											<th>IRF Date</th>
+											<th>P.O No.</th>
+											<th>P.O Date</th>
+											<th>Invoice No.</th>											
+											<th>Amount (RM)</th>
+											<th>Date</th>
+											<th>User</th>
+											<th>Remarks</th>								                                            
                                             <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>                                        
 										<?php 
-                                        $sql_query = "SELECT vm_id, vm.vv_id,vv_vehicleNo, vm_date, vm_description, vm_amount, vm_ref_no, company_id,
-                                                    (SELECT code FROM company WHERE id=vv.company_id) AS company_name FROM vehicle_maintenance vm
-                                                    INNER JOIN vehicle_vehicle vv ON vv.vv_id = vm.vv_id WHERE vm.status='1'";
+                                        $sql_query = "SELECT vm_id, vm.vv_id,vv_vehicleNo, vm_date, vm_description, vm_amount, vm_invoice_no, vm_irf_no, vm_po_no, vm_po_date, vm_irf_date, vm_workshop, vm_user,
+                                                (SELECT code FROM company WHERE id=vv.company_id) AS company_name FROM vehicle_maintenance vm
+                                                INNER JOIN vehicle_vehicle vv ON vv.vv_id = vm.vv_id ";
                                         
                                         if(mysqli_num_rows(mysqli_query($conn_admin_db,$sql_query)) > 0){
                                             $count = 0;
                                             $sql_result = mysqli_query($conn_admin_db, $sql_query)or die(mysqli_error($conn_admin_db));
                                                 while($row = mysqli_fetch_array($sql_result)){ 
-                                                    $count++;                                                    
+                                                    $count++;   
+                                                    $workshop = itemName("SELECT name FROM vehicle_workshop WHERE id='".$row['vm_workshop']."'");
                                                     ?>
                                                     <tr>
                                                     	<td><?=$count?>.</td>
                                                         <td><?=strtoupper($row['vv_vehicleNo'])?></td>
-                                                        <td><?=$row['company_name']?></td>                                                        
-                                                        <td><?=$row['vm_ref_no']?></td>
-                                                        <td><?=$row['vm_description']?></td>                                                        
-                                                        <td><?=$row['vm_amount']?></td>                                                        
+                                                        <td><?=$row['company_name']?></td>  
+                                                        <td><?=$workshop?></td>                                                        
+                                                        <td><?=$row['vm_irf_no']?></td>
+                                                        <td><?=$row['vm_irf_date']?></td>
+                                                        <td><?=$row['vm_po_no']?></td>
+                                                        <td><?=$row['vm_po_date']?></td>
+                                                        <td><?=$row['vm_invoice_no']?></td>                                        
+                                                        <td><?=$row['vm_amount']?></td>
+                                                        <td><?=$row['vm_date']?></td>
+                                                        <td><?=$row['vm_user']?></td>
+                                                        <td><?=$row['vm_description']?></td>                                                         
                                                         <td class="text-center">                                                        	
                                                         	<span id="<?=$row['vm_id']?>" data-toggle="modal" class="edit_data" data-target="#editItem"><i class="menu-icon fa fa-edit"></i></span>
                                                         	<span id="<?=$row['vm_id']?>" data-toggle="modal" class="delete_data" data-target="#deleteItem"><i class="menu-icon fa fa-trash-alt"></i></span>
@@ -116,7 +131,10 @@
                                     </tbody> 
                                     <tfoot>
                                         <tr>
-                                        	<th colspan="5">Total</th>
+                                        	<th colspan="9">Total</th>
+                                        	<th></th>
+                                        	<th></th>
+                                        	<th></th>
                                         	<th></th>
                                         	<th>&nbsp;</th>
                                         </tr>
@@ -139,40 +157,72 @@
                 </div>
                 <div class="modal-body">
                     <form role="form" method="POST" action="" id="update_form">
-                        <input type="hidden" name="_token" value="">
                         <input type="hidden" id="vm_id" name="vm_id" value="">
-                    	<div class="form-group row col-sm-12">
-                            <div class="col-sm-6">
-                                <label for="vehicle_reg_no" class=" form-control-label"><small class="form-text text-muted">Vehicle Reg No.</small></label>
-                                <?php
-                                    $vehicle = mysqli_query ( $conn_admin_db, "SELECT vv_id, UPPER(vv_vehicleNo) FROM vehicle_vehicle WHERE status='1'");
-                                    db_select ($vehicle, 'vehicle_reg_no', '','','-select-','form-control','', 'disabled');
-                                ?>
-                            </div>
-                            <div class="col-sm-6"> 
-                        		<label for="date" class=" form-control-label"><small class="form-text text-muted">Date</small></label>
-                                <div class="input-group">
-                                    <input id="date" name="date" class="form-control" autocomplete="off" required>
-                                    <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
+                    	<div class="card-body card-block">
+                        	<div class="form-group row col-sm-12">
+                        		<div class="col-sm-4">
+                                    <label for="vehicle_reg_no" class=" form-control-label"><small class="form-text text-muted">Vehicle Reg No.<span class="color-red">*</span></small></label>
+                                    <?php
+                                        $vehicle = mysqli_query ( $conn_admin_db, "SELECT vv_id, UPPER(vv_vehicleNo) FROM vehicle_vehicle WHERE status='1'");
+                                        db_select ($vehicle, 'vehicle_reg_no', '','','-select-','form-control form-control-sm','','required');
+                                    ?>
                                 </div>
-                        	</div>	                                       
-                        </div>
-                        <div class="form-group row col-sm-12">
-                        	<div class="col-sm-6"> 
-                                <label for="ref_no" class=" form-control-label"><small class="form-text text-muted">Reference No.</small></label>
-                                <input type="text" id="ref_no" name="ref_no" placeholder="Enter reference number" class="form-control" required>
-                        	</div>
-                        	<div class="col-sm-6">                                        
-                                <label for="amount" class=" form-control-label"><small class="form-text text-muted">Amount (RM)</small></label>
-                        		<input type="text" id="amount" name="amount" onkeypress="return isNumberKey(event)" class="form-control" required>
-                        	</div>
-                        </div>
-                        <div class="form-group row col-sm-12">
-                        	<div class="col-sm-6"> 
-                                <label for="desc" class=" form-control-label"><small class="form-text text-muted">Description</small></label>
-                                <textarea id="desc" name="desc" placeholder="Enter description" class="form-control" required></textarea>
-                        	</div>
-                    	</div>                       
+                                <div class="col-sm-4">
+                                    <label for="vehicle_reg_no" class=" form-control-label"><small class="form-text text-muted">Vehicle Reg No.<span class="color-red">*</span></small></label>
+                                    <?php
+                                        $workshop = mysqli_query ( $conn_admin_db, "SELECT id, UPPER(name) FROM vehicle_workshop");
+                                        db_select ($workshop, 'workshop', '','','-select-','form-control form-control-sm','','required');
+                                    ?>
+                                </div>
+                                <div class="col-sm-4"> 
+                            		<label for="date" class=" form-control-label"><small class="form-text text-muted">Date<span class="color-red">*</span></small></label>
+                                    <div class="input-group">
+                                        <input id="date" name="date" class="form-control form-control-sm" autocomplete="off" required>                                        
+                                    </div>
+                            	</div>									
+                            </div>
+                            
+                            <div class="form-group row col-sm-12">
+                            	<div class="col-sm-6"> 
+                                    <label for="irf_no" class=" form-control-label"><small class="form-text text-muted">IRF No.<span class="color-red">*</span></small></label>
+                                    <input type="text" id="irf_no" name="irf_no" class="form-control form-control-sm" required>
+                            	</div>
+                            	<div class="col-sm-6"> 
+                                    <label for="irf_date" class=" form-control-label"><small class="form-text text-muted">IRF Date<span class="color-red">*</span></small></label>
+                                    <input type="text" id="irf_date" name="irf_date" class="form-control form-control-sm" required>
+                            	</div>
+                            </div>
+                            <div class="form-group row col-sm-12">
+                            	<div class="col-sm-6"> 
+                                    <label for="po_no" class=" form-control-label"><small class="form-text text-muted">P.O No.<span class="color-red">*</span></small></label>
+                                    <input type="text" id="po_no" name="po_no" class="form-control form-control-sm" required>
+                            	</div>
+                            	<div class="col-sm-6"> 
+                                    <label for="po_date" class=" form-control-label"><small class="form-text text-muted">P.O Date<span class="color-red">*</span></small></label>
+                                    <input type="text" id="po_date" name="po_date" class="form-control form-control-sm" required>
+                            	</div>                                    	                                    	
+                            </div>
+                             <div class="form-group row col-sm-12">
+                             	<div class="col-sm-6">                                        
+                                    <label for="inv_no" class=" form-control-label"><small class="form-text text-muted">Invoice No.<span class="color-red">*</span></small></label>
+                            		<input type="text" id="inv_no" name="inv_no" class="form-control form-control-sm" required>
+                            	</div>
+                            	<div class="col-sm-6">                                        
+                                    <label for="amount" class=" form-control-label"><small class="form-text text-muted">Amount (RM)<span class="color-red">*</span></small></label>
+                            		<input type="text" id="amount" name="amount" onkeypress="return isNumberKey(event)" class="form-control form-control-sm" required>
+                            	</div>
+                             </div>
+                            <div class="form-group row col-sm-12">
+                                <div class="col-sm-6">                                        
+                                        <label for="user" class=" form-control-label"><small class="form-text text-muted">User<span class="color-red">*</span></small></label>
+                            		<input type="text" id="user" name="user" class="form-control form-control-sm" required>
+                            	</div>
+                            	<div class="col-sm-6"> 
+                                    <label for="desc" class=" form-control-label"><small class="form-text text-muted">Remarks<span class="color-red"></span></small></label>
+                                    <textarea id="desc" name="desc" class="form-control form-control-sm"></textarea>
+                            	</div>
+                        	</div> 
+                        </div>                       
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                             <button type="submit" class="btn btn-primary update_data ">Update</button>
@@ -231,15 +281,15 @@
 				"paging":true,
 				"columnDefs": [
 					{
-						"targets": [5], // your case first column
+						"targets": [9], // your case first column
 	              	    "className": "text-right", 
 	              	    "render": $.fn.dataTable.render.number(',', '.', 2, '')  
-						}
-					],
+					}
+				],
 	            "footerCallback": function( tfoot, data, start, end, display ) {
 	            	var api = this.api(), data;
 	            	var numFormat = $.fn.dataTable.render.number( '\,', '.', 2, '' ).display;            
-	        		api.columns([5], { page: 'current'}).every(function() {
+	        		api.columns([9], { page: 'current'}).every(function() {
 	        				var sum = this
 	        			    .data()
 	        			    .reduce(function(a, b) {
@@ -264,11 +314,19 @@
 //   	  					console.log(data);   	  	  					
   						var vm_amount = parseFloat(data.vm_amount).toFixed(2);
   						var vm_date = dateFormat(data.vm_date);
+  						var vm_irf_date = dateFormat(data.vm_irf_date);
+  						var vm_po_date = dateFormat(data.vm_po_date);
 						  	  				 	
   						$('#vm_id').val(data.vm_id);					
                         $('#vehicle_reg_no').val(data.vv_id);                           
                         $('#date').val(vm_date);  
-                        $('#ref_no').val(data.vm_ref_no);
+                        $('#irf_date').val(vm_irf_date);  
+                        $('#po_date').val(vm_po_date);  
+                        $('#irf_no').val(data.vm_irf_no);
+                        $('#po_no').val(data.vm_po_no);
+                        $('#inv_no').val(data.vm_invoice_no);
+                        $('#workshop').val(data.vm_workshop);
+                        $('#user').val(data.vm_user);
                         $('#desc').val(data.vm_description);
                         $('#amount').val(vm_amount);      
                         $('#editItem').modal('show');
@@ -303,9 +361,15 @@
             else if($('#date').val() == ''){  
                  alert("Date is required");  
             }  
-            else if($('#ref_no').val() == ''){  
-                 alert("Reference number is required");  
+            else if($('#irf_no').val() == ''){  
+                 alert("IRF number is required");  
+            }
+            else if($('#po_no').val() == ''){  
+                alert("P.O number is required");  
             }  
+            else if($('#inv_no').val() == ''){  
+                alert("Invoice number is required");  
+            }
             else if($('#desc').val() == ''){  
                  alert("Description is required");  
             }  
@@ -326,7 +390,7 @@
             }  
        });
         
-        $('#date').datepicker({
+        $('#date, #irf_date, #po_date').datepicker({
         	format: "dd-mm-yyyy",            
             autoclose: true,
             orientation: "top left",

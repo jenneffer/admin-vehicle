@@ -83,19 +83,21 @@
                         <div class="card-header">                            
                             <strong class="card-title">Account Details</strong>
                         </div>     
-                        <div class="card-body">                                       
-                            <div class="col-sm-12">
-                                <label for="company" class=" form-control-label">Company : <?=$company?></label>                                        
-                            </div>
-                            <div class="col-sm-12">
-                            	<label for="account_no" class=" form-control-label">Account No. : <?=$account_no?></label>                                    
-                            </div>   
-                            <div class="col-sm-12">
-                            	<label for="user" class=" form-control-label">User : <?=$user?></label>
-                                
-                            </div>
-                            <div class="col-sm-12">
-                            	<label for="position" class=" form-control-label">Position : <?=$position?></label>                                    	
+                        <div class="card-body">
+                            <div style="font-weight: bold;">                                       
+                                <div class="col-sm-12">
+                                    <label for="company" class=" form-control-label">Company : <?=$company?></label>                                        
+                                </div>
+                                <div class="col-sm-12">
+                                	<label for="account_no" class=" form-control-label">Account No. : <?=$account_no?></label>                                    
+                                </div>   
+                                <div class="col-sm-12">
+                                	<label for="user" class=" form-control-label">User : <?=$user?></label>
+                                    
+                                </div>
+                                <div class="col-sm-12">
+                                	<label for="position" class=" form-control-label">Position : <?=$position?></label>                                    	
+                                </div>
                             </div>                                                                    
                         	<hr>
                         	<form action="" method="post">
@@ -217,7 +219,7 @@
 //         	    { "width": "10%", "targets": 0 },
 //         	    { "width": "80%", "targets": 1 },
 //         	    { "width": "10%", "targets": 2 }
-        	  ]
+        	  ],
   	  	});
         $('#add_form').on("submit", function(event){  
             event.preventDefault();  

@@ -180,7 +180,7 @@ $date_end = isset($_POST['date_end']) ? $_POST['date_end'] : date("t-m-Y");
             <form role="form" method="POST" action="" id="add_form">                    
                 <div class="form-group row col-sm-12">
                 	<div class="col-sm-6">
-                        <label for="company" class=" form-control-label"><small class="form-text text-muted">Company</small></label>
+                        <label for="company" class=" form-control-label"><small class="form-text text-muted">Company <span class="color-red">*</span></small></label>
                         <div>
                             <?php
                                 $company = mysqli_query ( $conn_admin_db, "SELECT id, UPPER(name) FROM company");
@@ -189,19 +189,19 @@ $date_end = isset($_POST['date_end']) ? $_POST['date_end'] : date("t-m-Y");
                         </div>
                     </div>
                     <div class="col-sm-6">
-                        <label for="serial_no" class=" form-control-label"><small class="form-text text-muted">Serial No.</small></label>
+                        <label for="serial_no" class=" form-control-label"><small class="form-text text-muted">Serial No. <span class="color-red">*</span></small></label>
                         <input type="text" id="serial_no" name="serial_no" placeholder="Enter Serial number" class="form-control">
                     </div>
                 </div>  
                 <div class="form-group row col-sm-12">
                 	<div class="col-sm-12">
-                        <label for="acc_no" class=" form-control-label"><small class="form-text text-muted">Account_no</small></label>
+                        <label for="acc_no" class=" form-control-label"><small class="form-text text-muted">Account_no <span class="color-red">*</span></small></label>
                         <input type="text" id="acc_no" name="acc_no" class="form-control">
                     </div>
                 </div>                  
                 <div class="form-group row col-sm-12">
                 	<div class="col-sm-12">
-                        <label for="location" class=" form-control-label"><small class="form-text text-muted">Location</small></label>
+                        <label for="location" class=" form-control-label"><small class="form-text text-muted">Location <span class="color-red">*</span></small></label>
                         <textarea id="location" name="location" class="form-control"></textarea>
                     </div>
                 </div>                        
@@ -231,7 +231,7 @@ $date_end = isset($_POST['date_end']) ? $_POST['date_end'] : date("t-m-Y");
                 <form role="form" method="POST" action="" id="add_invoice">                                                                  
                     <div class="row form-group col-sm-12">
                         <div class="col-sm-6">
-                            <label class=" form-control-label"><small class="form-text text-muted">Company</small></label>
+                            <label class=" form-control-label"><small class="form-text text-muted">Company <span class="color-red">*</span></small></label>
                             <div>
                                 <?php
                                     $company = mysqli_query ( $conn_admin_db, "SELECT id, name FROM company WHERE id IN(SELECT company FROM bill_fuji_xerox_account WHERE status='1')");
@@ -240,7 +240,7 @@ $date_end = isset($_POST['date_end']) ? $_POST['date_end'] : date("t-m-Y");
                             </div>
                         </div>
                         <div class="col-sm-6">
-                            <label class="control-label "><small class="form-text text-muted">Serial No.</small></label>                                  
+                            <label class="control-label "><small class="form-text text-muted">Serial No. <span class="color-red">*</span></small></label>                                  
                             <select id="serial_no_add" name="serial_no_add" class="form-control">
                                <option value="0">- select -</option>
                             </select>
@@ -248,29 +248,29 @@ $date_end = isset($_POST['date_end']) ? $_POST['date_end'] : date("t-m-Y");
                     </div>   
                     <div class="row form-group col-sm-12">       
                     	<div class="col-sm-6">
-                            <label for="inv_date" class=" form-control-label"><small class="form-text text-muted">Invoice Date</small></label>
+                            <label for="inv_date" class=" form-control-label"><small class="form-text text-muted">Invoice Date <span class="color-red">*</span></small></label>
                             <div class="input-group">
                                 <input type="text" id="inv_date" name="inv_date" class="form-control" autocomplete="off">                               
                             </div>
                         </div>
                         <div class="col-sm-6">
-                            <label for="inv_no" class=" form-control-label"><small class="form-text text-muted">Invoice No.</small></label>
+                            <label for="inv_no" class=" form-control-label"><small class="form-text text-muted">Invoice No. <span class="color-red">*</span></small></label>
                             <input type="text" id="inv_no" name="inv_no" class="form-control" autocomplete="off">
                         </div>
                     </div>                                                                 	 
                     <div class="row form-group col-sm-12">
                         <div class="col-sm-6">
-                            <label for="particular" class=" form-control-label"><small class="form-text text-muted">Particulars</small></label>
+                            <label for="particular" class=" form-control-label"><small class="form-text text-muted">Particulars <span class="color-red">*</span></small></label>
                             <textarea id="particular" name="particular" class="form-control" autocomplete="off"></textarea>
                         </div>
                         <div class="col-sm-6">
-                            <label for="amount" class=" form-control-label"><small class="form-text text-muted">Amount (RM)</small></label>
+                            <label for="amount" class=" form-control-label"><small class="form-text text-muted">Amount (RM) <span class="color-red">*</span></small></label>
                             <input type="text" id="amount" name="amount" class="form-control" autocomplete="off">
                         </div>                                
                     </div>
                     <div class="row form-group col-sm-12">                            	
                     	<div class="col-sm-6">
-                            <label for="remark_add" class=" form-control-label"><small class="form-text text-muted">Remark</small></label>
+                            <label for="remark_add" class=" form-control-label"><small class="form-text text-muted">Remark <span class="color-red">*</span></small></label>
                             <textarea id="remark_add" name="remark_add" class="form-control" autocomplete="off"></textarea>
                         </div>                                                            
                     </div>
@@ -296,7 +296,7 @@ $date_end = isset($_POST['date_end']) ? $_POST['date_end'] : date("t-m-Y");
                 <input type="hidden" id="id" name="id" value="">
                 <div class="form-group row col-sm-12">
             	<div class="col-sm-6">
-                    <label for="company_edit" class=" form-control-label"><small class="form-text text-muted">Company</small></label>
+                    <label for="company_edit" class=" form-control-label"><small class="form-text text-muted">Company <span class="color-red">*</span></small></label>
                     <div>
                         <?php
                             $company = mysqli_query ( $conn_admin_db, "SELECT id, code FROM company");
@@ -305,25 +305,25 @@ $date_end = isset($_POST['date_end']) ? $_POST['date_end'] : date("t-m-Y");
                     </div>
                 </div>
                 <div class="col-sm-6">
-                    <label for="serial_no_edit" class=" form-control-label"><small class="form-text text-muted">Serial No.</small></label>
+                    <label for="serial_no_edit" class=" form-control-label"><small class="form-text text-muted">Serial No. <span class="color-red">*</span></small></label>
                     <input type="text" id="serial_no_edit" name="serial_no_edit" placeholder="Enter Serial number" class="form-control">
                 </div>
                 </div>         
                 <div class="form-group row col-sm-12">
                 	<div class="col-sm-12">
-                        <label for="acc_no_edit" class=" form-control-label"><small class="form-text text-muted">Account_no</small></label>
+                        <label for="acc_no_edit" class=" form-control-label"><small class="form-text text-muted">Account_no <span class="color-red">*</span></small></label>
                         <input type="text" id="acc_no_edit" name="acc_no_edit" class="form-control">
                     </div>
             	</div>           
                 <div class="form-group row col-sm-12">
                 	<div class="col-sm-12">
-                        <label for="location_edit" class=" form-control-label"><small class="form-text text-muted">Location</small></label>
+                        <label for="location_edit" class=" form-control-label"><small class="form-text text-muted">Location <span class="color-red">*</span></small></label>
                         <textarea id="location_edit" name="location_edit" class="form-control"></textarea>
                     </div>
                 </div>                        
                 <div class="form-group row col-sm-12">
                 	<div class="col-sm-12">
-                        <label for="remark_edit" class=" form-control-label"><small class="form-text text-muted">Remark</small></label>
+                        <label for="remark_edit" class=" form-control-label"><small class="form-text text-muted">Remark <span class="color-red">*</span></small></label>
                         <textarea id="remark_edit" name="remark_edit" class="form-control"></textarea>
                     </div>
                 </div>
@@ -475,13 +475,13 @@ $(document).ready(function() {
         } 
         else if($('#acc_no').val() == ""){  
              alert("Account number is required");  
+        } 
+        else if($('#serial_no').val() == ""){  
+            alert("Serial number is required");  
         }    
         else if($('#location').val() == ""){  
             alert("Location is required");  
-        }             
-        else if($('#tariff').val() == ""){  
-            alert("Tariff is required");  
-        }                           
+        }                                               
         else{  
             $.ajax({  
                 url:"fx_bill.ajax.php",  

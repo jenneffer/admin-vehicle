@@ -23,9 +23,9 @@
     
     //get the telefon_list
     
-    $details_query = "SELECT MONTHNAME(date_end) AS month_name, meter_reading_from, meter_reading_to, 
+    $details_query = "SELECT MONTH(date_end) AS month_to_name, meter_reading_from, meter_reading_to, 
             total_usage, current_usage, kwtbb, penalty,power_factor,additional_deposit, other_charges,adjustment,date_start, date_end,
-            amount,due_date, cheque_no,paid_date FROM bill_sesb WHERE acc_id = '$acc_id' AND YEAR(date_end) = '$year_select'";
+            amount,due_date, cheque_no,paid_date FROM bill_sesb WHERE acc_id = '$acc_id' AND YEAR(date_end) = '$year_select'ORDER BY month_to_name ASC";
     $result2 = mysqli_query($conn_admin_db, $details_query) or die(mysqli_error($conn_admin_db));
     $arr_data = [];
     while ($rows = mysqli_fetch_assoc($result2)){
@@ -89,21 +89,23 @@
                                 <strong class="card-title">Account Details</strong>
                             </div>     
                             <div class="card-body">                                       
-                                <div class="col-sm-12">
-                                    <label class=" form-control-label">Company : <?=$company?></label>                                        
-                                </div>
-                                <div class="col-sm-12">
-                                	<label class=" form-control-label">Location : <?=$location?></label>                                    
-                                </div>
-                                <div class="col-sm-12">
-                                	<label class=" form-control-label">Account No. : <?=$account_no?></label>                                    
-                                </div>                                   
-                                <div class="col-sm-12">
-                                	<label class=" form-control-label">Deposit : RM <?=$deposit?></label>                                    	
-                                </div>
-                                <div class="col-sm-12">
-                                	<label class=" form-control-label">Tarif : <?=$tarif?></label>                                    	
-                                </div>                                                                    
+                                <div style="font-weight: bold;">
+                                    <div class="col-sm-12">
+                                        <label class=" form-control-label">Company : <?=$company?></label>                                        
+                                    </div>
+                                    <div class="col-sm-12">
+                                    	<label class=" form-control-label">Location : <?=$location?></label>                                    
+                                    </div>
+                                    <div class="col-sm-12">
+                                    	<label class=" form-control-label">Account No. : <?=$account_no?></label>                                    
+                                    </div>                                   
+                                    <div class="col-sm-12">
+                                    	<label class=" form-control-label">Deposit : RM <?=$deposit?></label>                                    	
+                                    </div>
+                                    <div class="col-sm-12">
+                                    	<label class=" form-control-label">Tarif : <?=$tarif?></label>                                    	
+                                    </div>   
+                                </div>                                                                 
                             	<hr>
                             	<form action="" method="post">
                                 	<div class="form-group row col-sm-12">           
@@ -119,7 +121,7 @@
                                 	</div>
                             	</form>                            	
                             	<div>     
-                                    <table class="table table-striped table-bordered">
+                                    <table id="sesb-table"  class="table table-striped table-bordered">
                                         <thead>
                                         <tr>
                                         	<th>Description</th>
@@ -151,7 +153,33 @@
                                     foreach ($arr_data as $data){
                                     ?>
                                     <tr>
-                                        <td><?=$data['month_name']?></td>
+                                        <td><?php 
+                                        if($data['month_to_name'] == '1') {
+                                        	echo "<span style='display:none'>1</span> January";
+                                        } else if($data['month_to_name'] == '2') {
+                                        	echo "<span style='display:none'>2</span> February";
+                                        } else if($data['month_to_name'] == '3') {
+                                        	echo "<span style='display:none'>3</span> March";
+                                        } else if($data['month_to_name'] == '4') {
+                                        	echo "<span style='display:none'>4</span> April";
+                                        } else if($data['month_to_name'] == '5') {
+                                        	echo "<span style='display:none'>5</span> May";
+                                        } else if($data['month_to_name'] == '6') {
+                                        	echo "<span style='display:none'>6</span> June";
+                                        } else if($data['month_to_name'] == '7') {
+                                        	echo "<span style='display:none'>7</span> Jully";
+                                        } else if($data['month_to_name'] == '8') {
+                                        	echo "<span style='display:none'>8</span> August";
+                                        } else if($data['month_to_name'] == '9') {
+                                        	echo "<span style='display:none'>9</span> September";
+                                        } else if($data['month_to_name'] == '10') {
+                                        	echo "<span style='display:none'>10</span> October";
+                                        } else if($data['month_to_name'] == '11') {
+                                        	echo "<span style='display:none'>11</span> November";
+                                        } else {
+                                        	echo "<span style='display:none'>12</span> December";
+                                        }
+                                        /*echo $data['month_name']*/?></td>
                                         <td><?=$data['meter_reading_from']?></td>
 										<td><?=$data['meter_reading_to']?></td>
                                         <td><?=$data['total_usage']?></td>
@@ -171,7 +199,27 @@
                                         
                                     <?php }
                                     ?>
-                                    </tbody>                                                                                                           
+                                    </tbody> 
+                                    <tfoot>
+                                    </tfoot>
+                                    <tr>
+                                    	<th></th>
+                                    	<th></th>
+                                    	<th></th>
+                                    	<th></th>
+                                    	<th></th>
+                                    	<th></th>
+                                    	<th></th>
+                                    	<th></th>
+                                    	<th></th>
+                                    	<th></th>
+                                    	<th></th>
+                                    	<th></th>
+                                    	<th></th>
+                                    	<th></th>
+                                    	<th></th>
+                                    	<th></th>
+                                    </tr>                                                                                                          
                                     </table>
                                 </div>                                                                                                            
                           	 
@@ -198,14 +246,14 @@
                     </div>
                     <div class="form-group row col-sm-12">
                     	<div class="col-sm-6">
-                            <label for="from_date" class=" form-control-label"><small class="form-text text-muted">From date</small></label>                                            
+                            <label for="from_date" class=" form-control-label"><small class="form-text text-muted">From date <span class="color-red">*</span></small></label>                                            
                             <div class="input-group">
                                 <input id="from_date" name="from_date" class="form-control" autocomplete="off">
                                 <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
                             </div>  
                         </div>       
                         <div class="col-sm-6">
-                            <label for="to_date" class=" form-control-label"><small class="form-text text-muted">To date</small></label>                                            
+                            <label for="to_date" class=" form-control-label"><small class="form-text text-muted">To date <span class="color-red">*</span></small></label>                                            
                             <div class="input-group">
                                 <input id="to_date" name="to_date" class="form-control" autocomplete="off">
                                 <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
@@ -233,40 +281,40 @@
                     </div>                    
                     <div class="row form-group col-sm-12">                                            
                         <div class="col-sm-4">
-                            <label for="reading_from" class=" form-control-label"><small class="form-text text-muted">From</small></label>
+                            <label for="reading_from" class=" form-control-label"><small class="form-text text-muted">From <span class="color-red">*</span></small></label>
                             <input type="text" id="reading_from" name="reading_from" class="form-control">
                         </div>
                         <div class="col-sm-4">
-                            <label for="reading_to" class=" form-control-label"><small class="form-text text-muted">To</small></label>
+                            <label for="reading_to" class=" form-control-label"><small class="form-text text-muted">To <span class="color-red">*</span></small></label>
                             <input type="text" id="reading_to" name="reading_to" class="form-control">
                         </div>
                         <div class="col-sm-4">
-                            <label for="current_usage" class=" form-control-label"><small class="form-text text-muted">Current Usage (RM)</small></label>
+                            <label for="current_usage" class=" form-control-label"><small class="form-text text-muted">Current Usage (RM) <span class="color-red">*</span></small></label>
                             <input type="text" id="current_usage" name="current_usage" class="form-control">
                         </div>                                
                     </div>
                     <div class="row form-group col-sm-12">      
                         <div class="col-sm-4">
                             <label for="kwtbb" class=" form-control-label"><small class="form-text text-muted">KWTBB (RM)</small></label>
-                            <input type="text" id="kwtbb" name="kwtbb" class="form-control">
+                            <input type="text" id="kwtbb" name="kwtbb" class="form-control" value="0">
                         </div> 
                          <div class="col-sm-4">
                             <label for="penalty" class=" form-control-label"><small class="form-text text-muted">Penalty (RM)</small></label>
-                            <input type="text" id="penalty" name="penalty" class="form-control">
+                            <input type="text" id="penalty" name="penalty" class="form-control" value="0">
                         </div>        
                         <div class="col-sm-4">
                             <label for="power_factor" class=" form-control-label"><small class="form-text text-muted">Power Factor (<0.85)</small></label>
-                            <input type="text" id="power_factor" name="power_factor" class="form-control">
+                            <input type="text" id="power_factor" name="power_factor" class="form-control" value="0">
                         </div>
                     </div>                    
                     <div class="row form-group col-sm-12">                                     	                       
                         <div class="col-sm-4">
                             <label for="additional_depo" class=" form-control-label"><small class="form-text text-muted">Additional Deposit (RM)</small></label>
-                            <input type="text" id="additional_depo" name="additional_depo" class="form-control">
+                            <input type="text" id="additional_depo" name="additional_depo" class="form-control" value="0">
                         </div>        
                         <div class="col-sm-4">
                             <label for="other_charges" class=" form-control-label"><small class="form-text text-muted">Other Charges (RM)</small></label>
-                            <input type="text" id="other_charges" name="other_charges" class="form-control">
+                            <input type="text" id="other_charges" name="other_charges" class="form-control" value="0">
                         </div>
                         <div class="col-sm-4" id="cheque_no">
                         <label for="cheque_no" class=" form-control-label"><small class="form-text text-muted">Cheque No.</small></label>
@@ -310,12 +358,28 @@
 		
 		var acc_id = '<?=$id?>';
 			
-        $('#item-data-table').DataTable({
+        $('#sesb-table').DataTable({
         	"columnDefs": [
 //         	    { "width": "10%", "targets": 0 },
 //         	    { "width": "80%", "targets": 1 },
 //         	    { "width": "10%", "targets": 2 }
-        	  ]
+        	  ],
+        	  "footerCallback": function( tfoot, data, start, end, display ) {
+                	var api = this.api(), data;
+                	var numFormat = $.fn.dataTable.render.number( '\,', '.', 2, '' ).display;
+                
+                	api.columns([3,4,5], { page: 'current'}).every(function() {
+                		var sum = this
+                	    .data()
+                	    .reduce(function(a, b) {
+                	    var x = parseFloat(a) || 0;
+                	    var y = parseFloat(b) || 0;
+                	    	return x + y;
+                	    }, 0);			
+                	       
+                	    $(this.footer()).html(numFormat(sum));
+                	}); 
+                },
   	  	});
         $('#add_form').on("submit", function(event){  
             event.preventDefault();  
@@ -328,12 +392,12 @@
             else if($('#to_date').val() == ""){  
                 alert("To date is required");  
             } 
-            else if($('#paid_date').val() == ""){  
-                alert("Paid date is required");  
-            }
-            else if($('#due_date').val() == ""){  
-                alert("Due date is required");  
-            }
+//             else if($('#paid_date').val() == ""){  
+//                 alert("Paid date is required");  
+//             }
+//             else if($('#due_date').val() == ""){  
+//                 alert("Due date is required");  
+//             }
             else if($('#reading_from').val() == ""){  
                 alert("Meter reading from is required");  
             }
@@ -343,12 +407,12 @@
             else if($('#current_usage').val() == ""){  
                 alert("Current usage is required");  
             }
-            else if($('#kwtbb').val() == ""){  
-                alert("KWTBB is required");  
-            }
-            else if($('#cheque_no').val() == ""){  
-                 alert("Cheque number is required");  
-            }                                          
+//             else if($('#kwtbb').val() == ""){  
+//                 alert("KWTBB is required");  
+//             }
+//             else if($('#cheque_no').val() == ""){  
+//                  alert("Cheque number is required");  
+//             }                                          
             else{  
                  $.ajax({  
                       url:"sesb_bill.ajax.php",  
@@ -356,8 +420,8 @@
                       data:{action:'add_new_bill', data: $('#add_form').serialize()},  
                       success:function(data){   
                            $('#editItem').modal('hide');  
-                           $('#bootstrap-data-table').html(data);
-//                            location.reload();  
+//                            $('#bootstrap-data-table').html(data);
+                           location.reload();  
                       }  
                  });  
             }  

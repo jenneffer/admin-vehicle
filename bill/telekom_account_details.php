@@ -152,7 +152,7 @@
                     <div class="card-header">                            
                         <strong class="card-title">Account Details</strong>
                     </div>     
-                    <div class="card-body">                                       
+                    <div class="card-body" style="font-weight: bold;">                                       
                         <div class="col-sm-12">
                             <label for="company" class=" form-control-label">Company : <?=$company?></label>                                        
                         </div>

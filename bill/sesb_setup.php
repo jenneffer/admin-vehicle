@@ -70,16 +70,17 @@ global $conn_admin_db;
                                     <tbody>
 
                                     <?php 
-                                        $sql_query = "SELECT * FROM bill_sesb_account WHERE status ='1'"; 
-                                        if(mysqli_num_rows(mysqli_query($conn_admin_db,$sql_query)) > 0){
-                                            $count = 0;
-                                            $sql_result = mysqli_query($conn_admin_db, $sql_query)or die(mysqli_error($conn_admin_db));
-                                                while($row = mysqli_fetch_array($sql_result)){ 
-                                                    $count++;                                                    
-                                                    ?>
+                                    $sql_query = "SELECT * FROM bill_sesb_account WHERE status ='1'";
+                                    if(mysqli_num_rows(mysqli_query($conn_admin_db,$sql_query)) > 0){
+                                        $count = 0;
+                                        $sql_result = mysqli_query($conn_admin_db, $sql_query)or die(mysqli_error($conn_admin_db));
+                                        while($row = mysqli_fetch_array($sql_result)){
+                                            $count++;
+                                            $company = itemName("SELECT name FROM company WHERE id='".$row['company_id']."'");
+                                            ?>
                                                     <tr>
                                                     	<td><a href="sesb_account_details.php?id=<?=$row['id']?>" target="_blank" style="color:blue;"><?=$row['account_no']?></a></td>                                                        
-                                                        <td><?=strtoupper($row['company'])?></td>
+                                                        <td><?=strtoupper($company)?></td>
                                                         <td><?=$row['owner']?></td>
                                                         <td><?=$row['location']?></td>
                                                         <td><?=$row['deposit']?></td>
@@ -175,15 +176,14 @@ global $conn_admin_db;
                     <h4 class="modal-title">Edit Account</h4>
                 </div>
                 <div class="modal-body">
-                    <form role="form" method="POST" action="" id="update_form">
-                        <input type="hidden" name="_token" value="">
+                    <form role="form" method="POST" action="" id="update_form">                       
                         <input type="hidden" id="id" name="id" value="">
                         <div class="form-group row col-sm-12">
                     	<div class="col-sm-6">
                             <label for="company_edit" class=" form-control-label"><small class="form-text text-muted">Company</small></label>
                             <div>
                                 <?php
-                                    $company = mysqli_query ( $conn_admin_db, "SELECT id, code FROM company");
+                                    $company = mysqli_query ( $conn_admin_db, "SELECT id, UPPER(name) FROM company");
                                     db_select ($company, 'company_edit', '','','-select-','form-control','');
                                 ?>
                             </div>
@@ -310,7 +310,7 @@ global $conn_admin_db;
         			success:function(data){
             			console.log(data);            			        			
         				$('#id').val(id);					
-                        $('#company_edit').val(data.company);      
+                        $('#company_edit').val(data.company_id);      
                         $('#acc_no_edit').val(data.account_no);  
                         $('#location_edit').val(data.location);      
                         $('#deposit_edit').val(data.deposit);  
@@ -343,22 +343,29 @@ global $conn_admin_db;
     	});
     
         $('#update_form').on("submit", function(event){  
-          event.preventDefault();  
-          if($('#stk_in').val() == ""){  
-              alert("Stock in is required");  
-          }    
-          else{  
-               $.ajax({  
-                    url:"stock.ajax.php",  
-                    method:"POST",  
-                    data:{action:'update_stock', data: $('#update_form').serialize()},  
-                    success:function(data){   
-                         $('#editItem').modal('hide');  
-                         $('#bootstrap-data-table').html(data);
-                         location.reload();  
-                    }  
-               });  
-          }  
+        	event.preventDefault();  
+            if($('#company_edit').val() == ""){  
+                 alert("Company is required");  
+            } 
+            else if($('#acc_no_edit').val() == ""){  
+                 alert("Account number is required");  
+            }    
+            else if($('#location_edit').val() == ""){  
+                alert("Location is required");  
+           	}                                        
+            else{  
+                 $.ajax({  
+                      url:"sesb_bill.ajax.php",  
+                      method:"POST",  
+                      data:{action:'update_account', data: $('#update_form').serialize()},  
+                      success:function(data){
+                          if(data){
+                        	  $('#editItem').modal('hide');                             
+                              location.reload();  
+                          }                              
+                      }  
+                 });  
+            } 
         }); 
         
         $('#add_form').on("submit", function(event){  
