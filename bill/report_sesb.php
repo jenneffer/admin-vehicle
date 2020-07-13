@@ -65,7 +65,7 @@ if(!empty($select_company)){
                                         <div class="col-sm-3">
                                             <label for="date_start" class="form-control-label"><small class="form-text text-muted">Company</small></label>
                                             <?php
-                                                $company = mysqli_query ( $conn_admin_db, "SELECT id,(SELECT UPPER(name) FROM company WHERE id=bill_sesb_account.company_id)company_name FROM bill_sesb_account GROUP BY company_id");
+                                                $company = mysqli_query ( $conn_admin_db, "SELECT company_id,(SELECT UPPER(name) FROM company WHERE id=bill_sesb_account.company_id)company_name FROM bill_sesb_account GROUP BY company_id");
                                                 db_select ($company, 'company', $select_company,'submit()','ALL','form-control form-control-sm','');
                                             ?>                           
                                         </div>

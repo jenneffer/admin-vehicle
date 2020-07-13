@@ -104,12 +104,12 @@
                                                     ?>
                                                     <tr>
                                                         <td><?=$count?>.</td>
-                                                        <td><?=$row['item_name']?></td>
+                                                        <td><?=strtoupper($row['item_name'])?></td>
                                                         <td><?=$cat?></td>
                                                         <td><?=$unit?></td>
                                                         <td class="text-center">
                                                         	<span id="<?=$row['id']?>" data-toggle="modal" class="edit_data" data-target="#editItem"><i class="fa fa-edit"></i></span>
-<!--                                                         	<span id="<?=$row['id']?>" data-toggle="modal" class="delete_data" data-target="#deleteItem"><i class="fas fa-trash-alt"></i></span> -->
+                                                        	<span id="<?=$row['id']?>" data-toggle="modal" class="delete_data" data-target="#deleteItem"><i class="fas fa-trash-alt"></i></span> 
                                                         </td>
                                                     </tr>
                                     <?php
@@ -309,9 +309,17 @@
     			url:"function.ajax.php",
     			method:"POST",    
     			data:{action:'delete_item', id:ID},
-    			success:function(data){	  						
+    			success:function(data){	 
+        			console.log(data); 						
     				$('#deleteItem').modal('hide');		
-    				location.reload();		
+    				if(data == true){
+    					alert("Deleted successfully!");
+    					location.reload();
+        			}		
+    				else{
+						alert("Unable to delete.Item exist in stock out records!");
+						location.reload();
+        			}
     			}
     		});
     	});

@@ -93,7 +93,7 @@ function get_sesb_data_monthly($year, $company, $location){
     
     $query = "SELECT * FROM bill_sesb_account
         INNER JOIN bill_sesb ON bill_sesb_account.id = bill_sesb.acc_id
-        WHERE YEAR(date_end)='$year'";
+        WHERE YEAR(date_end)='$year' AND status='1'";
 
     if(!empty($company)){
         $query .=" AND company_id='$company'";

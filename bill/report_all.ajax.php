@@ -76,9 +76,9 @@ function get_report_monthly_sesb($filter, $year){
         'aaData' => array()
     );
     
-    $sql_query = "SELECT id,company_id, owner,account_no,location FROM bill_sesb_account";
+    $sql_query = "SELECT id,company_id, owner,account_no,location FROM bill_sesb_account WHERE status='1'";
     if(!empty($filter)){
-        $sql_query .= " WHERE company_id = '".$filter."' ";
+        $sql_query .= " AND company_id = '".$filter."' ";
     }
     $rst  = mysqli_query($conn_admin_db, $sql_query)or die(mysqli_error($conn_admin_db));
     
@@ -96,13 +96,14 @@ function get_report_monthly_sesb($filter, $year){
         $acc_no = itemName("SELECT account_no FROM bill_sesb_account  WHERE id='$id'");
         $owner = itemName("SELECT owner FROM bill_sesb_account  WHERE id='$id'");
         $location = itemName("SELECT location FROM bill_sesb_account  WHERE id='$id'");
+        $code = itemName("SELECT code FROM company WHERE id IN(SELECT company_id FROM bill_sesb_account  WHERE id='$id')");
         $total = 0;
         for( $i=1; $i<=$monthto; $i++){
             $total += $data[$i];
         }
         
         $datas = array(            
-            $acc_no,
+            $acc_no."<br>(".$code.")",
             $owner,
             $location,
             $data[1],

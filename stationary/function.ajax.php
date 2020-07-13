@@ -52,13 +52,20 @@
     function delete_item($id){
         global $conn_admin_db;
         if (!empty($id)) {
-            $query = "UPDATE stationary_item SET status = 0 WHERE id = '".$id."' ";
-            $result = mysqli_query($conn_admin_db, $query);
-            if ($result) {
-                alert ("Deleted successfully", "item.php");
-            }
-        }
+            //check the id if exist in stock out
+            $exist = mysqli_query($conn_admin_db, "SELECT * FROM stationary_stock_take WHERE item_id='$id'");            
+            if(mysqli_num_rows($exist) > 0){                
+                $result = false;
+            }else{
+                $query = "UPDATE stationary_item SET status = 0 WHERE id = '".$id."' ";
+                $result = mysqli_query($conn_admin_db, $query);
+                
+            }            
+            
+        }   
+
         
+        echo json_encode($result);
     }
     
     function update_item($data){

@@ -125,8 +125,9 @@
                             <label for="item" class=" form-control-label"><small class="form-text text-muted">Item <span class="color-red">*</span></small></label>
                             <div>
                                 <?php
-                                $item = mysqli_query ( $conn_admin_db, "SELECT si.id AS id, item_name FROM stationary_stock ss
-                                                              INNER JOIN stationary_item si ON si.id = ss.item_id GROUP BY si.id");
+//                                 $item = mysqli_query ( $conn_admin_db, "SELECT si.id AS id, item_name FROM stationary_stock ss
+//                                                               INNER JOIN stationary_item si ON si.id = ss.item_id GROUP BY si.id");
+                                $item = mysqli_query ( $conn_admin_db, "SELECT id, UPPER(item_name) FROM stationary_item WHERE status='1'");
                                 db_select ($item, 'item', '','','-select-','form-control','');
                                 ?>
                             </div>
@@ -138,7 +139,7 @@
                             <input type="text" id="quantity" name="quantity" class="form-control">
                         </div>
                         <div class="col-sm-6">
-                            <label for="staff_name" class=" form-control-label"><small class="form-text text-muted">Staff Name <span class="color-red">*</span></small></label>
+                            <label for="staff_name" class=" form-control-label"><small class="form-text text-muted">Staff Name</small></label>
                             <input type="text" id="staff_name" name="staff_name" class="form-control">
                         </div>
                     </div> 
@@ -367,10 +368,7 @@
            	}  
             else if($('#quantity').val() == ""){  
                  alert("Quantity in is required");  
-            } 
-            else if($('#staff_name').val() == ""){  
-                alert("Staff name is required");  
-            } 
+            }  
             else if($('#date_taken').val() == ""){  
                 alert("Date is required");  
             }    

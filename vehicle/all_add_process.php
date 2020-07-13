@@ -55,7 +55,6 @@
                             vi_insurance_fromDate = '".$insurance_from_date."',
                             vi_insurance_dueDate = '".$insurance_due_date."',
                             vi_insuranceStatus = '".$insurance_status."',
-                            vi_amount = '".$insurance_amount."',
                             vi_premium_amount='".$premium_amount."',
                             vi_ncd='".$ncd."',
                             vi_sum_insured='".$sum_insured."',

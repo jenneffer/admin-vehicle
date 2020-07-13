@@ -74,7 +74,7 @@
                                                     ?>
                                                     <tr>
                                                         <td><?=$count?>.</td>
-                                                        <td><?=$item?></td>
+                                                        <td><?=strtoupper($item)?></td>
                                                         <td class="text-center"><?=$row['stock_in']?></td>
                                                         <td class="text-center"><?=dateFormatRev($row['date_stock_in'])?></td>
                                                         <td class="text-center">
@@ -110,7 +110,7 @@
                             <label for="item" class=" form-control-label"><small class="form-text text-muted">Item <span class="color-red">*</span></small></label>
                             <div>
                                 <?php
-                                    $item = mysqli_query ( $conn_admin_db, "SELECT id, item_name FROM stationary_item");
+                                    $item = mysqli_query ( $conn_admin_db, "SELECT id, UPPER(item_name) FROM stationary_item");
                                     db_select ($item, 'item', '','','-select-','form-control','');
                                 ?>
                             </div>
@@ -153,7 +153,7 @@
                                 <label for="item_id" class=" form-control-label"><small class="form-text text-muted">Item</small></label>
                                 <div>
                                     <?php
-                                        $item_id = mysqli_query ( $conn_admin_db, "SELECT id, item_name FROM stationary_item");
+                                        $item_id = mysqli_query ( $conn_admin_db, "SELECT id, UPPER(item_name) FROM stationary_item");
                                         db_select ($item_id, 'item_id', '','','-select-','form-control','', 'disabled');
                                     ?>
                                 </div>
