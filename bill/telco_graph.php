@@ -10,7 +10,7 @@ $select_company = isset($_POST['company']) ? $_POST['company'] : "1";
 $select_acc = isset($_POST['account_no']) ? $_POST['account_no'] : "";
 $report_type = isset($_POST['report_type']) ? $_POST['report_type'] : "year";
 ob_start();
-selectYear('year_select',$year_select,'submit()','','form-control','','');
+selectYear('year_select',$year_select,'submit()','','form-control form-control-sm','','');
 $html_year_select = ob_get_clean();
 
 $arr_report_type = array(
@@ -213,7 +213,7 @@ tr:nth-child(even) {
                 	<div class="form-group row col-sm-12">  
                 		<div class="col-sm-2">
                 			<label for="report_type" class="form-control-label"><small class="form-text text-muted">Report Type</small></label>
-                			<select name="report_type" id="report_type" class="form-control" onchange="this.form.submit()">
+                			<select name="report_type" id="report_type" class="form-control form-control-sm" onchange="this.form.submit()">
                 			<?php foreach ($arr_report_type as $key => $rt){						
                 			    $selected = ($key == $report_type) ? 'selected' : '';						    
                 			    echo "<option $selected value='$key'>".$rt."</option>";
@@ -228,14 +228,14 @@ tr:nth-child(even) {
                 		<label for="company" class="form-control-label"><small class="form-text text-muted">Company</small></label>
                 		<?php                                            
                             $company = mysqli_query ( $conn_admin_db, "SELECT company_id, (SELECT UPPER(NAME) FROM company WHERE id=bill_telco_account.company_id) AS company_name FROM bill_telco_account WHERE status='1' GROUP BY company_id ORDER BY company_name ASC");
-                            db_select ($company, 'company',$select_company,'submit()','','form-control','');
+                            db_select ($company, 'company',$select_company,'submit()','','form-control form-control-sm','');
                         ?>
                 		</div>
                 		<div class="col-sm-4 monthly-div">
                 		<label for="location" class="form-control-label"><small class="form-text text-muted">Account No.</small></label>
                 		<?php                                            
                     		$account_no = mysqli_query ( $conn_admin_db, "SELECT id, account_no FROM bill_telco_account WHERE company_id='$select_company' AND id IN (SELECT telco_acc_id FROM bill_telco_billing)");
-                    		db_select ($account_no, 'account_no',$select_acc,'submit()','All','form-control','');
+                    		db_select ($account_no, 'account_no',$select_acc,'submit()','All','form-control form-control-sm','');
                         ?>
                 		</div>
                 	</div>

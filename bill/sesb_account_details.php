@@ -32,8 +32,6 @@
         $arr_data[] = $rows;
     }
     
-    
-    
 ?>
 
 <!doctype html><html class="no-js" lang="">
@@ -74,7 +72,7 @@
 
 <body>
     <!--Left Panel -->
-	<?php  include('../assets/nav/leftNav.php')?>
+	<?php include('../assets/nav/leftNav.php')?>
     <!-- Right Panel -->
     <?php include('../assets/nav/rightNav.php')?>
     <!-- /#header -->
@@ -199,27 +197,27 @@
                                         
                                     <?php }
                                     ?>
-                                    </tbody> 
+                                    </tbody>                                     	
                                     <tfoot>
-                                    </tfoot>
-                                    <tr>
-                                    	<th></th>
-                                    	<th></th>
-                                    	<th></th>
-                                    	<th></th>
-                                    	<th></th>
-                                    	<th></th>
-                                    	<th></th>
-                                    	<th></th>
-                                    	<th></th>
-                                    	<th></th>
-                                    	<th></th>
-                                    	<th></th>
-                                    	<th></th>
-                                    	<th></th>
-                                    	<th></th>
-                                    	<th></th>
-                                    </tr>                                                                                                          
+                                    	<tr>
+                                    		<th>TOTAL</th>
+                                    		<th></th>
+                                    		<th></th>
+                                    		<th></th>
+                                    		<th></th>
+                                    		<th></th>
+                                    		<th></th>
+                                    		<th></th>
+                                    		<th></th>
+                                    		<th></th>
+                                    		<th></th>
+                                    		<th></th>
+                                    		<th></th>
+                                    		<th></th>
+                                    		<th></th>
+                                    		<th></th>
+                                    	</tr>
+                                    </tfoot>                                                                                                                                              
                                     </table>
                                 </div>                                                                                                            
                           	 
@@ -359,27 +357,28 @@
 		var acc_id = '<?=$id?>';
 			
         $('#sesb-table').DataTable({
-        	"columnDefs": [
-//         	    { "width": "10%", "targets": 0 },
-//         	    { "width": "80%", "targets": 1 },
-//         	    { "width": "10%", "targets": 2 }
-        	  ],
-        	  "footerCallback": function( tfoot, data, start, end, display ) {
-                	var api = this.api(), data;
-                	var numFormat = $.fn.dataTable.render.number( '\,', '.', 2, '' ).display;
-                
-                	api.columns([3,4,5], { page: 'current'}).every(function() {
-                		var sum = this
-                	    .data()
-                	    .reduce(function(a, b) {
-                	    var x = parseFloat(a) || 0;
-                	    var y = parseFloat(b) || 0;
-                	    	return x + y;
-                	    }, 0);			
-                	       
-                	    $(this.footer()).html(numFormat(sum));
-                	}); 
-                },
+            "bInfo" : false,
+            "bLengthChange": false,
+            "searching": false,
+            "ordering": false,
+            "paging" : false,
+            "footerCallback": function( tfoot, data, start, end, display ) {
+            	var api = this.api(), data;
+            	var numFormat = $.fn.dataTable.render.number( '\,', '.', 2, '' ).display;
+            
+            	api.columns([4,5,6,7,8,9,12], { page: 'current'}).every(function() {
+            		var sum = this
+            	    .data()
+            	    .reduce(function(a, b) {
+            	    var x = parseFloat(a) || 0;
+            	    var y = parseFloat(b) || 0;
+            	    	return x + y;
+            	    }, 0);			
+            	       
+            	    $(this.footer()).html(numFormat(sum));
+            	}); 
+            },
+            
   	  	});
         $('#add_form').on("submit", function(event){  
             event.preventDefault();  

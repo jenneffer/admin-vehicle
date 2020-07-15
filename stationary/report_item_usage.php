@@ -6,7 +6,7 @@ global $conn_admin_db;
 
 $year_select = isset($_POST['year_select']) ? $_POST['year_select'] : date("Y");
 ob_start();
-selectYear('year_select',$year_select,'submit()','','form-control form-control-sm','','');
+selectYear('year_select',$year_select,'submit()','','form-control','','');
 $html_year_select = ob_get_clean();
 
 $select_department = isset($_POST['department']) ? $_POST['department'] : "1";
@@ -111,10 +111,10 @@ tr:nth-child(even) {
   background-color: #dddddd;
 }
 .select2-selection__rendered {
-  margin: 5px;
+    margin: 5px;
 }
 .select2-selection__arrow {
-  margin: 5px;
+    margin: 5px;    
 }
 </style>
 <?php require_once('../allCSS1.php')?>
@@ -146,14 +146,14 @@ tr:nth-child(even) {
                                   		<label for="department" class="form-control-label"><small class="form-text text-muted">Department</small></label>
                                   		<?php 
           		                            $department = mysqli_query ( $conn_admin_db, "SELECT department_id, department_name FROM stationary_department WHERE status='1'");
-          		                            db_select ($department, 'department', $select_department,'submit()','','form-control','');  
+          		                            db_select ($department, 'department', $select_department,'submit()','','form-control form-control-sm','');  
                                   		?>                                  		  
                                   	</div>
                                   	<div class="col-sm-3">
                                   		<label for="item" class="form-control-label"><small class="form-text text-muted">Item</small></label>
                                   		<?php 
           		                            $item = mysqli_query ( $conn_admin_db, "SELECT item_id, (SELECT item_name FROM  stationary_item WHERE id=stationary_stock_take.item_id)AS item_name FROM stationary_stock_take WHERE department_id='".$select_department."' GROUP BY item_id");
-          		                            db_select ($item, 'item', $select_item,'submit()','All','form-control','');  
+          		                            db_select ($item, 'item', $select_item,'submit()','All','form-control form-control-sm','');  
                                   		?>
                                   	</div>
                                  </div>    

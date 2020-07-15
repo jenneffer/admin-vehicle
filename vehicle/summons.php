@@ -167,26 +167,26 @@
                                 <label for="vehicle_reg_no" class=" form-control-label"><small class="form-text text-muted">Vehicle Reg No.</small></label>
                                 <?php
                                     $vehicle = mysqli_query ( $conn_admin_db, "SELECT vv_id, UPPER(vv_vehicleNo) FROM vehicle_vehicle WHERE status='1'");
-                                    db_select ($vehicle, 'vehicle_reg_no', '','','-select-','form-control','');
+                                    db_select ($vehicle, 'vehicle_reg_no', '','','-select-','form-control','', 'required');
                                 ?>
                             </div>
                             <div class="col-sm-6">
                             	<label for="driver_name" class=" form-control-label"><small class="form-text text-muted">Driver's Name</small></label>
-                                <input type="text" id="driver_name" name="driver_name" placeholder="Enter driver's name" class="form-control">
+                                <input type="text" id="driver_name" name="driver_name" placeholder="Enter driver's name" class="form-control" required>
                                 
                             </div>                                        
                         </div>
                         <div class="form-group row col-sm-12">
                             <div class="col-sm-6">
                                 <label for="summon_no" class=" form-control-label"><small class="form-text text-muted">Summon's No.</small></label>
-                                <input type="text" id="summon_no" name="summon_no" placeholder="Enter summon number" class="form-control">
+                                <input type="text" id="summon_no" name="summon_no" placeholder="Enter summon number" class="form-control" required>
                             </div>
                             <div class="col-sm-6">
                                 <div>
                                 	<label for="summon_type" class=" form-control-label"><small class="form-text text-muted">Summon's Type</small></label>                                             
                                     <?php
                                         $summon_type = mysqli_query ( $conn_admin_db, "SELECT st_id, st_name FROM vehicle_summon_type");
-                                        db_select ($summon_type, 'summon_type', '','','-select-','form-control','');
+                                        db_select ($summon_type, 'summon_type', '','','-select-','form-control','','required');
                                     ?>
                                 </div>
                                 <div id="desc">
@@ -201,28 +201,55 @@
                         <div class="form-group row col-sm-12">
                         	<div class="col-sm-6">
                                 <label for="pv_no" class=" form-control-label">PV No.</label>
-                                <input type="text" id="pv_no" name="pv_no" placeholder="Enter PV number" class="form-control">
+                                <input type="text" id="pv_no" name="pv_no" placeholder="Enter PV number" class="form-control" required>
                             </div>
                             <div class="col-sm-6">
                                 <label for="reimburse_amt" class=" form-control-label"><small class="form-text text-muted">Reimburse Amount(RM)</small></label>
-                                <input type="text" id="reimburse_amt" name="reimburse_amt" placeholder="e.g 500.00" class="form-control">
-                            </div>                                        
+                                <input type="text" id="reimburse_amt" name="reimburse_amt" placeholder="e.g 500.00" class="form-control" required>
+                            </div>                                         
                         </div>
                         <div class="form-group row col-sm-12">                                          
                             <div class="form-group col-sm-6">
                                 <label class="form-control-label"><small class="form-text text-muted">Summon's Date</small></label>
                                 <div class="input-group input-inline">
-                                    <input class="form-control" id="summon_date" name="summon_date" value="">
+                                    <input class="form-control" id="summon_date" name="summon_date" value="" required>
                                     <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
                                 </div>                                
                             </div> 
-                            <div class="col-sm-6">
+							<div class="col-sm-6">
+                            	<div class="col-sm-12">     
+                            		<label class="form-control-label"><small class="form-text text-muted">Payment borne by<span class="color-red">*</span></small></label>
+                            	</div>
+                            	<div class="form-group row col-sm-12">     
+                            		<div class="col-sm-6">
+                            			<input type="checkbox" id="driver_borne" name="driver_borne">&nbsp;&nbsp;<label class="form-control-label"><small>Driver</small></label>
+                            		</div>
+                            		<div class="borne_by_driver col-sm-6">
+                            			<select name="driver_b" id="driver_b" class="form-control form-control-sm">
+                            				<option value="half">Half</option>
+                            				<option value="full">Full</option>
+                            			</select>
+                            		</div>                                                                                   
+                                </div>
+                                <div class="form-group row col-sm-12">     
+                            		<div class="col-sm-6">
+                            			<input type="checkbox" id="company_borne" name="company_borne">&nbsp;&nbsp;<label class="form-control-label"><small>Company</small></label>
+                            		</div>
+                            		<div class="borne_by_company col-sm-6">
+                            			<select name="company_b" id="company_b" class="form-control form-control-sm">
+                            				<option value="half">Half</option>
+                            				<option value="full">Full</option>
+                            			</select>
+                            		</div>                                                                                   
+                                </div>
+                        	</div>                                                                  
+                        </div>
+                        <div class="form-group row col-sm-12">
+                        	<div class="col-sm-6">
                                 <label for="offence_details" class=" form-control-label"><small class="form-text text-muted">Offense Details</small></label>                                             
                                 <textarea name="offence_details" id="offence_details" name="offence_details" rows="5" placeholder="Offense details..." class="form-control"></textarea>
-                            </div>                                     
+                            </div>                        	
                         </div>
-                                   
-
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                             <button type="submit" class="btn btn-primary update_data ">Update</button>
@@ -380,10 +407,38 @@
   					method:"POST",
   					data:{ action:'retrive_summon', summon_id:summon_id },
   					dataType:"json",
-  					success:function(data){	   	  	  					
+  					success:function(data){	   	  	  					  	  					
   						var reimburse_amt = parseFloat(data.vs_reimbursement_amt).toFixed(2);
   						var summon_date = dateFormat(data.vs_summon_date);
-						
+  						var vs_driver_borne = data.vs_driver_borne;
+  						var vs_company_borne = data.vs_company_borne;
+
+  						//payment borne
+  						if(vs_driver_borne != ""){
+  	  						$('.borne_by_driver').show();
+  	  						$("#driver_borne").prop("checked", true);
+  	  						$('#driver_b').val(vs_driver_borne);
+  						}else{
+  							$('.borne_by_driver').hide();
+  	  						$("#driver_borne").prop("checked", false);
+  	  					}
+  						if(vs_company_borne != ""){
+  	  						$('.borne_by_company').show();
+  	  						$("#company_borne").prop("checked", true);
+  	  						$('#company_b').val(vs_company_borne);
+  						}else{
+  							$('.borne_by_company').hide();
+  	  						$("#company_borne").prop("checked", false);  	  						
+  	  					}
+
+                        $('#company_borne').change(function(){
+							$('.borne_by_company').toggle();
+                        });
+                        
+                        $('#driver_borne').change(function() {
+							$('.borne_by_driver').toggle();
+                        });
+
   	  					var summon_desc = "";	
       	  				if(data.vs_summon_type == 3) {
       	                	$('#desc').show();
@@ -391,7 +446,8 @@
           	            } else {
           	                $('#desc').hide(); 
           	            }
-          	             	
+						
+						          	             	
   						$('#summon_id').val(data.vs_id);					
                         $('#vehicle_reg_no').val(data.vv_id);  
                         $('#driver_name').val(data.vs_driver_name);  
@@ -465,32 +521,32 @@
 		//update summon form submit
         $('#update_form').on("submit", function(event){  
             event.preventDefault();  
-            if($('#vehicle_reg_no').val() == "")  
-            {  
-                 alert("Vehicle number is required");  
-            }  
-            else if($('#driver_name').val() == '')  
-            {  
-                 alert("Driver's name is required");  
-            }  
-            else if($('#summon_no').val() == '')  
-            {  
-                 alert("Summon's number is required");  
-            }  
-            else if($('#summon_type').val() == '')  
-            {  
-                 alert("Summon type is required");  
-            }  
-            else if($('#summon_date').val() == '')  
-            {  
-                 alert("Summon's date is required");  
-            }  
-            else if($('#reimburse_amt').val() == '')  
-            {  
-                 alert("Reimburse amount is required");  
-            }   
-            else  
-            {  
+//             if($('#vehicle_reg_no').val() == "")  
+//             {  
+//                  alert("Vehicle number is required");  
+//             }  
+//             else if($('#driver_name').val() == '')  
+//             {  
+//                  alert("Driver's name is required");  
+//             }  
+//             else if($('#summon_no').val() == '')  
+//             {  
+//                  alert("Summon's number is required");  
+//             }  
+//             else if($('#summon_type').val() == '')  
+//             {  
+//                  alert("Summon type is required");  
+//             }  
+//             else if($('#summon_date').val() == '')  
+//             {  
+//                  alert("Summon's date is required");  
+//             }  
+//             else if($('#reimburse_amt').val() == '')  
+//             {  
+//                  alert("Reimburse amount is required");  
+//             }   
+//             else  
+//             {  
                  $.ajax({  
                       url:"summon.all.ajax.php",  
                       method:"POST",  
@@ -498,10 +554,10 @@
                       success:function(data){   
                            $('#editItem').modal('hide');  
                            $('#bootstrap-data-table').html(data);  
-                           location.reload();	
+//                            location.reload();	
                       }  
                  });  
-            }  
+//             }  
        });
 
       //update add payment form submit

@@ -15,7 +15,7 @@
     $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
     $row = mysqli_fetch_assoc($result);
     $acc_id = $row['id'];
-    $company = $row['company'];
+    $company = itemName("SELECT UPPER(name) FROM company WHERE id='".$row['company_id']."'");
     $owner = $row['owner'];
     $ref_no = $row['ref_no'];
     $account_no = $row['account_no'];
@@ -152,7 +152,7 @@
                     <div class="card-header">                            
                         <strong class="card-title">Account Details</strong>
                     </div>     
-                    <div class="card-body" style="font-weight: bold;">                                       
+                    <div class="card-body">                                       
                         <div class="col-sm-12">
                             <label for="company" class=" form-control-label">Company : <?=$company?></label>                                        
                         </div>
@@ -272,23 +272,21 @@
             <input type="hidden" id="tel_count" name="tel_count">   
             <div class="form-group row col-sm-12">            	
             	<div class="col-sm-4">
-                    <label for="from_date" class=" form-control-label"><small class="form-text text-muted">From date</small></label>                                            
+                    <label for="from_date" class=" form-control-label"><small class="form-text text-muted">From date <span class="color-red">*</span></small></label>                                            
                     <div class="input-group">
-                        <input id="from_date" name="from_date" class="form-control form-control-sm" autocomplete="off">
+                        <input id="from_date" name="from_date" class="form-control form-control-sm" autocomplete="off" required>
                     </div>  
                 </div>       
                 <div class="col-sm-4">
-                    <label for="to_date" class=" form-control-label"><small class="form-text text-muted">To date</small></label>                                            
+                    <label for="to_date" class=" form-control-label"><small class="form-text text-muted">To date <span class="color-red">*</span></small></label>                                            
                     <div class="input-group">
-                        <input id="to_date" name="to_date" class="form-control form-control-sm" autocomplete="off">
+                        <input id="to_date" name="to_date" class="form-control form-control-sm" autocomplete="off" required>
                     </div>  
                 </div>
                 <div class="col-sm-4">
-                    <label for="paid_date" class=" form-control-label"><small class="form-text text-muted">Paid date</small></label>                                            
-                    <div class="input-group">
-                        <input id="paid_date" name="paid_date" class="form-control form-control-sm" autocomplete="off">                        
-                    </div>  
-                </div>
+                    <label for="monthly_fee" class=" form-control-label"><small class="form-text text-muted">Monthly (RM) <span class="color-red">*</span></small></label>
+                    <input type="text" id="monthly_fee" name="monthly_fee" class="form-control form-control-sm" required>
+                </div>                
             </div> 
             <div class="form-group row col-sm-12">                        
                 <div class="col-sm-4">
@@ -298,13 +296,15 @@
                     </div>  
                 </div> 
                 <div class="col-sm-4">
-                    <label for="bill_no" class=" form-control-label"><small class="form-text text-muted">Bill No.</small></label>
-                    <input type="text" id="bill_no" name="bill_no" class="form-control form-control-sm">
-                </div>  
+                    <label for="paid_date" class=" form-control-label"><small class="form-text text-muted">Paid date</small></label>                                            
+                    <div class="input-group">
+                        <input id="paid_date" name="paid_date" class="form-control form-control-sm" autocomplete="off">                        
+                    </div>  
+                </div>
                 <div class="col-sm-4">
-                    <label for="monthly_fee" class=" form-control-label"><small class="form-text text-muted">Monthly (RM)</small></label>
-                    <input type="text" id="monthly_fee" name="monthly_fee" class="form-control form-control-sm">
-                </div>                                    
+                    <label for="bill_no" class=" form-control-label"><small class="form-text text-muted">Bill No. <span class="color-red">*</span></small></label>
+                    <input type="text" id="bill_no" name="bill_no" class="form-control form-control-sm" required>
+                </div>  	                                    
             </div>
             <div class="row form-group col-sm-12">
                 <div class="col-sm-4">
@@ -316,8 +316,8 @@
                     <input type="text" id="cr_adjustment" name="cr_adjustment" class="form-control form-control-sm">
                 </div>
                 <div class="col-sm-4">
-                    <label for="cheque_no" class=" form-control-label"><small class="form-text text-muted">Cheque No.</small></label>
-                    <input type="text" id="cheque_no" name="cheque_no" class="form-control form-control-sm">
+                    <label for="cheque_no" class=" form-control-label"><small class="form-text text-muted">Cheque No. <span class="color-red">*</span></small></label>
+                    <input type="text" id="cheque_no" name="cheque_no" class="form-control form-control-sm" required>
                 </div>      
             </div>   
             <div class="row form-group col-sm-12">
@@ -341,7 +341,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="submit" class="btn btn-primary save_data ">Save</button>
+                <button type="submit" class="btn btn-sm btn-primary save_data ">Save</button>
             </div>
             </form>
         </div>
@@ -360,17 +360,17 @@
                 <div class="row form-group col-sm-12">
                     <div class="col-sm-5">
                         <label><small class="form-text text-muted">Telephone No.</small></label>
-                        <input type="text" name="telefon" class="form-control">
+                        <input type="text" name="telefon" class="form-control form-control-sm" required>
                     </div>
                     <div class="col-sm-5">
                         <label><small class="form-text text-muted">Type</small></label>
-                        <input type="text" name="type" class="form-control">
+                        <input type="text" name="type" class="form-control form-control-sm" required>
                     </div> 
                     <div class="col-sm-1">
-                    	<button type="submit" class="btn btn-success button_add_telefon">Add</button>                            	
+                    	<button type="submit" class="btn btn-sm btn-success button_add_telefon">Add</button>                            	
                     </div> 
                     <div class="col-sm-1">
-                    	<button type="button" data-dismiss="modal" class="btn btn-secondary button_add">Cancel</button>
+                    	<button type="button" data-dismiss="modal" class="btn btn-sm btn-secondary button_add">Cancel</button>
                     </div>                         
                 </div>                                                                             
           	</form>
@@ -424,7 +424,9 @@ $(document).ready(function() {
     var tel_col_str = '<?=$tel_column_str?>';
 
     $("#telekom_table").DataTable({   
-        "order":[[1,'asc']], 
+    	"ordering": false,
+//         "order":[[1,'asc']], 
+		"bInfo": false,
     	"paging": false,
     	"columnDefs": [
     	  {
@@ -459,25 +461,18 @@ $(document).ready(function() {
         event.preventDefault();                        
         $('#acc_id').val(acc_id);
         
-        if($('#date_entered').val() == ""){  
-             alert("Date is required");  
-        } 
-        else if($('#bill_amount').val() == ""){  
-             alert("Bill amount is required");  
-        }                                          
-        else{  
-             $.ajax({  
-                  url:"telekom_bill.ajax.php",  
-                  method:"POST",  
-                  data:{action:'add_new_bill', data: $('#add_form').serialize()},  
-                  success:function(data){   
-                       $('#editItem').modal('hide');  
-                       $('#bootstrap-data-table').html(data);
-//                        location.reload();  
-                  }  
-             });  
-        }  
-      });
+        $.ajax({  
+            url:"telekom_bill.ajax.php",  
+            method:"POST",  
+            data:{action:'add_new_bill', data: $('#add_form').serialize()},  
+            success:function(data){   
+                 $('#editItem').modal('hide');  
+                 $('#bootstrap-data-table').html(data);
+//                  location.reload();  
+            }  
+       });
+        
+	});
 
     $('#from_date, #to_date, #paid_date, #due_date').datepicker({
           format: "dd-mm-yyyy",

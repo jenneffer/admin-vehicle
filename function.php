@@ -1,8 +1,8 @@
 <?php
 error_reporting(0);
 // select input - retrieve data from database
-    function db_select($query,$txt_name,$txt_value,$function,$default,$class,$tabindex, $readonly = NULL){
-    	echo "<select id='$txt_name' name='$txt_name' onchange='$function' class='$class'  $readonly>\n";
+    function db_select($query,$txt_name,$txt_value,$function,$default,$class,$tabindex, $readonly = NULL, $additional= NULL){
+    	echo "<select id='$txt_name' name='$txt_name' onchange='$function' class='$class'  $readonly $additional>\n";
     	if($default <> '') echo "<option value=''>$default</option>\n";
     	while($row = mysqli_fetch_array($query)){
     		if($txt_value == $row[0])
@@ -11,6 +11,16 @@ error_reporting(0);
     		echo "<option value='$row[0]'>".stripslashes($row[1])."</option>\n";
     	}
     	echo "</select>\n";	
+    }
+    
+    function db_option($query,$default=NULL){
+        if($default <> '') echo "<option value=''>$default</option>\n";
+        while($row = mysqli_fetch_array($query)){
+            if($txt_value == $row[0])
+                echo "<option value='$row[0]' selected>".stripslashes($row[1])."</option>\n";
+            else
+                echo "<option value='$row[0]'>".stripslashes($row[1])."</option>\n";
+        }
     }
     
     // javascript alert & window location
@@ -36,10 +46,36 @@ error_reporting(0);
     }
     
     // select input - year list
-    function selectYear($txt_name,$txt_value,$function,$default,$class,$tabindex){
+    function selectYear($txt_name,$txt_value,$function,$default,$class,$tabindex, $additional=NULL){
         $start_y = 2015;
         $end_y = date('Y')+10;
-        echo "<select name='$txt_name' onchange='$function' class='$class'>\n";
+        echo "<select name='$txt_name' onchange='$function' class='$class' $additional>\n";
+        if($default <> '') echo "<option value=''>$default</option>\n";
+        for($i=$start_y;$i<$end_y;$i++){
+            if($txt_value == $i)
+                echo "<option value='$i' selected>".$i."</option>\n";
+                else
+                    echo "<option value='$i'>".$i."</option>\n";
+        }
+        echo "</select>\n";
+    }
+    function optionYear($txt_value,$default=NULL){        
+        $start_y = 2015;
+        $end_y = date('Y')+10;
+        if($default <> '') echo "<option value=''>$default</option>\n";
+        for($i=$start_y;$i<$end_y;$i++){
+            if($txt_value == $i)
+                echo "<option value='$i' selected>".$i."</option>\n";
+            else
+                echo "<option value='$i'>".$i."</option>\n";
+        }
+    }
+    
+    // select input - year multiple list
+    function selectYearMultiple($txt_name,$txt_value,$function,$default,$class,$tabindex){
+        $start_y = 2015;
+        $end_y = date('Y')+10;
+        echo "<select multiple='multiple' id='$txt_name' name='$txt_name' onchange='$function' class='$class'>\n";
         if($default <> '') echo "<option value=''>$default</option>\n";
         for($i=$start_y;$i<$end_y;$i++){
             if($txt_value == $i)

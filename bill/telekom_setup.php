@@ -118,14 +118,14 @@ global $conn_admin_db;
                             <label for="company" class=" form-control-label"><small class="form-text text-muted">Company</small></label>
                             <div>
                                 <?php
-                                    $company = mysqli_query ( $conn_admin_db, "SELECT id, UPPER(name) FROM company");
-                                    db_select ($company, 'company', '','','-select-','form-control','');
+                                    $company = mysqli_query ( $conn_admin_db, "SELECT id, UPPER(name) FROM company WHERE status='1' ORDER BY name");
+                                    db_select ($company, 'company', '','','-select-','form-control','','required');
                                 ?>
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <label for="acc_no" class=" form-control-label"><small class="form-text text-muted">Account No.</small></label>
-                            <input type="text" id="acc_no" name="acc_no" placeholder="Enter Account number" class="form-control">
+                            <input type="text" id="acc_no" name="acc_no" placeholder="Enter Account number" class="form-control" required>
                         </div>
                     </div>                    
                     <div class="form-group row col-sm-12">
@@ -193,22 +193,21 @@ global $conn_admin_db;
                     <h4 class="modal-title">Edit Account</h4>
                 </div>
                 <div class="modal-body">
-                    <form role="form" method="POST" action="" id="update_form">
-                        <input type="hidden" name="_token" value="">
+                    <form role="form" method="POST" action="" id="update_form">                        
                         <input type="hidden" id="id" name="id" value="">
                         <div class="form-group row col-sm-12">
                     	<div class="col-sm-6">
                             <label for="company_edit" class=" form-control-label"><small class="form-text text-muted">Company</small></label>
                             <div>
                                 <?php
-                                    $company = mysqli_query ( $conn_admin_db, "SELECT id, code FROM company");
-                                    db_select ($company, 'company_edit', '','','-select-','form-control','');
+                                    $company = mysqli_query ( $conn_admin_db, "SELECT id, UPPER(name) FROM company");
+                                    db_select ($company, 'company_edit', '','','-select-','form-control','','required');
                                 ?>
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <label for="acc_no_edit" class=" form-control-label"><small class="form-text text-muted">Account No.</small></label>
-                            <input type="text" id="acc_no_edit" name="acc_no_edit" class="form-control">
+                            <input type="text" id="acc_no_edit" name="acc_no_edit" class="form-control" required>
                         </div>
                         </div>                    
                         <div class="form-group row col-sm-12">
@@ -386,21 +385,15 @@ global $conn_admin_db;
     
         $('#update_form').on("submit", function(event){  
           event.preventDefault();  
-          if($('#stk_in').val() == ""){  
-              alert("Stock in is required");  
-          }    
-          else{  
-               $.ajax({  
-                    url:"stock.ajax.php",  
-                    method:"POST",  
-                    data:{action:'update_stock', data: $('#update_form').serialize()},  
-                    success:function(data){   
-                         $('#editItem').modal('hide');  
-                         $('#bootstrap-data-table').html(data);
-                         location.reload();  
-                    }  
-               });  
-          }  
+          $.ajax({  
+              url:"telekom_bill.ajax.php",  
+              method:"POST",  
+              data:{action:'update_account', data: $('#update_form').serialize()},  
+              success:function(data){   
+                   $('#editItem').modal('hide');                     
+                   location.reload();  
+              }  
+         	});  
         }); 
         
         $('#add_form').on("submit", function(event){  
@@ -414,9 +407,9 @@ global $conn_admin_db;
             else if($('#location').val() == ""){  
                 alert("Location is required");  
            	}             
-            else if($('#tariff').val() == ""){  
-                alert("Tariff is required");  
-           	}                           
+//             else if($('#tariff').val() == ""){  
+//                 alert("Tariff is required");  
+//            	}                           
             else{  
                  $.ajax({  
                       url:"telekom_bill.ajax.php",  

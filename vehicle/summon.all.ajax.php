@@ -11,22 +11,31 @@
     if( $action != "" ){
         switch ($action){
             
-            case 'update_summon':
-                
+            case 'update_summon':                
                 if( !empty($_POST) ){
                     $params = array();
-                    parse_str($_POST['data'], $params); //unserialize jquery string data                
-                    
-                    $vs_id = $params['summon_id'];
-                    $vehicle_reg_no = $params['vehicle_reg_no'];
-                    $driver_name = $params['driver_name'];
-                    $summon_no = $params['summon_no'];
-                    $summon_type = $params['summon_type'];
-                    $summon_desc = $params['summon_desc'];
-                    $pv_no = $params['pv_no'];
-                    $reimburse_amt = $params['reimburse_amt'];
-                    $summon_date = dateFormat($params['summon_date']);
+                    parse_str($_POST['data'], $params); //unserialize jquery string data                                    
+                    $vs_id = isset($params['summon_id']) ? $params['summon_id'] : "";
+                    $vehicle_reg_no = isset($params['vehicle_reg_no']) ? $params['vehicle_reg_no'] : "";
+                    $driver_name = isset($params['driver_name']) ? $params['driver_name'] : "";
+                    $summon_no = isset($params['summon_no']) ? $params['summon_no'] : "";
+                    $summon_type = isset($params['summon_type']) ? $params['summon_type'] : "";
+                    $summon_desc = isset($params['summon_desc']) ? $params['summon_desc'] : "";
+                    $pv_no = isset($params['pv_no']) ? $params['pv_no'] : "";
+                    $reimburse_amt = isset($params['reimburse_amt']) ? $params['reimburse_amt'] : "";
+                    $summon_date = isset($params['summon_date']) ? dateFormat($params['summon_date']) : "";
                     $offence_details = $params['offence_details'];
+                    $driver_borne = isset($params['driver_borne']) ? $params['driver_borne'] : "";
+                    $company_borne = isset($params['company_borne']) ? $params['company_borne'] : "";
+                    
+                    $driver_b = "";
+                    $company_b = "";
+                    if($driver_borne == "on"){
+                        $driver_b = isset($params['driver_b']) ? $params['driver_b'] : "";
+                    }
+                    if($company_borne == "on"){
+                        $company_b = isset($params['company_b']) ? $params['company_b'] : "";
+                    }
                     
                     $query = "UPDATE vehicle_summons
                         SET vv_id = '$vehicle_reg_no',
@@ -38,6 +47,8 @@
                         vs_pv_no = '$pv_no',
                         vs_reimbursement_amt = '$reimburse_amt',
                         vs_description = '$offence_details',
+                        vs_driver_borne = '".$driver_b."',
+                        vs_company_borne = '".$company_b."',
                         vs_date_added = now()
                         WHERE vs_id='".$vs_id."'";
                     

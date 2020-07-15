@@ -150,7 +150,7 @@
                             <div>
                                 <?php
                                 $category = mysqli_query ( $conn_admin_db, "SELECT id, name FROM stationary_category");
-                                db_select ($category, 'category', '','','-select-','form-control','');
+                                db_select ($category, 'category', '','','-select-','form-control','','required');
                                 ?>
                             </div>
                         </div>
@@ -190,7 +190,7 @@
                         	<div class="col-sm-12">
                                 <label for="name" class=" form-control-label"><small class="form-text text-muted">Item </small></label>
                                 <div>
-                                	<input type="text" id="name" name="name" class="form-control">
+                                	<input type="text" id="name" name="name" class="form-control" required>
                             	</div>
                             </div>
                     	</div>

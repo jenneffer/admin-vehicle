@@ -16,6 +16,9 @@ if( $action != "" ){
             add_new_account($data, $telefon_list);
             break;
             
+        case 'update_account':
+            update_account($data);
+            break;
         case 'retrieve_account':
             retrieve_account($id);
             break;
@@ -40,10 +43,36 @@ if( $action != "" ){
     }
 }
 
+function update_account($data){
+    global $conn_admin_db;
+    $param = array();
+    parse_str($data, $param); //unserialize jquery string data
+    $acc_id = $param['id'];
+    $company =  mysqli_real_escape_string( $conn_admin_db,$param['company_edit']);
+    $acc_no =  mysqli_real_escape_string( $conn_admin_db,$param['acc_no_edit']);
+    $location =  mysqli_real_escape_string( $conn_admin_db,$param['location_edit']);
+    $owner =  mysqli_real_escape_string( $conn_admin_db,$param['owner_edit']);
+    $remark =  mysqli_real_escape_string( $conn_admin_db,$param['remark_edit']);
+    $ref_no =  mysqli_real_escape_string( $conn_admin_db,$param['ref_no_edit']);
+    $service_no =  mysqli_real_escape_string( $conn_admin_db,$param['service_no_edit']);
+    
+    $query = "UPDATE bill_telekom_account SET
+                        company_id='$company',
+                        account_no='$acc_no',
+                        owner='$owner',
+                        remark='$remark',
+                        ref_no='$ref_no',
+                        location='$location',
+                        service_no='$service_no' WHERE id='$acc_id'";
+    
+    $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
+    echo json_encode($result);
+}
 function add_new_bill($data){
     global $conn_admin_db;
     $param = array();
     parse_str($data, $param); //unserialize jquery string data 
+
     $acc_id = $param['acc_id'];
     $tel_count = $param['tel_count'];
     $from_date = dateFormat($param['from_date']);
@@ -70,10 +99,10 @@ function add_new_bill($data){
     $total_amt = $amount + $adjustment;
     $query = "INSERT INTO bill_telekom (acc_id, bill_no, cheque_no, date_start, date_end, paid_date, due_date, monthly_bill, credit_adjustment,gst_sst, amount, rebate, adjustment, other_charges)
              VALUES('$acc_id','$bill_no', '$cheque_no','$from_date', '$to_date','$paid_date', '$due_date', '$monthly_fee', '$cr_adj','$gst_sst','$total_amt', '$rebate', '$adjustment','$other_charges')";
+
+    $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
     
-    $result = mysqli_query($conn_admin_db, $query);
-    
-    if(!empty($phone_usage)){
+    if(!empty($phone_usage) && $result){
         $value = [];
         foreach ($phone_usage as $telefon_id => $telefon_usage){
             $value[] = "('$telefon_id', '$acc_id', '$to_date',now(), '$telefon_usage')";
@@ -82,6 +111,8 @@ function add_new_bill($data){
         $qry = "INSERT INTO bill_telefon_usage (telefon_id, acc_id, date, date_added, usage_rm) VALUES".$values;
         
         $rst = mysqli_query($conn_admin_db, $qry) or die(mysqli_error($conn_admin_db));
+        
+        echo json_encode($rst);
     }
     
 }
@@ -128,7 +159,7 @@ function add_new_account($data, $telefon_list){
         $service_no =  mysqli_real_escape_string( $conn_admin_db,$param['service_no']);
         
         $query_insert_telekom = "INSERT INTO bill_telekom_account SET
-                        company='$company',
+                        company_id='$company',
                         account_no='$acc_no',
                         owner='$owner',
                         remark='$remark',

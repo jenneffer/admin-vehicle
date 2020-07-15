@@ -57,7 +57,7 @@ if(!empty($select_company)){
                     <div class="col-md-12">
                         <div class="card" id="printableArea">
                             <div class="card-header">
-                                <strong class="card-title">Fuji Xerox</strong>
+                                <h6><strong class="card-title">Fuji Xerox</strong></h6>
                             </div>
                             <div class="card-body">
                                 <form id="myform" enctype="multipart/form-data" method="post" action="">                	                   

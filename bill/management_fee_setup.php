@@ -45,10 +45,14 @@ global $conn_admin_db;
                             <div class="card-header">
                                 <strong class="card-title">Management Fee</strong>
                             </div>     
-                           <div class="card-body">                          
-                            <button type="button" class="btn btn-primary mb-1 col-md-2" data-toggle="modal" data-target="#addItem">
-                               Add New 
-							</button>
+                           <div class="card-body">
+                           <div class="form-group row col-sm-12">  
+                               	<div class="col-sm-2">  
+                               	<button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addItem">
+                                   Add New record
+    							</button>
+                               	</div>  
+                           	</div>                                            
                                 <table id="item-data-table" class="table table-striped table-bordered">
                                     <thead>
                                         <tr>
@@ -70,10 +74,11 @@ global $conn_admin_db;
                                                 while($row = mysqli_fetch_array($sql_result)){ 
                                                     $count++;  
                                                     $acc_unit_no = $row['account_no']."/".$row['unit_no'];
+                                                    $comp_name = itemName("SELECT name FROM company WHERE id='".$row['company_id']."'")
                                                     ?>
                                                     <tr>
                                                         <td><a href="management_account_details.php?id=<?=$row['id']?>" target="_blank" style="color:blue;"><?=$count?>.</a></td>
-                                                        <td><?=strtoupper($row['company'])?></td>
+                                                        <td><?=strtoupper($comp_name)?></td>
                                                         <td><?=$acc_unit_no?></td>                                                        
                                                         <td><?=$row['location']?></td> 
                                                         <td><?=$row['owner']?></td>                                                       
@@ -101,29 +106,29 @@ global $conn_admin_db;
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title">Add New</h4>
+                        <h4 class="modal-title">Add New Management account</h4>
                     </div>
                     <div class="modal-body">
                     <form role="form" method="POST" action="" id="add_form">                    
                     <div class="form-group row col-sm-12">
                     	<div class="col-sm-6">
-                            <label for="company" class=" form-control-label"><small class="form-text text-muted">Company</small></label>
+                            <label for="company" class=" form-control-label"><small class="form-text text-muted">Company <span class="color-red">*</span></small></label>
                             <div>
                                 <?php
-                                    $company = mysqli_query ( $conn_admin_db, "SELECT id, code FROM company");
-                                    db_select ($company, 'company', '','','-select-','form-control','');
+                                    $company = mysqli_query ( $conn_admin_db, "SELECT id, UPPER(name) FROM company WHERE status='1'");
+                                    db_select ($company, 'company', '','','-select-','form-control form-control-sm','','required');
                                 ?>
                             </div>
                         </div>
                         <div class="col-sm-6">
-                            <label for="acc_no" class=" form-control-label"><small class="form-text text-muted">Account No.</small></label>
-                            <input type="text" id="acc_no" name="acc_no" placeholder="Enter Account number" class="form-control">
+                            <label for="acc_no" class=" form-control-label"><small class="form-text text-muted">Account No. <span class="color-red">*</span></small></label>
+                            <input type="text" id="acc_no" name="acc_no" placeholder="Enter Account number" class="form-control" required>
                         </div>
                     </div>                    
                     <div class="form-group row col-sm-12">
                     	<div class="col-sm-12">
-                            <label for="location" class=" form-control-label"><small class="form-text text-muted">Location</small></label>
-                            <textarea id="location" name="location" class="form-control"></textarea>
+                            <label for="location" class=" form-control-label"><small class="form-text text-muted">Location <span class="color-red">*</span></small></label>
+                            <textarea id="location" name="location" class="form-control" required></textarea>
                         </div>
                     </div>                     
                     <div class="form-group row col-sm-12">
@@ -153,8 +158,7 @@ global $conn_admin_db;
                     <h4 class="modal-title">Edit Account</h4>
                 </div>
                 <div class="modal-body">
-                    <form role="form" method="POST" action="" id="update_form">
-                        <input type="hidden" name="_token" value="">
+                    <form role="form" method="POST" action="" id="update_form">                        
                         <input type="hidden" id="id" name="id" value="">
                         <div class="form-group row col-sm-12">
                     	<div class="col-sm-6">
@@ -285,7 +289,7 @@ global $conn_admin_db;
         $(document).on('click', '.edit_data', function(){
         	var id = $(this).attr("id");        	
         	$.ajax({
-        			url:"jabatan_air_bill.ajax.php",
+        			url:"management.ajax.php",
         			method:"POST",
         			data:{action:'retrieve_account', id:id},
         			dataType:"json",
@@ -307,7 +311,7 @@ global $conn_admin_db;
     	$( "#delete_record" ).click( function() {
     		var ID = $(this).data('id');
     		$.ajax({
-    			url:"jabatan_air_bill.ajax.php",
+    			url:"management.ajax.php",
     			method:"POST",    
     			data:{action:'delete_account', id:ID},
     			success:function(data){	  						
@@ -324,7 +328,7 @@ global $conn_admin_db;
           }    
           else{  
                $.ajax({  
-                    url:"jabatan_air_bill.ajax.php",  
+                    url:"management.ajax.php",  
                     method:"POST",  
                     data:{action:'update_stock', data: $('#update_form').serialize()},  
                     success:function(data){   
@@ -352,7 +356,7 @@ global $conn_admin_db;
           	}     
             else{  
                  $.ajax({  
-                      url:"jabatan_air_bill.ajax.php",  
+                      url:"management.ajax.php",  
                       method:"POST",  
                       data:{action:'add_new_account', data: $('#add_form').serialize()},  
                       success:function(data){   

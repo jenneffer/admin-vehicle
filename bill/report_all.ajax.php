@@ -29,7 +29,7 @@ if( $action != "" ){
             get_report_management_fee($filter, $year);
             break;
             
-        case 'report_telekom':
+        case 'report_monthly_telekom':
             get_monthly_bill_telekom($filter,$year);
             break;
             
@@ -792,7 +792,6 @@ function get_monthly_bill_telekom($filter, $year){
         }
         
         $datas = array(
-            $count .".",
             $acc_no,
             $company,
             $owner,
@@ -826,9 +825,8 @@ function get_monthly_bill_telekom($filter, $year){
 function get_telekom_monthly_bill($acc_id, $year, $monthto){ // telekom
     $result = array();
     
-    for($m = 1; $m <= $monthto; $m++){
-        echo "SELECT amount FROM bill_telekom WHERE acc_id='$acc_id' AND year(date_start)='$year' AND month(date_start)='$m'<br>";
-        $amount = itemName("SELECT amount FROM bill_telekom WHERE acc_id='$acc_id' AND year(date_start)='$year' AND month(date_start)='$m'");
+    for($m = 1; $m <= $monthto; $m++){        
+        $amount = itemName("SELECT amount FROM bill_telekom WHERE acc_id='$acc_id' AND year(date_end)='$year' AND month(date_end)='$m'");
         $result[$m] = $amount;
     }
     

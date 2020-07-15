@@ -7,7 +7,7 @@ global $conn_admin_db;
 $select_company = isset($_POST['company']) ? $_POST['company'] : "";
 $year_select = isset($_POST['year_select']) ? $_POST['year_select'] : date("Y");
 ob_start();
-selectYear('year_select',$year_select,'','','form-control','','');
+selectYear('year_select',$year_select,'submit()','','form-control form-control-sm','','');
 $html_year_select = ob_get_clean();
 
 ?>
@@ -53,7 +53,7 @@ $html_year_select = ob_get_clean();
                     <div class="col-md-12">
                         <div class="card" id="printableArea">
                             <div class="card-header">
-                                <strong class="card-title">Telekom</strong>
+                                <h6><strong class="card-title">Telekom</strong></h6>
                             </div>
                             <div class="card-body">
                                 <form id="myform" enctype="multipart/form-data" method="post" action="">                	                   
@@ -62,7 +62,7 @@ $html_year_select = ob_get_clean();
                                             <label for="date_start" class="form-control-label"><small class="form-text text-muted">Company</small></label>
                                             <?php
                                                 $company = mysqli_query ( $conn_admin_db, "SELECT company_id,(SELECT UPPER(name) FROM company WHERE id=bill_telekom_account.company_id)company_name FROM bill_telekom_account GROUP BY company_id");
-                                                db_select ($company, 'company', $select_company,'submit()','ALL','form-control','');
+                                                db_select ($company, 'company', $select_company,'submit()','ALL','form-control form-control-sm','');
                                             ?>                           
                                         </div>
                                         <div class="col-sm-2">
@@ -70,7 +70,7 @@ $html_year_select = ob_get_clean();
                                         	<?=$html_year_select;?>
                                         </div>
                                         <div class="col-sm-4">                                    	
-                                        	<button type="submit" class="btn btn-primary button_search ">Submit</button>
+                                        	<button type="submit" class="btn btn-sm btn-primary button_search ">View</button>
                                         </div>
                                      </div>
                                 </form>
@@ -80,7 +80,6 @@ $html_year_select = ob_get_clean();
                                 <table id="telekom_table" class="table table-striped table-bordered">
                                     <thead>
                                         <tr>
-                                        	<th>No.</th>
                                        		<th>Account No.</th>
                                        		<th>Company</th>
                                        		<th>Owner</th>
@@ -103,7 +102,7 @@ $html_year_select = ob_get_clean();
                                     </tbody> 
                                     <tfoot>
                                     	<tr>
-                                            <th colspan="4" class="text-right">Grand Total</th>
+                                            <th colspan="3" class="text-right">Grand Total</th>
                                             <th class="text-right"></th>
                                             <th class="text-right"></th>
                                             <th class="text-right"></th>
@@ -168,79 +167,80 @@ $html_year_select = ob_get_clean();
           
           $('#telekom_table').DataTable({
               "searching": true,
-        	  "dom": 'Bfrtip',
+              "order": [[ 15, "desc" ]],
+//         	  "dom": 'Bfrtip',
 			  "paging": false,
-              "buttons": [ 
-               { 
-              	extend: 'excelHtml5', 
-              	title: 'Telekom_'+res,
-              	footer: true,
-              	customize: function ( xlsx ) {
-              		console.log(xlsx);
-                    var sheet = xlsx.xl.worksheets['sheet1.xml'];
-                    var downrows = 3;
-                    var clRow = $('row', sheet);
-                    //update Row
-                    clRow.each(function () {
-                        var attr = $(this).attr('r');
-                        var ind = parseInt(attr);
-                        ind = ind + downrows;
-                        $(this).attr("r",ind);
-                    });
+//               "buttons": [ 
+//                { 
+//               	extend: 'excelHtml5', 
+//               	title: 'Telekom_'+res,
+//               	footer: true,
+//               	customize: function ( xlsx ) {
+//               		console.log(xlsx);
+//                     var sheet = xlsx.xl.worksheets['sheet1.xml'];
+//                     var downrows = 3;
+//                     var clRow = $('row', sheet);
+//                     //update Row
+//                     clRow.each(function () {
+//                         var attr = $(this).attr('r');
+//                         var ind = parseInt(attr);
+//                         ind = ind + downrows;
+//                         $(this).attr("r",ind);
+//                     });
              
-                    // Update  row > c
-                    $('row c ', sheet).each(function () {
-                        var attr = $(this).attr('r');
-                        var pre = attr.substring(0, 1);
-                        var ind = parseInt(attr.substring(1, attr.length));
-                        ind = ind + downrows;
-                        $(this).attr("r", pre + ind);
-                    });
+//                     // Update  row > c
+//                     $('row c ', sheet).each(function () {
+//                         var attr = $(this).attr('r');
+//                         var pre = attr.substring(0, 1);
+//                         var ind = parseInt(attr.substring(1, attr.length));
+//                         ind = ind + downrows;
+//                         $(this).attr("r", pre + ind);
+//                     });
              
-                    function Addrow(index,data) {
-                        msg='<row r="'+index+'">'
-                        for(i=0;i<data.length;i++){
-                            var key=data[i].k;
-                            var value=data[i].v;
-                            msg += '<c t="inlineStr" r="' + key + index + '" s="42">';
-                            msg += '<is>';
-                            msg +=  '<t>'+value+'</t>';
-                            msg+=  '</is>';
-                            msg+='</c>';
-                        }
-                        msg += '</row>';
-                        return msg;
-                    }
+//                     function Addrow(index,data) {
+//                         msg='<row r="'+index+'">'
+//                         for(i=0;i<data.length;i++){
+//                             var key=data[i].k;
+//                             var value=data[i].v;
+//                             msg += '<c t="inlineStr" r="' + key + index + '" s="42">';
+//                             msg += '<is>';
+//                             msg +=  '<t>'+value+'</t>';
+//                             msg+=  '</is>';
+//                             msg+='</c>';
+//                         }
+//                         msg += '</row>';
+//                         return msg;
+//                     }
              
-                    //insert
-                    var r1 = Addrow(1, [{ k: 'A', v: 'Company' }, { k: 'B', v: company_name }]);
-                    var r2 = Addrow(2, [{ k: 'A', v: 'Account No.' }, { k: 'B', v: acc_no }]);
-                    var r3 = Addrow(3, [{ k: 'A', v: 'Reference' }, { k: 'B', v: ref_no }]);
+//                     //insert
+//                     var r1 = Addrow(1, [{ k: 'A', v: 'Company' }, { k: 'B', v: company_name }]);
+//                     var r2 = Addrow(2, [{ k: 'A', v: 'Account No.' }, { k: 'B', v: acc_no }]);
+//                     var r3 = Addrow(3, [{ k: 'A', v: 'Reference' }, { k: 'B', v: ref_no }]);
                     
-                    sheet.childNodes[0].childNodes[1].innerHTML = r1 + r2 + r3 + sheet.childNodes[0].childNodes[1].innerHTML;
+//                     sheet.childNodes[0].childNodes[1].innerHTML = r1 + r2 + r3 + sheet.childNodes[0].childNodes[1].innerHTML;
                 
-               }
-               },
-               {
-              	extend: 'print',
-              	title: 'Telekom <br>Company : '+company_name+'<br>'+'Account No. : '+acc_no+'<br>Year : '+year,
-              	footer: true,
-              	customize: function ( win ) {
-              		$(win.document.body).find('h1').css('font-size', '12pt'); 
-                    $(win.document.body)
-                          .css( 'font-size', '10pt' );
+//                }
+//                },
+//                {
+//               	extend: 'print',
+//               	title: 'Telekom <br>Company : '+company_name+'<br>'+'Account No. : '+acc_no+'<br>Year : '+year,
+//               	footer: true,
+//               	customize: function ( win ) {
+//               		$(win.document.body).find('h1').css('font-size', '12pt'); 
+//                     $(win.document.body)
+//                           .css( 'font-size', '10pt' );
               
-                    $(win.document.body).find( 'table' )
-                          .addClass( 'compact' )
-                          .css( 'font-size', 'inherit' );
-                  }
-               }
-              ],
+//                     $(win.document.body).find( 'table' )
+//                           .addClass( 'compact' )
+//                           .css( 'font-size', 'inherit' );
+//                   }
+//                }
+//               ],
               "ajax":{
                   "url": "report_all.ajax.php",  
                   "type":"POST",       	        	
              	 	"data" : function ( data ) {
-      					data.action = 'report_telekom';		
+      					data.action = 'report_monthly_telekom';		
       					data.filter = '<?=$select_company?>';
       					data.year = '<?=$year_select?>';		
          	        }         	                 
@@ -249,7 +249,7 @@ $html_year_select = ob_get_clean();
         				var api = this.api(), data;
         				var numFormat = $.fn.dataTable.render.number( '\,', '.', 2, '' ).display;
 
-       				api.columns([4,5,6,7,8,9,10,11,12,13,14,15,16], { page: 'current'}).every(function() {
+       				api.columns([3,4,5,6,7,8,9,10,11,12,13,14,15], { page: 'current'}).every(function() {
        					var sum = this
        				    .data()
        				    .reduce(function(a, b) {
@@ -263,7 +263,7 @@ $html_year_select = ob_get_clean();
         			},
              'columnDefs': [
            	  {
-           	      "targets": [4,5,6,7,8,9,10,11,12,13,14,15,16], // your case first column
+           	      "targets": [3,4,5,6,7,8,9,10,11,12,13,14,15], // your case first column
            	      "className": "text-right", 
            	      "render": $.fn.dataTable.render.number(',', '.', 2, '')               	                      	        	     
            	 }

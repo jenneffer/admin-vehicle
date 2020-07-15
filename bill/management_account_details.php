@@ -7,7 +7,7 @@
     $id = isset($_GET['id']) ? $_GET['id'] : "";
     $year_select = isset($_POST['year_select']) ? $_POST['year_select'] : date('Y');
     ob_start();
-    selectYear('year_select',$year_select,'submit()','','form-control','','');
+    selectYear('year_select',$year_select,'submit()','','form-control form-control-sm','','');
     $html_year_select = ob_get_clean();
     
     $query = "SELECT * FROM bill_management_account WHERE bill_management_account.id = '$id'";
@@ -111,7 +111,7 @@
             <div class="animated fadeIn">
                 <div class="row">
                 	<div class="col-md-12">
-                        <div class="card">
+                        <div class="card" id="printableArea">
                             <div class="card-header">                            
                                 <strong class="card-title">Account Details</strong>
                             </div>     
@@ -154,10 +154,10 @@
                                         <div class="content">   
                                         	<br>                                       	
                                         	<div class="col-sm-12">  
-                                        		<button type="button" class="btn btn btn-primary button_add" data-toggle="modal" data-target="#addManagementFee">Add New Record</button>                                                                                     	
+                                        		<button type="button" class="btn btn-sm btn-primary button_add" data-toggle="modal" data-target="#addManagementFee">Add New Record</button>                                                                                     	
                                             </div>
                                             <br>
-                                            <table class="table table-striped table-bordered">                                                
+                                            <table id="table-mfee" class="table table-striped table-bordered">                                                
                                                 <thead>                                            
                                                     <tr>
                                                     	<th>Month</th>
@@ -191,15 +191,17 @@
                                             	<?php }?>
                                             	</tbody>  
                                             	<tfoot>
-                                            	<tr>
-                                                    <th class="text-center" colspan="3">TOTAL</th>                                                    
-                                                    <th class="text-right"><?=number_format($total_mf,2)?></th>
-                                                    <th class="text-center">&nbsp;</th>
-                                                    <th class="text-center">&nbsp;</th>
-                                                    <th class="text-right">&nbsp;</th>
-                                                    <th class="text-center">&nbsp;</th>   
-                                                    <th class="text-center">&nbsp;</th>                                                                                        
-                                                </tr>
+                                            	<?php if(!empty($arr_data_mf)){?>
+                                                	<tr>
+                                                        <th class="text-center" colspan="3">TOTAL</th>                                                    
+                                                        <th class="text-right"><?=number_format($total_mf,2)?></th>
+                                                        <th class="text-center">&nbsp;</th>
+                                                        <th class="text-center">&nbsp;</th>
+                                                        <th class="text-right">&nbsp;</th>
+                                                        <th class="text-center">&nbsp;</th>   
+                                                        <th class="text-center">&nbsp;</th>                                                                                        
+                                                    </tr>
+                                            	<?php }?>
                                             	</tfoot>                                             	                                                                                                       
                                             </table>
                                         </div>
@@ -208,10 +210,10 @@
                                             <div class="content">
                                             	<br>
                                                 <div class="col-sm-12">  
-                                            		<button type="button" class="btn btn btn-primary button_add" onclick="window.open('add_new_water_bill.php?id=<?=$acc_id?>')"">Add New Record</button>                                                                                     	
+                                            		<button type="button" class="btn btn-sm btn-primary button_add" onclick="window.open('add_new_water_bill.php?id=<?=$acc_id?>')"">Add New Record</button>                                                                                     	
                                                 </div>
                                                 <br>
-                                                <table class="table table-striped table-bordered">                                                
+                                                <table id="table-water-bill" class="table table-striped table-bordered">                                                
                                                 <thead> 
                                                 	<tr>
                                                 		<th>Description</th>
@@ -233,8 +235,13 @@
                                             	</thead>   
                                             	<tbody>
                                             	<?php 
+                                            	$total_consume = 0;
+                                            	$total_amount = 0;
                                             	if(!empty($arr_data_wb)){
-                                            	    foreach ($arr_data_wb as $data){?>
+                                            	    foreach ($arr_data_wb as $data){
+                                            	        $total_consume +=$data['total_consume'];
+                                            	        $total_amount +=$data['total'];
+                                            	        ?>
                                             	<tr>
                                                     <td class="text-left"><?=$data['month_name']?></td>
                                                     <td class="text-left"><?=$data['previous_mr']?></td>
@@ -254,23 +261,16 @@
                                             	<tfoot>
                                             	<?php if(!empty($arr_data_wb)){?>
                                             	<tr>
-                                                    <th class="text-center">&nbsp;</th>
-                                                    <th class="text-center">&nbsp;</th>
-        											<th class="text-center">&nbsp;</th>
-                                                    <th class="text-center">&nbsp;</th>
+                                                    <th class="text-center" colspan="3">TOTAL</th>
+                                                    <th class="text-center"><?=$total_consume?></th>
                                                     <th class="text-center">&nbsp;</th>
                                                     <th class="text-center">&nbsp;</th>
                                                     <th class="text-right">&nbsp;</th>
-                                                    <th class="text-center">&nbsp;</th>   
+                                                    <th class="text-right"><?=number_format($total_amount,2)?></th>   
                                                     <th class="text-center">&nbsp;</th>                
                                                     <th class="text-center">&nbsp;</th>                                                                                        
                                                 </tr>
-                                                <?php }
-                                                else{?>
-                                                <tr>
-                                                    <td colspan="10" class="text-center">No records found.</td>                                                                                                                                          
-                                                </tr>
-                                                <?php }?>
+                                                <?php } ?>
                                             	</tfoot>                                            	                                                                                                      
                                             </table>
                                             </div>
@@ -279,10 +279,10 @@
                                         	<div class="content">
                                             	<br>
                                                 <div class="col-sm-12">  
-                                            		<button type="button" class="btn btn btn-primary button_add" onclick="window.open('add_late_interest_charge.php?id=<?=$acc_id?>')">Add New Record</button>                                                                                     	
+                                            		<button type="button" class="btn btn-sm btn-primary button_add" onclick="window.open('add_late_interest_charge.php?id=<?=$acc_id?>')">Add New Record</button>                                                                                     	
                                                 </div>
                                                 <br>
-                                                <table class="table table-striped table-bordered">                                                
+                                                <table id="table-late-interest" class="table table-striped table-bordered">                                                
                                                 <thead>                                            
                                                     <tr>
                                                     	<th>Bill Date</th>
@@ -316,15 +316,10 @@
                                             	<tfoot>
                                             	<?php if(!empty($arr_data_wb)){?>
                                             	<tr>
-                                                    <th colspan="4">Total</th>
+                                                    <th class="text-center" colspan="4">TOTAL</th>
                                                     <th class="text-right"><?=number_format($li_total,2)?></th>
                                                     <th>&nbsp;</th>
                                                     <th>&nbsp;</th>                                                                                      
-                                                </tr>
-                                                <?php }
-                                                else{?>
-                                                <tr>
-                                                    <td colspan="7" class="text-center">No records found.</td>                                                                                                                                          
                                                 </tr>
                                                 <?php }?>
                                             	</tfoot>                                            	                                                                                                      
@@ -335,10 +330,10 @@
                                         	<div class="content">
                                             	<br>
                                                 <div class="col-sm-12">  
-                                            		<button type="button" class="btn btn btn-primary button_add" onclick="window.open('add_quit_rent_billing.php?id=<?=$acc_id?>')">Add New Record</button>                                                                                     	
+                                            		<button type="button" class="btn btn-sm btn-primary button_add" onclick="window.open('add_quit_rent_billing.php?id=<?=$acc_id?>')">Add New Record</button>                                                                                     	
                                                 </div>
                                                 <br>
-                                                <table class="table table-striped table-bordered">                                                
+                                                <table id="table-quit-rent" class="table table-striped table-bordered">                                                
                                                 <thead>                                            
                                                     <tr>
                                                     	<th>Invoice Date</th>
@@ -373,9 +368,9 @@
                                             	}?>
                                             	</tbody>  
                                             	<tfoot>
-                                            	<?php if(!empty($arr_data_wb)){?>
+                                            	<?php if(!empty($arr_data_qr)){?>
                                             	<tr>
-                                                    <th colspan="2" class="text-center">Total</th>
+                                                    <th colspan="2" class="text-center">TOTAL</th>
         											<th class="text-right"><?=number_format($total_qr,2)?></th>
                                                     <th class="text-center">&nbsp;</th>
                                                     <th class="text-center">&nbsp;</th>
@@ -384,12 +379,7 @@
                                                     <th class="text-right">&nbsp;</th>     
                                                     <th class="text-right">&nbsp;</th>                                                                                      
                                                 </tr>
-                                                <?php }
-                                                else{?>
-                                                <tr>
-                                                    <td colspan="9" class="text-center">No records found.</td>                                                                                                                                          
-                                                </tr>
-                                                <?php }?>
+                                                <?php }?>                                                
                                             	</tfoot>                                            	                                                                                                      
                                             </table>
                                             </div>
@@ -398,10 +388,10 @@
                                         	<div class="content">
                                             	<br>
                                                 <div class="col-sm-12">  
-                                            		<button type="button" class="btn btn btn-primary button_add" onclick="window.open('add_premium_insurance.php?id=<?=$acc_id?>')">Add New Record</button>                                                                                     	
+                                            		<button type="button" class="btn btn-sm btn-primary button_add" onclick="window.open('add_premium_insurance.php?id=<?=$acc_id?>')">Add New Record</button>                                                                                     	
                                                 </div>
                                                 <br>
-                                                <table class="table table-striped table-bordered">                                                
+                                                <table id="table-insurance" class="table table-striped table-bordered">                                                
                                                 <thead>                                            
                                                     <tr>
                                                     	<th>Premium Date</th>
@@ -435,18 +425,13 @@
                                             	<tfoot>
                                             	<?php if(!empty($arr_data_ip)){?>
                                             	<tr>
-                                                    <th colspan="3">Total</th>
+                                                    <th colspan="3" class="text-center">TOTAL</th>
                                                     <th class="text-right"><?=number_format($total_ip,2)?></th>
                                                     <th>&nbsp;</th>
                                                     <th>&nbsp;</th>
                                                     <th>&nbsp;</th>                                                                                                                                               
                                                 </tr>
-                                                <?php }
-                                                else{?>
-                                                <tr>
-                                                    <td colspan="7" class="text-center">No records found.</td>                                                                                                                                          
-                                                </tr>
-                                                <?php }?>
+                                                <?php }?>                                                
                                             	</tfoot>                                            	                                                                                                      
                                             </table>
                                             </div>
@@ -619,13 +604,11 @@
 		
 		var acc_id = '<?=$id?>';
 			
-        $('#item-data-table').DataTable({
-        	"columnDefs": [
-//         	    { "width": "10%", "targets": 0 },
-//         	    { "width": "80%", "targets": 1 },
-//         	    { "width": "10%", "targets": 2 }
-        	  ]
-  	  	});
+        $('#table-mfee, #table-water-bill,#table-late-interest,#table-quit-rent,#table-insurance').DataTable({
+        	"bInfo" : false,
+        	"bLengthChange": false,
+        	"searching": false
+            });
         $('#add_form_mf').on("submit", function(event){  
             event.preventDefault();  
              

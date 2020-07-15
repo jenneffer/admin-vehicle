@@ -118,7 +118,7 @@ global $conn_admin_db;
                             <label for="company" class=" form-control-label"><small class="form-text text-muted">Company</small></label>
                             <div>
                                 <?php
-                                    $company = mysqli_query ( $conn_admin_db, "SELECT id, UPPER(name) FROM company");
+                                    $company = mysqli_query ( $conn_admin_db, "SELECT id, UPPER(name) FROM company WHERE status='1' ORDER BY name");
                                     db_select ($company, 'company', '','','-select-','form-control','');
                                 ?>
                             </div>
@@ -189,7 +189,7 @@ global $conn_admin_db;
                             <label for="company_edit" class=" form-control-label"><small class="form-text text-muted">Company</small></label>
                             <div>
                                 <?php
-                                    $company = mysqli_query ( $conn_admin_db, "SELECT id, code FROM company");
+                                    $company = mysqli_query ( $conn_admin_db, "SELECT id, UPPER(name) FROM company WHERE status='1' ORDER BY name");
                                     db_select ($company, 'company_edit', '','','-select-','form-control','');
                                 ?>
                             </div>

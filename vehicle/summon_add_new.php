@@ -3,22 +3,6 @@
     require_once('../function.php');
     require_once('../check_login.php');
 	global $conn_admin_db;
-// 	if(isset($_SESSION['cr_id'])) {
-// 		$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-// 		$url = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-// 		$query = parse_url($url, PHP_URL_QUERY);
-// 		parse_str($query, $params);
-		
-// 		// get id
-// 		$userId = $_SESSION['cr_id'];
-// 		$name = $_SESSION['cr_name'];
-		
-// 	} else {
-// 		$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-// 		$url = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-// 		$PrevURL= $url;
-// 		header("Location: ../login.php?RecLock=".$PrevURL);
-//     }
 ?>
 
 <!doctype html>
@@ -127,8 +111,7 @@
                                             <label for="summon_desc" class=" form-control-label"><small class="form-text text-muted">Description</small></label>
                                     		<textarea id="summon_desc" name="summon_desc" rows="5" class="form-control"></textarea>
                                         </div>
-                                    </div>
-                                    
+                                    </div>                                    
                                     <div class="form-group row col-sm-12">
                                     	<div class="col-sm-4">
                                             <label for="pv_no" class=" form-control-label"><small class="form-text text-muted">PV No.<span class="color-red">*</span></small></label>
@@ -138,6 +121,33 @@
                                             <label for="reimburse_amt" class=" form-control-label"><small class="form-text text-muted">Reimburse Amount(RM)<span class="color-red">*</span></small></label>
                                             <input type="text" id="reimburse_amt" name="reimburse_amt" onkeypress="return isNumberKey(event)" placeholder="e.g 500.00" class="form-control" required>
                                         </div>                                        
+                                    </div>
+                                    <div class="form-group col-sm-12">
+                                    	<div class="col-sm-12">     
+                                    		<label class="form-control-label"><small class="form-text text-muted">Payment borne by<span class="color-red">*</span></small></label>
+                                    	</div>
+                                    	<div class="form-group row col-sm-4">     
+                                    		<div class="col-sm-4">
+                                    			<input type="checkbox" id="driver_borne" name="driver_borne">&nbsp;&nbsp;<label class="form-control-label"><small>Driver</small></label>
+                                    		</div>
+                                    		<div class="borne_by_driver col-sm-8" style="display: none;">
+                                    			<select name="driver_b" id="driver_b" class="form-control form-control-sm">
+                                    				<option value="half">Half</option>
+                                    				<option value="full">Full</option>
+                                    			</select>
+                                    		</div>                                                                                   
+                                        </div>
+                                        <div class="form-group row col-sm-4">     
+                                    		<div class="col-sm-4">
+                                    			<input type="checkbox" id="company_borne" name="company_borne">&nbsp;&nbsp;<label class="form-control-label"><small>Company</small></label>
+                                    		</div>
+                                    		<div class="borne_by_company col-sm-8" style="display: none;">
+                                    			<select name="company_b" id="company_b" class="form-control form-control-sm">
+                                    				<option value="half">Half</option>
+                                    				<option value="full">Full</option>
+                                    			</select>
+                                    		</div>                                                                                   
+                                        </div>
                                     </div>
                                     <div class="form-group row col-sm-12">                                          
                                         <div class="col-sm-4">
@@ -203,6 +213,14 @@
               } else {
                   $('#desc').hide(); 
               } 
+          });
+
+          $('#company_borne').change(function(){
+        	  $('.borne_by_company').toggle();
+          });
+
+          $('#driver_borne').change(function() {
+              $('.borne_by_driver').toggle();
           });
 
           $('#summon_date').datepicker({

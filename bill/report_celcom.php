@@ -39,6 +39,7 @@ if(!empty($select_company)){
             left:    0;
             bottom:   0;
         }
+        th { white-space: nowrap; }
     </style>
 </head>
 
@@ -57,7 +58,7 @@ if(!empty($select_company)){
                     <div class="col-md-12">
                         <div class="card" id="printableArea">
                             <div class="card-header">
-                                <strong class="card-title">Celcom Mobile</strong>
+                                <h6><strong class="card-title">Celcom Mobile</strong></h6>
                             </div>
                             <div class="card-body">
                                 <form id="myform" enctype="multipart/form-data" method="post" action="">                	                   
@@ -81,46 +82,46 @@ if(!empty($select_company)){
                             </div>
                             <hr>
                             <div class="card-body">
-                                <table id="telekom_table" class="table table-striped table-bordered">
+                                <table id="telco_table" class="table table-striped table-bordered">
                                     <thead>
                                         <tr>
                                         	<th>User</th>	
 											<th>Position/Dept</th>
 											<th>Acc No.</th>
-                        					<th scope='col'>Jan</th>
-                                            <th scope='col'>Feb</th>
-                                            <th scope='col'>Mar</th>
-                                            <th scope='col'>Apr</th>
-                                            <th scope='col'>May</th>
-                                            <th scope='col'>Jun</th>
-                                            <th scope='col'>Jul</th>
-                                            <th scope='col'>Aug</th>
-                                            <th scope='col'>Sep</th>
-                                            <th scope='col'>Oct</th>
-                                            <th scope='col'>Nov</th>
-                                            <th scope='col'>Dec</th>
-											<th scope='col'>TOTAL</th>
+                        					<th class='sum' scope='col'>Jan</th>
+                                            <th class='sum' scope='col'>Feb</th>
+                                            <th class='sum' scope='col'>Mar</th>
+                                            <th class='sum' scope='col'>Apr</th>
+                                            <th class='sum' scope='col'>May</th>
+                                            <th class='sum' scope='col'>Jun</th>
+                                            <th class='sum' scope='col'>Jul</th>
+                                            <th class='sum' scope='col'>Aug</th>
+                                            <th class='sum' scope='col'>Sep</th>
+                                            <th class='sum' scope='col'>Oct</th>
+                                            <th class='sum' scope='col'>Nov</th>
+                                            <th class='sum' scope='col'>Dec</th>
+											<th class='sum' scope='col'>TOTAL</th>
                                         </tr>                                        									
                                     </thead>
                                     <tbody>                                      
                                     </tbody>  
-                                    <tfoot>
-                                    	<tr>
-                                            <td colspan="3" class="text-right font-weight-bold">Grand Total</td>
-                                            <td class="text-right font-weight-bold"></td>
-                                            <td class="text-right font-weight-bold"></td>
-                                            <td class="text-right font-weight-bold"></td>
-                                            <td class="text-right font-weight-bold"></td>
-                                            <td class="text-right font-weight-bold"></td>
-                                            <td class="text-right font-weight-bold"></td>
-                                            <td class="text-right font-weight-bold"></td>
-                                            <td class="text-right font-weight-bold"></td>
-                                            <td class="text-right font-weight-bold"></td>
-                                            <td class="text-right font-weight-bold"></td>
-                                            <td class="text-right font-weight-bold"></td>
-                                            <td class="text-right font-weight-bold"></td>
-                                            <td class="text-right font-weight-bold"></td>
-                                        </tr>
+                                    <tfoot id="tfoot">
+<!--                                     	<tr> -->
+<!--                                             <th colspan="3" class="text-right">Grand Total</th> -->
+<!--                                             <th class="text-right"></th> -->
+<!--                                             <th class="text-right"></th> -->
+<!--                                             <th class="text-right"></th> -->
+<!--                                             <th class="text-right"></th> -->
+<!--                                             <th class="text-right"></th> -->
+<!--                                             <th class="text-right"></th> -->
+<!--                                             <th class="text-right"></th> -->
+<!--                                             <th class="text-right"></th> -->
+<!--                                             <th class="text-right"></th> -->
+<!--                                             <th class="text-right"></th> -->
+<!--                                             <th class="text-right"></th> -->
+<!--                                             <th class="text-right"></th> -->
+<!--                                             <th class="text-right"></th> -->
+<!--                                         </tr> -->
                                     </tfoot>                                 
                                 </table>
                             </div>
@@ -158,8 +159,9 @@ if(!empty($select_company)){
           var year = '<?=$year_select;?>';
           var res = company_name.concat('_'+year);
           
-          $('#telekom_table').DataTable({
+          var table = $('#telco_table').DataTable({
               "searching": true,
+              "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
               "order": [[ 15, "desc" ]],
               "ajax":{
                   "url": "report_all.ajax.php",  
@@ -170,120 +172,158 @@ if(!empty($select_company)){
       					data.year = '<?=$year_select?>';		
          	        }         	                 
                  },
-                 "footerCallback": function( tfoot, data, start, end, display ) {
-       				var api = this.api(), data;
-       				var numFormat = $.fn.dataTable.render.number( '\,', '.', 2, '' ).display;
-
-      				api.columns([3,4,5,6,7,8,9,10,11,12,13,14,15], { page: 'current'}).every(function() {
-      					var sum = this
-      				    .data()
-      				    .reduce(function(a, b) {
-      				    var x = parseFloat(a) || 0;
-      				    var y = parseFloat(b) || 0;
-      				    	return x + y;
-      				    }, 0);			
-      				       
-      				    $(this.footer()).html(numFormat(sum));
-      				}); 
-       			},
-      			'columnDefs': [
+      			"columnDefs": [
                 	  {
                 	      "targets": [3,4,5,6,7,8,9,10,11,12,13,14,15], // your case first column
                 	      "className": "text-right", 
                 	      "render": $.fn.dataTable.render.number(',', '.', 2, '')               	                      	        	     
                 	 }
       			],
-        	  "dom": 'Bfrtip',
-              "buttons": [ 
-               { 
-              	extend: 'excelHtml5', 
-              	title: 'Celcom Mobile_' + res,
-              	footer: true,
-              	customize: function ( xlsx ) {
-              		console.log(xlsx);
-                    var sheet = xlsx.xl.worksheets['sheet1.xml'];
-                    var downrows = 2;
-                    var clRow = $('row', sheet);
-                    //update Row
-                    clRow.each(function () {
-                        var attr = $(this).attr('r');
-                        var ind = parseInt(attr);
-                        ind = ind + downrows;
-                        $(this).attr("r",ind);
-                    });
+//         	  "dom": 'Blfrtip',
+//               "buttons": [ 
+//                { 
+//               	extend: 'excelHtml5', 
+//               	title: 'Celcom Mobile_' + res,
+//               	footer: true,
+//               	customize: function ( xlsx ) {
+//               		console.log(xlsx);
+//                     var sheet = xlsx.xl.worksheets['sheet1.xml'];
+//                     var downrows = 2;
+//                     var clRow = $('row', sheet);
+//                     //update Row
+//                     clRow.each(function () {
+//                         var attr = $(this).attr('r');
+//                         var ind = parseInt(attr);
+//                         ind = ind + downrows;
+//                         $(this).attr("r",ind);
+//                     });
              
-                    // Update  row > c
-                    $('row c ', sheet).each(function () {
-                        var attr = $(this).attr('r');
-                        var pre = attr.substring(0, 1);
-                        var ind = parseInt(attr.substring(1, attr.length));
-                        ind = ind + downrows;
-                        $(this).attr("r", pre + ind);
-                    });
+//                     // Update  row > c
+//                     $('row c ', sheet).each(function () {
+//                         var attr = $(this).attr('r');
+//                         var pre = attr.substring(0, 1);
+//                         var ind = parseInt(attr.substring(1, attr.length));
+//                         ind = ind + downrows;
+//                         $(this).attr("r", pre + ind);
+//                     });
              
-                    function Addrow(index,data) {
-                        msg='<row r="'+index+'">'
-                        for(i=0;i<data.length;i++){
-                            var key=data[i].k;
-                            var value=data[i].v;
-                            msg += '<c t="inlineStr" r="' + key + index + '" s="42">';
-                            msg += '<is>';
-                            msg +=  '<t>'+value+'</t>';
-                            msg+=  '</is>';
-                            msg+='</c>';
-                        }
-                        msg += '</row>';
-                        return msg;
-                    }
+//                     function Addrow(index,data) {
+//                         msg='<row r="'+index+'">'
+//                         for(i=0;i<data.length;i++){
+//                             var key=data[i].k;
+//                             var value=data[i].v;
+//                             msg += '<c t="inlineStr" r="' + key + index + '" s="42">';
+//                             msg += '<is>';
+//                             msg +=  '<t>'+value+'</t>';
+//                             msg+=  '</is>';
+//                             msg+='</c>';
+//                         }
+//                         msg += '</row>';
+//                         return msg;
+//                     }
              
-                    //insert
-                    var r1 = Addrow(1, [{ k: 'A', v: 'Company' }, { k: 'B', v: company_name }]);
+//                     //insert
+//                     var r1 = Addrow(1, [{ k: 'A', v: 'Company' }, { k: 'B', v: company_name }]);
                      
-                    sheet.childNodes[0].childNodes[1].innerHTML = r1 + sheet.childNodes[0].childNodes[1].innerHTML;                
-               }
-               },
-               {
-              	extend: 'print',
-              	text: 'Print',
-              	title: company_name,
-              	footer: true,
-              	customize: function ( win ) {
-              		  $(win.document.body).find('h1').css('font-size', '12pt');              	     
-                      $(win.document.body).css( 'font-size', '10pt' );              
-                      $(win.document.body).find( 'table' ).addClass( 'compact' )
-                          .css( 'font-size', 'inherit' );
+//                     sheet.childNodes[0].childNodes[1].innerHTML = r1 + sheet.childNodes[0].childNodes[1].innerHTML;                
+//                }
+//                },
+//                {
+//               	extend: 'print',
+//               	text: 'Print',
+//               	title: company_name,
+//               	footer: true,
+//               	customize: function ( win ) {
+//               		  $(win.document.body).find('h1').css('font-size', '12pt');              	     
+//                       $(win.document.body).css( 'font-size', '10pt' );              
+//                       $(win.document.body).find( 'table' ).addClass( 'compact' )
+//                           .css( 'font-size', 'inherit' );
 
-                      var last = null;
-                      var current = null;
-                      var bod = [];
+//                       var last = null;
+//                       var current = null;
+//                       var bod = [];
        
-                      var css = '@page { size: landscape; }',
-                          head = win.document.head || win.document.getElementsByTagName('head')[0],
-                          style = win.document.createElement('style');
+//                       var css = '@page { size: landscape; }',
+//                           head = win.document.head || win.document.getElementsByTagName('head')[0],
+//                           style = win.document.createElement('style');
        
-                      style.type = 'text/css';
-                      style.media = 'print';
+//                       style.type = 'text/css';
+//                       style.media = 'print';
        
-                      if (style.styleSheet)
-                      {
-                        style.styleSheet.cssText = css;
-                      }
-                      else
-                      {
-                        style.appendChild(win.document.createTextNode(css));
-                      }
+//                       if (style.styleSheet)
+//                       {
+//                         style.styleSheet.cssText = css;
+//                       }
+//                       else
+//                       {
+//                         style.appendChild(win.document.createTextNode(css));
+//                       }
        
-                      head.appendChild(style);
-                  }
-               }
-              ],              
+//                       head.appendChild(style);
+//                   }
+//                }
+//               ],              
            });
+          
+        $.fn.dataTable.Api.register( 'sum()', function () {
+            return this.flatten().reduce( function ( a, b ) {
+                return (a*1) + (b*1); 
+        	});
+        });
+        $("#telco_table").on('search.dt', function() {
+            var numFormat = $.fn.dataTable.render.number( '\,', '.', 2, '' ).display;
+            var jan = table.column( 3, {page:'current'} ).data().sum();
+            var feb = table.column( 4, {page:'current'} ).data().sum();
+            var mar = table.column( 5, {page:'current'} ).data().sum();
+            var apr = table.column( 6, {page:'current'} ).data().sum();
+            var may = table.column( 7, {page:'current'} ).data().sum();
+            var jun = table.column( 8, {page:'current'} ).data().sum();
+            var jul = table.column( 9, {page:'current'} ).data().sum();
+            var aug = table.column( 10, {page:'current'} ).data().sum();
+            var sep = table.column( 11, {page:'current'} ).data().sum();
+            var oct = table.column( 12, {page:'current'} ).data().sum();
+            var nov = table.column( 13, {page:'current'} ).data().sum();
+            var dec = table.column( 14, {page:'current'} ).data().sum();
+            var total = table.column( 15, {page:'current'} ).data().sum();
+                     		
+            jan = (jan == null) ? '&nbsp;' : numFormat(jan);        		
+            feb = (feb == null) ? '&nbsp;' : numFormat(feb);
+            mar = (mar == null) ? '&nbsp;' : numFormat(mar);        		
+            apr = (apr == null) ? '&nbsp;' : numFormat(apr);
+            may = (may == null) ? '&nbsp;' : numFormat(may);        		
+            jun = (jun == null) ? '&nbsp;' : numFormat(jun);
+            jul = (jul == null) ? '&nbsp;' : numFormat(jul);        		
+            aug = (aug == null) ? '&nbsp;' : numFormat(aug);
+            sep = (sep == null) ? '&nbsp;' : numFormat(sep);        		
+            oct = (oct == null) ? '&nbsp;' : numFormat(oct);
+            nov = (nov == null) ? '&nbsp;' : numFormat(nov);        		
+            dec = (dec == null) ? '&nbsp;' : numFormat(dec);
+            total = (total == null) ? '&nbsp;' : numFormat(total);           		        	
+             	 
+            var data = "<tr><th colspan='3' class='text-right'>Grand Total</th>";
+            data += "<th class='text-right'>"+jan+"</th>";
+            data +="<th class='text-right'>"+feb+"</th>";
+            data +="<th class='text-right'>"+mar+"</th>";
+            data +="<th class='text-right'>"+apr+"</th>";
+            data +="<th class='text-right'>"+may+"</th>";
+            data +="<th class='text-right'>"+jun+"</th>";
+            data +="<th class='text-right'>"+jul+"</th>";
+            data +="<th class='text-right'>"+aug+"</th>";
+            data +="<th class='text-right'>"+sep+"</th>";
+            data +="<th class='text-right'>"+oct+"</th>";
+            data +="<th class='text-right'>"+nov+"</th>";
+            data +="<th class='text-right'>"+dec+"</th>";
+            data +="<th class='text-right'>"+total+"</th></tr>";
+            
+			$("#tfoot").html(data);
+        });
 //           $('#date_start, #date_end').datepicker({
 //               format: "dd-mm-yyyy",
 //               autoclose: true,
 //               orientation: "top left",
 //               todayHighlight: true
 //           });
+          
       });
   </script>
 </body>

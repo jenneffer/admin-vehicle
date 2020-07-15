@@ -183,7 +183,7 @@ $date_end = isset($_POST['date_end']) ? $_POST['date_end'] : date("t-m-Y");
                         <label for="company" class=" form-control-label"><small class="form-text text-muted">Company <span class="color-red">*</span></small></label>
                         <div>
                             <?php
-                                $company = mysqli_query ( $conn_admin_db, "SELECT id, UPPER(name) FROM company");
+                                $company = mysqli_query ( $conn_admin_db, "SELECT id, UPPER(name) FROM company WHERE status='1' ORDER BY name");
                                 db_select ($company, 'company', '','','-select-','form-control','');
                             ?>
                         </div>
@@ -234,7 +234,7 @@ $date_end = isset($_POST['date_end']) ? $_POST['date_end'] : date("t-m-Y");
                             <label class=" form-control-label"><small class="form-text text-muted">Company <span class="color-red">*</span></small></label>
                             <div>
                                 <?php
-                                    $company = mysqli_query ( $conn_admin_db, "SELECT id, name FROM company WHERE id IN(SELECT company FROM bill_fuji_xerox_account WHERE status='1')");
+                                    $company = mysqli_query ( $conn_admin_db, "SELECT id, UPPER(name) FROM company WHERE id IN(SELECT company FROM bill_fuji_xerox_account WHERE status='1') ORDER BY name");
                                     db_select ($company, 'company_add', '','','-select-','form-control','');
                                 ?>
                             </div>
