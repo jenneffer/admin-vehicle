@@ -13,6 +13,6 @@ $conn_admin_db = mysqli_connect($DB_Host, $db_uqser, $DB_Pswd, $db_nqame);
 if (!$conn_admin_db) {
 	die ('Failed to connect to MySQL: ' . mysqli_connect_error());	
 } else {
-	echo "Checking aaronthisone database!";    
+// 	echo "Checking aaronthisone database!";    
 }
 ?>
