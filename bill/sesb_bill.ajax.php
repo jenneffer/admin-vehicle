@@ -21,7 +21,6 @@ $month_map = array(
 $action = isset($_POST['action']) && $_POST['action'] !="" ? $_POST['action'] : ""; 
 $data = isset($_POST['data']) ? $_POST['data'] : ""; 
 $id = isset($_POST['id']) ? $_POST['id'] : "";
-$count = isset($_POST['count']) ? $_POST['count'] : 0;
 $company = isset($_POST['company']) ? $_POST['company'] : "";
 
 if( $action != "" ){
@@ -47,7 +46,7 @@ if( $action != "" ){
             break;
             
         case 'compare_data':
-            compare_data($data, $count);
+            compare_data($data);
             break;
             
         case 'get_location':
@@ -60,18 +59,24 @@ if( $action != "" ){
 
 function get_location($company){
     global $conn_admin_db;
-    $query = "SELECT location,UPPER(location) AS location_name FROM bill_jabatan_air_account WHERE company_id='$company' AND status='1' GROUP BY location";
+    $query = "SELECT location,UPPER(location) AS location_name FROM bill_jabatan_air_account WHERE company_id='$company' AND status='1'";
     $result = mysqli_query($conn_admin_db, $query);
     $location_arr = array();
-    while( $row = mysqli_fetch_array($result) ){
-        $location_arr[] = array(
-            "loc" => $row['location'],
-            "loc_name" => $row['location_name']
-        );
+    $location_list = [];
+    if(mysqli_num_rows($result) > 0){
+        while( $row = mysqli_fetch_array($result) ){
+            $location_arr[] = $row['location_name'];
+            $location_list = $location_arr;
+        }
+        $arr_result[$company] = $location_list;
     }
     
+    $result = array(
+        'result' => $arr_result
+    );
+    
     // encoding array to json format
-    echo json_encode($location_arr);
+    echo json_encode($result);
 }
 
 function get_sesb_data_monthly_compare($year, $company, $location){
@@ -90,6 +95,7 @@ function get_sesb_data_monthly_compare($year, $company, $location){
     }
     
     $query .= " ORDER BY date_end ASC";
+
     $sql_result = mysqli_query($conn_admin_db, $query)or die(mysqli_error($conn_admin_db));
     $data = []; //show all company
     $data_monthly = [];
@@ -140,28 +146,25 @@ function get_sesb_data_monthly_compare($year, $company, $location){
     }    
 }
 
-function compare_data($data, $count){
+function compare_data($data){
     global $conn_admin_db;
     if (!empty($data)) {
         $param = array();
         parse_str($data, $param); //unserialize jquery string data
-        //         the default selection
+     
         $year = $param['year_select'];
         $company = $param['company'];
         $location = $param['location'];
-        $defaut_result = get_sesb_data_monthly_compare($year, $company, $location);
-        if(!empty($defaut_result) && $defaut_result != NULL){
-            $arr_data[] = $defaut_result;
-        }        
-        //         the additional filter
-        for($i=1; $i<=count($count); $i++){
-            $result = get_sesb_data_monthly_compare($param['year_'.$i], $param['company_'.$i], $param['location_'.$i]);
+        $count = count($year); //get the array count
+        
+        for($i=1; $i<=$count; $i++){
+            $result = get_sesb_data_monthly_compare($year[$i], $company[$i], $location[$i]);
             if(!empty($result) && $result != NULL){
                 $arr_data[] = $result;
-            }
-            
+            }            
         }
     }
+
     echo json_encode($arr_data);
 }
 
