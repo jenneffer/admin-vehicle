@@ -59,15 +59,15 @@ if( $action != "" ){
 
 function get_location($company){
     global $conn_admin_db;
-    $query = "SELECT location,UPPER(location) AS location_name FROM bill_jabatan_air_account WHERE company_id='$company' AND status='1'";
+    $query = "SELECT id,UPPER(location) AS location_name FROM bill_sesb_account WHERE company_id='$company' AND status='1'";
     $result = mysqli_query($conn_admin_db, $query);
     $location_arr = array();
     $location_list = [];
     if(mysqli_num_rows($result) > 0){
         while( $row = mysqli_fetch_array($result) ){
-            $location_arr[] = $row['location_name'];
+            $location_arr[$row['id']] = $row['location_name'];
             $location_list = $location_arr;
-        }
+        }        
         $arr_result[$company] = $location_list;
     }
     
@@ -83,7 +83,7 @@ function get_sesb_data_monthly_compare($year, $company, $location){
     global $conn_admin_db;
     global $month_map;
     $month = 12;
-    $query = "SELECT * FROM bill_sesb_account
+    $query = "SELECT bill_sesb_account.id,company_id, location, date_end, amount FROM bill_sesb_account
     INNER JOIN bill_sesb ON bill_sesb_account.id = bill_sesb.acc_id
     WHERE YEAR(date_end)='$year'";
     
@@ -91,56 +91,71 @@ function get_sesb_data_monthly_compare($year, $company, $location){
         $query .=" AND company_id='$company'";
     }
     if(!empty($location)){
-        $query .=" AND bill_sesb_account.location = '$location'";
-    }
-    
+        $query .=" AND bill_sesb_account.id = '$location'";
+    }   
     $query .= " ORDER BY date_end ASC";
 
     $sql_result = mysqli_query($conn_admin_db, $query)or die(mysqli_error($conn_admin_db));
-    $data = []; //show all company
-    $data_monthly = [];
-    while($row = mysqli_fetch_assoc($sql_result)){
-        $code = itemName("SELECT code FROM company WHERE id='".$row['company_id']."'");
-        $loc = $row['location'];
-        $date_end = $row['date_end'];
-        $sesb_month = date_parse_from_format("Y-m-d", $date_end);
-        $sesb_m = $sesb_month["month"];        
-        if (!empty($location)){
+    $data_monthly = []; //show all company    
+    $arr_data_sesb = [];
+    $month = 12;
+    while($row = mysqli_fetch_assoc($sql_result)){        
+        //monthly
+        $arr_data_sesb[$row['company_id']][] = $row;
+    }    
+    foreach ($arr_data_sesb as $key => $val){
+        $code = itemName("SELECT code FROM company WHERE id='$key'");
+        foreach ($val as $v){           
+            $loc = itemName("SELECT location FROM bill_sesb_account WHERE id='".$v['id']."'");
+            $date_end = $v['date_end'];
+            $sesb_month = date_parse_from_format("Y-m-d", $date_end);
+            $sesb_m = $sesb_month["month"];
             for ( $m=1; $m<=$month; $m++ ){
                 if($m == $sesb_m){
-                    if( $location == $loc){
-                        if (isset($data_monthly[$code][$m])){
-                            $data_monthly[$code."-".$year][$m] += (double)$row['amount'];
+                    if(!empty($location)){
+                        if (isset($data_monthly[$code][$loc][$m])){
+                            $data_monthly[$code][$loc][$m] += (double)$v['amount'];
                         }else{
-                            $data_monthly[$code."-".$year][$m] = (double)$row['amount'];
+                            $data_monthly[$code][$loc][$m] = (double)$v['amount'];
+                        }
+                    }else{
+                        if (isset($data_monthly[$code][$m])){
+                            $data_monthly[$code][$m] += (double)$v['amount'];
+                        }else{
+                            $data_monthly[$code][$m] = (double)$v['amount'];
                         }
                     }
-                }
-            }
-        }
-        else{
-            for ( $m=1; $m<=$month; $m++ ){
-                if($m == $sesb_m){
-                    if (isset($data_monthly[$code][$m])){
-                        $data_monthly[$code."-".$year][$m] += (double)$row['amount'];
-                    }else{
-                        $data_monthly[$code."-".$year][$m] = (double)$row['amount'];
-                    }
+                    
                 }
             }
         }
     }
     if (!empty($data_monthly)) {
         foreach ($data_monthly as $code => $data){
-            $month_data = array_replace($month_map, $data);
-            $datasets_sesb_monthly = array(
-                'label' => $code,
-                'backgroundColor' => 'transparent',
-                'borderColor' => randomColor(),
-                'lineTension' => 0,
-                'borderWidth' => 3,
-                'data' => array_values($month_data)
-            );
+            if(!empty($location)){
+                foreach ($data as $location => $val){
+                    $month_data = array_replace($month_map, $val);
+                    $datasets_sesb_monthly = array(
+                        'label' => $location,
+                        'backgroundColor' => 'transparent',
+                        'borderColor' => randomColor(),
+                        'lineTension' => 0,
+                        'borderWidth' => 3,
+                        'data' => array_values($month_data)
+                    );
+                }
+            }
+            else{
+                $month_data = array_replace($month_map, $data);
+                $datasets_sesb_monthly = array(
+                    'label' => $code,
+                    'backgroundColor' => 'transparent',
+                    'borderColor' => randomColor(),
+                    'lineTension' => 0,
+                    'borderWidth' => 3,
+                    'data' => array_values($month_data)
+                );                
+            }            
         }
         return $datasets_sesb_monthly;
     }    
@@ -148,6 +163,7 @@ function get_sesb_data_monthly_compare($year, $company, $location){
 
 function compare_data($data){
     global $conn_admin_db;
+    $arr_data = [];
     if (!empty($data)) {
         $param = array();
         parse_str($data, $param); //unserialize jquery string data
@@ -162,7 +178,7 @@ function compare_data($data){
             if(!empty($result) && $result != NULL){
                 $arr_data[] = $result;
             }            
-        }
+        }       
     }
 
     echo json_encode($arr_data);

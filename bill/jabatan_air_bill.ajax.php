@@ -79,60 +79,76 @@ function get_ja_data_monthly_compare($year, $company, $location){
         $query .=" AND company_id='$company'";
     }
     if(!empty($location)){
-        $query .=" AND bill_jabatan_air_account.location = '$location'";
+        $query .=" AND bill_jabatan_air_account.id = '$location'";
     }
     
     $query .= " ORDER BY date_end ASC";
 
     $sql_result = mysqli_query($conn_admin_db, $query)or die(mysqli_error($conn_admin_db));
-    $data = []; //show all company
+    $arr_data_ja = []; //show all company
     $data_monthly = [];
+    $month = 12;
     while($row = mysqli_fetch_assoc($sql_result)){
-        $code = itemName("SELECT code FROM company WHERE id='".$row['company_id']."'");
-        $loc = $row['location'];
-        $date_end = $row['date_end'];
-        $ja_month = date_parse_from_format("Y-m-d", $date_end);
-        $ja_m = $ja_month["month"];
-        if (!empty($location)){
+        //monthly
+        $arr_data_ja[$row['company_id']][] = $row;
+    }  
+    foreach ($arr_data_ja as $key => $val){
+        $code = itemName("SELECT code FROM company WHERE id='$key'");
+        foreach ($val as $v){
+            $loc = itemName("SELECT location FROM bill_jabatan_air_account WHERE id='".$v['id']."'");
+            $date_end = $v['date_end'];
+            $ja_month = date_parse_from_format("Y-m-d", $date_end);
+            $ja_m = ja_month["month"];
             for ( $m=1; $m<=$month; $m++ ){
                 if($m == $ja_m){
-                    if( $location == $loc){
-                        if (isset($data_monthly[$code][$m])){
-                            $data_monthly[$code][$m] += (double)$row['amount'];
+                    if(!empty($location)){
+                        if (isset($data_monthly[$code][$loc][$m])){
+                            $data_monthly[$code][$loc][$m] += (double)$v['amount'];
                         }else{
-                            $data_monthly[$code][$m] = (double)$row['amount'];
+                            $data_monthly[$code][$loc][$m] = (double)$v['amount'];
                         }
-                    }                    
-                }
-            }
-        }
-        else{
-            for ( $m=1; $m<=$month; $m++ ){
-                if($m == $ja_m){
-                    if (isset($data_monthly[$code][$m])){
-                        $data_monthly[$code][$m] += (double)$row['amount'];
                     }else{
-                        $data_monthly[$code][$m] = (double)$row['amount'];
+                        if (isset($data_monthly[$code][$m])){
+                            $data_monthly[$code][$m] += (double)$v['amount'];
+                        }else{
+                            $data_monthly[$code][$m] = (double)$v['amount'];
+                        }
                     }
+                    
                 }
             }
         }
-    }    
+    }
+    
     if (!empty($data_monthly)) {
         foreach ($data_monthly as $code => $data){
-            $month_data = array_replace($month_map, $data);
-            $datasets_ja_monthly = array(
-                'label' => $code,
-                'backgroundColor' => 'transparent',
-                'borderColor' => randomColor(),
-                'lineTension' => 0,
-                'borderWidth' => 3,
-                'data' => array_values($month_data)
-            );
-        }        
-        return $datasets_ja_monthly;    
-    }   
-    
+            if(!empty($location)){
+                foreach ($data as $location => $val){
+                    $month_data = array_replace($month_map, $val);
+                    $datasets_ja_monthly = array(
+                        'label' => $location,
+                        'backgroundColor' => 'transparent',
+                        'borderColor' => randomColor(),
+                        'lineTension' => 0,
+                        'borderWidth' => 3,
+                        'data' => array_values($month_data)
+                    );
+                }
+            }
+            else{
+                $month_data = array_replace($month_map, $data);
+                $datasets_ja_monthly = array(
+                    'label' => $code,
+                    'backgroundColor' => 'transparent',
+                    'borderColor' => randomColor(),
+                    'lineTension' => 0,
+                    'borderWidth' => 3,
+                    'data' => array_values($month_data)
+                );
+            }
+        }
+        return $datasets_ja_monthly;
+    }
 }
 
 function compare_data($data, $count){
@@ -140,17 +156,13 @@ function compare_data($data, $count){
     if (!empty($data)) {
         $param = array();
         parse_str($data, $param); //unserialize jquery string data
-//         the default selection
         $year = $param['year_select'];
         $company = $param['company'];
         $location = $param['location'];
-        $defaut_result = get_ja_data_monthly_compare($year, $company, $location);
-        if(!empty($defaut_result) && $defaut_result != NULL){
-            $arr_data[] = $defaut_result;
-        }   
-//         the additional filter
+        $count = count($year); //get the array count
+        
         for($i=1; $i<=count($count); $i++){            
-            $result = get_ja_data_monthly_compare($param['year_'.$i], $param['company_'.$i], $param['location_'.$i]);
+            $result = get_ja_data_monthly_compare($year[$i], $company[$i], $location[$i]);
             if(!empty($result) && $result != NULL){
                 $arr_data[] = $result;
             }
@@ -233,18 +245,24 @@ function delete_account_details_item($id){
 
 function get_location($company){
     global $conn_admin_db;
-    $query = "SELECT location,UPPER(location) AS location_name FROM bill_jabatan_air_account WHERE company_id='$company' AND status='1' GROUP BY location";
-    $result = mysqli_query($conn_admin_db, $query);    
-    $location_arr = array();   
-    while( $row = mysqli_fetch_array($result) ){
-        $location_arr[] = array(
-            "loc" => $row['location'],
-            "loc_name" => $row['location_name']
-        );
+    $query = "SELECT id,UPPER(location) AS location_name FROM bill_jabatan_air_account WHERE company_id='$company' AND status='1'";
+    $result = mysqli_query($conn_admin_db, $query);
+    $location_arr = array();
+    $location_list = [];
+    if(mysqli_num_rows($result) > 0){
+        while( $row = mysqli_fetch_array($result) ){
+            $location_arr[$row['id']] = $row['location_name'];
+            $location_list = $location_arr;
+        }
+        $arr_result[$company] = $location_list;
     }
     
+    $result = array(
+        'result' => $arr_result
+    );
+    
     // encoding array to json format
-    echo json_encode($location_arr);
+    echo json_encode($result);
 }
 
 function add_new_bill($data){

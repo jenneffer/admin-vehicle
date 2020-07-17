@@ -114,23 +114,29 @@ function get_sesb_data_monthly($year, $company, $location){
     //form array data for roadtax monthly
     $month = 12;
     $data_monthly = [];
-    if(!empty($company)){
-        foreach ($arr_data_sesb as $key => $val){
-            $code = itemName("SELECT code FROM company WHERE id='$key'");
-            foreach ($val as $v){
-                $loc = $v['location'];
-                $date_end = $v['date_end'];
-                $sesb_month = date_parse_from_format("Y-m-d", $date_end);
-                $sesb_m = $sesb_month["month"];
-                for ( $m=1; $m<=$month; $m++ ){
-                    if($m == $sesb_m){
-                        //premium
+    foreach ($arr_data_sesb as $key => $val){
+        $code = itemName("SELECT code FROM company WHERE id='$key'");
+        foreach ($val as $v){
+            $loc = $v['location'];
+            $date_end = $v['date_end'];
+            $sesb_month = date_parse_from_format("Y-m-d", $date_end);
+            $sesb_m = $sesb_month["month"];
+            for ( $m=1; $m<=$month; $m++ ){
+                if($m == $sesb_m){
+                    if(!empty($location)){                        
                         if (isset($data_monthly[$code][$loc][$m])){
                             $data_monthly[$code][$loc][$m] += (double)$v['amount'];
                         }else{
                             $data_monthly[$code][$loc][$m] = (double)$v['amount'];
                         }
+                    }else{
+                        if (isset($data_monthly[$code][$m])){
+                            $data_monthly[$code][$m] += (double)$v['amount'];
+                        }else{
+                            $data_monthly[$code][$m] = (double)$v['amount'];
+                        }
                     }
+                    
                 }
             }
         }
@@ -138,11 +144,24 @@ function get_sesb_data_monthly($year, $company, $location){
     
     //sesb monthly
     $datasets_sesb_monthly = [];
-    foreach ($data_monthly as $data){
-        foreach ($data as $location => $val){
-            $month_data = array_replace($month_map, $val);
+
+    foreach ($data_monthly as $code => $data){
+        if(!empty($location)){
+            foreach ($data as $location => $val){
+                $month_data = array_replace($month_map, $val);
+                $datasets_sesb_monthly[] = array(
+                    'label' => $location,
+                    'backgroundColor' => 'transparent',
+                    'borderColor' => randomColor(),
+                    'lineTension' => 0,
+                    'borderWidth' => 3,
+                    'data' => array_values($month_data)
+                );
+            }
+        }else{
+            $month_data = array_replace($month_map, $data);
             $datasets_sesb_monthly[] = array(
-                'label' => $location,
+                'label' => $code,
                 'backgroundColor' => 'transparent',
                 'borderColor' => randomColor(),
                 'lineTension' => 0,
@@ -194,9 +213,9 @@ tr:nth-child(even) {
 </head>
 <body>
     <!--Left Panel -->
-	<?php include('../assets/nav/leftNav.php')?>
+	<?php //include('../assets/nav/leftNav.php')?>
     <!-- Right Panel -->
-    <?php include('../assets/nav/rightNav.php')?>
+    <?php //include('../assets/nav/rightNav.php')?>
     <div id="right-panel" class="right-panel">
     <div class="content">        
         <div class="animated fadeIn">
