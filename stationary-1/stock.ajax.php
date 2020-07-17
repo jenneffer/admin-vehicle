@@ -191,11 +191,6 @@
                     date_added = now()";
             
             $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
-			if ($result) {
-                alert("Successfully added!", "stock_out.php");
-            } else {
-				?><script>alert("Item is not added. Please try again!");</script><?php 
-			}
             
             //check the item_id if exist in stock balance table
             $query = "SELECT * FROM stationary_stock_balance WHERE item_id='$item_id'";

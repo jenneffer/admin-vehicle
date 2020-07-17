@@ -43,40 +43,44 @@
                     <div class="col-md-12">
                         <div class="card" id="printableArea">
                             <div class="card-header">
-                                <strong class="card-title">List of Stock</strong>
+                                <strong class="card-title">Stock Out</strong>
                             </div>     
-                           <div class="card-body">                    
+                           <div class="card-body">
+                           <br>                            
                             <div class="form-group">
-                                <button type="button" class="btn btn-sm btn-primary mb-1 col-md-2" data-toggle="modal" data-target="#addItem">
-                                   Add New Stock
-    							</button>
-                            </div>                           
+                            <button type="button" class="btn btn-sm btn-primary mb-1 col-md-2" data-toggle="modal" data-target="#addItem">
+                               Add New 
+							</button>
+                            </div>
                                 <table id="item-data-table" class="table table-striped table-bordered">
                                     <thead>
                                         <tr>
                                             <th>No.</th>
+											<th>Department</th>
 											<th>Item</th>
-											<th class="text-center">Stock In</th>
-											<th class="text-center">Stock in Date</th>
-											<th class="text-center">Action</th>
+											<th>Quantity</th>
+											<th>Date</th>
+											<th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
 
                                     <?php 
-                                        $sql_query = "SELECT * FROM stationary_stock WHERE status ='1'"; 
+                                        $sql_query = "SELECT * FROM stationary_stock_take"; 
                                         if(mysqli_num_rows(mysqli_query($conn_admin_db,$sql_query)) > 0){
                                             $count = 0;
                                             $sql_result = mysqli_query($conn_admin_db, $sql_query)or die(mysqli_error($conn_admin_db));
-                                                while($row = mysqli_fetch_array($sql_result)){ 
+                                                while($row = mysqli_fetch_array($sql_result)){                                                     
                                                     $count++;
-                                                    $item = itemName("SELECT item_name FROM stationary_item WHERE id='".$row['item_id']."'")
+                                                    $department = itemName("SELECT department_code FROM stationary_department WHERE department_id='".$row['department_id']."'");                                                    
+                                                    $item = itemName("SELECT item_name FROM stationary_item WHERE id='".$row['item_id']."'");
                                                     ?>
                                                     <tr>
                                                         <td><?=$count?>.</td>
-                                                        <td><?=strtoupper($item)?></td>
-                                                        <td class="text-center"><?=$row['stock_in']?></td>
-                                                        <td class="text-center"><?=dateFormatRev($row['date_stock_in'])?></td>
+                                                        <td><?=$department?></td>
+                                                        <td><?=$item?></td>
+                                                        <td class="text-center"><?=$row['quantity']?></td>
+                                                        <td><?=dateFormatRev($row['date_taken'])?></td>                                                        
                                                         <td class="text-center">
                                                         	<span id="<?=$row['id']?>" data-toggle="modal" class="edit_data" data-target="#editItem"><i class="fa fa-edit"></i></span>
                                                         	<!-- <span id="<?=$row['id']?>" data-toggle="modal" class="delete_data" data-target="#deleteItem"><i class="fas fa-trash-alt"></i></span> -->
@@ -96,7 +100,7 @@
         </div><!-- .content -->
         </div>
         
-        <!-- Modal Add new stock -->
+        <!-- Modal Add new stock out -->
         <div id="addItem" class="modal fade">
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
@@ -104,38 +108,50 @@
                         <h4 class="modal-title">Add New</h4>
                     </div>
                     <div class="modal-body">
-                    <form role="form" method="POST" action="" id="add_form">
-					<div class="form-group row col-sm-12">
+                    <form role="form" method="POST" action="" id="add_form"> 
+                    <div class="form-group row col-sm-12">
                     	<div class="col-sm-12">
-                            <label for="asd" class=" form-control-label"><small class="form-text text-muted"><span class="color-red">REMINDER : Please update the unit of the item. Click <a href="item.php?hjhg" style="color: blue">here</a> to update.</span></small></label>
-                            <br><label for="asd" class=" form-control-label"><small class="form-text text-muted"><span class="color-red">NOTE : Text box with '<strong>*</strong>' is required!</span></small></label>
+                            <label for="department" class=" form-control-label"><small class="form-text text-muted">Department <span class="color-red">*</span></small></label>
+                            <div>
+                                <?php
+                                $department = mysqli_query ( $conn_admin_db, "SELECT department_id, department_name FROM stationary_department");
+                                db_select ($department, 'department', '','','-select-','form-control','');
+                                ?>
+                            </div>
                         </div>
-                    </div> 
+                    </div>                   
                     <div class="form-group row col-sm-12">
                     	<div class="col-sm-12">
                             <label for="item" class=" form-control-label"><small class="form-text text-muted">Item <span class="color-red">*</span></small></label>
                             <div>
                                 <?php
-                                    $item = mysqli_query ( $conn_admin_db, "SELECT a.`id`, CONCAT(a.`item_name`, ' ', '(', IFNULL(a.`unit`, '-'), ')') AS itemss FROM `stationary_item`a LEFT JOIN `stationary_category`b ON a.`category_id` = b.`id` WHERE a.`status`='1'");
-                                    db_select ($item, 'item', '','','-select-','form-control','');
+//                                 $item = mysqli_query ( $conn_admin_db, "SELECT si.id AS id, item_name FROM stationary_stock ss
+//                                                               INNER JOIN stationary_item si ON si.id = ss.item_id GROUP BY si.id");
+                                $item = mysqli_query ( $conn_admin_db, "SELECT id, UPPER(item_name) FROM stationary_item WHERE status='1'");
+                                db_select ($item, 'item', '','','-select-','form-control','');
                                 ?>
                             </div>
                         </div>
                     </div>
                     <div class="form-group row col-sm-12">
-                    	<div class="col-sm-12">
-                            <label for="stock_in" class=" form-control-label"><small class="form-text text-muted">Stock In <span class="color-red">*</span></small></label>
-                            <input type="number" id="stock_in" name="stock_in" class="form-control"> <!-- placeholder="Numbering only!" -->
-							<small class="help-block form-text" style="color: grey">Please be aware of the <strong style="color: red">UNIT</strong> of the items</small>
+                    	<div class="col-sm-6">
+                            <label for="quantity" class=" form-control-label"><small class="form-text text-muted">Quantity <span class="color-red">*</span></small></label>
+                            <input type="text" id="quantity" name="quantity" class="form-control">
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="staff_name" class=" form-control-label"><small class="form-text text-muted">Staff Name</small></label>
+                            <input type="text" id="staff_name" name="staff_name" class="form-control">
                         </div>
                     </div> 
-                    <div class="col-sm-6">
-                        <label for="date" class="form-control-label"><small class="form-text text-muted">Date <span class="color-red">*</span></small></label>
-                        <div class="input-group">
-                            <input id="date" name="date" class="form-control" autocomplete="off">    
-                            <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>                        
-                        </div>                                            
-                    </div>                   
+                    <div class="form-group row col-sm-12"> 
+                        <div class="col-sm-6">
+                            <label for="date_taken" class="form-control-label"><small class="form-text text-muted">Date taken <span class="color-red">*</span></small></label>
+                            <div class="input-group">
+                                <input id="date_taken" name="date_taken" class="form-control" autocomplete="off">
+                                <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
+                            </div>                                            
+                        </div>     
+                    </div>             
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                         <button type="submit" class="btn btn-primary save_data ">Save</button>
@@ -145,41 +161,58 @@
                 </div>
             </div>
         </div>
-        <!-- Modal edit department  -->
+        <!-- Modal edit stock out  -->
         <div id="editItem" class="modal fade">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Edit Stock</h4>
+                    <h4 class="modal-title">Edit Stock Take</h4>
                 </div>
                 <div class="modal-body">
                     <form role="form" method="POST" action="" id="update_form">
                         <input type="hidden" name="_token" value="">
                         <input type="hidden" id="id" name="id" value="">
-                        
-						<div class="form-group row col-sm-12">
-							<div class="col-sm-12">
-								<label for="asd" class=" form-control-label"><small class="form-text text-muted"><span class="color-red">NOTE : Text box with '<strong>*</strong>' is required!</span></small></label>
-								
-							</div>
-						</div>
-						<div class="form-group row col-sm-12">
+                        <div class="form-group row col-sm-12">
+                    	<div class="col-sm-12">
+                            <label for="department" class=" form-control-label"><small class="form-text text-muted">Department <span class="color-red">*</span></small></label>
+                            <div>
+                                <?php
+                                $department_code = mysqli_query ( $conn_admin_db, "SELECT department_id, department_name FROM stationary_department");
+                                db_select ($department_code, 'department_code', '','','-select-','form-control','');
+                                ?>
+                            </div>
+                        </div>
+                        </div>                   
+                        <div class="form-group row col-sm-12">
                         	<div class="col-sm-12">
-                                <label for="item_id" class=" form-control-label"><small class="form-text text-muted">Item</small></label>
+                                <label for="item" class=" form-control-label"><small class="form-text text-muted">Item <span class="color-red">*</span></small></label>
                                 <div>
                                     <?php
-                                        $item_id = mysqli_query ( $conn_admin_db, "SELECT id, UPPER(item_name) FROM stationary_item");
-                                        db_select ($item_id, 'item_id', '','','-select-','form-control','', 'disabled');
+                                    $item_name = mysqli_query ( $conn_admin_db, "SELECT id, item_name FROM stationary_item");
+                                    db_select ($item_name, 'item_name', '','','-select-','form-control','');
                                     ?>
                                 </div>
                             </div>
                         </div>
                         <div class="form-group row col-sm-12">
-                        	<div class="col-sm-12">
-                                <label for="stk_in" class=" form-control-label"><small class="form-text text-muted">Stock In <span class="color-red">*</span></small></label>
-                                <input type="number" id="stk_in" name="stk_in" class="form-control">
+                        	<div class="col-sm-6">
+                                <label for="qty" class=" form-control-label"><small class="form-text text-muted">Quantity <span class="color-red">*</span></small></label>
+                                <input type="text" id="qty" name="qty" class="form-control">
+                            </div>
+                            <div class="col-sm-6">
+                                <label for="s_name" class=" form-control-label"><small class="form-text text-muted">Staff Name <span class="color-red">*</span></small></label>
+                                <input type="text" id="s_name" name="s_name" class="form-control">
                             </div>
                         </div> 
+                        <div class="form-group row col-sm-12"> 
+                            <div class="col-sm-6">
+                                <label for="date" class="form-control-label"><small class="form-text text-muted">Date taken <span class="color-red">*</span></small></label>
+                                <div class="input-group">
+                                    <input id="date" name="date" class="form-control" autocomplete="off">
+                                    <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
+                                </div>                                            
+                            </div>     
+                        </div>           
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                             <button type="submit" class="btn btn-primary update_data ">Update</button>
@@ -252,18 +285,27 @@
 //         	    { "width": "10%", "targets": 2 }
         	  ]
   	  	});
+
+  	  	$(document).on('change', '#quantity', function(){  	  	  	
+  	  	  	//get the stock balance 
+  	  	  	
+  	  	});
         
         $(document).on('click', '.edit_data', function(){
-        	var id = $(this).attr("id");        	
+        	var id = $(this).attr("id");       	
         	$.ajax({
         			url:"stock.ajax.php",
         			method:"POST",
-        			data:{action:'retrieve_stock', id:id},
+        			data:{action:'retrieve_stock_take', id:id},
         			dataType:"json",
-        			success:function(data){            			        			
+        			success:function(data){            			 
+            			var date = dateFormat(data.date_taken);        			
         				$('#id').val(id);					
-                        $('#item_id').val(data.item_id);      
-                        $('#stk_in').val(data.stock_in);                        
+                        $('#department_code').val(data.department_id);    
+                        $('#item_name').val(data.item_id);     
+                        $('#qty').val(data.quantity);    
+                        $('#s_name').val(data.staff_name);    
+                        $('#date').val(date);                        
                         $('#editItem').modal('show');
         			}
         		});
@@ -278,9 +320,9 @@
     	$( "#delete_record" ).click( function() {
     		var ID = $(this).data('id');
     		$.ajax({
-    			url:"stock.ajax.php",
+    			url:"function.ajax.php",
     			method:"POST",    
-    			data:{action:'delete_stock', id:ID},
+    			data:{action:'delete_department', id:ID},
     			success:function(data){	  						
     				$('#deleteItem').modal('hide');		
     				location.reload();		
@@ -290,14 +332,23 @@
     
         $('#update_form').on("submit", function(event){  
           event.preventDefault();  
-          if($('#stk_in').val() == ""){  
-              alert("Stock in is required");  
-          }    
+          if($('#department_code').val() == ""){  
+               alert("Department name is required");  
+          } 
+          else if($('#item_name').val() == ""){  
+              alert("Item name is required");  
+          }
+          else if($('#qty').val() == ""){  
+              alert("Quantity is required");  
+          }          
+          else if($('#date').val() == ""){  
+              alert("Date is required");  
+          }     
           else{  
                $.ajax({  
                     url:"stock.ajax.php",  
                     method:"POST",  
-                    data:{action:'update_stock', data: $('#update_form').serialize()},  
+                    data:{action:'update_stock_out', data: $('#update_form').serialize()},  
                     success:function(data){   
                          $('#editItem').modal('hide');  
                          $('#bootstrap-data-table').html(data);
@@ -311,18 +362,21 @@
             event.preventDefault();  
             if($('#item').val() == ""){  
                  alert("Item is required");  
-            } 
-            else if($('#stock_in').val() == ""){  
-                 alert("Stock in is required");  
-            } 
-            else if($('#date').val() == ""){  
+            }
+            else if($('#department').val() == ""){  
+                alert("Department is required");  
+           	}  
+            else if($('#quantity').val() == ""){  
+                 alert("Quantity in is required");  
+            }  
+            else if($('#date_taken').val() == ""){  
                 alert("Date is required");  
-            }     
+            }    
             else{  
                  $.ajax({  
                       url:"stock.ajax.php",  
                       method:"POST",  
-                      data:{action:'add_new_stock', data: $('#add_form').serialize()},  
+                      data:{action:'add_stock_take', data: $('#add_form').serialize()},  
                       success:function(data){   
                            $('#editItem').modal('hide');  
                            $('#bootstrap-data-table').html(data);
@@ -331,30 +385,39 @@
                  });  
             }  
           });
-
-        $('#date').datepicker({
+        
+        $('#date_taken').datepicker({
             format: "dd-mm-yyyy",
             autoclose: true,
             orientation: "top left",
             todayHighlight: true
         });
         
-        function isNumberKey(evt){
-        	var charCode = (evt.which) ? evt.which : evt.keyCode;
-        	if (charCode != 46 && charCode > 31 
-        	&& (charCode < 48 || charCode > 57))
-        	return false;
-        	return true;
-        }  
         
-        function isNumericKey(evt){
-        	var charCode = (evt.which) ? evt.which : evt.keyCode;
-        	if (charCode != 46 && charCode > 31 
-        	&& (charCode < 48 || charCode > 57))
-        	return true;
-        	return false;
-        } 
     });
+    function isNumberKey(evt){
+    	var charCode = (evt.which) ? evt.which : evt.keyCode;
+    	if (charCode != 46 && charCode > 31 
+    	&& (charCode < 48 || charCode > 57))
+    	return false;
+    	return true;
+    }  
+    
+    function isNumericKey(evt){
+    	var charCode = (evt.which) ? evt.which : evt.keyCode;
+    	if (charCode != 46 && charCode > 31 
+    	&& (charCode < 48 || charCode > 57))
+    	return true;
+    	return false;
+    } 
+    function dateFormat(dates){
+        var date = new Date(dates);
+    	var day = date.getDate();
+	  	var monthIndex = date.getMonth()+1;
+	  	var year = date.getFullYear();
+
+	  	return (day <= 9 ? '0' + day : day) + '-' + (monthIndex<=9 ? '0' + monthIndex : monthIndex) + '-' + year ;
+    }
   </script>
 </body>
 </html>

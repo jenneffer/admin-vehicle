@@ -113,9 +113,7 @@
             $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
             if ($result) {
                 alert("Successfully added!", "item.php");
-            } else {
-				alert("Item is not added. Please try again!");
-			}
+            }
         }
     }
     
