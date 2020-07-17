@@ -43,6 +43,10 @@ if( $action != "" ){
             add_new_bill($data);
             break;
             
+        case 'update_account':
+            update_account($data);
+            break;
+            
         case 'get_location':
             get_location($company);
             break;
@@ -341,6 +345,40 @@ function add_new_account($data){
                     jenis_premis='$jenis_premis'";
 
         $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
+    }
+}
+
+function update_account($data){
+    
+    global $conn_admin_db;
+    if (!empty($data)) {
+        $param = array();
+        parse_str($data, $param); //unserialize jquery string data
+        $id = $param['id'];
+        $company =  mysqli_real_escape_string( $conn_admin_db,$param['company_edit']);
+        $acc_no =  mysqli_real_escape_string( $conn_admin_db,$param['acc_no_edit']);
+        $location =  mysqli_real_escape_string( $conn_admin_db,$param['location_edit']);
+        $deposit =  mysqli_real_escape_string( $conn_admin_db,$param['deposit_edit']);
+        $tariff =  mysqli_real_escape_string( $conn_admin_db,$param['tariff_edit']);
+        $owner =  mysqli_real_escape_string( $conn_admin_db,$param['owner_edit']);
+        $remark =  mysqli_real_escape_string( $conn_admin_db,$param['remark_edit']);
+        $jenis_bacaan =  mysqli_real_escape_string( $conn_admin_db,$param['jenis_bacaan_edit']);
+        $jenis_premis =  mysqli_real_escape_string( $conn_admin_db,$param['jenis_premis_edit']);
+        
+        $query = "UPDATE bill_jabatan_air_account
+                    SET company_id='$company',
+                    account_no='$acc_no',
+                    owner='$owner',
+                    location='$location',
+                    deposit='$deposit',
+                    kod_tariff='$tariff',
+                    remark='$remark',
+                    jenis_bacaan='$jenis_bacaan',
+                    jenis_premis='$jenis_premis' WHERE id='$id'";
+
+        $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
+        
+        echo json_encode($result);
     }
 }
 

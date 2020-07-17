@@ -271,6 +271,7 @@ function update_account($data){
     if (!empty($data)) {
         $param = array();
         parse_str($data, $param); //unserialize jquery string data
+        var_dump($param);
         $id = $param['id'];
         $company = isset($param['company_edit']) ? $param['company_edit'] :"";
         $acc_no = isset($param['acc_no_edit']) ? $param['acc_no_edit'] :"";
