@@ -23,7 +23,7 @@
     
     //get the telefon_list
     
-    $details_query = "SELECT MONTH(date_end) AS month_to_name, meter_reading_from, meter_reading_to, 
+    $details_query = "SELECT bill_sesb.id, MONTH(date_end) AS month_to_name, meter_reading_from, meter_reading_to, 
             total_usage, current_usage, kwtbb, penalty,power_factor,additional_deposit, other_charges,adjustment,date_start, date_end,
             amount,due_date, cheque_no,paid_date FROM bill_sesb WHERE acc_id = '$acc_id' AND YEAR(date_end) = '$year_select'ORDER BY month_to_name ASC";
     $result2 = mysqli_query($conn_admin_db, $details_query) or die(mysqli_error($conn_admin_db));
@@ -136,6 +136,7 @@
                                             <th rowspan="2">Due Date</th>
                                             <th rowspan="2">Cheque No.</th>
                                             <th rowspan="2">Payment Date</th>
+                                            <th rowspan="2">Action</th>
                                         </tr>
                                         <tr>
                                         	<th>Month</th>
@@ -192,7 +193,11 @@
                                         <td><?=$data['amount']?></td>     
                                         <td><?=$data['due_date']?></td> 
                                         <td><?=$data['cheque_no']?></td>                                            
-                                        <td><?=$data['paid_date']?></td>                                        
+                                        <td><?=$data['paid_date']?></td>      
+										<td class="text-center">
+                                        	<span id="<?=$data['id']?>" data-toggle="modal" class="edit_data" data-target="#editItem"><i class="fa fa-edit"></i></span>
+                                            <span id="<?=$data['id']?>" data-toggle="modal" class="delete_data" data-target="#deleteItem"><i class="fas fa-trash-alt"></i></span>
+                                        </td>                                 
                                     </tr>
                                         
                                     <?php }
@@ -329,6 +334,123 @@
                 </div>
             </div>
         </div>
+        <div id="editItem" class="modal fade">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Edit Record</h4>
+                </div>
+                <div class="modal-body">
+                    <form role="form" method="POST" action="" id="update_form">  
+                    <input type="hidden" id="id" name="id" value="">    
+                    <div class="form-group row col-sm-12">
+                    	<div class="col-sm-6">
+                            <label for="from_date" class=" form-control-label"><small class="form-text text-muted">From date <span class="color-red">*</span></small></label>                                            
+                            <div class="input-group">
+                                <input id="from_date_edit" name="from_date_edit" class="form-control" autocomplete="off">
+                                <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
+                            </div>  
+                        </div>       
+                        <div class="col-sm-6">
+                            <label for="to_date" class=" form-control-label"><small class="form-text text-muted">To date <span class="color-red">*</span></small></label>                                            
+                            <div class="input-group">
+                                <input id="to_date_edit" name="to_date_edit" class="form-control" autocomplete="off">
+                                <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
+                            </div>  
+                        </div>                       
+                    </div> 
+                    <div class="form-group row col-sm-12">
+                        <div class="col-sm-6">
+                            <label for="paid_date" class=" form-control-label"><small class="form-text text-muted">Paid date</small></label>                                            
+                            <div class="input-group">
+                                <input id="paid_date_edit" name="paid_date_edit" class="form-control" autocomplete="off">
+                                <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
+                            </div>  
+                        </div>       
+                        <div class="col-sm-6">
+                            <label for="due_date_edit" class="form-control-label"><small class="form-text text-muted">Due date</small></label>                                            
+                            <div class="input-group">
+                                <input id="due_date_edit" name="due_date_edit" class="form-control" autocomplete="off">
+                                <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
+                            </div>  
+                        </div>
+                    </div>                   
+                    <div class="col-sm-12">
+                    	<label class=" form-control-label"><small class="form-text text-muted">Meter Reading</small></label>       
+                    </div>                    
+                    <div class="row form-group col-sm-12">                                            
+                        <div class="col-sm-4">
+                            <label for="reading_from" class=" form-control-label"><small class="form-text text-muted">From <span class="color-red">*</span></small></label>
+                            <input type="text" id="reading_from_edit" name="reading_from_edit" class="form-control">
+                        </div>
+                        <div class="col-sm-4">
+                            <label for="reading_to" class=" form-control-label"><small class="form-text text-muted">To <span class="color-red">*</span></small></label>
+                            <input type="text" id="reading_to_edit" name="reading_to_edit" class="form-control">
+                        </div>
+                        <div class="col-sm-4">
+                            <label for="current_usage" class=" form-control-label"><small class="form-text text-muted">Current Usage (RM) <span class="color-red">*</span></small></label>
+                            <input type="text" id="current_usage_edit" name="current_usage_edit" class="form-control">
+                        </div>                                
+                    </div>
+                    <div class="row form-group col-sm-12">      
+                        <div class="col-sm-4">
+                            <label for="kwtbb" class=" form-control-label"><small class="form-text text-muted">KWTBB (RM)</small></label>
+                            <input type="text" id="kwtbb_edit" name="kwtbb_edit" class="form-control" value="0">
+                        </div> 
+                         <div class="col-sm-4">
+                            <label for="penalty" class=" form-control-label"><small class="form-text text-muted">Penalty (RM)</small></label>
+                            <input type="text" id="penalty_edit" name="penalty_edit" class="form-control" value="0">
+                        </div>        
+                        <div class="col-sm-4">
+                            <label for="power_factor" class=" form-control-label"><small class="form-text text-muted">Power Factor (<0.85)</small></label>
+                            <input type="text" id="power_factor_edit" name="power_factor_edit" class="form-control" value="0">
+                        </div>
+                    </div>                    
+                    <div class="row form-group col-sm-12">                                     	                       
+                        <div class="col-sm-4">
+                            <label for="additional_depo" class=" form-control-label"><small class="form-text text-muted">Additional Deposit (RM)</small></label>
+                            <input type="text" id="additional_depo_edit" name="additional_depo_edit" class="form-control" value="0">
+                        </div>        
+                        <div class="col-sm-4">
+                            <label for="other_charges" class=" form-control-label"><small class="form-text text-muted">Other Charges (RM)</small></label>
+                            <input type="text" id="other_charges_edit" name="other_charges_edit" class="form-control" value="0">
+                        </div>
+                        <div class="col-sm-4" id="cheque_no">
+                        <label for="cheque_no" class=" form-control-label"><small class="form-text text-muted">Cheque No.</small></label>
+                        <input type="text" id="cheque_no_edit" name="cheque_no_edit" class="form-control">
+                    </div>
+                    </div>      
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        <button type="submit" class="btn btn-primary save_data ">Save</button>
+                    </div>
+                    </form>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+    <div class="modal fade" id="deleteItem">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticModalLabel">Delete Item</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>
+                       Are you sure you want to delete?
+                   </p>
+               </div>
+               <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" id="delete_record" class="btn btn-primary">Confirm</button>
+            	</div>
+        	</div>
+    	</div>
+    </div>
     <div class="clearfix"></div>
     <!-- Footer -->
     <?PHP include('../footer.php')?>
@@ -426,13 +548,102 @@
             }  
           });
 
+        $(document).on('click', '.edit_data', function(){
+        	var id = $(this).attr("id");        	
+        	$.ajax({
+        			url:"sesb_bill.ajax.php",
+        			method:"POST",
+        			data:{action:'retrieve_account_details', id:id},
+        			dataType:"json",
+        			success:function(data){ 
+            			console.log(data);           			        			
+        				$('#id').val(id);					
+                        $('#from_date_edit').val(dateFormat(data.date_start));      
+                        $('#to_date_edit').val(dateFormat(data.date_end)); 
+                        $('#paid_date_edit').val(dateFormat(data.paid_date));      
+                        $('#due_date_edit').val(dateFormat(data.due_date)); 
+                        $('#reading_from_edit').val(data.meter_reading_from);      
+                        $('#reading_to_edit').val(data.meter_reading_to); 
+                        $('#current_usage_edit').val(data.current_usage);      
+                        $('#kwtbb_edit').val(data.kwtbb); 
+                        $('#penalty_edit').val(data.penalty);      
+                        $('#power_factor_edit').val(data.power_factor);          
+                        $('#additional_depo_edit').val(data.additional_deposit);     
+                        $('#other_charges_edit').val(data.other_charges);     
+                        $('#cheque_no_edit').val(data.cheque_no);                        
+                        $('#editItem').modal('show');
+        			}
+        		});
+        });
+
+        $('#update_form').on("submit", function(event){  
+            event.preventDefault();              
+            $.ajax({  
+                url:"sesb_bill.ajax.php",  
+                method:"POST",  
+                data:{action:'update_account_details', data: $('#update_form').serialize()},  
+                success:function(data){  
+                    if(data){
+                  	  $('#editItem').modal('hide');  
+                        location.reload();  
+                    }                            
+                }  
+           }); 
+          });
+        
+        $(document).on('click', '.delete_data', function(){
+        	var id = $(this).attr("id");
+        	$('#delete_record').data('id', id); //set the data attribute on the modal button
+        
+        });
+      	
+    	$( "#delete_record" ).click( function() {
+    		var ID = $(this).data('id');
+    		
+    		$.ajax({
+    			url:"sesb_bill.ajax.php",
+    			method:"POST",    
+    			data:{action:'delete_account_details_item', id:ID},
+    			success:function(data){	  						
+    				$('#deleteItem').modal('hide');		
+    				location.reload();		
+    			}
+    		});
+    	});
+        
         $('#from_date, #to_date, #due_date,#paid_date').datepicker({
               format: "dd-mm-yyyy",
               autoclose: true,
               orientation: "top left",
               todayHighlight: true
         });
-      
+
+        $('#from_date_edit, #to_date_edit, #paid_date_edit, #due_date_edit').datepicker({
+            format: "dd-mm-yyyy",
+            autoclose: true,
+            orientation: "top left",
+            todayHighlight: true
+        });
+
+        //format to dd-mm-yy
+        function dateFormat(dates){
+            var date = new Date(dates);
+        	var day = date.getDate();
+    	  	var monthIndex = date.getMonth()+1;
+    	  	var year = date.getFullYear();
+
+    	  	return (day <= 9 ? '0' + day : day) + '-' + (monthIndex<=9 ? '0' + monthIndex : monthIndex) + '-' + year ;
+        }
+        //yy-mm-dd
+        function dateFormatRev(dates){
+            var date = dates.split("-");
+            var day = date[0];
+            var month = date[1];
+            var year = date[2];
+
+            return year + '-' + month + '-' + day ;
+        }
+        
         function isNumberKey(evt){
         	var charCode = (evt.which) ? evt.which : evt.keyCode;
         	if (charCode != 46 && charCode > 31 

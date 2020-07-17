@@ -52,8 +52,90 @@ if( $action != "" ){
         case 'get_location':
             get_location($company);
             break;
+            
+        case 'retrieve_account_details':
+            retrieve_account_details($id);
+            break;
+            
+        case 'update_account_details':
+            update_account_details($data);
+            break;
+            
+        case 'delete_account_details_item':
+            delete_account_details_item($id);
+            break;
+            
         default:
             break;
+    }
+}
+function update_account_details($data){
+    global $conn_admin_db;
+    if (!empty($data)) {
+        $param = array();
+        parse_str($data, $param); //unserialize jquery string data
+        $id = $param['id'];
+        $cheque_no = isset($param['cheque_no_edit']) ? $param['cheque_no_edit'] : "";
+        $from_date = isset($param['from_date_edit']) ? $param['from_date_edit'] : "";
+        $to_date = isset($param['to_date_edit']) ? $param['to_date_edit'] : "";
+        $paid_date = isset($param['paid_date_edit']) ? $param['paid_date_edit'] : "";
+        $due_date = isset($param['due_date_edit']) ? $param['due_date_edit'] : "";
+        $reading_from = isset($param['reading_from_edit']) ? $param['reading_from_edit'] : "";
+        $reading_to = isset($param['reading_to_edit']) ? $param['reading_to_edit'] : "";
+        $current_usage = isset($param['current_usage_edit']) ? $param['current_usage_edit'] : "";
+        $kwtbb = isset($param['kwtbb_edit']) ? $param['kwtbb_edit'] : 0;
+        $penalty = isset($param['penalty_edit']) ? $param['penalty_edit'] : 0;
+        $additional_depo = isset($param['additional_depo_edit']) ? $param['additional_depo_edit'] : 0;
+        $other_charges = isset($param['other_charges_edit']) ? $param['other_charges_edit'] : 0;
+        $total_usage = $reading_to - $reading_from;
+        $power_factor = isset($param['power_factor_edit']) ? $param['power_factor_edit'] : 0;
+        $amount = $current_usage + $kwtbb + $penalty + $additional_depo + $other_charges;
+        $rounded = round_up($amount);
+        $adjustment = number_format(($rounded-$amount), 2);
+        $total_amt = $amount + $adjustment;
+        
+        
+        $query = "UPDATE bill_sesb SET
+                        meter_reading_from = '$reading_from',
+                        meter_reading_to = '$reading_to',
+                        total_usage = '$total_usage',
+                        current_usage = '$current_usage',
+                        kwtbb = '$kwtbb',
+                        penalty = '$penalty',
+                        power_factor = '$power_factor',
+                        additional_deposit = '$additional_depo',
+                        other_charges = '$other_charges',
+                        amount = '$total_amt',
+                        adjustment = '$adjustment',
+                        cheque_no = '$cheque_no',
+                        date_start = '".dateFormat($from_date)."',
+                        date_end = '".dateFormat($to_date)."',
+                        paid_date = '".dateFormat($paid_date)."',
+                        due_date = '".dateFormat($due_date)."' WHERE id='$id'";
+     
+        $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
+        echo json_encode($result);
+    }
+}
+function delete_account_details_item($id){
+    global $conn_admin_db;
+    if (!empty($id)) {
+        $query = "DELETE FROM bill_sesb WHERE id = '".$id."' ";
+        $result = mysqli_query($conn_admin_db, $query);
+        if ($result) {
+            alert ("Deleted successfully", "sesb_setup.php");
+        }
+    }
+}
+
+function retrieve_account_details($id){
+    global $conn_admin_db;
+    if (!empty($id)) {
+        $query = "SELECT * FROM bill_sesb WHERE id = '$id'";
+        $rst  = mysqli_query($conn_admin_db, $query)or die(mysqli_error($conn_admin_db));
+        
+        $row = mysqli_fetch_assoc($rst);
+        echo json_encode($row);
     }
 }
 

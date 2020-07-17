@@ -91,14 +91,14 @@ function get_ja_data_monthly_compare($year, $company, $location){
     while($row = mysqli_fetch_assoc($sql_result)){
         //monthly
         $arr_data_ja[$row['company_id']][] = $row;
-    }  
+    } 
     foreach ($arr_data_ja as $key => $val){
         $code = itemName("SELECT code FROM company WHERE id='$key'");
         foreach ($val as $v){
             $loc = itemName("SELECT location FROM bill_jabatan_air_account WHERE id='".$v['id']."'");
             $date_end = $v['date_end'];
             $ja_month = date_parse_from_format("Y-m-d", $date_end);
-            $ja_m = ja_month["month"];
+            $ja_m = $ja_month["month"];
             for ( $m=1; $m<=$month; $m++ ){
                 if($m == $ja_m){
                     if(!empty($location)){
@@ -159,16 +159,15 @@ function compare_data($data, $count){
         $year = $param['year_select'];
         $company = $param['company'];
         $location = $param['location'];
-        $count = count($year); //get the array count
-        
-        for($i=1; $i<=count($count); $i++){            
+        $count = count($year); //get the array count        
+        for($i=1; $i<=$count; $i++){  
             $result = get_ja_data_monthly_compare($year[$i], $company[$i], $location[$i]);
             if(!empty($result) && $result != NULL){
                 $arr_data[] = $result;
             }
             
         }
-    }    
+    } 
     echo json_encode($arr_data);
 }
 

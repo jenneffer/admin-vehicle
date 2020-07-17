@@ -529,10 +529,10 @@
         			success:function(data){ 
             			console.log(data);           			        			
         				$('#id').val(id);					
-                        $('#from_date_edit').val(data.date_start);      
-                        $('#to_date_edit').val(data.date_end); 
-                        $('#paid_date_edit').val(data.paid_date);      
-                        $('#due_date_edit').val(data.due_date); 
+                        $('#from_date_edit').val(dateFormat(data.date_start));      
+                        $('#to_date_edit').val(dateFormat(data.date_end)); 
+                        $('#paid_date_edit').val(dateFormat(data.paid_date));      
+                        $('#due_date_edit').val(dateFormat(data.due_date)); 
                         $('#read_from_edit').val(data.meter_reading_from);      
                         $('#read_to_edit').val(data.meter_reading_to); 
                         $('#usage_1_edit').val(data.usage_70);      
@@ -544,6 +544,22 @@
         			}
         		});
         });
+
+        $('#update_form').on("submit", function(event){  
+            event.preventDefault();              
+            $.ajax({  
+                url:"jabatan_air_bill.ajax.php",  
+                method:"POST",  
+                data:{action:'update_account_details', data: $('#update_form').serialize()},  
+                success:function(data){  
+                    if(data){
+                  	  $('#editItem').modal('hide');  
+                        location.reload();  
+                    }                            
+                }  
+           }); 
+          });
+        
         $(document).on('click', '.delete_data', function(){
         	var id = $(this).attr("id");
         	$('#delete_record').data('id', id); //set the data attribute on the modal button
@@ -570,7 +586,22 @@
             orientation: "top left",
             todayHighlight: true
         });
-      
+        $('#from_date_edit, #to_date_edit, #paid_date_edit, #due_date_edit').datepicker({
+            format: "dd-mm-yyyy",
+            autoclose: true,
+            orientation: "top left",
+            todayHighlight: true
+        });
+
+        //format to dd-mm-yy
+        function dateFormat(dates){
+            var date = new Date(dates);
+        	var day = date.getDate();
+    	  	var monthIndex = date.getMonth()+1;
+    	  	var year = date.getFullYear();
+
+    	  	return (day <= 9 ? '0' + day : day) + '-' + (monthIndex<=9 ? '0' + monthIndex : monthIndex) + '-' + year ;
+        }
         function isNumberKey(evt){
         	var charCode = (evt.which) ? evt.which : evt.keyCode;
         	if (charCode != 46 && charCode > 31 

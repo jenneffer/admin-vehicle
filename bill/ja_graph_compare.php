@@ -23,7 +23,7 @@ $html_company_select = ob_get_clean();
 
 // html location select
 ob_start();
-$location = mysqli_query ( $conn_admin_db, "SELECT location,UPPER(location) FROM bill_jabatan_air_account WHERE company_id='$select_company' AND status='1' GROUP BY location");
+$location = mysqli_query ( $conn_admin_db, "SELECT id,UPPER(location) FROM bill_jabatan_air_account WHERE company_id='$select_company' AND status='1' GROUP BY location");
 db_select ($location, 'location[{index}]',$select_location,'','All','form-control form-control-sm location','');
 $html_location_select = ob_get_clean();
 
