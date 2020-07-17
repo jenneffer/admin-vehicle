@@ -136,12 +136,6 @@
                     <div class="modal-body">
                     <form role="form" method="POST" action="" id="add_form">
                     <input type="hidden" id="item_id" name="item_id" value="">
-					<div class="form-group row col-sm-12">
-							<div class="col-sm-12">
-								<label for="asd" class=" form-control-label"><small class="form-text text-muted"><span class="color-red">NOTE : Text box with '<strong>*</strong>' is required!</span></small></label>
-								
-							</div>
-						</div>
                     <div class="form-group row col-sm-12">
                     	<div class="col-sm-12">
                             <label for="item_name" class=" form-control-label"><small class="form-text text-muted">Item <span class="color-red">*</span></small></label>

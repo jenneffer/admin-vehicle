@@ -25,6 +25,8 @@
     .select2-container{ 
         width: 100% !important; 
     }
+	
+	.pointer {cursor: pointer;}
     
    </style>
 </head>
@@ -82,7 +84,7 @@
                                                         <td class="text-center"><?=$row['quantity']?></td>
                                                         <td><?=dateFormatRev($row['date_taken'])?></td>                                                        
                                                         <td class="text-center">
-                                                        	<span id="<?=$row['id']?>" data-toggle="modal" class="edit_data" data-target="#editItem"><i class="fa fa-edit"></i></span>
+                                                        	<span id="<?=$row['id']?>" data-toggle="modal" class="edit_data pointer" data-target="#editItem"><i class="fa fa-edit" style=""></i></span>
                                                         	<!-- <span id="<?=$row['id']?>" data-toggle="modal" class="delete_data" data-target="#deleteItem"><i class="fas fa-trash-alt"></i></span> -->
                                                         </td>
                                                     </tr>
@@ -105,10 +107,17 @@
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title">Add New</h4>
+                        <h4 class="modal-title">Add New Stock Out</h4>
                     </div>
                     <div class="modal-body">
                     <form role="form" method="POST" action="" id="add_form"> 
+					<div class="form-group row col-sm-12">
+                    	<div class="col-sm-12">
+                            <label for="asd" class=" form-control-label"><small class="form-text text-muted"><span class="color-red">REMINDER : Please update the unit of the item. Click <a href="item.php?hjhg" style="color: blue">here</a> to update.</span></small></label>
+                            <br><label for="asd" class=" form-control-label"><small class="form-text text-muted"><span class="color-red">NOTE : Text box with '<strong>*</strong>' is required!</span></small></label>
+                            
+                        </div>
+                    </div> 
                     <div class="form-group row col-sm-12">
                     	<div class="col-sm-12">
                             <label for="department" class=" form-control-label"><small class="form-text text-muted">Department <span class="color-red">*</span></small></label>
@@ -126,8 +135,8 @@
                             <div>
                                 <?php
 //                                 $item = mysqli_query ( $conn_admin_db, "SELECT si.id AS id, item_name FROM stationary_stock ss
-//                                                               INNER JOIN stationary_item si ON si.id = ss.item_id GROUP BY si.id");
-                                $item = mysqli_query ( $conn_admin_db, "SELECT id, UPPER(item_name) FROM stationary_item WHERE status='1'");
+//                                                               INNER JOIN stationary_item si ON si.id = ss.item_id GROUP BY si.id");IFNULL(B.Info,''
+                                $item = mysqli_query ( $conn_admin_db, "SELECT a.`id`, CONCAT(a.`item_name`, ' ', '(', IFNULL(a.`unit`, '-'), ')') AS itemss FROM `stationary_item`a LEFT JOIN `stationary_category`b ON a.`category_id` = b.`id` WHERE a.`status`='1'");
                                 db_select ($item, 'item', '','','-select-','form-control','');
                                 ?>
                             </div>
@@ -136,7 +145,8 @@
                     <div class="form-group row col-sm-12">
                     	<div class="col-sm-6">
                             <label for="quantity" class=" form-control-label"><small class="form-text text-muted">Quantity <span class="color-red">*</span></small></label>
-                            <input type="text" id="quantity" name="quantity" class="form-control">
+                            <input type="number" id="quantity" name="quantity" class="form-control">
+							<small class="help-block form-text" style="color: grey">Please be aware the <strong style="color: red">UNIT</strong> of the items</small>
                         </div>
                         <div class="col-sm-6">
                             <label for="staff_name" class=" form-control-label"><small class="form-text text-muted">Staff Name</small></label>
@@ -172,23 +182,31 @@
                     <form role="form" method="POST" action="" id="update_form">
                         <input type="hidden" name="_token" value="">
                         <input type="hidden" id="id" name="id" value="">
+						
+						<div class="form-group row col-sm-12">
+							<div class="col-sm-12">
+								<label for="asd" class=" form-control-label"><small class="form-text text-muted"><span class="color-red">REMINDER : Please update the unit of the item. Click <a href="item.php?hjhg" style="color: blue">here</a> to update.</span></small></label>
+								<br><label for="asd" class=" form-control-label"><small class="form-text text-muted"><span class="color-red">NOTE : Text box with '<strong>*</strong>' is required!</span></small></label>
+								
+							</div>
+						</div> 
                         <div class="form-group row col-sm-12">
-                    	<div class="col-sm-12">
-                            <label for="department" class=" form-control-label"><small class="form-text text-muted">Department <span class="color-red">*</span></small></label>
-                            <div>
-                                <?php
-                                $department_code = mysqli_query ( $conn_admin_db, "SELECT department_id, department_name FROM stationary_department");
-                                db_select ($department_code, 'department_code', '','','-select-','form-control','');
-                                ?>
-                            </div>
-                        </div>
+							<div class="col-sm-12">
+								<label for="department" class=" form-control-label"><small class="form-text text-muted">Department <span class="color-red">*</span></small></label>
+								<div>
+									<?php
+									$department_code = mysqli_query ( $conn_admin_db, "SELECT department_id, department_name FROM stationary_department");
+									db_select ($department_code, 'department_code', '','','-select-','form-control','');
+									?>
+								</div>
+							</div>
                         </div>                   
                         <div class="form-group row col-sm-12">
                         	<div class="col-sm-12">
                                 <label for="item" class=" form-control-label"><small class="form-text text-muted">Item <span class="color-red">*</span></small></label>
                                 <div>
                                     <?php
-                                    $item_name = mysqli_query ( $conn_admin_db, "SELECT id, item_name FROM stationary_item");
+                                    $item_name = mysqli_query ( $conn_admin_db, "SELECT id, CONCAT(item_name, ' ( ', IFNULL(`unit`, '-'), ' )') FROM stationary_item");
                                     db_select ($item_name, 'item_name', '','','-select-','form-control','');
                                     ?>
                                 </div>
@@ -197,7 +215,7 @@
                         <div class="form-group row col-sm-12">
                         	<div class="col-sm-6">
                                 <label for="qty" class=" form-control-label"><small class="form-text text-muted">Quantity <span class="color-red">*</span></small></label>
-                                <input type="text" id="qty" name="qty" class="form-control">
+                                <input type="number" id="qty" name="qty" class="form-control">
                             </div>
                             <div class="col-sm-6">
                                 <label for="s_name" class=" form-control-label"><small class="form-text text-muted">Staff Name <span class="color-red">*</span></small></label>
@@ -268,6 +286,8 @@
     <script src="../assets/js/select2.min.js"></script>
 	
 	<script type="text/javascript">
+	
+		
     $(document).ready(function() {
 
     	// Initialize select2
@@ -290,7 +310,9 @@
   	  	  	//get the stock balance 
   	  	  	
   	  	});
-        
+		
+		
+		  
         $(document).on('click', '.edit_data', function(){
         	var id = $(this).attr("id");       	
         	$.ajax({
