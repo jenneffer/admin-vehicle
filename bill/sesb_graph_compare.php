@@ -27,22 +27,6 @@ $location = mysqli_query ( $conn_admin_db, "SELECT location,UPPER(location) FROM
 db_select ($location, 'location[{index}]',$select_location,'','All','form-control form-control-sm location','');
 $html_location_select = ob_get_clean();
 
-
-//option year
-ob_start();
-optionYear($year_select);
-$html_year_option = ob_get_clean();
-//option company
-ob_start();
-$comp_op = mysqli_query($conn_admin_db, "SELECT id, UPPER(name) FROM company WHERE id IN (SELECT company_id FROM bill_sesb_account WHERE status='1') AND status='1' ORDER BY name ASC");
-db_option($comp_op);
-$html_company_option = ob_get_clean();
-//option location
-ob_start();
-$location_op = mysqli_query($conn_admin_db, "SELECT location,UPPER(location) FROM bill_sesb_account WHERE company_id='$select_company' AND status='1' GROUP BY location");
-db_option($location_op,"All");
-$html_location_option = ob_get_clean();
-
 $comp_name = itemName("SELECT UPPER(name) FROM company WHERE id='".$select_company."'");
 $month = array(
     1=> "Jan",
@@ -72,7 +56,6 @@ $compare_form_input = "<div class='form-group row col-sm-12'>
                 			".$html_location_select."
                 		</div>
                 	</div>";
-
 
 ?>
 <html>
@@ -116,7 +99,7 @@ tr:nth-child(even) {
                 </div>
                 <form name="form_comparison" id="form_comparison" action="" method="post">
                 <div class="card-body">
-                <div class='form-group row col-sm-12'>
+                <div class='row col-sm-12'>
                     <div class='col-sm-2'><label for='year_select' class='form-control-label'><small class='form-text text-muted'>Year</small></label></div>                
                     <div class='col-sm-4'><label for='company' class='form-control-label'><small class='form-text text-muted'>Company</small></label></div>                   
                     <div class='col-sm-2'><label for='location' class='form-control-label'><small class='form-text text-muted'>Account No./Location</small></label></div>                   
@@ -168,10 +151,6 @@ tr:nth-child(even) {
         var company = '<?=$select_company?>';      
         var newDataObject = [];  
         divCounter = 1;
-        //initial input value
-        var iData = $('#form_comparison').serialize();
-        initialData(iData);
-        
        	//get the default first row 
         addRow();
         get_location(company); 
@@ -196,28 +175,30 @@ tr:nth-child(even) {
         
         
         $('.btn_compare').on("click", function(event){ 
-        	var data = $('#form_comparison').serialize();
-        	initialData(data);
-        });
-        //to reset the input value
-        $('.btn_clear').on("click", function(event){
-        	location.reload();
-        });
-
-        //to get the graph datasets
-        function initialData(iData){
+        	var iData = $('#form_comparison').serialize();
         	$.ajax({  
                 url:"sesb_bill.ajax.php",  
                 type:"POST",                        
                 data:{action:'compare_data', data: iData},  
                 async:false,
                 
-            }).done(function( indata ){                             	                        
+            }).done(function( indata ){ 
+                var data = JSON.parse(indata);    
+                if( data.length > 0 ){
                 	newDataObject = indata;
                 	myChart.data.datasets = JSON.parse(newDataObject);                    	
                 	myChart.update();
+                }
+                else{
+                    alert("No data to compare!");
+                }                     	                                        	
             });
-        }
+        });
+        //to reset the input value
+        $('.btn_clear').on("click", function(event){
+        	location.reload();
+        });
+
         //to add new row to compare
         function addRow(){
             var compare_form = <?= json_encode(utf8_encode($compare_form_input))?>;  
@@ -231,15 +212,25 @@ tr:nth-child(even) {
         function updateLocationSelectList( index, company){
         	var elem = $("select[name=location\\["+index+"\\]]");
         	var toRemove = [];
-        	cur_location_list = OBJ_CURRENT_LOCATION_LIST[company].filter( function( el ) {
-        		return toRemove.indexOf( el ) < 0;
-        	});    
-        		
-        	if( cur_location_list.length > 0 ){
+        	cur_location_list = OBJ_CURRENT_LOCATION_LIST[company];
+//         	cur_location_list = OBJ_CURRENT_LOCATION_LIST[company].filter( function( el ) {
+        			
+//         		return toRemove.indexOf( el ) < 0;
+//         	});  
+			// Get the size of an object
+            Object.size = function(obj) {
+                var size = 0, key;
+                for (key in obj) {
+                    if (obj.hasOwnProperty(key)) size++;
+                }
+                return size;
+            };
+            
+        	if( Object.size(cur_location_list) > 0 ){
         		elem.empty(); // remove old options
         		elem.append($("<option></option>").attr("value", "").text( "All" ) ); 
-        		$.each( cur_location_list, function(value, key) {
-        			elem.append($("<option></option>").attr("value", key).text( key ) );
+        		$.each( cur_location_list, function(key, value) {
+        			elem.append($("<option></option>").attr("value", key).text( value ) );
         		});
         	}
         }

@@ -350,12 +350,11 @@ global $conn_admin_db;
           }    
           else{  
                $.ajax({  
-                    url:"stock.ajax.php",  
+                    url:"sesb_bill.ajax.php",  
                     method:"POST",  
-                    data:{action:'update_stock', data: $('#update_form').serialize()},  
+                    data:{action:'update_account', data: $('#update_form').serialize()},  
                     success:function(data){   
-                         $('#editItem').modal('hide');  
-                         $('#bootstrap-data-table').html(data);
+                         $('#editItem').modal('hide');                           
                          location.reload();  
                     }  
                });  
