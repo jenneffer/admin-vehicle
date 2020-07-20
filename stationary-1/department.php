@@ -3,14 +3,6 @@
 	require_once('../function.php');	
 	require_once('../check_login.php');
 	global $conn_admin_db;
-	
-	$arr_item_unit = array(
-	  'pieces' => 'Pieces',
-	  'packet' => 'Packet',
-	  'box' => 'Box'
-	);
-	$select_category = isset($_POST['cat']) ? $_POST['cat'] : "";
-	
 ?>
 
 <!doctype html><html class="no-js" lang="">
@@ -74,42 +66,38 @@
                     <div class="col-md-12">
                         <div class="card" id="printableArea">
                             <div class="card-header">
-                                <strong class="card-title">List of Item</strong>
+                                <strong class="card-title">List of Department</strong>
                             </div>     
-                           <div class="card-body">                                                      
+                           <div class="card-body">                         
                             <button type="button" class="btn btn-sm btn-primary mb-1 col-md-2" data-toggle="modal" data-target="#addItem">
-                               Add New Item
+                               Add New 
 							</button>
                                 <table id="item-data-table" class="table table-striped table-bordered">
                                     <thead>
                                         <tr>
                                             <th>No.</th>
-											<th>Item</th>
-											<th>Category</th>
-											<th>Unit</th>
-											<th class="text-center">Action</th>
+                                            <th>Code</th>
+											<th>Department</th>
+											<th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
 
                                     <?php 
-                                        $sql_query = "SELECT * FROM stationary_item WHERE status='1'"; //only show active vehicle 
+                                        $sql_query = "SELECT * FROM stationary_department"; 
                                         if(mysqli_num_rows(mysqli_query($conn_admin_db,$sql_query)) > 0){
                                             $count = 0;
                                             $sql_result = mysqli_query($conn_admin_db, $sql_query)or die(mysqli_error($conn_admin_db));
                                                 while($row = mysqli_fetch_array($sql_result)){ 
                                                     $count++;
-                                                    $unit = !empty($row['unit']) ? $arr_item_unit[$row['unit']] : "";
-                                                    $cat = itemName("SELECT name FROM stationary_category WHERE id='".$row['category_id']."'");
                                                     ?>
                                                     <tr>
                                                         <td><?=$count?>.</td>
-                                                        <td><?=strtoupper($row['item_name'])?></td>
-                                                        <td><?=$cat?></td>
-                                                        <td><?=$unit?></td>
+                                                        <td><?=$row['department_code']?></td>
+                                                        <td><?=$row['department_name']?></td>
                                                         <td class="text-center">
-                                                        	<span id="<?=$row['id']?>" data-toggle="modal" class="edit_data" data-target="#editItem"><i class="fa fa-edit"></i></span>
-                                                        	<span id="<?=$row['id']?>" data-toggle="modal" class="delete_data" data-target="#deleteItem"><i class="fas fa-trash-alt"></i></span> 
+                                                        	<span id="<?=$row['department_id']?>" data-toggle="modal" class="edit_data" data-target="#editItem"><i class="fa fa-edit"></i></span>
+                                                        	<!-- <span id="<?=$row['department_id']?>" data-toggle="modal" class="delete_data" data-target="#deleteItem"><i class="fas fa-trash-alt"></i></span> -->
                                                         </td>
                                                     </tr>
                                     <?php
@@ -126,7 +114,7 @@
         </div><!-- .content -->
         </div>
         
-        <!-- Modal Add new item -->
+        <!-- Modal Add new department -->
         <div id="addItem" class="modal fade">
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
@@ -136,41 +124,13 @@
                     <div class="modal-body">
                     <form role="form" method="POST" action="" id="add_form">
                     <input type="hidden" id="item_id" name="item_id" value="">
-					<div class="form-group row col-sm-12">
-							<div class="col-sm-12">
-								<label for="asd" class=" form-control-label"><small class="form-text text-muted"><span class="color-red">NOTE : Text box with '<strong>*</strong>' is required!</span></small></label>
-								
-							</div>
-						</div>
                     <div class="form-group row col-sm-12">
                     	<div class="col-sm-12">
-                            <label for="item_name" class=" form-control-label"><small class="form-text text-muted">Item <span class="color-red">*</span></small></label>
+                            <label for="department_code" class=" form-control-label"><small class="form-text text-muted">Department <span class="color-red">*</span></small></label>
                             <div>
-                            	<input type="text" id="item_name" name="item_name" placeholder="Enter item name" class="form-control">
+                            	<input type="text" id="department_code" name="department_code" placeholder="Enter department name" class="form-control">
                         	</div>
                         </div>
-                    </div>
-                    <div class="form-group row col-sm-12">
-                    	<div class="col-sm-12">
-                            <label for="category" class=" form-control-label"><small class="form-text text-muted">Category <span class="color-red">*</span></small></label>
-                            <div>
-                                <?php
-                                $category = mysqli_query ( $conn_admin_db, "SELECT id, name FROM stationary_category");
-                                db_select ($category, 'category', '','','-select-','form-control','','required');
-                                ?>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group row col-sm-12">
-                    	<div class="col-sm-6">
-                    	<label for="unit" class=" form-control-label"><small class="form-text text-muted">Unit </small></label>
-                    	<select name="item_unit" id="item_unit" class="form-control">
-                    		<option value="0">-select-</option>
-                            <option value="pieces">Pieces</option>
-                            <option value="packet">Packet</option>
-                            <option value="box">Box</option>
-                        </select>
-                    	</div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
@@ -181,12 +141,12 @@
                 </div>
             </div>
         </div>
-        <!-- Modal edit item  -->
+        <!-- Modal edit department  -->
         <div id="editItem" class="modal fade">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Edit Item</h4>
+                    <h4 class="modal-title">Edit Department</h4>
                 </div>
                 <div class="modal-body">
                     <form role="form" method="POST" action="" id="update_form">
@@ -194,34 +154,12 @@
                         <input type="hidden" id="id" name="id" value="">
                         <div class="form-group row col-sm-12">
                         	<div class="col-sm-12">
-                                <label for="name" class=" form-control-label"><small class="form-text text-muted">Item </small></label>
+                                <label for="department" class=" form-control-label"><small class="form-text text-muted">Department <span class="color-red">*</span></small></label>
                                 <div>
-                                	<input type="text" id="name" name="name" class="form-control" required>
+                                	<input type="text" id="department" name="department" class="form-control">
                             	</div>
                             </div>
                     	</div>
-                    	<div class="form-group row col-sm-12">
-                    	<div class="col-sm-12">
-                            <label for="cat" class=" form-control-label"><small class="form-text text-muted">Category </small></label>
-                            <div>
-                                <?php
-                                $category = mysqli_query ( $conn_admin_db, "SELECT id, name FROM stationary_category");
-                                db_select ($category, 'cat', $select_category,'','-select-','form-control','');
-                                ?>
-                            </div>
-                        </div>
-                    </div>
-                    	<div class="form-group row col-sm-12">
-                    	<div class="col-sm-6">
-                        	<label for="unit" class=" form-control-label"><small class="form-text text-muted">Unit </small></label>
-                        	<select name="unit" id="unit" class="form-control">
-                        		<option value="0">-select-</option>
-                                <option value="pieces">Pieces</option>
-                                <option value="packet">Packet</option>
-                                <option value="box">Box</option>
-                            </select>
-                        	</div>
-                        </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                             <button type="submit" class="btn btn-primary update_data ">Update</button>
@@ -280,24 +218,22 @@
         $('#item-data-table').DataTable({
         	"columnDefs": [
         	    { "width": "10%", "targets": 0 },
-        	    { "width": "60%", "targets": 1 },
-        	    { "width": "20%", "targets": 2 },
+        	    { "width": "20%", "targets": 1 },
+        	    { "width": "60%", "targets": 2 },
         	    { "width": "10%", "targets": 3 }
         	  ]
   	  	});
         
         $(document).on('click', '.edit_data', function(){
-        	var id = $(this).attr("id");
+        	var id = $(this).attr("id");        	
         	$.ajax({
         			url:"function.ajax.php",
         			method:"POST",
-        			data:{action:'retrieve_item', id:id},
+        			data:{action:'retrieve_department', id:id},
         			dataType:"json",
-        			success:function(data){            			
+        			success:function(data){         			
         				$('#id').val(id);					
-                        $('#name').val(data.item_name);    
-                        $('#cat').val(data.category_id);        
-                        $('#unit').val(data.unit);                        
+                        $('#department').val(data.department_code);                           
                         $('#editItem').modal('show');
         			}
         		});
@@ -314,35 +250,24 @@
     		$.ajax({
     			url:"function.ajax.php",
     			method:"POST",    
-    			data:{action:'delete_item', id:ID},
-    			success:function(data){	 
-        			console.log(data); 						
+    			data:{action:'delete_department', id:ID},
+    			success:function(data){	  						
     				$('#deleteItem').modal('hide');		
-    				if(data == true){
-    					alert("Deleted successfully!");
-    					location.reload();
-        			}		
-    				else{
-						alert("Unable to delete.Item exist in stock out records!");
-						location.reload();
-        			}
+    				location.reload();		
     			}
     		});
     	});
     
         $('#update_form').on("submit", function(event){  
           event.preventDefault();  
-          if($('#name').val() == ""){  
-               alert("Item name is required");  
+          if($('#department').val() == ""){  
+               alert("Department name is required");  
           }     
-          else if($('#unit').val == ""){
-        	  alert("Unit is required");  
-          }
           else{  
                $.ajax({  
                     url:"function.ajax.php",  
                     method:"POST",  
-                    data:{action:'update_item', data: $('#update_form').serialize()},  
+                    data:{action:'update_department', data: $('#update_form').serialize()},  
                     success:function(data){   
                          $('#editItem').modal('hide');  
                          $('#bootstrap-data-table').html(data);
@@ -354,17 +279,14 @@
         
         $('#add_form').on("submit", function(event){  
             event.preventDefault();  
-            if($('#item_name').val() == ""){  
-                 alert("Item name is required");  
-            } 
-            else if($('#item_unit').val == ""){
-          	  alert("Unit is required");  
-            }    
+            if($('#department_code').val() == ""){  
+                 alert("Department name is required");  
+            }     
             else{  
                  $.ajax({  
                       url:"function.ajax.php",  
                       method:"POST",  
-                      data:{action:'add_item', data: $('#add_form').serialize()},  
+                      data:{action:'add_department', data: $('#add_form').serialize()},  
                       success:function(data){   
                            $('#editItem').modal('hide');  
                            $('#bootstrap-data-table').html(data);
