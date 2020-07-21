@@ -4,9 +4,9 @@ require_once('../function.php');
 require_once('../check_login.php');
 global $conn_admin_db;
 
-$year_select = isset($_POST['year_select']) ? $_POST['year_select'] : "2019";
+$year_select = isset($_POST['year_select']) ? $_POST['year_select'] : date("Y");
 // $tariff = isset($_POST['tariff']) ? $_POST['tariff'] : "CM1";
-$select_company = isset($_POST['company']) ? $_POST['company'] : "23";
+$select_company = isset($_POST['company']) ? $_POST['company'] : "1";
 $select_location = isset($_POST['location']) ? $_POST['location'] : "";
 $report_type = isset($_POST['report_type']) ? $_POST['report_type'] : "year";
 ob_start();
@@ -147,7 +147,7 @@ function get_sesb_data_monthly($year, $company, $location){
 
     foreach ($data_monthly as $code => $data){
         if(!empty($location)){
-            foreach ($data as $location => $val){
+            foreach ($data as $location => $val){               
                 $month_data = array_replace($month_map, $val);
                 $datasets_sesb_monthly[] = array(
                     'label' => $location,
@@ -213,9 +213,9 @@ tr:nth-child(even) {
 </head>
 <body>
     <!--Left Panel -->
-	<?php //include('../assets/nav/leftNav.php')?>
+	<?php include('../assets/nav/leftNav.php')?>
     <!-- Right Panel -->
-    <?php //include('../assets/nav/rightNav.php')?>
+    <?php include('../assets/nav/rightNav.php')?>
     <div id="right-panel" class="right-panel">
     <div class="content">        
         <div class="animated fadeIn">

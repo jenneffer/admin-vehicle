@@ -14,7 +14,8 @@ $html_year_select = ob_get_clean();
 
 $arr_report_type = array(
     "year" => "Yearly",
-    "month" => "Monthly"
+    "month" => "Monthly",
+    "comparison" => "Comparison"
 );
 
 $comp_name = itemName("SELECT UPPER(name) FROM company WHERE id='".$select_company."'");
@@ -124,11 +125,19 @@ function get_telekom_data_monthly($year, $company, $account_no){
                 $t_m = $telekom_month["month"];
                 for ( $m=1; $m<=$month; $m++ ){
                     if($m == $t_m){
-                        //premium
-                        if (isset($data_monthly[$code][$acc_no][$m])){
-                            $data_monthly[$code][$acc_no][$m] += (double)$v['amount'];
-                        }else{
-                            $data_monthly[$code][$acc_no][$m] = (double)$v['amount'];
+                        if(!empty($account_no)){
+                            if (isset($data_monthly[$code][$acc_no][$m])){
+                                $data_monthly[$code][$acc_no][$m] += (double)$v['amount'];
+                            }else{
+                                $data_monthly[$code][$acc_no][$m] = (double)$v['amount'];
+                            }
+                        }
+                        else{
+                            if (isset($data_monthly[$code][$m])){
+                                $data_monthly[$code][$m] += (double)$v['amount'];
+                            }else{
+                                $data_monthly[$code][$m] = (double)$v['amount'];
+                            }
                         }
                     }
                 }
@@ -138,12 +147,24 @@ function get_telekom_data_monthly($year, $company, $account_no){
     
     //telekom monthly
     $datasets_telekom_monthly = [];
-    foreach ($data_monthly as $data){
-        
-        foreach ($data as $acc_no => $val){
-            $month_data = array_replace($month_map, $val);
+    foreach ($data_monthly as $code => $data){
+        if(!empty($account_no)){
+            foreach ($data as $acc_no => $val){
+                $month_data = array_replace($month_map, $val);
+                $datasets_telekom_monthly[] = array(
+                    'label' => $acc_no,
+                    'backgroundColor' => 'transparent',
+                    'borderColor' => randomColor(),
+                    'lineTension' => 0,
+                    'borderWidth' => 3,
+                    'data' => array_values($month_data)
+                );
+            }
+        }
+        else{
+            $month_data = array_replace($month_map, $data);
             $datasets_telekom_monthly[] = array(
-                'label' => $acc_no,
+                'label' => $code,
                 'backgroundColor' => 'transparent',
                 'borderColor' => randomColor(),
                 'lineTension' => 0,
@@ -247,7 +268,6 @@ $datasets_telekom_monthly = json_encode($data_telekom_month);
                                      </div>
                                 </form>
                             </div>
-                            <hr>
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-sm-12 telekom-yearly">            	
@@ -300,6 +320,9 @@ $(document).ready(function() {
 	    $('.telekom-monthly').show();
 	    $('.telekom-yearly').hide();
     }
+	else if ( report_type == 'comparison'){
+		window.open("telekom_graph_compare.php", "_blank");
+	}
 
   	//Telekom monthly                  	
 	var ctx = document.getElementById( "telekom-monthly" );

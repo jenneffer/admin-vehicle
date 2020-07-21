@@ -5,9 +5,9 @@ require_once('../check_login.php');
 
 global $conn_admin_db;
 
-$year_select = isset($_POST['year_select']) ? $_POST['year_select'] : "2019";
+$year_select = isset($_POST['year_select']) ? $_POST['year_select'] : date("Y");
 // $tariff = isset($_POST['tariff']) ? $_POST['tariff'] : "CM1";
-$select_company = isset($_POST['company']) ? $_POST['company'] : "13";
+$select_company = isset($_POST['company']) ? $_POST['company'] : "1";
 $select_location = isset($_POST['location']) ? $_POST['location'] : "All";
 // $report_type = isset($_POST['report_type']) ? $_POST['report_type'] : "month";
 ob_start();
@@ -310,7 +310,7 @@ tr:nth-child(even) {
                   },
                   title: {
                       display: true,
-                      text: 'MONTHLY USAGE FOR YEAR '+year
+                      text: 'MONTHLY WATER USAGE'
                   }
               }
           });

@@ -3,12 +3,27 @@ require_once('../assets/config/database.php');
 require_once('../function.php');
 global $conn_admin_db;
 session_start();
-
+//initialise monthly value
+$month_map = array(
+    1 => 0,
+    2 => 0,
+    3 => 0,
+    4 => 0,
+    5 => 0,
+    6 => 0,
+    7 => 0,
+    8 => 0,
+    9 => 0,
+    10 => 0,
+    11 => 0,
+    12 => 0
+);
 $action = isset($_POST['action']) && $_POST['action'] !="" ? $_POST['action'] : ""; 
 $data = isset($_POST['data']) ? $_POST['data'] : ""; 
 $id = isset($_POST['id']) ? $_POST['id'] : "";
 $date_start = isset($_POST['date_start']) ? $_POST['date_start'] : date("01-m-Y");
 $date_end = isset($_POST['date_end']) ? $_POST['date_end'] : date("t-m-Y");
+$company = isset($_POST['company']) ? $_POST['company'] : "";
 
 if( $action != "" ){
     switch ($action){
@@ -43,9 +58,148 @@ if( $action != "" ){
             display_invoice_list($date_start, $date_end);
             break;
             
+        case 'get_location':
+            get_location($company);
+            break;
+            
+        case 'compare_data':
+            compare_data($data);
+            break;
+            
         default:
             break;
     }
+}
+
+function get_fx_data_monthly_compare($year, $company, $account_no){
+    global $conn_admin_db;
+    global $month_map;
+    $month = 12;
+    $query = "SELECT * FROM bill_fuji_xerox_account
+        INNER JOIN bill_fuji_xerox_invoice ON bill_fuji_xerox_account.id = bill_fuji_xerox_invoice.acc_id
+        WHERE YEAR(date_added)='$year'";
+    
+    if(!empty($company)){
+        $query .=" AND company='$company'";
+    }
+    if(!empty($account_no)){
+        $query .=" AND bill_fuji_xerox_account.id = '$account_no'";
+    }
+    
+    $query .= " ORDER BY date_added ASC";
+    
+    $sql_result = mysqli_query($conn_admin_db, $query)or die(mysqli_error($conn_admin_db));
+    $data = []; //show all company
+    $arr_data_fx = [];
+    while($row = mysqli_fetch_assoc($sql_result)){
+        //monthly
+        $arr_data_fx[$row['company']][] = $row;
+    }
+    //form array data for roadtax monthly
+    $month = 12;
+    $data_monthly = [];
+    foreach ($arr_data_fx as $key => $val){
+        $code = itemName("SELECT code FROM company WHERE id='$key'");
+        foreach ($val as $v){
+            $location = $v['location'];
+            $date_added = $v['date_added'];
+            $telco_month = date_parse_from_format("Y-m-d", $date_added);
+            $sesb_m = $telco_month["month"];
+            for ( $m=1; $m<=$month; $m++ ){
+                if($m == $sesb_m){
+                    if(!empty($account_no)){
+                        if (isset($data_monthly[$code][$location][$m])){
+                            $data_monthly[$code][$location][$m] += (double)$v['amount'];
+                        }else{
+                            $data_monthly[$code][$location][$m] = (double)$v['amount'];
+                        }
+                    }
+                    else{
+                        if (isset($data_monthly[$code][$m])){
+                            $data_monthly[$code][$m] += (double)$v['amount'];
+                        }else{
+                            $data_monthly[$code][$m] = (double)$v['amount'];
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    //sesb monthly
+    $datasets_fx_monthly = [];
+    foreach ($data_monthly as $code => $data){
+        if(!empty($account_no)){
+            foreach ($data as $location => $val){
+                $month_data = array_replace($month_map, $val);
+                $datasets_fx_monthly = array(
+                    'label' => $location,
+                    'backgroundColor' => 'transparent',
+                    'borderColor' => randomColor(),
+                    'lineTension' => 0,
+                    'borderWidth' => 3,
+                    'data' => array_values($month_data)
+                );
+            }
+        }
+        else{
+            $month_data = array_replace($month_map, $data);
+            $datasets_fx_monthly = array(
+                'label' => $code,
+                'backgroundColor' => 'transparent',
+                'borderColor' => randomColor(),
+                'lineTension' => 0,
+                'borderWidth' => 3,
+                'data' => array_values($month_data)
+            );
+        }
+        
+    }
+    
+    return $datasets_fx_monthly;
+    
+}
+function compare_data($data){
+    global $conn_admin_db;
+    $arr_data = [];
+    if (!empty($data)) {
+        $param = array();
+        parse_str($data, $param); //unserialize jquery string data
+        $year = $param['year_select'];
+        $company = $param['company'];
+        $location = $param['location'];
+        $count = count($year); //get the array count
+        for($i=1; $i<=$count; $i++){
+            $result = get_fx_data_monthly_compare($year[$i], $company[$i], $location[$i]);
+            if(!empty($result) && $result != NULL){
+                $arr_data[] = $result;
+            }
+        }
+    }
+    
+    echo json_encode($arr_data);
+}
+
+function get_location($company){
+    global $conn_admin_db;
+    $query = "SELECT id,UPPER(location) AS location FROM bill_fuji_xerox_account WHERE company='$company' AND status='1'";
+    $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
+    $location_arr = array();
+    $location_list = [];
+    $arr_result = [];
+    if(mysqli_num_rows($result) > 0){
+        while( $row = mysqli_fetch_array($result) ){
+            $location_arr[$row['id']] = $row['location'];
+            $location_list = $location_arr;
+        }
+        $arr_result[$company] = $location_list;
+    }
+    $result = array(
+        'result' => $arr_result
+    );
+    
+    // encoding array to json format
+    echo json_encode($result);
 }
 
 function display_invoice_list($date_start, $date_end){

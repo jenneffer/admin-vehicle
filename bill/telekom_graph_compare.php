@@ -8,7 +8,7 @@ global $conn_admin_db;
 $year_select = isset($_POST['year_select']) ? $_POST['year_select'] : date("Y");
 // $tariff = isset($_POST['tariff']) ? $_POST['tariff'] : "CM1";
 $select_company = isset($_POST['company']) ? $_POST['company'] : "1";
-$select_location = isset($_POST['location']) ? $_POST['location'] : "All";
+$select_acc = isset($_POST['account_no']) ? $_POST['account_no'] : "All";
 // $report_type = isset($_POST['report_type']) ? $_POST['report_type'] : "month";
 ob_start();
 selectYear('year_select[{index}]',$year_select,'','','form-control form-control-sm year','');
@@ -17,15 +17,15 @@ $html_year_select = ob_get_clean();
 
 //html company select
 ob_start();
-$company = mysqli_query ( $conn_admin_db, "SELECT id, UPPER(name) FROM company WHERE id IN (SELECT company_id FROM bill_sesb_account WHERE status='1') AND status='1' ORDER BY name ASC");
+$company = mysqli_query ( $conn_admin_db, "SELECT company_id, (SELECT UPPER(NAME) FROM company WHERE id=bill_telekom_account.company_id) AS company_name FROM bill_telekom_account WHERE status='1' GROUP BY company_id ORDER BY company_name ASC");
 db_select ($company, 'company[{index}]',$select_company,'','','form-control form-control-sm company','');
 $html_company_select = ob_get_clean();
 
 // html location select
 ob_start();
-$location = mysqli_query ( $conn_admin_db, "SELECT id,UPPER(location) FROM bill_sesb_account WHERE company_id='$select_company' AND status='1' GROUP BY location");
-db_select ($location, 'location[{index}]',$select_location,'','All','form-control form-control-sm location','');
-$html_location_select = ob_get_clean();
+$account_no = mysqli_query ( $conn_admin_db, "SELECT id,UPPER(account_no) FROM bill_telekom_account WHERE company_id='$select_company' AND status='1'");
+db_select ($location, 'account_no[{index}]',$select_location,'','All','form-control form-control-sm','');
+$html_acc_select = ob_get_clean();
 
 $comp_name = itemName("SELECT UPPER(name) FROM company WHERE id='".$select_company."'");
 $month = array(
@@ -53,7 +53,7 @@ $compare_form_input = "<div class='form-group row col-sm-12'>
                 			".$html_company_select."
                 		</div>
                 		<div class='col-sm-4 monthly-div'>                		
-                			".$html_location_select."
+                			".$html_acc_select."
                 		</div>
                 	</div>";
 
@@ -146,14 +146,14 @@ tr:nth-child(even) {
 <!-- <script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script> -->
 <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.4.2/chosen.jquery.js"></script> -->
 <script type="text/javascript">
-	OBJ_CURRENT_LOCATION_LIST = [];
+	OBJ_CURRENT_ACC_LIST = [];
     $(document).ready(function() {        
         var company = '<?=$select_company?>';      
         var newDataObject = [];  
         divCounter = 1;
        	//get the default first row 
         addRow();
-        get_location(company); 
+        get_account(company); 
         
         $("input[name=button_add_row]").click( function(event) {
         	addRow();
@@ -162,14 +162,15 @@ tr:nth-child(even) {
         $("form[name=form_comparison]").on( 'change', "select.company", function(event) {				
         	var company = $(this).val();        		
         	var name = $(this).attr('name');
+        	console.log(company)
         	//call ajax to get location list
-        	get_location(company);  
+        	get_account(company);  
         	      		
         	var number_matches = name.match(/[0-9]+/g);
         	var index = number_matches[0];
-        	var location = $("select[name=location\\["+index+"\\]]").val();
+        	var location = $("select[name=account_no\\["+index+"\\]]").val();
         	
-        	updateLocationSelectList( index, company);
+        	updateAccountSelectList( index, company);
         	
         });
         
@@ -177,7 +178,7 @@ tr:nth-child(even) {
         $('.btn_compare').on("click", function(event){ 
         	var iData = $('#form_comparison').serialize();
         	$.ajax({  
-                url:"sesb_bill.ajax.php",  
+                url:"telekom_bill.ajax.php",  
                 type:"POST",                        
                 data:{action:'compare_data', data: iData},  
                 async:false,
@@ -191,6 +192,7 @@ tr:nth-child(even) {
                 }
                 else{
                     alert("No data to compare!");
+                    location.reload();
                 }                     	                                        	
             });
         });
@@ -209,10 +211,10 @@ tr:nth-child(even) {
             divCounter++;            
         }
         //to update the location list when company change
-        function updateLocationSelectList( index, company){
-        	var elem = $("select[name=location\\["+index+"\\]]");
+        function updateAccountSelectList( index, company){
+        	var elem = $("select[name=account_no\\["+index+"\\]]");
         	var toRemove = [];
-        	cur_location_list = OBJ_CURRENT_LOCATION_LIST[company];
+        	cur_acc_list = OBJ_CURRENT_ACC_LIST[company];
 //         	cur_location_list = OBJ_CURRENT_LOCATION_LIST[company].filter( function( el ) {
         			
 //         		return toRemove.indexOf( el ) < 0;
@@ -226,25 +228,25 @@ tr:nth-child(even) {
                 return size;
             };
             
-        	if( Object.size(cur_location_list) > 0 ){
+        	if( Object.size(cur_acc_list) > 0 ){
         		elem.empty(); // remove old options
         		elem.append($("<option></option>").attr("value", "").text( "All" ) ); 
-        		$.each( cur_location_list, function(key, value) {
+        		$.each( cur_acc_list, function(key, value) {
         			elem.append($("<option></option>").attr("value", key).text( value ) );
         		});
         	}
         }
         //to get the location based on the selected company
-        function get_location(company_id){
+        function get_account(company_id){
             $.ajax({
-                url: 'sesb_bill.ajax.php',
+                url: 'telekom_bill.ajax.php',
                 type: 'POST',
-                data: {action:'get_location', company: company_id},
+                data: {action:'get_account', company: company_id},
                 async:false,
             }).done(function( indata ){                             	
             	var obj = $.parseJSON( indata );
             	if( obj.result ) {
-            		OBJ_CURRENT_LOCATION_LIST = obj.result;
+            		OBJ_CURRENT_ACC_LIST = obj.result;
             	}
             });
         }

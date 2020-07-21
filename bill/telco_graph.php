@@ -15,7 +15,8 @@ $html_year_select = ob_get_clean();
 
 $arr_report_type = array(
     "year" => "Yearly",
-    "month" => "Monthly"
+    "month" => "Monthly",
+    "comparison" => "Comparison"
 );
 
 $comp_name = itemName("SELECT UPPER(name) FROM company WHERE id='".$select_company."'");
@@ -125,33 +126,54 @@ function get_telco_data_monthly($year, $company, $account_no){
                 $sesb_m = $telco_month["month"];
                 for ( $m=1; $m<=$month; $m++ ){
                     if($m == $sesb_m){
-                        //premium
-                        if (isset($data_monthly[$code][$acc_no][$m])){
-                            $data_monthly[$code][$acc_no][$m] += (double)$v['amount_rm'];
-                        }else{
-                            $data_monthly[$code][$acc_no][$m] = (double)$v['amount_rm'];
+                        if(!empty($account_no)){
+                            if (isset($data_monthly[$code][$acc_no][$m])){
+                                $data_monthly[$code][$acc_no][$m] += (double)$v['amount_rm'];
+                            }else{
+                                $data_monthly[$code][$acc_no][$m] = (double)$v['amount_rm'];
+                            }
                         }
+                        else{
+                            if (isset($data_monthly[$code][$m])){
+                                $data_monthly[$code][$m] += (double)$v['amount_rm'];
+                            }else{
+                                $data_monthly[$code][$m] = (double)$v['amount_rm'];
+                            }
+                        }
+                        
                     }
                 }
             }
         }
     }
     
-    //sesb monthly
+    //telco monthly
     $datasets_telco_monthly = [];
-    foreach ($data_monthly as $data){
-       
-        foreach ($data as $location => $val){            
-            $month_data = array_replace($month_map, $val);            
+    foreach ($data_monthly as $code => $data){
+        if(!empty($account_no)){
+            foreach ($data as $location => $val){
+                $month_data = array_replace($month_map, $val);
+                $datasets_telco_monthly[] = array(
+                    'label' => $location,
+                    'backgroundColor' => 'transparent',
+                    'borderColor' => randomColor(),
+                    'lineTension' => 0,
+                    'borderWidth' => 3,
+                    'data' => array_values($month_data)
+                );
+            }
+        }
+        else{
+            $month_data = array_replace($month_map, $data);
             $datasets_telco_monthly[] = array(
-                'label' => $location,
+                'label' => $code,
                 'backgroundColor' => 'transparent',
                 'borderColor' => randomColor(),
                 'lineTension' => 0,
                 'borderWidth' => 3,
                 'data' => array_values($month_data)
-            );
-        }
+            );            
+        }        
     }
    
     return array(
@@ -293,6 +315,9 @@ tr:nth-child(even) {
 			}
 			else if ( report_type == 'year'){
 				$('#company').val('');
+			}
+			else if ( report_type == 'comparison'){
+				window.open("telco_graph_compare.php", "_blank");
 			}
             //JA monthly                  	
         	var ctx = document.getElementById( "ja-monthly" );

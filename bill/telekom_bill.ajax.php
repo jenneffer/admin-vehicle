@@ -3,13 +3,28 @@ require_once('../assets/config/database.php');
 require_once('../function.php');
 global $conn_admin_db;
 session_start();
-
+//initialise monthly value
+$month_map = array(
+    1 => 0,
+    2 => 0,
+    3 => 0,
+    4 => 0,
+    5 => 0,
+    6 => 0,
+    7 => 0,
+    8 => 0,
+    9 => 0,
+    10 => 0,
+    11 => 0,
+    12 => 0
+);
 $action = isset($_POST['action']) && $_POST['action'] !="" ? $_POST['action'] : ""; 
 $data = isset($_POST['data']) ? $_POST['data'] : ""; 
 $id = isset($_POST['id']) ? $_POST['id'] : "";
-
 $telefon_list = isset($_POST['telefon_list']) ? $_POST['telefon_list'] : "";
 $acc_id = isset($_POST['acc_id']) ? $_POST['acc_id'] : "";
+$company = isset($_POST['company']) ? $_POST['company'] : "";
+
 if( $action != "" ){
     switch ($action){
         case 'add_new_account':
@@ -38,11 +53,149 @@ if( $action != "" ){
         case 'add_new_bill':
             add_new_bill($data);
             break;
+            
+        case 'get_account':
+            get_account($company);
+            break;
+            
+        case 'compare_data':
+            compare_data($data);
+            break;
+            
         default:
             break;
     }
 }
 
+function get_telekom_data_monthly_compare($year, $company, $account_no){
+    global $conn_admin_db;
+    global $month_map;
+    $month = 12;
+    $query = "SELECT * FROM bill_telekom_account
+        INNER JOIN bill_telekom ON bill_telekom_account.id = bill_telekom.acc_id
+        WHERE YEAR(date_end)='$year' AND status='1'";
+    
+    if(!empty($company)){
+        $query .=" AND company_id='$company'";
+    }
+    if(!empty($account_no)){
+        $query .=" AND bill_telekom_account.id = '$account_no'";
+    }
+    
+    $query .= " ORDER BY date_end ASC";
+    
+    $sql_result = mysqli_query($conn_admin_db, $query)or die(mysqli_error($conn_admin_db));
+    $data = []; //show all company
+    $arr_data_telekom = [];
+    while($row = mysqli_fetch_assoc($sql_result)){
+        //monthly
+        $arr_data_telekom[$row['company_id']][] = $row;
+    }
+    //form array data for telekom monthly
+    $month = 12;
+    $data_monthly = [];
+    if(!empty($company)){
+        foreach ($arr_data_telekom as $key => $val){
+            $code = itemName("SELECT code FROM company WHERE id='$key'");
+            foreach ($val as $v){
+                $acc_no = $v['account_no'];
+                $date_end = $v['date_end'];
+                $telekom_month = date_parse_from_format("Y-m-d", $date_end);
+                $t_m = $telekom_month["month"];
+                for ( $m=1; $m<=$month; $m++ ){
+                    if($m == $t_m){
+                        if(!empty($account_no)){
+                            if (isset($data_monthly[$code][$acc_no."-".$year][$m])){
+                                $data_monthly[$code][$acc_no."-".$year][$m] += (double)$v['amount'];
+                            }else{
+                                $data_monthly[$code][$acc_no."-".$year][$m] = (double)$v['amount'];
+                            }
+                        }
+                        else{
+                            if (isset($data_monthly[$code."-".$year][$m])){
+                                $data_monthly[$code."-".$year][$m] += (double)$v['amount'];
+                            }else{
+                                $data_monthly[$code."-".$year][$m] = (double)$v['amount'];
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    //telekom monthly
+    foreach ($data_monthly as $code => $data){
+        if(!empty($account_no)){
+            foreach ($data as $acc_no => $val){
+                $month_data = array_replace($month_map, $val);
+                $datasets_telekom_monthly = array(
+                    'label' => $acc_no,
+                    'backgroundColor' => 'transparent',
+                    'borderColor' => randomColor(),
+                    'lineTension' => 0,
+                    'borderWidth' => 3,
+                    'data' => array_values($month_data)
+                );
+            }
+        }
+        else{
+            $month_data = array_replace($month_map, $data);
+            $datasets_telekom_monthly = array(
+                'label' => $code,
+                'backgroundColor' => 'transparent',
+                'borderColor' => randomColor(),
+                'lineTension' => 0,
+                'borderWidth' => 3,
+                'data' => array_values($month_data)
+            );
+        }
+    }
+    
+    return $datasets_telekom_monthly;
+    
+}
+
+function compare_data($data){
+    global $conn_admin_db;
+    $arr_data = [];
+    if (!empty($data)) {
+        $param = array();
+        parse_str($data, $param); //unserialize jquery string data
+        $year = $param['year_select'];
+        $company = $param['company'];
+        $account_no = $param['account_no'];
+        $count = count($year); //get the array count
+        for($i=1; $i<=$count; $i++){
+            $result = get_telekom_data_monthly_compare($year[$i], $company[$i], $account_no[$i]);
+            if(!empty($result) && $result != NULL){
+                $arr_data[] = $result;
+            }
+        }
+    }
+    
+    echo json_encode($arr_data);
+}
+
+function get_account($company){
+    global $conn_admin_db;
+    $query = "SELECT id,UPPER(account_no) as account_no FROM bill_telekom_account WHERE company_id='$company' AND status='1'";
+    $result = mysqli_query($conn_admin_db, $query);
+    $acc_arr = array();
+    $acc_list = [];
+    if(mysqli_num_rows($result) > 0){
+        while( $row = mysqli_fetch_array($result) ){
+            $acc_arr[$row['id']] = $row['account_no'];
+            $acc_list = $acc_arr;
+        }
+        $arr_result[$company] = $acc_list;
+    }
+    
+    $result = array(
+        'result' => $arr_result
+    );    
+    // encoding array to json format
+    echo json_encode($result);
+}
 function update_account($data){
     global $conn_admin_db;
     $param = array();

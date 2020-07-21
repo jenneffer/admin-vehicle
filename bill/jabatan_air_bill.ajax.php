@@ -99,23 +99,23 @@ function get_ja_data_monthly_compare($year, $company, $location){
     foreach ($arr_data_ja as $key => $val){
         $code = itemName("SELECT code FROM company WHERE id='$key'");
         foreach ($val as $v){
-            $loc = itemName("SELECT location FROM bill_jabatan_air_account WHERE id='".$v['id']."'");
+            $loc = $v['location'];
             $date_end = $v['date_end'];
             $ja_month = date_parse_from_format("Y-m-d", $date_end);
             $ja_m = $ja_month["month"];
             for ( $m=1; $m<=$month; $m++ ){
                 if($m == $ja_m){
                     if(!empty($location)){
-                        if (isset($data_monthly[$code][$loc][$m])){
-                            $data_monthly[$code][$loc][$m] += (double)$v['amount'];
+                        if (isset($data_monthly[$code."-".$year][$loc][$m])){
+                            $data_monthly[$code."-".$year][$loc][$m] += (double)$v['amount'];
                         }else{
-                            $data_monthly[$code][$loc][$m] = (double)$v['amount'];
+                            $data_monthly[$code."-".$year][$loc][$m] = (double)$v['amount'];
                         }
                     }else{
-                        if (isset($data_monthly[$code][$m])){
-                            $data_monthly[$code][$m] += (double)$v['amount'];
+                        if (isset($data_monthly[$code."-".$year][$m])){
+                            $data_monthly[$code."-".$year][$m] += (double)$v['amount'];
                         }else{
-                            $data_monthly[$code][$m] = (double)$v['amount'];
+                            $data_monthly[$code."-".$year][$m] = (double)$v['amount'];
                         }
                     }
                     
@@ -123,7 +123,6 @@ function get_ja_data_monthly_compare($year, $company, $location){
             }
         }
     }
-    
     if (!empty($data_monthly)) {
         foreach ($data_monthly as $code => $data){
             if(!empty($location)){
