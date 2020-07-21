@@ -17,13 +17,13 @@ $html_year_select = ob_get_clean();
 
 //html company select
 ob_start();
-$company = mysqli_query ( $conn_admin_db, "SELECT id, UPPER(name) FROM company WHERE id IN (SELECT company_id FROM bill_sesb_account WHERE status='1') AND status='1' ORDER BY name ASC");
+$company = mysqli_query ( $conn_admin_db, "SELECT company, (SELECT UPPER(NAME) FROM company WHERE id=bill_fuji_xerox_account.company) AS company_name FROM bill_fuji_xerox_account WHERE status='1' GROUP BY company ORDER BY company_name ASC");
 db_select ($company, 'company[{index}]',$select_company,'','','form-control form-control-sm company','');
 $html_company_select = ob_get_clean();
 
 // html location select
 ob_start();
-$location = mysqli_query ( $conn_admin_db, "SELECT id,UPPER(location) FROM bill_sesb_account WHERE company_id='$select_company' AND status='1' GROUP BY location");
+$location = mysqli_query ( $conn_admin_db, "SELECT id, location FROM bill_fuji_xerox_account WHERE company='$select_company' AND id IN (SELECT acc_id FROM bill_fuji_xerox_invoice)");
 db_select ($location, 'location[{index}]',$select_location,'','All','form-control form-control-sm location','');
 $html_location_select = ob_get_clean();
 
@@ -148,7 +148,8 @@ tr:nth-child(even) {
 <script type="text/javascript">
 	OBJ_CURRENT_LOCATION_LIST = [];
     $(document).ready(function() {        
-        var company = '<?=$select_company?>';      
+        var company = '<?=$select_company?>';    
+        console.log(company);  
         var newDataObject = [];  
         divCounter = 1;
        	//get the default first row 
@@ -160,11 +161,10 @@ tr:nth-child(even) {
         });
         
         $("form[name=form_comparison]").on( 'change', "select.company", function(event) {				
-        	var company = $(this).val();        		
+        	var company = $(this).val();         	      		
         	var name = $(this).attr('name');
         	//call ajax to get location list
-        	get_location(company);  
-        	      		
+        	get_location(company);        	      		
         	var number_matches = name.match(/[0-9]+/g);
         	var index = number_matches[0];
         	var location = $("select[name=location\\["+index+"\\]]").val();
@@ -177,7 +177,7 @@ tr:nth-child(even) {
         $('.btn_compare').on("click", function(event){ 
         	var iData = $('#form_comparison').serialize();
         	$.ajax({  
-                url:"sesb_bill.ajax.php",  
+                url:"fx_bill.ajax.php",  
                 type:"POST",                        
                 data:{action:'compare_data', data: iData},  
                 async:false,
@@ -213,8 +213,7 @@ tr:nth-child(even) {
         	var elem = $("select[name=location\\["+index+"\\]]");
         	var toRemove = [];
         	cur_location_list = OBJ_CURRENT_LOCATION_LIST[company];
-//         	cur_location_list = OBJ_CURRENT_LOCATION_LIST[company].filter( function( el ) {
-        			
+//         	cur_location_list = OBJ_CURRENT_LOCATION_LIST[company].filter( function( el ) {        			
 //         		return toRemove.indexOf( el ) < 0;
 //         	});  
 			// Get the size of an object
@@ -237,11 +236,11 @@ tr:nth-child(even) {
         //to get the location based on the selected company
         function get_location(company_id){
             $.ajax({
-                url: 'sesb_bill.ajax.php',
+                url: 'fx_bill.ajax.php',
                 type: 'POST',
                 data: {action:'get_location', company: company_id},
                 async:false,
-            }).done(function( indata ){                             	
+            }).done(function( indata ){                                        	
             	var obj = $.parseJSON( indata );
             	if( obj.result ) {
             		OBJ_CURRENT_LOCATION_LIST = obj.result;

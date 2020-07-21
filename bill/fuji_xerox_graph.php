@@ -15,7 +15,8 @@ $html_year_select = ob_get_clean();
 
 $arr_report_type = array(
     "year" => "Yearly",
-    "month" => "Monthly"
+    "month" => "Monthly",
+    "comparison" => "Comparison"
 );
 
 $comp_name = itemName("SELECT UPPER(name) FROM company WHERE id='".$select_company."'");
@@ -115,23 +116,29 @@ function get_fx_data_monthly($year, $company, $account_no){
     //form array data for roadtax monthly
     $month = 12;
     $data_monthly = [];    
-    if(!empty($company)){        
-        foreach ($arr_data_fx as $key => $val){           
-            $code = itemName("SELECT code FROM company WHERE id='$key'");
-            foreach ($val as $v){
-                $serial_no = $v['location'];
-                $date_added = $v['date_added'];
-                $telco_month = date_parse_from_format("Y-m-d", $date_added);
-                $sesb_m = $telco_month["month"];
-                for ( $m=1; $m<=$month; $m++ ){
-                    if($m == $sesb_m){
-                        //premium
-                        if (isset($data_monthly[$code][$serial_no][$m])){
-                            $data_monthly[$code][$serial_no][$m] += (double)$v['amount'];
+    foreach ($arr_data_fx as $key => $val){
+        $code = itemName("SELECT code FROM company WHERE id='$key'");
+        foreach ($val as $v){
+            $location = $v['location'];
+            $date_added = $v['date_added'];
+            $telco_month = date_parse_from_format("Y-m-d", $date_added);
+            $sesb_m = $telco_month["month"];
+            for ( $m=1; $m<=$month; $m++ ){
+                if($m == $sesb_m){
+                    if(!empty($account_no)){
+                        if (isset($data_monthly[$code][$location][$m])){
+                            $data_monthly[$code][$location][$m] += (double)$v['amount'];
                         }else{
-                            $data_monthly[$code][$serial_no][$m] = (double)$v['amount'];
+                            $data_monthly[$code][$location][$m] = (double)$v['amount'];
                         }
                     }
+                    else{
+                        if (isset($data_monthly[$code][$m])){
+                            $data_monthly[$code][$m] += (double)$v['amount'];
+                        }else{
+                            $data_monthly[$code][$m] = (double)$v['amount'];
+                        }
+                    }                    
                 }
             }
         }
@@ -139,12 +146,24 @@ function get_fx_data_monthly($year, $company, $account_no){
     
     //sesb monthly
     $datasets_fx_monthly = [];
-    foreach ($data_monthly as $data){
-       
-        foreach ($data as $location => $val){            
-            $month_data = array_replace($month_map, $val);            
+    foreach ($data_monthly as $code => $data){
+        if(!empty($account_no)){
+            foreach ($data as $location => $val){
+                $month_data = array_replace($month_map, $val);
+                $datasets_fx_monthly[] = array(
+                    'label' => $location,
+                    'backgroundColor' => 'transparent',
+                    'borderColor' => randomColor(),
+                    'lineTension' => 0,
+                    'borderWidth' => 3,
+                    'data' => array_values($month_data)
+                );
+            }
+        }
+        else{
+            $month_data = array_replace($month_map, $data);
             $datasets_fx_monthly[] = array(
-                'label' => $location,
+                'label' => $code,
                 'backgroundColor' => 'transparent',
                 'borderColor' => randomColor(),
                 'lineTension' => 0,
@@ -152,6 +171,7 @@ function get_fx_data_monthly($year, $company, $account_no){
                 'data' => array_values($month_data)
             );
         }
+        
     }
    
     return array(
@@ -284,6 +304,9 @@ tr:nth-child(even) {
 			}
 			else if ( report_type == 'year'){
 				$('#company').val('');
+			}
+			else if ( report_type == 'comparison'){
+				window.open("fx_graph_compare.php", "_blank");
 			}
             //JA monthly                  	
         	var ctx = document.getElementById( "ja-monthly" );

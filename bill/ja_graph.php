@@ -4,9 +4,9 @@ require_once('../function.php');
 require_once('../check_login.php');
 global $conn_admin_db;
 
-$year_select = isset($_POST['year_select']) ? $_POST['year_select'] : "2019";
+$year_select = isset($_POST['year_select']) ? $_POST['year_select'] : date("Y");
 // $tariff = isset($_POST['tariff']) ? $_POST['tariff'] : "CM1";
-$select_company = isset($_POST['company']) ? $_POST['company'] : "13";
+$select_company = isset($_POST['company']) ? $_POST['company'] : "1";
 $select_location = isset($_POST['location']) ? $_POST['location'] : "";
 $report_type = isset($_POST['report_type']) ? $_POST['report_type'] : "year";
 ob_start();
@@ -125,11 +125,18 @@ function get_ja_data_monthly($year, $company, $location){
                 $sesb_m = $sesb_month["month"];
                 for ( $m=1; $m<=$month; $m++ ){
                     if($m == $sesb_m){
-                        //premium
-                        if (isset($data_monthly[$code][$loc][$m])){
-                            $data_monthly[$code][$loc][$m] += (double)$v['amount'];
+                        if(!empty($location)){
+                            if (isset($data_monthly[$code][$loc][$m])){
+                                $data_monthly[$code][$loc][$m] += (double)$v['amount'];
+                            }else{
+                                $data_monthly[$code][$loc][$m] = (double)$v['amount'];
+                            }
                         }else{
-                            $data_monthly[$code][$loc][$m] = (double)$v['amount'];
+                            if (isset($data_monthly[$code][$m])){
+                                $data_monthly[$code][$m] += (double)$v['amount'];
+                            }else{
+                                $data_monthly[$code][$m] = (double)$v['amount'];
+                            }
                         }
                     }
                 }
@@ -139,21 +146,32 @@ function get_ja_data_monthly($year, $company, $location){
     
     //sesb monthly
     $datasets_ja_monthly = [];
-    foreach ($data_monthly as $data){
-       
-        foreach ($data as $location => $val){            
-            $month_data = array_replace($month_map, $val);            
+    foreach ($data_monthly as $code => $data){  
+        if(!empty($location)){
+            foreach ($data as $location => $val){
+                $month_data = array_replace($month_map, $val);
+                $datasets_ja_monthly[] = array(
+                    'label' => $location,
+                    'backgroundColor' => 'transparent',
+                    'borderColor' => randomColor(),
+                    'lineTension' => 0,
+                    'borderWidth' => 3,
+                    'data' => array_values($month_data)
+                );
+            }
+        }else{
+            $month_data = array_replace($month_map, $data);
             $datasets_ja_monthly[] = array(
-                'label' => $location,
+                'label' => $code,
                 'backgroundColor' => 'transparent',
                 'borderColor' => randomColor(),
                 'lineTension' => 0,
                 'borderWidth' => 3,
                 'data' => array_values($month_data)
-            );
+            );            
         }
     }
-   
+    
     return array(
         'ja_monthly' => $datasets_ja_monthly
     );
@@ -228,7 +246,7 @@ tr:nth-child(even) {
                       	<div class="col-sm-4 monthly-div">
                 		<label for="company" class="form-control-label"><small class="form-text text-muted">Company</small></label>
                 		<?php                                            
-                            $company = mysqli_query ( $conn_admin_db, "SELECT id, UPPER(name) FROM company WHERE status='1' ORDER BY name ASC");
+                            $company = mysqli_query ( $conn_admin_db, "SELECT company_id, (SELECT UPPER(NAME) FROM company WHERE id=bill_jabatan_air_account.company_id) AS company_name FROM bill_jabatan_air_account WHERE status='1' AND company_id IS NOT NULL GROUP BY company_id ORDER BY company_name ASC");
                             db_select ($company, 'company',$select_company,'submit()','','form-control form-control-sm','');
                         ?>
                 		</div>
