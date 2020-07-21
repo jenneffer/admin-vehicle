@@ -94,17 +94,17 @@ function get_telco_data_monthly_compare($year, $company, $account_no){
                 for ( $m=1; $m<=$month; $m++ ){
                     if($m == $sesb_m){
                         if(!empty($account_no)){
-                            if (isset($data_monthly[$code][$acc_no][$m])){
-                                $data_monthly[$code][$acc_no][$m] += (double)$v['amount_rm'];
+                            if (isset($data_monthly[$code][$acc_no."-".$year][$m])){
+                                $data_monthly[$code][$acc_no."-".$year][$m] += (double)$v['amount_rm'];
                             }else{
-                                $data_monthly[$code][$acc_no][$m] = (double)$v['amount_rm'];
+                                $data_monthly[$code][$acc_no."-".$year][$m] = (double)$v['amount_rm'];
                             }
                         }
                         else{
-                            if (isset($data_monthly[$code][$m])){
-                                $data_monthly[$code][$m] += (double)$v['amount_rm'];
+                            if (isset($data_monthly[$code."-".$year][$m])){
+                                $data_monthly[$code."-".$year][$m] += (double)$v['amount_rm'];
                             }else{
-                                $data_monthly[$code][$m] = (double)$v['amount_rm'];
+                                $data_monthly[$code."-".$year][$m] = (double)$v['amount_rm'];
                             }
                         }
                         

@@ -108,17 +108,17 @@ function get_fx_data_monthly_compare($year, $company, $account_no){
             for ( $m=1; $m<=$month; $m++ ){
                 if($m == $sesb_m){
                     if(!empty($account_no)){
-                        if (isset($data_monthly[$code][$location][$m])){
-                            $data_monthly[$code][$location][$m] += (double)$v['amount'];
+                        if (isset($data_monthly[$code][$location."-".$year][$m])){
+                            $data_monthly[$code][$location."-".$year][$m] += (double)$v['amount'];
                         }else{
-                            $data_monthly[$code][$location][$m] = (double)$v['amount'];
+                            $data_monthly[$code][$location."-".$year][$m] = (double)$v['amount'];
                         }
                     }
                     else{
-                        if (isset($data_monthly[$code][$m])){
-                            $data_monthly[$code][$m] += (double)$v['amount'];
+                        if (isset($data_monthly[$code."-".$year][$m])){
+                            $data_monthly[$code."-".$year][$m] += (double)$v['amount'];
                         }else{
-                            $data_monthly[$code][$m] = (double)$v['amount'];
+                            $data_monthly[$code."-".$year][$m] = (double)$v['amount'];
                         }
                     }
                 }
