@@ -16,4 +16,6 @@
     <link rel="stylesheet" href="../assets/css/weather-icons.css">
     <link rel="stylesheet" href="../assets/css/fullcalendar.min.css">
     <link rel="stylesheet" href="../assets/css/select2.min.css">
+    <link rel="stylesheet" href="../assets/css/jquery-ui.css">
+    <link rel="stylesheet" href="../assets/css/buttons.dataTables.min.css">
 

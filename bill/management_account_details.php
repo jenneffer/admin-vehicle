@@ -139,25 +139,20 @@
                                     	</div>
                                 	</div>
                             	</form> 
-                            	<div class="custom-tab">
-                                    <nav>
-                                        <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                                            <a class="nav-item nav-link active" id="custom-nav-management-fee-tab" data-toggle="tab" href="#custom-nav-management-fee" role="tab" aria-controls="custom-nav-home" aria-selected="true">Management Fee</a>
-                                            <a class="nav-item nav-link" id="custom-nav-water-bill-tab" data-toggle="tab" href="#custom-nav-water-bill" role="tab" aria-controls="custom-nav-profile" aria-selected="false">Water Bill</a>
-                                            <a class="nav-item nav-link" id="custom-nav-late-interest-charge-tab" data-toggle="tab" href="#custom-nav-late-interest-charge" role="tab" aria-controls="custom-nav-contact" aria-selected="false">Late Interest Charge</a>
-                                            <a class="nav-item nav-link" id="custom-nav-quit-rent-tab" data-toggle="tab" href="#custom-nav-quit-rent" role="tab" aria-controls="custom-nav-contact" aria-selected="false">Quit Rent</a>
-                                            <a class="nav-item nav-link" id="custom-nav-insurance-tab" data-toggle="tab" href="#custom-nav-insurance" role="tab" aria-controls="custom-nav-contact" aria-selected="false">Insurance Premium</a>
-                                        </div>
-                                    </nav>
-                                    <div class="tab-content pl-3 pt-2" id="nav-tabContent">
-                                        <div class="tab-pane fade show active" id="custom-nav-management-fee" role="tabpanel" aria-labelledby="custom-nav-management-fee-tab">
-                                        <div class="content">   
-                                        	<br>                                       	
-                                        	<div class="col-sm-12">  
-                                        		<button type="button" class="btn btn-sm btn-primary button_add" data-toggle="modal" data-target="#addManagementFee">Add New Record</button>                                                                                     	
-                                            </div>
-                                            <br>
-                                            <table id="table-mfee" class="table table-striped table-bordered">                                                
+                            	<div class="tabs">
+                                    <ul class="tab-links">
+                                        <li id="t1"><a href="#tab1" class="tab1a">Management Fee</a></li>
+                                        <li id="t2"><a href="#tab2" class="tab2a">Water Bill</a></li>
+                                        <li id="t3"><a href="#tab3" class="tab3a">Late Interest Charge</a></li>
+                                        <li id="t4"><a href="#tab4" class="tab4a">Quit Rent</a></li>
+                                        <li id="t5"><a href="#tab5" class="tab5a">Insurance Premium</a></li>
+                                    </ul>
+                                    <div class="tab-content">
+                                        <div class="tab active" id="tab1">
+                                            <table id="table-mfee" class="table table-striped table-bordered">   
+                                            <div class="col-sm-12">   
+                                        		<button type="button" class="btn btn-sm btn-primary button_add" onclick="window.open('add_new_management.php?id=<?=$acc_id?>')"">Add New Record</button>                                                                                    	
+                                            </div>                                             
                                                 <thead>                                            
                                                     <tr>
                                                     	<th>Month</th>
@@ -168,7 +163,8 @@
                                                     	<th>Payment Mode</th> 
                                                     	<th>Official Receipt No.</th>
                                                     	<th>Received Date</th>     
-                                                    	<th>Remarks</th>                                                	                               	
+                                                    	<th>Remarks</th>      
+                                                    	<th>Action</th>                                          	                               	
                                                     </tr>										
                                             	</thead>   
                                             	<tbody>
@@ -186,7 +182,11 @@
                                                     <td class="text-center"><?=strtoupper($data['payment_mode'])?></td>
                                                     <td class="text-center"><?=$data['official_receipt_no']?></td>                                                            
                                                     <td class="text-center"><?=dateFormatRev($data['received_date'])?></td> 
-                                                    <td class="text-center"><?=$data['remark']?></td>                                             
+                                                    <td class="text-center"><?=$data['remark']?></td>    
+                                                    <td class="text-center">
+                                                    	<span onclick="window.open('add_new_management.php?id=<?=$acc_id?>&item_id=<?=$data['id']?>')"><i class="fa fa-edit"></i></span>
+                                                    	<span id="<?=$data['id']?>" data-toggle="modal" data="bill_management_fee" class="delete_data" data-target="#deleteItem"><i class="fas fa-trash-alt"></i></span>
+                                                    </td>                                         
                                                 </tr>
                                             	<?php }?>
                                             	</tbody>  
@@ -199,247 +199,255 @@
                                                         <th class="text-center">&nbsp;</th>
                                                         <th class="text-right">&nbsp;</th>
                                                         <th class="text-center">&nbsp;</th>   
-                                                        <th class="text-center">&nbsp;</th>                                                                                        
+                                                        <th class="text-center">&nbsp;</th>    
+                                                        <th class="text-center">&nbsp;</th>                                                                                    
                                                     </tr>
                                             	<?php }?>
                                             	</tfoot>                                             	                                                                                                       
                                             </table>
                                         </div>
-                                        </div>
-                                        <div class="tab-pane fade" id="custom-nav-water-bill" role="tabpanel" aria-labelledby="custom-nav-water-bill-tab">
-                                            <div class="content">
-                                            	<br>
-                                                <div class="col-sm-12">  
-                                            		<button type="button" class="btn btn-sm btn-primary button_add" onclick="window.open('add_new_water_bill.php?id=<?=$acc_id?>')"">Add New Record</button>                                                                                     	
-                                                </div>
-                                                <br>
-                                                <table id="table-water-bill" class="table table-striped table-bordered">                                                
-                                                <thead> 
-                                                	<tr>
-                                                		<th>Description</th>
-                                                		<th colspan="3" class="text-center">Meter Reading</th>
-                                                		<th colspan="2" class="text-center">Period Date</th>
-                                                		<th rowspan="2">Payment Mode</th>
-                                                		<th rowspan="2">Amount (RM)</th>
-                                                		<th rowspan="2">OR No.</th>
-                                                		<th rowspan="2">Payment Date</th>
-                                                	</tr>                                           
-                                                    <tr>
-                                                    	<th>Month</th>
-                                                    	<th>Previous</th>
-                                                    	<th>Current</th>
-                                                    	<th>Total Usage</th>
-                                                    	<th>From</th>
-                                                    	<th>To</th>                                                     	                                             	                               	
-                                                    </tr>										
-                                            	</thead>   
-                                            	<tbody>
-                                            	<?php 
-                                            	$total_consume = 0;
-                                            	$total_amount = 0;
-                                            	if(!empty($arr_data_wb)){
-                                            	    foreach ($arr_data_wb as $data){
-                                            	        $total_consume +=$data['total_consume'];
-                                            	        $total_amount +=$data['total'];
-                                            	        ?>
-                                            	<tr>
-                                                    <td class="text-left"><?=$data['month_name']?></td>
-                                                    <td class="text-left"><?=$data['previous_mr']?></td>
-        											<td class="text-left"><?=$data['current_mr']?></td>
-                                                    <td class="text-center"><?=$data['total_consume']?></td>                                            
-                                                    <td class="text-left"><?=dateFormatRev($data['date_from'])?></td>
-                                                    <td class="text-left"><?=dateFormatRev($data['date_to'])?></td>  
-                                                    <td class="text-center"><?=strtoupper($data['payment_mode'])?></td> 
-                                                    <td class="text-right"><?=number_format($data['total'],2)?></td> 
-                                                    <td class="text-center"><?=$data['or_no']?></td>         
-                                                    <td class="text-center"><?=dateFormatRev($data['payment_date'])?></td> 
-                                                                                                
-                                                </tr>
-                                            	<?php }
-                                            	}?>
-                                            	</tbody>  
-                                            	<tfoot>
-                                            	<?php if(!empty($arr_data_wb)){?>
-                                            	<tr>
-                                                    <th class="text-center" colspan="3">TOTAL</th>
-                                                    <th class="text-center"><?=$total_consume?></th>
-                                                    <th class="text-center">&nbsp;</th>
-                                                    <th class="text-center">&nbsp;</th>
-                                                    <th class="text-right">&nbsp;</th>
-                                                    <th class="text-right"><?=number_format($total_amount,2)?></th>   
-                                                    <th class="text-center">&nbsp;</th>                
-                                                    <th class="text-center">&nbsp;</th>                                                                                        
-                                                </tr>
-                                                <?php } ?>
-                                            	</tfoot>                                            	                                                                                                      
-                                            </table>
+                                        <div class="tab" id="tab2">
+                                            <div class="col-sm-12">  
+                                        		<button type="button" class="btn btn-sm btn-primary button_add" onclick="window.open('add_new_water_bill.php?id=<?=$acc_id?>')"">Add New Record</button>                                                                                     	
                                             </div>
-                                        </div>
-                                        <div class="tab-pane fade" id="custom-nav-late-interest-charge" role="tabpanel" aria-labelledby="custom-nav-late-interest-charge-tab">
-                                        	<div class="content">
-                                            	<br>
-                                                <div class="col-sm-12">  
-                                            		<button type="button" class="btn btn-sm btn-primary button_add" onclick="window.open('add_late_interest_charge.php?id=<?=$acc_id?>')">Add New Record</button>                                                                                     	
-                                                </div>
-                                                <br>
-                                                <table id="table-late-interest" class="table table-striped table-bordered">                                                
-                                                <thead>                                            
-                                                    <tr>
-                                                    	<th>Bill Date</th>
-                                                    	<th>Invoice No.</th>
-                                                    	<th>Due Date</th>
-                                                    	<th>Description</th>
-                                                    	<th>Amount (RM)</th>
-                                                    	<th>Payment Mode</th>         
-                                                    	<th>OR No.</th>                                            	                                             	                               	
-                                                    </tr>										
-                                            	</thead>   
-                                            	<tbody>
-                                            	<?php 
-                                            	$li_total = 0;
-                                            	if(!empty($arr_data_li)){
-                                            	    foreach ($arr_data_li as $data){
-                                            	        $li_total += $data['amount'];
-                                            	        ?>
+                                            <br>
+                                            <table id="table-water-bill" class="table table-striped table-bordered">                                                
+                                            <thead> 
                                             	<tr>
-                                                    <td class="text-left"><?=dateFormatRev($data['bill_date'])?></td>
-                                                    <td class="text-left"><?=$data['inv_no']?></td>
-        											<td class="text-left"><?=dateFormatRev($data['payment_due_date'])?></td>
-                                                    <td class="text-left"><?=$data['description']?></td>  
-                                                    <td class="text-right"><?=number_format($data['amount'],2)?></td>                                          
-                                                    <td class="text-center"><?=strtoupper($data['payment_mode'])?></td>  
-                                                    <td class="text-center"><?=$data['or_no']?></td>                                                                                                        
-                                                </tr>
-                                            	<?php }
-                                            	}?>
-                                            	</tbody>  
-                                            	<tfoot>
-                                            	<?php if(!empty($arr_data_wb)){?>
-                                            	<tr>
-                                                    <th class="text-center" colspan="4">TOTAL</th>
-                                                    <th class="text-right"><?=number_format($li_total,2)?></th>
-                                                    <th>&nbsp;</th>
-                                                    <th>&nbsp;</th>                                                                                      
-                                                </tr>
-                                                <?php }?>
-                                            	</tfoot>                                            	                                                                                                      
-                                            </table>
+                                            		<th>Description</th>
+                                            		<th colspan="3" class="text-center">Meter Reading</th>
+                                            		<th colspan="2" class="text-center">Period Date</th>
+                                            		<th rowspan="2">Payment Mode</th>
+                                            		<th rowspan="2">Amount (RM)</th>
+                                            		<th rowspan="2">OR No.</th>
+                                            		<th rowspan="2">Payment Date</th>
+                                            		<th rowspan="2">Action</th>
+                                            	</tr>                                           
+                                                <tr>
+                                                	<th>Month</th>
+                                                	<th>Previous</th>
+                                                	<th>Current</th>
+                                                	<th>Total Usage</th>
+                                                	<th>From</th>
+                                                	<th>To</th>                                                     	                                             	                               	
+                                                </tr>										
+                                        	</thead>   
+                                        	<tbody>
+                                        	<?php 
+                                        	$total_consume = 0;
+                                        	$total_amount = 0;
+                                        	if(!empty($arr_data_wb)){
+                                        	    foreach ($arr_data_wb as $data){
+                                        	        $total_consume +=$data['total_consume'];
+                                        	        $total_amount +=$data['total'];
+                                        	        ?>
+                                        	<tr>
+                                                <td class="text-left"><?=$data['month_name']?></td>
+                                                <td class="text-left"><?=$data['previous_mr']?></td>
+    											<td class="text-left"><?=$data['current_mr']?></td>
+                                                <td class="text-center"><?=$data['total_consume']?></td>                                            
+                                                <td class="text-left"><?=dateFormatRev($data['date_from'])?></td>
+                                                <td class="text-left"><?=dateFormatRev($data['date_to'])?></td>  
+                                                <td class="text-center"><?=strtoupper($data['payment_mode'])?></td> 
+                                                <td class="text-right"><?=number_format($data['total'],2)?></td> 
+                                                <td class="text-center"><?=$data['or_no']?></td>         
+                                                <td class="text-center"><?=dateFormatRev($data['payment_date'])?></td> 
+                                                <td class="text-center">
+                                                	<span onclick="window.open('add_new_water_bill.php?id=<?=$acc_id?>&item_id=<?=$data['id']?>')"><i class="fa fa-edit"></i></span>
+                                                	<span id="<?=$data['id']?>" data-toggle="modal" data="bill_management_water" class="delete_data" data-target="#deleteItem"><i class="fas fa-trash-alt"></i></span>
+                                                </td>
+                                                                                            
+                                            </tr>
+                                        	<?php }
+                                        	}?>
+                                        	</tbody>  
+                                        	<tfoot>
+                                        	<?php if(!empty($arr_data_wb)){?>
+                                        	<tr>
+                                                <th class="text-center" colspan="3">TOTAL</th>
+                                                <th class="text-center"><?=$total_consume?></th>
+                                                <th class="text-center">&nbsp;</th>
+                                                <th class="text-center">&nbsp;</th>
+                                                <th class="text-right">&nbsp;</th>
+                                                <th class="text-right"><?=number_format($total_amount,2)?></th>   
+                                                <th class="text-center">&nbsp;</th>                
+                                                <th class="text-center">&nbsp;</th>  
+                                                <th class="text-center">&nbsp;</th>                                                                                        
+                                            </tr>
+                                            <?php } ?>
+                                        	</tfoot>                                            	                                                                                                      
+                                        </table>
+									</div>
+                                        <div class="tab" id="tab3">
+                                        	<div class="col-sm-12">  
+                                        		<button type="button" class="btn btn-sm btn-primary button_add" onclick="window.open('add_late_interest_charge.php?id=<?=$acc_id?>')">Add New Record</button>                                                                                     	
                                             </div>
-                                        </div>
-                                        <div class="tab-pane fade" id="custom-nav-quit-rent" role="tabpanel" aria-labelledby="custom-nav-quit-rent-tab">
-                                        	<div class="content">
-                                            	<br>
-                                                <div class="col-sm-12">  
-                                            		<button type="button" class="btn btn-sm btn-primary button_add" onclick="window.open('add_quit_rent_billing.php?id=<?=$acc_id?>')">Add New Record</button>                                                                                     	
-                                                </div>
-                                                <br>
-                                                <table id="table-quit-rent" class="table table-striped table-bordered">                                                
-                                                <thead>                                            
-                                                    <tr>
-                                                    	<th>Invoice Date</th>
-                                                    	<th>Invoice No.</th>                                                    	
-                                                    	<th>Amount (RM)</th>
-                                                    	<th>Payment Mode</th>
-                                                    	<th>Due Date</th>
-                                                    	<th>Payment Date</th>
-                                                    	<th>Received Date</th>         
-                                                    	<th>OR No.</th>     
-                                                    	<th>Remarks</th>                                            	                                             	                               	
-                                                    </tr>										
-                                            	</thead>   
-                                            	<tbody>
-                                            	<?php 
-                                            	$total_qr = 0;
-                                            	if(!empty($arr_data_qr)){
-                                            	    foreach ($arr_data_qr as $data){
-                                            	        $total_qr += $data['payment'];?>
-                                            	<tr>
-                                                    <td class="text-left"><?=dateFormatRev($data['invoice_date'])?></td>
-                                                    <td class="text-center"><?=strtoupper($data['inv_no'])?></td>
-        											<td class="text-right"><?=number_format($data['payment'],2)?></td>
-                                                    <td class="text-right"><?=strtoupper($data['payment_mode'])?></td>  
-                                                    <td class="text-center"><?=dateFormatRev($data['due_date'])?></td>                                          
-                                                    <td class="text-center"><?=dateFormatRev($data['date_paid'])?></td>  
-                                                    <td class="text-center"><?=dateFormatRev($data['date_received'])?></td>                                
-                                                    <td class="text-center"><?=strtoupper($data['or_no'])?></td>         
-                                                    <td class="text-center"><?=$data['remarks']?></td>                                                                                 
-                                                </tr>
-                                            	<?php }
-                                            	}?>
-                                            	</tbody>  
-                                            	<tfoot>
-                                            	<?php if(!empty($arr_data_qr)){?>
-                                            	<tr>
-                                                    <th colspan="2" class="text-center">TOTAL</th>
-        											<th class="text-right"><?=number_format($total_qr,2)?></th>
-                                                    <th class="text-center">&nbsp;</th>
-                                                    <th class="text-center">&nbsp;</th>
-                                                    <th class="text-center">&nbsp;</th>
-                                                    <th class="text-right">&nbsp;</th>     
-                                                    <th class="text-right">&nbsp;</th>     
-                                                    <th class="text-right">&nbsp;</th>                                                                                      
-                                                </tr>
-                                                <?php }?>                                                
-                                            	</tfoot>                                            	                                                                                                      
-                                            </table>
+                                            <br>
+                                            <table id="table-late-interest" class="table table-striped table-bordered">                                                
+                                            <thead>                                            
+                                                <tr>
+                                                	<th>Bill Date</th>
+                                                	<th>Invoice No.</th>
+                                                	<th>Due Date</th>
+                                                	<th>Description</th>
+                                                	<th>Amount (RM)</th>
+                                                	<th>Payment Mode</th>         
+                                                	<th>OR No.</th>       
+                                                	<th>Action</th>                                     	                                             	                               	
+                                                </tr>										
+                                        	</thead>   
+                                        	<tbody>
+                                        	<?php 
+                                        	$li_total = 0;
+                                        	if(!empty($arr_data_li)){
+                                        	    foreach ($arr_data_li as $data){
+                                        	        $li_total += $data['amount'];
+                                        	        ?>
+                                        	<tr>
+                                                <td class="text-left"><?=dateFormatRev($data['bill_date'])?></td>
+                                                <td class="text-left"><?=$data['inv_no']?></td>
+    											<td class="text-left"><?=dateFormatRev($data['payment_due_date'])?></td>
+                                                <td class="text-left"><?=$data['description']?></td>  
+                                                <td class="text-right"><?=number_format($data['amount'],2)?></td>                                          
+                                                <td class="text-center"><?=strtoupper($data['payment_mode'])?></td>  
+                                                <td class="text-center"><?=$data['or_no']?></td> 
+                                                <td class="text-center">
+                                                	<span onclick="window.open('add_late_interest_charge.php?id=<?=$acc_id?>&item_id=<?=$data['id']?>')"><i class="fa fa-edit"></i></span>
+                                                	<span id="<?=$data['id']?>" data-toggle="modal" data="bill_management_late_interest_charge" class="delete_data" data-target="#deleteItem"><i class="fas fa-trash-alt"></i></span>
+                                                </td>                                                                                                       
+                                            </tr>
+                                        	<?php }
+                                        	}?>
+                                        	</tbody>  
+                                        	<tfoot>
+                                        	<?php if(!empty($arr_data_wb)){?>
+                                        	<tr>
+                                                <th class="text-center" colspan="4">TOTAL</th>
+                                                <th class="text-right"><?=number_format($li_total,2)?></th>
+                                                <th>&nbsp;</th>
+                                                <th>&nbsp;</th>                                                                                      
+                                            </tr>
+                                            <?php }?>
+                                        	</tfoot>                                            	                                                                                                      
+                                        </table>
+									</div>
+                                        <div class="tab" id="tab4">
+                                            <div class="col-sm-12">  
+                                        		<button type="button" class="btn btn-sm btn-primary button_add" onclick="window.open('add_quit_rent_billing.php?id=<?=$acc_id?>')">Add New Record</button>                                                                                     	
                                             </div>
+                                            <br>
+                                            <table id="table-quit-rent" class="table table-striped table-bordered">                                                
+                                            <thead>                                            
+                                                <tr>
+                                                	<th>Invoice Date</th>
+                                                	<th>Invoice No.</th>                                                    	
+                                                	<th>Amount (RM)</th>
+                                                	<th>Payment Mode</th>
+                                                	<th>Due Date</th>
+                                                	<th>Payment Date</th>
+                                                	<th>Received Date</th>         
+                                                	<th>OR No.</th>     
+                                                	<th>Remarks</th>   
+                                                	<th>Action</th>                                         	                                             	                               	
+                                                </tr>										
+                                        	</thead>   
+                                        	<tbody>
+                                        	<?php 
+                                        	$total_qr = 0;
+                                        	if(!empty($arr_data_qr)){
+                                        	    foreach ($arr_data_qr as $data){
+                                        	        $total_qr += $data['payment'];?>
+                                        	<tr>
+                                                <td class="text-left"><?=dateFormatRev($data['invoice_date'])?></td>
+                                                <td class="text-center"><?=strtoupper($data['inv_no'])?></td>
+    											<td class="text-right"><?=number_format($data['payment'],2)?></td>
+                                                <td class="text-right"><?=strtoupper($data['payment_mode'])?></td>  
+                                                <td class="text-center"><?=dateFormatRev($data['due_date'])?></td>                                          
+                                                <td class="text-center"><?=dateFormatRev($data['date_paid'])?></td>  
+                                                <td class="text-center"><?=dateFormatRev($data['date_received'])?></td>                                
+                                                <td class="text-center"><?=strtoupper($data['or_no'])?></td>         
+                                                <td class="text-center"><?=$data['remarks']?></td>  
+                                                <td class="text-center">
+                                                	<span onclick="window.open('add_quit_rent_billing.php?id=<?=$acc_id?>&item_id=<?=$data['id']?>')"><i class="fa fa-edit"></i></span>
+                                                	<span id="<?=$data['id']?>" data-toggle="modal" data="bill_management_quit_rent" class="delete_data" data-target="#deleteItem"><i class="fas fa-trash-alt"></i></span>
+                                                </td>                                                                               
+                                            </tr>
+                                        	<?php }
+                                        	}?>
+                                        	</tbody>  
+                                        	<tfoot>
+                                        	<?php if(!empty($arr_data_qr)){?>
+                                        	<tr>
+                                                <th colspan="2" class="text-center">TOTAL</th>
+    											<th class="text-right"><?=number_format($total_qr,2)?></th>
+                                                <th class="text-center">&nbsp;</th>
+                                                <th class="text-center">&nbsp;</th>
+                                                <th class="text-center">&nbsp;</th>
+                                                <th class="text-right">&nbsp;</th>     
+                                                <th class="text-right">&nbsp;</th>     
+                                                <th class="text-right">&nbsp;</th>                                                                                      
+                                            </tr>
+                                            <?php }?>                                                
+                                        	</tfoot>                                            	                                                                                                      
+                                        </table>
+									</div>
+                                    <div class="tab" id="tab5">
+                                        <div class="col-sm-12">  
+                                    		<button type="button" class="btn btn-sm btn-primary button_add" onclick="window.open('add_premium_insurance.php?id=<?=$acc_id?>')">Add New Record</button>                                                                                     	
                                         </div>
-                                        <div class="tab-pane fade" id="custom-nav-insurance" role="tabpanel" aria-labelledby="custom-nav-insurance-tab">
-                                        	<div class="content">
-                                            	<br>
-                                                <div class="col-sm-12">  
-                                            		<button type="button" class="btn btn-sm btn-primary button_add" onclick="window.open('add_premium_insurance.php?id=<?=$acc_id?>')">Add New Record</button>                                                                                     	
-                                                </div>
-                                                <br>
-                                                <table id="table-insurance" class="table table-striped table-bordered">                                                
-                                                <thead>                                            
-                                                    <tr>
-                                                    	<th>Premium Date</th>
-                                                    	<th>Invoice No.</th>
-                                                    	<th>Description</th>                                                    	
-                                                    	<th>Amount (RM)</th>
-                                                    	<th>Payment Mode</th>                                                    	
-                                                    	<th>Payment Date</th>                                                    	       
-                                                    	<th>OR No.</th>                                                         	                                            	                                             	                               	
-                                                    </tr>										
-                                            	</thead>   
-                                            	<tbody>
-                                            	<?php 
-                                            	if(!empty($arr_data_ip)){
-                                            	    $total_ip = 0;
-                                            	    foreach ($arr_data_ip as $data){
-                                            	        $total_ip += $data['payment'];
-                                            	        ?>
-                                            	<tr>
-                                                    <td class="text-left"><?=$data['date_from']."~".$data['date_to']?></td>
-                                                    <td class="text-left"><?=$data['invoice_no']?></td>
-        											<td class="text-left"><?=$data['description']?></td>
-                                                    <td class="text-right"><?=number_format($data['payment'],2)?></td>  
-                                                    <td class="text-center"><?=strtoupper($data['payment_mode'])?></td>                                          
-                                                    <td class="text-center"><?=$data['date_paid']?></td>                                                                                  
-                                                    <td class="text-center"><?=$data['or_no']?></td>                                                                                                                                             
-                                                </tr>
-                                            	<?php }
-                                            	}?>
-                                            	</tbody>  
-                                            	<tfoot>
-                                            	<?php if(!empty($arr_data_ip)){?>
-                                            	<tr>
-                                                    <th colspan="3" class="text-center">TOTAL</th>
-                                                    <th class="text-right"><?=number_format($total_ip,2)?></th>
-                                                    <th>&nbsp;</th>
-                                                    <th>&nbsp;</th>
-                                                    <th>&nbsp;</th>                                                                                                                                               
-                                                </tr>
-                                                <?php }?>                                                
-                                            	</tfoot>                                            	                                                                                                      
-                                            </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>                           	
-                            	                                                                                                            
-                          	 
+                                        <br>
+                                        <table id="table-insurance" class="table table-striped table-bordered">                                                
+                                        <thead>                                            
+                                            <tr>
+                                            	<th>Premium Date</th>
+                                            	<th>Invoice No.</th>
+                                            	<th>Description</th>                                                    	
+                                            	<th>Amount (RM)</th>
+                                            	<th>Payment Mode</th>                                                    	
+                                            	<th>Payment Date</th>                                                    	       
+                                            	<th>OR No.</th>  
+                                            	<th>Action</th>                                                         	                                            	                                             	                               	
+                                            </tr>										
+                                    	</thead>   
+                                    	<tbody>
+                                    	<?php 
+                                    	if(!empty($arr_data_ip)){
+                                    	    $total_ip = 0;
+                                    	    foreach ($arr_data_ip as $data){
+                                    	        $total_ip += $data['payment'];
+                                    	        ?>
+                                    	<tr>
+                                            <td class="text-left"><?=$data['date_from']."~".$data['date_to']?></td>
+                                            <td class="text-left"><?=$data['invoice_no']?></td>
+											<td class="text-left"><?=$data['description']?></td>
+                                            <td class="text-right"><?=number_format($data['payment'],2)?></td>  
+                                            <td class="text-center"><?=strtoupper($data['payment_mode'])?></td>                                          
+                                            <td class="text-center"><?=$data['date_paid']?></td>                                                                                  
+                                            <td class="text-center"><?=$data['or_no']?></td>    
+                                            <td class="text-center">
+                                            	<span onclick="window.open('add_premium_insurance.php?id=<?=$acc_id?>&item_id=<?=$data['id']?>')"><i class="fa fa-edit"></i></span>
+                                            	<span id="<?=$data['id']?>" data-toggle="modal" data="bill_management_insurance" class="delete_data" data-target="#deleteItem"><i class="fas fa-trash-alt"></i></span>
+                                            </td>                                                                                                                                             
+                                        </tr>
+                                    	<?php }
+                                    	}?>
+                                    	</tbody>  
+                                    	<tfoot>
+                                    	<?php if(!empty($arr_data_ip)){?>
+                                    	<tr>
+                                            <th colspan="3" class="text-center">TOTAL</th>
+                                            <th class="text-right"><?=number_format($total_ip,2)?></th>
+                                            <th>&nbsp;</th>
+                                            <th>&nbsp;</th>
+                                            <th>&nbsp;</th>   
+                                            <th>&nbsp;</th>                                                                                                                                              
+                                        </tr>
+                                        <?php }?>                                                
+                                    	</tfoot>                                            	                                                                                                      
+                                    </table>
+								</div>
+								</div>
+                                </div>                           	                            	                                                                                                                                      	 
                            	</div> 
                            	<br>                      
                         </div>
@@ -448,135 +456,27 @@
             </div><!-- .animated -->
         </div><!-- .content -->
         </div>
-        <!-- Modal add new mf -->
-        <div class="modal fade" id="addManagementFee">
-            <div class="modal-dialog modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                    <h4 class="modal-title">Add New</h4>
+        <div class="modal fade" id="deleteItem">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticModalLabel">Delete Item</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
                 <div class="modal-body">
-                    <form role="form" method="POST" action="" id="add_form_mf">  
-                    <input type="hidden" id="acc_id" name="acc_id" value="">    
-                    <div class="form-group row col-sm-12">                    	
-                    	<div class="col-sm-6">
-                            <label for="payment_date_mf" class=" form-control-label"><small class="form-text text-muted">Payment date</small></label>                                            
-                            <div class="input-group">
-                                <input id="payment_date_mf" name="payment_date_mf" class="form-control" autocomplete="off">
-                                <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
-                            </div>  
-                        </div>       
-                        <div class="col-sm-6">
-                            <label for="received_date_mf" class=" form-control-label"><small class="form-text text-muted">Received date</small></label>                                            
-                            <div class="input-group">
-                                <input id="received_date_mf" name="received_date_mf" class="form-control" autocomplete="off">
-                                <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
-                            </div>  
-                        </div>
-                    </div>                                                    
-                    <div class="row form-group col-sm-12">
-                        <div class="col-sm-6">
-                            <label for="invoice_no_mf" class=" form-control-label"><small class="form-text text-muted">Invoice No.</small></label>
-                            <input type="text" id="invoice_no_mf" name="invoice_no_mf" class="form-control">
-                        </div>
-                        <div class="col-sm-6">
-                            <label for="description_mf" class=" form-control-label"><small class="form-text text-muted">Description</small></label>
-                            <textarea id="description_mf" name="description_mf" class="form-control"></textarea>
-                        </div>
-                    </div>
-                    <div class="row form-group col-sm-12">
-                        <div class="col-sm-6">
-                            <label for="payment_mf" class=" form-control-label"><small class="form-text text-muted">Payment Amount (RM)</small></label>
-                            <input type="text" id="payment_mf" name="payment_mf" class="form-control">
-                        </div>        
-                        <div class="col-sm-6">
-                            <label for="payment_mode_mf" class=" form-control-label"><small class="form-text text-muted">Payment Mode</small></label>
-                            <input type="text" id="payment_mode_mf" name="payment_mode_mf" class="form-control">
-                        </div>
-                    </div>
-                    <div class="row form-group col-sm-12">  
-                    	<div class="col-sm-6">
-                            <label for="cheque_no_mf" class=" form-control-label"><small class="form-text text-muted">Cheque No.</small></label>
-                            <input type="text" id="cheque_no_mf" name="cheque_no_mf"class="form-control">
-                        </div>                                   	
-                        <div class="col-sm-6">
-                            <label for="or_no_mf" class=" form-control-label"><small class="form-text text-muted">Official Receipt No.</small></label>
-                            <input type="text" id="or_no_mf" name="or_no_mf" class="form-control">
-                        </div>        
-                    </div>    
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary save_data ">Save</button>
-                    </div>
-                    </form>
-                </div>
-                </div>
-            </div>
-        </div>
-    	<div class="modal fade" id="addWaterBill">
-            <div class="modal-dialog modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                    <h4 class="modal-title">Add New</h4>
-                </div>
-                <div class="modal-body">
-                    <form role="form" method="POST" action="" id="add_form_wb">  
-                    <input type="hidden" id="acc_id" name="acc_id" value="">    
-                    <div class="form-group row col-sm-12">                    	
-                    	<div class="col-sm-6">
-                            <label for="payment_date_mf" class=" form-control-label"><small class="form-text text-muted">Payment date</small></label>                                            
-                            <div class="input-group">
-                                <input id="payment_date_mf" name="payment_date_mf" class="form-control" autocomplete="off">
-                                <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
-                            </div>  
-                        </div>       
-                        <div class="col-sm-6">
-                            <label for="received_date_mf" class=" form-control-label"><small class="form-text text-muted">Received date</small></label>                                            
-                            <div class="input-group">
-                                <input id="received_date_mf" name="received_date_mf" class="form-control" autocomplete="off">
-                                <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
-                            </div>  
-                        </div>
-                    </div>                                                    
-                    <div class="row form-group col-sm-12">
-                        <div class="col-sm-6">
-                            <label for="invoice_no_mf" class=" form-control-label"><small class="form-text text-muted">Invoice No.</small></label>
-                            <input type="text" id="invoice_no_mf" name="invoice_no_mf" class="form-control">
-                        </div>
-                        <div class="col-sm-6">
-                            <label for="description_mf" class=" form-control-label"><small class="form-text text-muted">Description</small></label>
-                            <textarea id="description_mf" name="description_mf" class="form-control"></textarea>
-                        </div>
-                    </div>
-                    <div class="row form-group col-sm-12">
-                        <div class="col-sm-6">
-                            <label for="payment_mf" class=" form-control-label"><small class="form-text text-muted">Payment Amount (RM)</small></label>
-                            <input type="text" id="payment_mf" name="payment_mf" class="form-control">
-                        </div>        
-                        <div class="col-sm-6">
-                            <label for="payment_mode_mf" class=" form-control-label"><small class="form-text text-muted">Payment Mode</small></label>
-                            <input type="text" id="payment_mode_mf" name="payment_mode_mf" class="form-control">
-                        </div>
-                    </div>
-                    <div class="row form-group col-sm-12">  
-                    	<div class="col-sm-6">
-                            <label for="cheque_no_mf" class=" form-control-label"><small class="form-text text-muted">Cheque No.</small></label>
-                            <input type="text" id="cheque_no_mf" name="cheque_no_mf"class="form-control">
-                        </div>                                   	
-                        <div class="col-sm-6">
-                            <label for="or_no_mf" class=" form-control-label"><small class="form-text text-muted">Official Receipt No.</small></label>
-                            <input type="text" id="or_no_mf" name="or_no_mf" class="form-control">
-                        </div>        
-                    </div>    
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary save_data ">Save</button>
-                    </div>
-                    </form>
-                </div>
-                </div>
-            </div>
-        </div>
+                    <p>
+                       Are you sure you want to delete?
+                   </p>
+               </div>
+               <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" id="delete_record" class="btn btn-primary">Confirm</button>
+            	</div>
+        	</div>
+    	</div>
+    </div>
     <div class="clearfix"></div>
     <!-- Footer -->
     <?PHP include('../footer.php')?>
@@ -597,6 +497,7 @@
     <script src="../assets/js/lib/data-table/buttons.colVis.min.js"></script>
     <script src="../assets/js/init/datatables-init.js"></script>
     <script src="../assets/js/script/bootstrap-datepicker.min.js"></script>
+    <script src="../assets/js/jquery-ui.js"></script>
     <script src="../assets/js/select2.min.js"></script>
 	
 	<script type="text/javascript">
@@ -605,14 +506,34 @@
 		var acc_id = '<?=$id?>';
 			
         $('#table-mfee, #table-water-bill,#table-late-interest,#table-quit-rent,#table-insurance').DataTable({
-        	"bInfo" : false,
-        	"bLengthChange": false,
-        	"searching": false
-            });
-        $('#add_form_mf').on("submit", function(event){  
-            event.preventDefault();  
-             
+            "bInfo" : false,
+            "bLengthChange": false,
+            "searching": false
         });
+        $(document).on('click', '.delete_data', function(){
+        	var id = $(this).attr("id");
+        	var database = $(this).attr("data");
+        	
+        	$('#delete_record').data('id', id); //set the data attribute on the modal button
+        	$('#delete_record').data('database', database);
+        
+        });
+      	
+    	$( "#delete_record" ).click( function() {
+    		var ID = $(this).data('id');
+    		var DB = $(this).data('database');
+    		$.ajax({
+    			url:"management.ajax.php",
+    			method:"POST",    
+    			data:{action:'delete_account_details', id:ID, database:DB},
+    			success:function(data){	
+        			if(data){
+        				$('#deleteItem').modal('hide');		
+        				location.reload();		
+            		}  						    				
+    			}
+    		});
+    	});
 
         $('#payment_date_mf, #received_date_mf, #paid_date, #due_date').datepicker({
             format: "dd-mm-yyyy",
@@ -620,7 +541,19 @@
             orientation: "top left",
             todayHighlight: true
         });
-      
+
+        $(".tabs").tabs();
+        var currentTab = $('.ui-state-active a').index();
+        if(localStorage.getItem('activeTab') != null){
+        	 $('.tabs > ul > li:nth-child('+ (parseInt(localStorage.getItem('activeTab')) + 1)  +')').find('a').click();
+        }
+
+         $('.tabs > ul > li > a').click(function(e) {
+          var curTab = $('.ui-tabs-active');         
+          curTabIndex = curTab.index();          
+          localStorage.setItem('activeTab', curTabIndex);
+         });
+      	
         function isNumberKey(evt){
         	var charCode = (evt.which) ? evt.which : evt.keyCode;
         	if (charCode != 46 && charCode > 31 
@@ -636,6 +569,15 @@
         	return true;
         	return false;
         } 
+        //format to dd-mm-yy
+        function dateFormat(dates){
+            var date = new Date(dates);
+        	var day = date.getDate();
+    	  	var monthIndex = date.getMonth()+1;
+    	  	var year = date.getFullYear();
+
+    	  	return (day <= 9 ? '0' + day : day) + '-' + (monthIndex<=9 ? '0' + monthIndex : monthIndex) + '-' + year ;
+        }
     });
   </script>
 </body>
