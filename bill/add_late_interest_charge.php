@@ -5,7 +5,22 @@
 	global $conn_admin_db;
 	
 	$acc_id = isset($_GET['id']) ? $_GET['id'] : "";
+	$item_id = isset($_GET['item_id']) ? $_GET['item_id'] : "";
+	$header_title = !empty($item_id) ? "Edit Late Interest Charge" : "Add Late Interest Charge";
 	
+	$query = "SELECT * FROM bill_management_late_interest_charge WHERE id='$item_id'";
+	$result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
+	if(mysqli_num_rows($result) > 0){
+	    $row = mysqli_fetch_assoc($result);	    
+	    $bill_date = dateFormatRev($row['bill_date']);
+	    $payment_due_date = dateFormatRev($row['payment_due_date']);
+	    $invoice_no = $row['inv_no'];
+	    $description = $row['description'];
+	    $amount = $row['amount'];
+	    $payment_mode = $row['payment_mode'];
+	    $or_no = $row['or_no'];
+
+	}
 ?>
 
 <!doctype html>
@@ -72,7 +87,7 @@
 
 <body>
     <!--Left Panel -->
-	<?php  include('../assets/nav/leftNav.php')?>
+	<?php include('../assets/nav/leftNav.php')?>
     <!-- Right Panel -->
     <?php include('../assets/nav/rightNav.php')?>
     <!-- /#header -->
@@ -82,54 +97,55 @@
             <div class="animated fadeIn">
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="card">
+                        <div class="card" id="printableArea">
                             <div class="card-header">
-                                <strong class="card-title">Add Late Interest Charge</strong>
+                                <strong class="card-title"><?=$header_title?></strong>
                             </div>
                             <form id="add_late_interest_charge" role="form" action="" method="post">
                             <input type="hidden" id="acc_id" name="acc_id" class="form-control">
+                            <input type="hidden" id="item_id" name="item_id" class="form-control">
                                 <div class="card-body card-block">
                                     <div class="form-group row col-sm-12"> 
                                        	<div class="col-sm-4">
-                                            <label for="bill_date" class=" form-control-label"><small class="form-text text-muted">Bill Date</small></label>                                            
+                                            <label for="bill_date" class=" form-control-label"><small class="form-text text-muted">Bill Date <span class="color-red">*</span></small></label>                                            
                                             <div class="input-group">
-                                                <input id="bill_date" name="bill_date" class="form-control" autocomplete="off">
+                                                <input id="bill_date" name="bill_date" value="<?=$bill_date?>" class="form-control" autocomplete="off" required>
                                                 <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
                                             </div>   
                                         </div>
                                         <div class="col-sm-4">
-                                            <label for="invoice_no" class=" form-control-label"><small class="form-text text-muted">Invoice No.</small></label>                                            
+                                            <label for="invoice_no" class=" form-control-label"><small class="form-text text-muted">Invoice No. <span class="color-red">*</span></small></label>                                            
                                             <div class="input-group">
-                                                <input id="invoice_no" name="invoice_no" class="form-control" autocomplete="off">                                                
+                                                <input id="invoice_no" name="invoice_no" value="<?=$invoice_no?>" class="form-control" autocomplete="off" required>                                                
                                             </div>  
                                         </div>  
                                         <div class="col-sm-4">
                                             <label for="payment_due_date" class=" form-control-label"><small class="form-text text-muted">Payment due date</small></label>                                            
                                             <div class="input-group">
-                                                <input id="payment_due_date" name="payment_due_date" class="form-control" autocomplete="off">
+                                                <input id="payment_due_date" name="payment_due_date" value="<?=$payment_due_date?> "class="form-control" autocomplete="off" required>
                                                 <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
                                             </div>  
                                         </div>                                 
                                     </div>                                                                         
 									<div class="form-group row col-sm-12 date">										  
                                         <div class="col-sm-4">
-                                            <label for="charged_amt" class=" form-control-label"><small class="form-text text-muted">Amount (RM)</small></label>                                            
+                                            <label for="charged_amt" class=" form-control-label"><small class="form-text text-muted">Amount (RM) <span class="color-red">*</span></small></label>                                            
                                             <div class="input-group">
-                                                <input id="charged_amt" name="charged_amt" class="form-control" autocomplete="off">                                                
+                                                <input id="charged_amt" name="charged_amt" value="<?=$amount?>" class="form-control" autocomplete="off" required>                                                
                                             </div>  
                                         </div> 
                                         <div class="col-sm-4">
                                             <label for="payment_mode" class=" form-control-label"><small class="form-text text-muted">Payment Mode</small></label>                                            
                                             <select id="payment_mode" name="payment_mode" class="form-control">
                                         		<option value="">- Select -</option>
-                                        		<option value="cash">Cash</option>
-                                        		<option value="ibg">IBG</option>
+                                        		<option value="cash"<?php if($payment_mode == "cash") echo "selected"?>>Cash</option>
+                                        		<option value="ibg" <?php if($payment_mode == "ibg") echo "selected"?>>IBG</option>
                                         	</select>  
                                         </div> 
-                                        										<div class="col-sm-4">
-                                            <label for="or_no" class=" form-control-label"><small class="form-text text-muted">OR No.</small></label>                                            
+                                        <div class="col-sm-4">
+                                            <label for="or_no" class=" form-control-label"><small class="form-text text-muted">OR No. <span class="color-red">*</span></small></label>                                            
                                             <div class="input-group">
-                                                <input id="or_no" name="or_no" class="form-control" autocomplete="off">                                                
+                                                <input id="or_no" name="or_no" value="<?=$or_no?>" class="form-control" autocomplete="off" required>                                                
                                             </div>  
                                         </div>                                       
 									</div>   
@@ -138,12 +154,16 @@
                                         <div class="col-sm-4">
                                             <label for="description" class=" form-control-label"><small class="form-text text-muted">Description</small></label>                                            
                                             <div class="input-group">
-                                                <textarea id="description" name="description" class="form-control" autocomplete="off"></textarea>                                               
+                                                <textarea id="description" name="description" class="form-control" autocomplete="off"><?=$description?></textarea>                                               
                                             </div>  
                                         </div>
 									</div>                                                                                                                                 
                                     <div class="card-body">
+                                    <?php if(!empty($item_id)){?>
+                                    	<button type="submit" id="update" name="update" class="btn btn-primary">Update</button>
+                                    <?php }else{?>
                                         <button type="submit" id="save" name="save" class="btn btn-primary">Save</button>
+                                    <?php }?>
                                         <button type="button" id="cancel" name="cancel" data-dismiss="modal" class="btn btn-secondary">Cancel</button>
                                     </div>
                                 </div>
@@ -179,47 +199,26 @@
     <script src="../assets/js/script/bootstrap-datepicker.min.js"></script>
     <script src="../assets/js/select2.min.js"></script>
 	<script type="text/javascript">
-    $(document).ready(function() {  
-        
+    $(document).ready(function() {          
     	var acc_id = '<?=$acc_id?>';
-    	  	
+    	var item_id = '<?=$item_id?>';
         $('#add_late_interest_charge').on("submit", function(event){  
             event.preventDefault();  
-
             $('#acc_id').val(acc_id); 
-            
-            if($('#bill_date').val() == ""){  
-                alert("Bill date is required");  
-            }
-            else if($('#invoice_no').val() == ""){  
-                alert("Invoice number is required");  
-            }
-            else if($('#payment_due_date').val() == ""){  
-                alert("Payment due date is required");  
-            }
-            else if($('#charged_amt').val() == ""){  
-                alert("Charge amount is required");  
-            }
-            else if($('#or_no').val() == ""){  
-                alert("Official receipt number is required");  
-            }
-            else if($('#payment_mode').val() == ""){  
-                alert("Payment mode is required");  
-            }
-            else if($('#description').val() == ""){  
-                alert("Description is required");  
-            }
-            else{
-            	$.ajax({  
-                    url:"add_bill.ajax.php",  
-                    method:"POST",  
-                    data:{action:'add_late_interest_charge', data : $('#add_late_interest_charge').serialize()},  
-                    success:function(data){ 
-                        location.reload();                                                        	 
-                    }  
-                });
-            }                       
-                
+			$('#item_id').val(item_id);
+			var action = ( item_id !='' ) ? 'update_late_interest_charge' : 'add_late_interest_charge';
+			
+        	$.ajax({  
+                url:"add_bill.ajax.php",  
+                method:"POST",  
+                data:{action:action, data : $('#add_late_interest_charge').serialize()},  
+                success:function(data){ 
+                	if(data){
+						alert("Successfully added!");
+						window.location.replace("management_account_details.php?id="+acc_id);
+                	}                                                     	 
+                }  
+            });                
         });
 
         $('#bill_date, #payment_due_date').datepicker({
