@@ -62,7 +62,7 @@
                     	<form id="rq_form" method="POST" action="add_requisition.php">
                     	<input type="hidden" name="company_id" value="<?=$company_id?>"/>
                     	<input type="hidden" name="staff_claim_id" value="<?=$staff_claim_id?>"/>
-                        <div class="card">     
+                        <div class="card" id="printableArea">     
                            <div class="card-body"> 
                            		<div class="text-center">
                            			<span style="font-size: 18px;"><b><?=$company_name?></b></span><br>
@@ -80,25 +80,23 @@
 <!--                                 </div>  -->
                                 <div class="form-group row col-sm-12">
                                     <div class="col-sm-3">
-                                        <label for="recipient" class=" form-control-label"><small class="form-text text-muted">To</small></label>
-                                        <input type="text" id="recipient" name="recipient" placeholder="Recipient" class="form-control">
+                                        <label for="recipient" class=" form-control-label"><small class="form-text text-muted">To <span class="color-red">*</span></small></label>
+                                        <input type="text" id="recipient" name="recipient" placeholder="Recipient" class="form-control form-control-sm">
                                     </div>
                                     <div class="col-sm-3">
-                                        <label for="ncd" class=" form-control-label"><small class="form-text text-muted">Serial No.</small></label>
-                                        <input type="text" id="serial_no" name="serial_no" placeholder="Serial number" class="form-control">
+                                        <label for="ncd" class=" form-control-label"><small class="form-text text-muted">Serial No. <span class="color-red">*</span></small></label>
+                                        <input type="text" id="serial_no" name="serial_no" placeholder="Serial number" class="form-control form-control-sm">
                                     </div>
                                     <div class="col-sm-3">
-                                		<label for="date" class=" form-control-label"><small class="form-text text-muted">Date</small></label>
+                                		<label for="date" class=" form-control-label"><small class="form-text text-muted">Date <span class="color-red">*</span></small></label>
                                 		<div class="input-group">
-                                        	<input id="date" name="date" class="form-control" value="<?=date('d-m-Y')?>" autocomplete="off">
-                                        	<div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
+                                        	<input id="date" name="date" class="form-control form-control-sm" value="<?=date('d-m-Y')?>" autocomplete="off">                                        	
                                     	</div>
                                 	</div>
                                 	<div class="col-sm-3">
-                                		<label for="payment_date" class=" form-control-label"><small class="form-text text-muted">Payment Date</small></label>
+                                		<label for="payment_date" class=" form-control-label"><small class="form-text text-muted">Payment Date <span class="color-red">*</span></small></label>
                                 		<div class="input-group">
-                                        	<input id="payment_date" name="payment_date" class="form-control" autocomplete="off">
-                                        	<div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
+                                        	<input id="payment_date" name="payment_date" class="form-control form-control-sm" autocomplete="off">
                                     	</div>
                                 	</div>
                                 </div>       

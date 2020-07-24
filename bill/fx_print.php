@@ -5,14 +5,28 @@ require_once('../function.php');
 require_once('../check_login.php');
 global $conn_admin_db;
 
-$month_name = isset($_GET['month']) ? $_GET['month'] : "";
-$acc_id = isset($_GET['acc_id']) ? $_GET['acc_id'] : "";
-$year = isset($_GET['year']) ? $_GET['year'] : "";
-$date_added = isset($_GET['date_added']) ? $_GET['date_added'] : "";
+$company_id = isset($_GET['company_id']) ? $_GET['company_id'] : "";
+$date_start = isset($_GET['date_start']) ? $_GET['date_start'] : "";
+$date_end = isset($_GET['date_end']) ? $_GET['date_end'] : "";
+$payment_rq_id = isset($_GET['payment_rq_id']) ? $_GET['payment_rq_id'] : "";
 
-$company_name = itemName("SELECT name FROM company WHERE id IN(SELECT company FROM bill_fuji_xerox_account WHERE id='$acc_id')");
-$query = "SELECT  * FROM bill_fuji_xerox_invoice
-            WHERE acc_id='$acc_id' AND YEAR(invoice_date)='$year' AND MONTHNAME(invoice_date)='$month_name'";
+
+//get inv_id
+$str_inv_id = isset($_GET['inv_id']) ? $_GET['inv_id'] : "";
+$arr_inv_id = [];
+if(!empty($str_inv_id)){
+    $arr_inv_id = explode(",", $str_inv_id);    
+}
+
+$inv_id = implode("','", $arr_inv_id);
+$company_name = itemName("SELECT name FROM company WHERE id='$company_id'");
+if (!empty($payment_rq_id)) {
+    $query = "SELECT  * FROM bill_fuji_xerox_invoice WHERE payment_rq_id = '$payment_rq_id' ORDER BY invoice_date ASC";   
+    $date_today = itemName("SELECT payment_rq_date FROM bill_fx_payment_request_list WHERE id='$payment_rq_id'");
+}else{
+    $query = "SELECT  * FROM bill_fuji_xerox_invoice WHERE id IN ('".$inv_id."')";  
+    $date_today = date("Y-m-d");
+}
 
 $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
 $arr_data = [];
@@ -46,6 +60,11 @@ while($row = mysqli_fetch_assoc($result)){
         left:    0;
         bottom:   0;
     }
+/*     .checkbox{ */
+/*         position: absolute; */
+/*         left:    0; */
+/*         bottom:   0; */
+/*     } */
     .hideBorder {
         border: 0px;
         background-color: transparent;        
@@ -83,8 +102,17 @@ while($row = mysqli_fetch_assoc($result)){
         padding: 5px;
     }
     @media print {
-    .btn-print,.btn-goback{
+    .exclude_print{
         display:none;
+    }
+    .center {
+      margin: 0;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      -ms-transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%);
+      align-item:center;
     }
    </style>
 </head>
@@ -94,6 +122,7 @@ while($row = mysqli_fetch_assoc($result)){
 <?php include('../assets/nav/leftNav.php')?>
 <!-- Right Panel -->
 <?php include('../assets/nav/rightNav.php')?>
+
 <!-- /#header -->
 <!-- Content -->
 <div id="right-panel" class="right-panel">
@@ -119,7 +148,7 @@ while($row = mysqli_fetch_assoc($result)){
                             		<h5><b>Company : </b><b> <?=$company_name?></b></h5>
                             	</div>
                             	<div class="col-sm-6 text-right">
-                            		<h5><b> <?=dateFormatRev($date_added)?></b></h5>
+                            		<h5><b> <?=dateFormatRev($date_today)?></b></h5>
                             	</div>
                             </div>
                         </div>                                                                     				
@@ -149,7 +178,7 @@ while($row = mysqli_fetch_assoc($result)){
                                 <tr>
                                     <td class="text-center"><?=$count?>.</td>
                                     <td class="text-center"><?=$serial_no?></td>
-                                    <td class="text-center"><?=$data['invoice_date']?></td>
+                                    <td class="text-center"><?=dateFormatRev($data['invoice_date'])?></td>
                                     <td class="text-center"><?=$data['invoice_no']?></td>
                                     <td class="text-center"><?=$data['particular']?></td>
                                     <td class="text-right"><?=number_format($data['amount'],2)?></td>
@@ -212,11 +241,14 @@ while($row = mysqli_fetch_assoc($result)){
                         	<div class="col-sm-9"></div> 
                         	<div class="col-sm-3">Original Bill & Receipt Received.</div>                          	                     	
                         </div>  
-                        <br><br><br>      
-                        <div class="card-text text-sm-center">
-                        	<button class="btn-info btn btn-goback" onclick="goBack()">Back</button>
-                        	&nbsp;&nbsp;
-                        	<button class="btn-primary btn btn-print" onclick="printDiv('printStatement')">Print</button>  
+                        <br><br><br>  
+                        <div class="col-sm-12 exclude_print" style="text-align: center;">
+                			<button class="btn-info btn btn-goback">Back</button> 
+                			<button class="btn-primary btn btn-print">Print</button>
+                			<span class="checkbox">
+                				<input type="checkbox" name="confirm" value="Confirm?">&nbsp;&nbsp;Confirm?
+                			</span>
+                		</div>                            
                         </div>                                       
             		</div>
     			</div>
@@ -248,6 +280,39 @@ while($row = mysqli_fetch_assoc($result)){
 <script src="../assets/js/select2.min.js"></script>
 
 <script type="text/javascript">
+	$(document).ready(function(){
+		var str_inv_id = '<?=$str_inv_id?>'; //string of inv_id
+		var payment_rq_id = '<?=$payment_rq_id?>';
+
+		if(payment_rq_id !=''){
+			$('.checkbox').hide();
+		}
+		
+    	$('.btn-print').on("click", function(event){
+    		if($('input[type="checkbox"]').prop("checked") == true){    			     
+        		//update invoice status and payment rq date
+    	        $.ajax({  
+    	            url:"fx_bill.ajax.php",  
+    	            method:"POST",  
+    	            data:{action:'update_payment_request', str_inv_id : str_inv_id},  
+    	            success:function(data){   
+    	            	printDiv('printStatement');
+    	            }  
+    	       });        		
+    		}
+    		else if(payment_rq_id !=''){
+    			printDiv('printStatement');
+        	}
+    		else{
+				alert('Please Confirmed before printing!');
+    		}
+    	});
+
+    	$('.btn-goback').on("click",function(){
+    		window.close();	
+            return false;
+        });
+	});
 function printDiv(divName){
 	var printContents = document.getElementById(divName).innerHTML;
 	var originalContents = document.body.innerHTML;

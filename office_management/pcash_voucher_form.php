@@ -57,35 +57,34 @@
                 <div class="row">
                     <div class="col-md-12">
                     	<form id="cv_form" method="POST" action="add_cash_voucher.php">
-                        <div class="card">     
+                        <div class="card" id="printableArea">     
                            <div class="card-body"> 
                            		<div class="text-center">
-                           			<h5><b>PETTY CASH VOUCHER</b></h5>
+                           			<h5 style="font-size: 16px;"><b>PETTY CASH VOUCHER</b></h5>
                            		</div>  
                            		<br>               
                            		<div class="form-group row col-sm-12">
                            			<div class="col-sm-6">
-                           				<label for="company" class=" form-control-label"><small class="form-text text-muted">Company</small></label>
+                           				<label for="company" class=" form-control-label"><small class="form-text text-muted">Company <span class="color-red">*</span></small></label>
                            				<?php
-                                            $company = mysqli_query ( $conn_admin_db, "SELECT id, name FROM company");
-                                            db_select ($company, 'company_id', '','','-select-','form-control','');
+                                            $company = mysqli_query ( $conn_admin_db, "SELECT id, UPPER(name) FROM company WHERE status='1' ORDER BY name");
+                                            db_select ($company, 'company_id', '','','-select-','form-control form-control-sm','','required');
                                         ?>
                            			</div>  
                            			<div class="col-sm-6">
-                                        <label for="recipient" class=" form-control-label"><small class="form-text text-muted">Pay to</small></label>
-                                        <input type="text" id="recipient" name="recipient" placeholder="Pay to" class="form-control">
+                                        <label for="recipient" class=" form-control-label"><small class="form-text text-muted">Pay to <span class="color-red">*</span></small></label>
+                                        <input type="text" id="recipient" name="recipient" placeholder="Pay to" class="form-control form-control-sm" required>
                                     </div>                                  
                                 </div> 
                                 <div class="form-group row col-sm-12">                                    
                                     <div class="col-sm-6">
-                                        <label for="voucher_no" class=" form-control-label"><small class="form-text text-muted">Voucher No.</small></label>
-                                        <input type="text" id="voucher_no" name="voucher_no" placeholder="Voucher number" class="form-control">
+                                        <label for="voucher_no" class=" form-control-label"><small class="form-text text-muted">Voucher No. <span class="color-red">*</span></small></label>
+                                        <input type="text" id="voucher_no" name="voucher_no" placeholder="Voucher number" class="form-control form-control-sm" required>
                                     </div>
                                     <div class="col-sm-6">
-                                		<label for="date" class=" form-control-label"><small class="form-text text-muted">Date</small></label>
+                                		<label for="date" class=" form-control-label"><small class="form-text text-muted">Date <span class="color-red">*</span></small></label>
                                 		<div class="input-group">
-                                        	<input id="date" name="date" class="form-control" autocomplete="off">
-                                        	<div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
+                                        	<input id="date" name="date" class="form-control form-control-sm" autocomplete="off" required>
                                     	</div>
                                 	</div>
                                 </div>       

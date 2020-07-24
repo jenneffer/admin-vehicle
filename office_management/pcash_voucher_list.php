@@ -98,7 +98,7 @@
             <div class="animated fadeIn">
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="card">
+                        <div class="card" id="printableArea">
                         <form id="myform" enctype="multipart/form-data" method="post" action="">
                             <div class="card-header">
                                 <strong class="card-title">Cash Voucher List ( Unclaimed )</strong>
@@ -109,28 +109,28 @@
                     	            <label for="select_company" class="form-control-label"><small class="form-text text-muted">Company</small></label>                                       
                                         <?php
                                             $select_company = mysqli_query ( $conn_admin_db, "SELECT DISTINCT(company.id), code FROM company INNER JOIN om_pcash_voucher ON om_pcash_voucher.company_id = company.id WHERE status='1'");
-                                            db_select ($select_company, 'select_company', $select_c,'submit()','All Company','form-control','');
+                                            db_select ($select_company, 'select_company', $select_c,'submit()','All Company','form-control form-control-sm','');
                                         ?>                              
                                     </div>
                                     <div class="col-sm-2">
                                         <label for="date_start" class="form-control-label"><small class="form-text text-muted">Date Start</small></label>
                                         <div class="input-group">
-                                          <input type="text" id="date_start" name="date_start" class="form-control" value="<?=$date_start?>" autocomplete="off">
-                                          <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
+                                          <input type="text" id="date_start" name="date_start" class="form-control form-control-sm" value="<?=$date_start?>" autocomplete="off">
+                                         
                                         </div>                            
                                     </div>
                                     <div class="col-sm-2">
                                         <label for="date_end" class="form-control-label"><small class="form-text text-muted">Date End</small></label>
                                         <div class="input-group">
-                                          <input type="text" id="date_end" name="date_end" class="form-control" value="<?=$date_end?>" autocomplete="off">
-                                          <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
+                                          <input type="text" id="date_end" name="date_end" class="form-control form-control-sm" value="<?=$date_end?>" autocomplete="off">
+                                          
                                         </div>                             
                                     </div>
                                     <div class="col-sm-1">                                    	
-                                    	<button type="submit" class="btn btn-primary button_search ">Submit</button>
+                                    	<button type="submit" class="btn btn-sm btn-primary button_search ">Submit</button>
                                     </div>
                                     <div class="col-sm-2">                                    	
-                                    	<input type="button" class="btn btn-primary button_staff_claim" value="Generate Staff Claim"/>                                        	
+                                    	<input type="button" class="btn btn-sm btn-primary button_staff_claim" value="Generate Staff Claim"/>                                        	
                                     </div>
                                  </div>                                                                   
                             </div>   
@@ -153,6 +153,7 @@
                                     <?php 
                                     $count = 0;
                                     foreach ($cv_data as $data){
+                                        
                                         $count++;
                                         $status = $data['status'];
                                         $display = $data['status'] == 1 ? "none":"block";
@@ -177,11 +178,10 @@
                                             $desc[] = $item_data['particular'];
                                         }
                                         $particular = implode(", ", $desc);
+                                        $checkbox = ( $data['status'] == 1 ) ? "<input type='checkbox' name='cv_id[]' value=".$data['cv_id'].">" : '&nbsp;';
                                         ?>
                                         <tr>
-                                            <td>
-                                            	<input type="checkbox" name="cv_id[]" value="<?=$data['cv_id']?>">
-                                            </td>
+                                            <td><?=$checkbox?></td>
                                             <td><?=dateFormatRev($data['cv_date'])?></td>
                                             <td><?=$data['recipient']?></td>
                                             <td><?=$data['company_name']?></td>
@@ -242,7 +242,7 @@
         <div class="modal-dialog modal-sm" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="staticModalLabel">Confirm Request</h5>
+                    <h5 class="modal-title" id="staticModalLabel">Confirm Cash Voucher</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -367,7 +367,6 @@
 
         $( "#confirm_record" ).click( function() {
     		var ID = $(this).data('id');
-    		alert(ID);
     		$.ajax({
     			url:"pcash_voucher.ajax.php",
     			method:"POST",    

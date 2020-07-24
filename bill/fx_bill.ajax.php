@@ -23,7 +23,10 @@ $data = isset($_POST['data']) ? $_POST['data'] : "";
 $id = isset($_POST['id']) ? $_POST['id'] : "";
 $date_start = isset($_POST['date_start']) ? $_POST['date_start'] : date("01-m-Y");
 $date_end = isset($_POST['date_end']) ? $_POST['date_end'] : date("t-m-Y");
+$date_start_rq = isset($_POST['date_start_rq']) ? $_POST['date_start_rq'] : date("01-m-Y");
+$date_end_rq = isset($_POST['date_end_rq']) ? $_POST['date_end_rq'] : date("t-m-Y");
 $company = isset($_POST['company']) ? $_POST['company'] : "";
+$str_inv_id = isset($_POST['str_inv_id']) ? $_POST['str_inv_id'] : "";
 
 if( $action != "" ){
     switch ($action){
@@ -55,7 +58,7 @@ if( $action != "" ){
             break;
             
         case 'display_invoice_list':
-            display_invoice_list($date_start, $date_end);
+            display_invoice_list($date_start, $date_end, $company);
             break;
             
         case 'get_location':
@@ -66,9 +69,78 @@ if( $action != "" ){
             compare_data($data);
             break;
             
+        case 'update_payment_request':
+            update_payment_request($str_inv_id);
+            break;
+            
+        case 'payment_request_list':
+            payment_request_list($date_start, $date_end);
+            break;
         default:
             break;
     }
+}
+
+function payment_request_list($date_start, $date_end){
+    global $conn_admin_db;
+    $query = "SELECT bill_fx_payment_request_list.id AS id, company_id, acc_id, payment_rq_date, SUM(amount) AS amount FROM bill_fuji_xerox_invoice
+        INNER JOIN bill_fx_payment_request_list ON bill_fuji_xerox_invoice.payment_rq_id = bill_fx_payment_request_list.id 
+        WHERE payment_rq_date BETWEEN '".dateFormat($date_start)."' AND '".dateFormat($date_end)."'
+        GROUP BY bill_fx_payment_request_list.id"; 
+
+    $rst = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
+    $arr_result = array(
+        'sEcho' => 0,
+        'iTotalRecords' => 0,
+        'iTotalDisplayRecords' => 0,
+        'aaData' => array()
+    );
+    $total_found_rows = 0;
+    $data_monthly = [];
+    if ( mysqli_num_rows($rst) ){
+        while ($row = mysqli_fetch_assoc($rst)) {
+            $row_found = mysqli_fetch_row(mysqli_query($conn_admin_db,"SELECT FOUND_ROWS()"));
+            $total_found_rows = $row_found[0];
+            $company = itemName("SELECT name FROM company WHERE id='".$row['company_id']."'");  
+            $acc_no = itemName("SELECT acc_no FROM bill_fuji_xerox_account WHERE id='".$row['acc_id']."'");
+            $acc_no = '<a href="fx_print.php?company_id='.$row['company_id'].'&payment_rq_id='.$row['id'].'">'.$acc_no.'</a>';
+            $data = array(
+                $acc_no,
+                $company,
+                dateFormatRev($row['payment_rq_date']),
+                number_format($row['amount'],2)                
+            );
+            $data_monthly[] = $data;
+        }
+    }
+    $arr_result = array(
+        'sEcho' => 0,
+        'iTotalRecords' => $total_found_rows,
+        'iTotalDisplayRecords' => $total_found_rows,
+        'aaData' => $data_monthly
+    );
+    
+    echo json_encode($arr_result);
+}
+
+function update_payment_request($str_inv_id){
+    global $conn_admin_db;
+    $arr_inv_id = [];
+    
+    //insert into bill_fx_payment_request_list
+    $qry = "INSERT INTO bill_fx_payment_request_list SET payment_rq_date=NOW()";
+    $rst = mysqli_query($conn_admin_db, $qry)or die(mysqli_error($conn_admin_db));
+    //get the last id
+    $last_insert_id = mysqli_insert_id($conn_admin_db);
+    
+    if(!empty($str_inv_id)){
+        $arr_inv_id = explode(",", $str_inv_id);
+    }    
+    $inv_id = implode("','", $arr_inv_id);
+    
+    $query = "UPDATE bill_fuji_xerox_invoice SET status='1', payment_rq_id='$last_insert_id' WHERE id IN ('".$inv_id."')";
+    $result = mysqli_query($conn_admin_db, $query)or die(mysqli_error($conn_admin_db));
+    echo json_encode($result);
 }
 
 function get_fx_data_monthly_compare($year, $company, $account_no){
@@ -202,13 +274,16 @@ function get_location($company){
     echo json_encode($result);
 }
 
-function display_invoice_list($date_start, $date_end){
+function display_invoice_list($date_start, $date_end, $company_id){
     global $conn_admin_db;
-    $qry = "SELECT  MONTHNAME(date_added) AS month_name,YEAR(date_added) AS years,date_added, acc_id,company_id, invoice_date, SUM(amount) amount, serial_no FROM bill_fuji_xerox_invoice bfi
+    $qry = "SELECT bfi.id, company_id, invoice_date, invoice_no, particular, amount, serial_no, acc_no FROM bill_fuji_xerox_invoice bfi
             INNER JOIN bill_fuji_xerox_account bfa ON bfa.id = bfi.acc_id
-            WHERE date_added BETWEEN '".dateFormat($date_start)."' AND '".dateFormat($date_end)."'
-            GROUP BY company_id,month_name, years
-            ORDER BY date_added";
+            WHERE invoice_date BETWEEN '".dateFormat($date_start)."' AND '".dateFormat($date_end)."' AND bfi.status !='1'";
+    if(!empty($company_id)){
+        $qry .=" AND company_id='$company_id'";
+    }
+    
+    $qry .=" ORDER BY date_added";
 
     $rst = mysqli_query($conn_admin_db, $qry) or die(mysqli_error($conn_admin_db));
     $arr_result = array(
@@ -224,11 +299,16 @@ function display_invoice_list($date_start, $date_end){
             $row_found = mysqli_fetch_row(mysqli_query($conn_admin_db,"SELECT FOUND_ROWS()"));
             $total_found_rows = $row_found[0];
             $company = itemName("SELECT name FROM company WHERE id='".$row['company_id']."'");
-            $serial_no = '<a style="color:blue;" href="fx_print.php?month='.$row['month_name'].'&acc_id='.$row['acc_id'].'&year='.$row['years'].'&date_added='.$row['date_added'].'">'.$row['serial_no'].'</a>';
+            $checkbox = "<input type='checkbox' name='inv_id[]' value='".$row['id']."'>";
             $data = array(
-                $serial_no,
+                $checkbox,
                 $company,
-                number_format($row['amount'],2)                
+                $row['invoice_date'],
+                $row['invoice_no'],
+                $row['particular'],                
+                $row['serial_no'],
+                $row['acc_no'],
+                number_format($row['amount'],2),
             );
             $data_monthly[] = $data;
         }
@@ -271,9 +351,9 @@ function add_new_invoice($data){
         $remark = isset($param['remark_add']) ? $param['remark_add'] : "";
         $added_by = isset($_SESSION['cr_id']) ? $_SESSION['cr_id'] : "";
         
-        $query = "INSERT INTO bill_fuji_xerox_invoice (acc_id, company_id,invoice_date, date_added,payment,rq_date, invoice_no, particular, amount, remark, added_by)
-                VALUES ('$acc_id','$company_id', '$inv_date', NOW(), NOW(), '$inv_no','$particular', '$amount', '$remark','$added_by')";
-        
+        $query = "INSERT INTO bill_fuji_xerox_invoice (acc_id, company_id,invoice_date, date_added, invoice_no, particular, amount, remark, added_by)
+                VALUES ('$acc_id','$company_id', '$inv_date', NOW(), '$inv_no','$particular', '$amount', '$remark','$added_by')";
+
         $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
         
         echo json_encode($result);
@@ -300,7 +380,8 @@ function update_account($data){
                         location='$location'
                         WHERE id='$id'";
        
-       mysqli_query($conn_admin_db, $query_insert_telekom) or die(mysqli_error($conn_admin_db));   
+       $result = mysqli_query($conn_admin_db, $query_insert_telekom) or die(mysqli_error($conn_admin_db));   
+       echo json_encode($result);
    }
 }
 
@@ -336,8 +417,8 @@ function add_new_bill($data){
             fax = '$fax',
             total = '$total'";
         
-        mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
-    
+        $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
+        echo json_encode($result);
     }
     
     
@@ -361,7 +442,8 @@ function add_new_account($data){
                         remark='$remark',                        
                         location='$location'";
         
-        mysqli_query($conn_admin_db, $query_insert_telekom) or die(mysqli_error($conn_admin_db));              
+        $result = mysqli_query($conn_admin_db, $query_insert_telekom) or die(mysqli_error($conn_admin_db)); 
+        echo json_encode($result);
     }    
 }
 function retrieve_account($id){

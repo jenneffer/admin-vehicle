@@ -7,9 +7,6 @@ global $conn_admin_db;
 $year_select = isset($_POST['year_select']) ? $_POST['year_select'] : date("Y");
 $date_start = isset($_POST['date_start']) ? $_POST['date_start'] : date("01-m-Y");
 $date_end = isset($_POST['date_end']) ? $_POST['date_end'] : date("t-m-Y");
-$date_start_rq = isset($_POST['date_start_rq']) ? $_POST['date_start_rq'] : date("01-m-Y");
-$date_end_rq = isset($_POST['date_end_rq']) ? $_POST['date_end_rq'] : date("t-m-Y");
-$select_comp = isset($_POST['company_add']) ? $_POST['company_add'] : "";
 ?>
 
 <!doctype html><html class="no-js" lang="">
@@ -23,15 +20,15 @@ $select_comp = isset($_POST['company_add']) ? $_POST['company_add'] : "";
 	<?php include('../allCSS1.php')?>
    <style>
     .select2-selection__rendered {
-      margin: 2px;
+      margin: 5px;
     }
     .select2-selection__arrow {
-      margin: 2px;
+      margin: 5px;
     }
     .select2-container{ 
         width: 100% !important; 
     }
-    .button_search,.button_search_rq_list{
+    .button_search{
         position: absolute;
         left:    0;
         bottom:   0;
@@ -41,26 +38,7 @@ $select_comp = isset($_POST['company_add']) ? $_POST['company_add'] : "";
         left:    0;
         bottom:   0;
     }
-    .button_payment_rq{
-        position: absolute;
-        left:    0;
-        bottom:   0;
-    }
-    a:link {
-      color: blue;
-      background-color: transparent;
-      text-decoration: none;
-    }
-    a:visited {
-      color: #609;
-      background-color: transparent;
-      text-decoration: none;
-    }
-    a:hover {
-      color: red;
-      background-color: transparent;
-      text-decoration: underline;
-    }
+    
    </style>
 </head>
 
@@ -85,7 +63,6 @@ $select_comp = isset($_POST['company_add']) ? $_POST['company_add'] : "";
 							<ul>
 								<li id="t1"><a href="#tab1" class="tab1a">Fuji Xerox Account</a></li>
                                 <li id="t2"><a href="#tab2" class="tab2a">Invoice</a></li>
-                                <li id="t3"><a href="#tab3" class="tab3a">Payment Request List</a></li>
 							</ul>
 							<div class="tab-content">
     							<div class="tab active" id="tab1">
@@ -134,26 +111,14 @@ $select_comp = isset($_POST['company_add']) ? $_POST['company_add'] : "";
     							</div>
     							<div class="tab" id="tab2">  
         							<form action="" enctype="multipart/form-data" method="post">
-        								<div>
-        									<span class="color-red"> ** This is the list of unsettled payment request.</span>
-        								</div>
-                                        <div class="form-group row col-sm-12">                                            
+                                        <div class="form-group row col-sm-12">
                                             <div class="col-sm-3">
-                                                <label class=" form-control-label"><small class="form-text text-muted">Company</small></label>
-                                                <div>
-                                                    <?php
-                                                        $company = mysqli_query ( $conn_admin_db, "SELECT id, UPPER(name) FROM company WHERE id IN(SELECT company FROM bill_fuji_xerox_account WHERE status='1') ORDER BY name");
-                                                        db_select ($company, 'company_add', $select_comp,'submit()','All','form-control','','required');
-                                                    ?>
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-2">
                                                 <label for="date_start" class="form-control-label"><small class="form-text text-muted">Date Start</small></label>
                                                 <div class="input-group">
                                                   <input type="text" id="date_start" name="date_start" class="form-control form-control-sm" value="<?=$date_start?>" autocomplete="off">
                                                 </div>                            
                                             </div>
-                                            <div class="col-sm-2">
+                                            <div class="col-sm-3">
                                                 <label for="date_end" class="form-control-label"><small class="form-text text-muted">Date End</small></label>
                                                 <div class="input-group">
                                                   <input type="text" id="date_end" name="date_end" class="form-control form-control-sm" value="<?=$date_end?>" autocomplete="off">
@@ -165,72 +130,25 @@ $select_comp = isset($_POST['company_add']) ? $_POST['company_add'] : "";
                                             <div class="col-sm-2 text-right">
                                         		<button type="button" class="btn-sm btn btn-primary button_add_invoice" data-toggle="modal" data-target="#addInvoice">Add New Invoice</button>
                                         	</div>
-                                        	<div class="col-sm-2 text-right">
-                                        		<input type="button" class="btn btn-sm btn-primary button_payment_rq" value="Generate Payment Request"/>   
-                                        	</div>
                                         </div>
                             		</form>
                             		<table id="fj_invoice_table" class="table table-striped table-bordered">        
                                 		<thead>
-                                            <tr>       
-                                            	<th><input type="checkbox" name="selectAll" id="selectAll"></th>                                     	
-                                            	<th>Company</th>	
-                                            	<th>Invoice date</th>	
-                                            	<th>Invoice No.</th>
-                                            	<th>Particular</th>																			            									     
-            									<th>Serial No.</th>
-                                            	<th>Account No.</th>	  
-                                            	<th class="text-right">Amount (RM)</th> 							    																			
+                                            <tr>
+                                            	<th class="text-center">Serial No.</th>	
+                                            	<th>Company</th>																		
+            									<th class="text-right">Amount (RM)</th>        							    																			
                                             </tr>										
                                     	</thead>
                                     	<tbody>
                                     	</tbody>
                                     	<tfoot>
                                     		<tr>
-                                    			<th colspan="7" class="text-right"> Grand Total</th>
+                                    			<th colspan="2" class="text-right"> Grand Total</th>
                                     			<th></th>
                                     		</tr>
                                     	</tfoot>                                    
                                 	</table>      
-    							</div>
-    							<div class="tab" id="tab3">     
-        							<form action="" enctype="multipart/form-data" method="post">
-        								<div class="form-group row col-sm-12">  
-        									<div class="col-sm-2">
-                                                <label for="date_start" class="form-control-label"><small class="form-text text-muted">Date Start</small></label>
-                                                <div class="input-group">
-                                                  <input type="text" id="date_start_rq" name=date_start_rq class="form-control form-control-sm" value="<?=$date_start_rq?>" autocomplete="off">
-                                                </div>                            
-                                            </div>
-                                            <div class="col-sm-2">
-                                                <label for="date_end" class="form-control-label"><small class="form-text text-muted">Date End</small></label>
-                                                <div class="input-group">
-                                                  <input type="text" id="date_end_rq" name="date_end_rq" class="form-control form-control-sm" value="<?=$date_end_rq?>" autocomplete="off">
-                                                </div>                             
-                                            </div>
-                                            <div class="col-sm-1">                                    	
-                                            	<button type="button" class="btn-sm btn btn-primary button_search_rq_list">View</button>                                        	
-                                            </div>     
-        								</div>
-        							</form>   							
-                                	<table id="payment-request-table" class="table table-striped table-bordered">
-                                        <thead>
-                                            <tr>
-                                            	<th>Account No.</th>                                        
-        										<th>Company</th>	
-        										<th>Payment Request Date</th>
-        										<th>Amount (RM)</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>                                       
-                                        </tbody>
-                                        <tfoot>
-                                        	<tr>
-                                        		<th colspan="3" class="text-right">Grand Total</th>
-                                        		<th>&nbsp;</th>
-                                        	</tr>
-                                        </tfoot>
-                                    </table>    
     							</div>
 							</div>
 						</div>
@@ -468,15 +386,9 @@ $(document).ready(function() {
     var select3 = $("#company_add").select2({
         selectOnClose: true
     });
-    select3.data('select2').$selection.css('height', '31px');
+    select3.data('select2').$selection.css('height', '38px');
     select3.data('select2').$selection.css('border', '1px solid #ced4da');
 
-    var select_company = '<?=$select_comp?>';
-
-    $("#selectAll").click(function() {
-        $("input[type=checkbox]").prop("checked", $(this).prop("checked"));
-    });
-    
     $(".tabs").tabs();
     var currentTab = $('.ui-state-active a').index();
     if(localStorage.getItem('activeTab') != null){
@@ -577,8 +489,8 @@ $(document).ready(function() {
             data:{action:'add_new_invoice', data: $('#add_invoice').serialize()},  
             success:function(data){   
                 console.log(data)
-                 $('#editItem').modal('hide');                             
-                 location.reload();  
+//                  $('#editItem').modal('hide');                             
+//                  location.reload();  
             }  
        });  
     });
@@ -592,16 +504,8 @@ $(document).ready(function() {
     	var date_end = $(this).val();
     	$("#date_end").val(date_end);
 	});
-    $("#date_start_rq").change(function(){
-    	var date_start = $(this).val();
-    	$("#date_start_rq").val(date_start);
-	});
-    $("#date_end_rq").change(function(){
-    	var date_end = $(this).val();
-    	$("#date_end_rq").val(date_end);
-	});
 	    
-    $('#inv_date, #date_start, #date_end, #date_start_rq, #date_end_rq').datepicker({
+    $('#inv_date, #date_start, #date_end').datepicker({
         format: "dd-mm-yyyy",
         autoclose: true,
         orientation: "top left",
@@ -639,7 +543,7 @@ $(document).ready(function() {
      	"serverSide": true,
         "columnDefs": [
         	{
-                "targets": [7], // your case first column
+                "targets": [2], // your case first column
                 "className": "text-right", 
                 "render": $.fn.dataTable.render.number(',', '.', 2, '')               	                      	        	     
          	},
@@ -652,7 +556,7 @@ $(document).ready(function() {
     		var api = this.api(), data;
     		var numFormat = $.fn.dataTable.render.number( '\,', '.', 2, '' ).display;
     
-    		api.columns([7], { page: 'current'}).every(function() {
+    		api.columns([2], { page: 'current'}).every(function() {
     			var sum = this
     		    .data()
     		    .reduce(function(a, b) {
@@ -669,88 +573,27 @@ $(document).ready(function() {
             "type":"POST",       	
             "data" : function ( data ) {                
                 data.date_start = $("#date_start").val();
-                data.date_end = $("#date_end").val(); 
-                data.company = '<?=$select_comp?>'; 
+                data.date_end = $("#date_end").val();  
                 data.action = 'display_invoice_list';				
             }
         },
     });
 
-    var table_2 = $('#payment-request-table').DataTable({
-    	"ordering": false,
-        "paging": false,  
-        "searching" : false, 
-        "bInfo" : false,
-        "processing": true,
-     	"serverSide": true,
-        "columnDefs": [
-        	{
-                "targets": [3], // your case first column
-                "className": "text-right", 
-                "render": $.fn.dataTable.render.number(',', '.', 2, '')               	                      	        	     
-         	},
-         	{
-                "targets": [0], // your case first column
-                "className": "text-left"                          	                      	        	     
-         	}
-        ],	
-        "footerCallback": function( tfoot, data, start, end, display ) {
-    		var api = this.api(), data;
-    		var numFormat = $.fn.dataTable.render.number( '\,', '.', 2, '' ).display;
-    
-    		api.columns([3], { page: 'current'}).every(function() {
-    			var sum = this
-    		    .data()
-    		    .reduce(function(a, b) {
-    		    var x = parseFloat(a) || 0;
-    		    var y = parseFloat(b) || 0;
-    		    	return x + y;
-    		    }, 0);			
-    		       
-    		    $(this.footer()).html(numFormat(sum));
-    		}); 
-    	},
-        "ajax":{
-            "url": "fx_bill.ajax.php",    
-            "type":"POST",       	
-            "data" : function ( data ) {                
-                data.date_start = $("#date_start_rq").val();
-                data.date_end = $("#date_end_rq").val(); 
-                data.action = 'payment_request_list';				
-            }
-        },
-    });
-
-	$('.button_payment_rq').click(function(){
-		var inv_id = [];
-        $.each($("input[name='inv_id[]']:checked"), function(){            
-        	inv_id.push($(this).val());
-        });
-        //inv_id must not empty
-        
-        //alert("My favourite sports are: " + cv_id.join(", "));
-    	if(select_company != '' && inv_id.length != 0){
-    		window.open('fx_print.php?company_id=<?=$select_comp?>&date_start=<?=$date_start?>&date_end=<?=$date_end?>&inv_id='+inv_id);
-        }
-    	else if (inv_id === undefined || inv_id.length == 0) {
-            // array empty or does not exist
-            alert("Please select at least 1 invoice to proceed!");
-        }
-        else if (select_company == ''){
-			alert("Please select company name to generate payment request");
-        }		
-    });
-	
     $( ".button_search" ).click(function( event ) {
         table.clear();
         table.ajax.reload();
         table.draw();  		
     });	 
-	$( ".button_search_rq_list" ).click(function( event ) {
-		table_2.clear();
-		table_2.ajax.reload();
-		table_2.draw();  		
-    });	 
+
+//     var $previousTab = 0;
+//     var $backButtonUsed = false;
+//     $("#nav-tabContent").tabs(); 
+//     $("#nav-tabContent").bind("tabselect", function(event, ui){
+// 		if($backButtonUsed){
+
+// 		}
+// 	});
+    
     function isNumberKey(evt){
     	var charCode = (evt.which) ? evt.which : evt.keyCode;
     	if (charCode != 46 && charCode > 31 

@@ -81,43 +81,43 @@ $username = itemName("SELECT cr_name FROM credential WHERE cr_id='".$_SESSION['c
                     <form id="add_form">
                     <div class="form-group row col-sm-12">
                     	<div class="col-sm-6">
-                            <label for="invoice_no" class=" form-control-label"><small class="form-text text-muted">Invoice Number</small></label>
-                            <input type="text" id="invoice_no" name="invoice_no" placeholder="Enter invoice number" class="form-control">
+                            <label for="invoice_no" class=" form-control-label"><small class="form-text text-muted">Invoice Number <span class="color-red">*</span></small></label>
+                            <input type="text" id="invoice_no" name="invoice_no" placeholder="Enter invoice number" class="form-control form-control-sm" required>
                         </div>
                     </div>
                     <div class="form-group row col-sm-12">
                         <div class="col-sm-2">
-                        	<label for="date" class=" form-control-label"><small class="form-text text-muted">Date</small></label>     
-                        	<input type="text" id="date" class="form-control" name="date" autocomplete="off"/>  
+                        	<label for="date" class=" form-control-label"><small class="form-text text-muted">Date <span class="color-red">*</span></small></label>     
+                        	<input type="text" id="date" class="form-control form-control-sm" name="date" autocomplete="off" required/>  
                         </div>
                         <div class="col-sm-2">
-                        	<label for="airbill_no" class=" form-control-label"><small class="form-text text-muted">Airbill No.</small></label>     
-                        	<input type="text" class="form-control" id="airbill_no" name="airbill_no">
+                        	<label for="airbill_no" class=" form-control-label"><small class="form-text text-muted">Airbill No. <span class="color-red">*</span></small></label>     
+                        	<input type="text" class="form-control form-control-sm" id="airbill_no" name="airbill_no" required>
                         </div>
                         <div class="col-sm-2">
-                        	<label for="particular" class=" form-control-label"><small class="form-text text-muted">Particular</small></label>     
-                        	<input type="text" class="form-control" id="particular" name="particular">
+                        	<label for="particular" class=" form-control-label"><small class="form-text text-muted">Particular <span class="color-red">*</span></small></label>     
+                        	<input type="text" class="form-control form-control-sm" id="particular" name="particular" required>
                         </div>
                         <div class="col-sm-2">
-                        	<label for="company_id" class=" form-control-label"><small class="form-text text-muted">Company</small></label>     
+                        	<label for="company_id" class=" form-control-label"><small class="form-text text-muted">Company <span class="color-red">*</span></small></label>     
                         	<?php
-                                $company = mysqli_query ( $conn_admin_db, "SELECT id, UPPER(code) FROM company");
-                                db_select ($company, 'company_id', '','','-select-','form-control','');
+                                $company = mysqli_query ( $conn_admin_db, "SELECT id, UPPER(name) FROM company WHERE status='1' ORDER BY name");
+                                db_select ($company, 'company_id', '','','-select-','form-control form-control-sm','','required');
                             ?>
                         </div>
                         <div class="col-sm-2">
-                        	<label for="requested_by" class=" form-control-label"><small class="form-text text-muted">Requested by</small></label>     
-                        	<input type="text" class="form-control" id="requested_by" name="requested_by">
+                        	<label for="requested_by" class=" form-control-label"><small class="form-text text-muted">Requested by <span class="color-red">*</span></small></label>     
+                        	<input type="text" class="form-control form-control-sm" id="requested_by" name="requested_by" required>
                         </div>
                         <div class="col-sm-2">
-                        	<label for="charge" class=" form-control-label"><small class="form-text text-muted">Charge</small></label>     
-                        	<input type="text" class="form-control" id="charge" name="charge" onkeypress="return isNumberKey(event)">
+                        	<label for="charge" class=" form-control-label"><small class="form-text text-muted">Charge <span class="color-red">*</span></small></label>     
+                        	<input type="text" class="form-control form-control-sm" id="charge" name="charge" onkeypress="return isNumberKey(event)" required>
                         </div>                
                     </div>    
                     <div class="form-group row col-sm-12 text-right">
                     	<div class="col-sm-12">
                         	<label for="charge" class="form-control-label"><small class="form-text text-muted">&nbsp;</small></label>     
-                        	<input type="button" class=" btn add-row btn-info" value="Add Row">    
+                        	<input type="button" class=" btn btn-sm add-row btn-info" value="Add Row">    
                         </div>
                     </div>                                             				
                     <div class="col-sm-12">
@@ -278,11 +278,4 @@ $(document).ready(function() {
 });
 </script>
 </body>
-<style>
- #printableArea{ 
-     font-size:14px; 
-     margin:0px; 
-     padding:.5rem; 
-} 
-</style>
 </html>
