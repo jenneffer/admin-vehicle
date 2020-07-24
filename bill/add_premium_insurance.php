@@ -87,9 +87,9 @@
 
 <body>
     <!--Left Panel -->
-	<?php // include('../assets/nav/leftNav.php')?>
+	<?php include('../assets/nav/leftNav.php')?>
     <!-- Right Panel -->
-    <?php //include('../assets/nav/rightNav.php')?>
+    <?php include('../assets/nav/rightNav.php')?>
     <!-- /#header -->
     <!-- Content -->
         <div id="right-panel" class="right-panel">

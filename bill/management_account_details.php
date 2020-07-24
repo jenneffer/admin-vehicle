@@ -149,10 +149,7 @@
                                     </ul>
                                     <div class="tab-content">
                                         <div class="tab active" id="tab1">
-                                            <table id="table-mfee" class="table table-striped table-bordered">   
-                                            <div class="col-sm-12">   
-                                        		<button type="button" class="btn btn-sm btn-primary button_add" onclick="window.open('add_new_management.php?id=<?=$acc_id?>')"">Add New Record</button>                                                                                    	
-                                            </div>                                             
+                                            <table id="table-mfee" class="table table-striped table-bordered">                                               
                                                 <thead>                                            
                                                     <tr>
                                                     	<th>Month</th>
@@ -206,11 +203,7 @@
                                             	</tfoot>                                             	                                                                                                       
                                             </table>
                                         </div>
-                                        <div class="tab" id="tab2">
-                                            <div class="col-sm-12">  
-                                        		<button type="button" class="btn btn-sm btn-primary button_add" onclick="window.open('add_new_water_bill.php?id=<?=$acc_id?>')"">Add New Record</button>                                                                                     	
-                                            </div>
-                                            <br>
+                                        <div class="tab" id="tab2">                                            
                                             <table id="table-water-bill" class="table table-striped table-bordered">                                                
                                             <thead> 
                                             	<tr>
@@ -278,11 +271,7 @@
                                         	</tfoot>                                            	                                                                                                      
                                         </table>
 									</div>
-                                        <div class="tab" id="tab3">
-                                        	<div class="col-sm-12">  
-                                        		<button type="button" class="btn btn-sm btn-primary button_add" onclick="window.open('add_late_interest_charge.php?id=<?=$acc_id?>')">Add New Record</button>                                                                                     	
-                                            </div>
-                                            <br>
+                                        <div class="tab" id="tab3">                                        	
                                             <table id="table-late-interest" class="table table-striped table-bordered">                                                
                                             <thead>                                            
                                                 <tr>
@@ -331,11 +320,7 @@
                                         	</tfoot>                                            	                                                                                                      
                                         </table>
 									</div>
-                                        <div class="tab" id="tab4">
-                                            <div class="col-sm-12">  
-                                        		<button type="button" class="btn btn-sm btn-primary button_add" onclick="window.open('add_quit_rent_billing.php?id=<?=$acc_id?>')">Add New Record</button>                                                                                     	
-                                            </div>
-                                            <br>
+                                        <div class="tab" id="tab4">                                            
                                             <table id="table-quit-rent" class="table table-striped table-bordered">                                                
                                             <thead>                                            
                                                 <tr>
@@ -391,11 +376,7 @@
                                         	</tfoot>                                            	                                                                                                      
                                         </table>
 									</div>
-                                    <div class="tab" id="tab5">
-                                        <div class="col-sm-12">  
-                                    		<button type="button" class="btn btn-sm btn-primary button_add" onclick="window.open('add_premium_insurance.php?id=<?=$acc_id?>')">Add New Record</button>                                                                                     	
-                                        </div>
-                                        <br>
+                                    <div class="tab" id="tab5">                                        
                                         <table id="table-insurance" class="table table-striped table-bordered">                                                
                                         <thead>                                            
                                             <tr>
@@ -501,14 +482,137 @@
     <script src="../assets/js/select2.min.js"></script>
 	
 	<script type="text/javascript">
-    $(document).ready(function() {
-		
-		var acc_id = '<?=$id?>';
-			
-        $('#table-mfee, #table-water-bill,#table-late-interest,#table-quit-rent,#table-insurance').DataTable({
+    $(document).ready(function() {		
+		var acc_id = '<?=$id?>';			
+        $('#table-mfee').DataTable({
             "bInfo" : false,
             "bLengthChange": false,
-            "searching": false
+            "searching": false,
+            "dom": "lBtipr",
+            "buttons": {
+              "buttons": [
+                {
+                  text: "Add New Record",
+                  action: function(e, dt, node, config) {
+                    //trigger the bootstrap modal
+                      window.open('add_new_management.php?id=<?=$acc_id?>');
+                  }
+                }
+              ],
+              "dom": {
+                "button": {
+                  tag: "button",
+                  className: "btn btn-primary"
+                },
+                "buttonLiner": {
+                  tag: null
+                }
+              }
+            }
+        });
+        $('#table-water-bill').DataTable({
+            "bInfo" : false,
+            "bLengthChange": false,
+            "searching": false,
+            "dom": "lBtipr",
+            "buttons": {
+              "buttons": [
+                {
+                  text: "Add New Record",
+                  action: function(e, dt, node, config) {
+                    //trigger the bootstrap modal
+                      window.open('add_new_water_bill.php?id=<?=$acc_id?>');
+                  }
+                }
+              ],
+              "dom": {
+                "button": {
+                  tag: "button",
+                  className: "btn btn-primary"
+                },
+                "buttonLiner": {
+                  tag: null
+                }
+              }
+            }
+        });
+        $('#table-late-interest').DataTable({
+            "bInfo" : false,
+            "bLengthChange": false,
+            "searching": false,
+            "dom": "lBtipr",
+            "buttons": {
+              "buttons": [
+                {
+                  text: "Add New Record",
+                  action: function(e, dt, node, config) {
+                    //trigger the bootstrap modal
+                      window.open('add_late_interest_charge.php?id=<?=$acc_id?>');
+                  }
+                }
+              ],
+              "dom": {
+                "button": {
+                  tag: "button",
+                  className: "btn btn-primary"
+                },
+                "buttonLiner": {
+                  tag: null
+                }
+              }
+            }
+        });
+        $('#table-quit-rent').DataTable({
+            "bInfo" : false,
+            "bLengthChange": false,
+            "searching": false,
+            "dom": "lBtipr",
+            "buttons": {
+              "buttons": [
+                {
+                  text: "Add New Record",
+                  action: function(e, dt, node, config) {
+                    //trigger the bootstrap modal
+                      window.open('add_quit_rent_billing.php?id=<?=$acc_id?>');
+                  }
+                }
+              ],
+              "dom": {
+                "button": {
+                  tag: "button",
+                  className: "btn btn-primary"
+                },
+                "buttonLiner": {
+                  tag: null
+                }
+              }
+            }
+        });
+        $('#table-insurance').DataTable({
+            "bInfo" : false,
+            "bLengthChange": false,
+            "searching": false,
+            "dom": "lBtipr",
+            "buttons": {
+              "buttons": [
+                {
+                  text: "Add New Record",
+                  action: function(e, dt, node, config) {
+                    //trigger the bootstrap modal
+                      window.open('add_premium_insurance.php?id=<?=$acc_id?>');
+                  }
+                }
+              ],
+              "dom": {
+                "button": {
+                  tag: "button",
+                  className: "btn btn-primary"
+                },
+                "buttonLiner": {
+                  tag: null
+                }
+              }
+            }
         });
         $(document).on('click', '.delete_data', function(){
         	var id = $(this).attr("id");

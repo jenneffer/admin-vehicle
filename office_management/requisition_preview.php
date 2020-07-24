@@ -94,35 +94,35 @@
                                         <div>
                                             <?php
                                             $company = mysqli_query ( $conn_admin_db, "SELECT id, name FROM company");
-                                            db_select ($company, 'company_id', $company_id,'','-select-','form-control', '', $disabled);
+                                            db_select ($company, 'company_id', $company_id,'','-select-','form-control form-control-sm', '', $disabled);
                                         ?>
                                     </div>
                                     </div>
                                     <div class="col-sm-4">
                                     	<label for="to" class=" form-control-label"><small class="form-text text-muted">To</small></label>
-                                        <input type="text" id="to" name="to" value="<?=$recipient;?>" class="form-control" <?=$readonly?>>
+                                        <input type="text" id="to" name="to" value="<?=$recipient;?>" class="form-control form-control-sm" <?=$readonly?>>
                                     </div>
                                     <div class="col-sm-4">
                                     	<label for="prepared_by" class=" form-control-label"><small class="form-text text-muted">Prepared by</small></label>
-                                    	<input type="text" id="prepared_by" name="prepared_by" value="<?=strtoupper($username);?>" class="form-control" readonly>
+                                    	<input type="text" id="prepared_by" name="prepared_by" value="<?=strtoupper($username);?>" class="form-control form-control-sm" readonly>
                                     </div>
                                 </div>
                                 <div class="form-group row col-sm-12">                                	
                                     <div class="col-sm-4">
                                     	<label for="serial_no" class=" form-control-label"><small class="form-text text-muted">Serial No.</small></label>
-                                        <input type="text" id="serial_no" name="serial_no" value="<?=$serial_no;?>" class="form-control" <?=$readonly?>>
+                                        <input type="text" id="serial_no" name="serial_no" value="<?=$serial_no;?>" class="form-control form-control-sm" <?=$readonly?>>
                                     </div>
                                 	<div class="col-sm-4">
                                         <label for="date" class=" form-control-label"><small class="form-text text-muted">Date</small></label>
                                         <div class="input-group">
-                                            <input id="date" name="date" class="form-control" value="<?=$date?>" autocomplete="off" <?=$disabled?>>
+                                            <input id="date" name="date" class="form-control form-control-sm" value="<?=$date?>" autocomplete="off" <?=$disabled?>>
                                             <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
                                         </div>   
                                     </div>
                                     <div class="col-sm-4">
                                         <label for="paid_date" class=" form-control-label"><small class="form-text text-muted">Required to be paid on</small></label>
                                         <div class="input-group">
-                                            <input id="paid_date" name="paid_date" class="form-control" value="<?=$payment_date?>" autocomplete="off" <?=$disabled?>>
+                                            <input id="paid_date" name="paid_date" class="form-control form-control-sm" value="<?=$payment_date?>" autocomplete="off" <?=$disabled?>>
                                             <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
                                         </div>   
                                     </div>
