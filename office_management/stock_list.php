@@ -41,13 +41,12 @@
             <div class="animated fadeIn">
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="card">
+                        <div class="card" id="printableArea">
                             <div class="card-header">
                                 <strong class="card-title">List of Stock</strong>
                             </div>     
-                           <div class="card-body">
-                           <br>                            
-                            <button type="button" class="btn btn-primary mb-1 col-md-2" data-toggle="modal" data-target="#addItem">
+                           <div class="card-body">                                                    
+                            <button type="button" class="btn btn-sm btn-primary mb-1 col-md-2" data-toggle="modal" data-target="#addItem">
                                Add New 
 							</button>
                                 <table id="item-data-table" class="table table-striped table-bordered">
@@ -57,7 +56,7 @@
 											<th>Item</th>
 											<th>Stock In</th>
 											<th>Date added</th>
-											<th>&nbsp;</th>
+											<th class="text-center">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -76,7 +75,7 @@
                                                         <td><?=$item?></td>
                                                         <td><?=$row['stock_in']?></td>
                                                         <td><?=dateFormatRev($row['date_added'])?></td>
-                                                        <td>
+                                                        <td class="text-center">
                                                         	<span id="<?=$row['id']?>" data-toggle="modal" class="edit_data" data-target="#editItem"><i class="fa fa-edit"></i></span>
                                                         	<span id="<?=$row['id']?>" data-toggle="modal" class="delete_data" data-target="#deleteItem"><i class="fas fa-trash-alt"></i></span>
                                                         </td>

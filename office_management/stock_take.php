@@ -41,13 +41,12 @@ global $conn_admin_db;
             <div class="animated fadeIn">
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="card">
+                        <div class="card" id="printableArea">
                             <div class="card-header">
                                 <strong class="card-title">Stock Out</strong>
                             </div>     
-                           <div class="card-body">
-                           <br>                            
-                            <button type="button" class="btn btn-primary mb-1 col-md-2" data-toggle="modal" data-target="#addItem">
+                           <div class="card-body">                            
+                            <button type="button" class="btn btn-sm btn-primary mb-1 col-md-2" data-toggle="modal" data-target="#addItem">
                                Add New 
 							</button>
                                 <table id="item-data-table" class="table table-striped table-bordered">
@@ -59,7 +58,7 @@ global $conn_admin_db;
 											<th>Item</th>
 											<th>Quantity</th>
 											<th>Date</th>
-											<th>&nbsp;</th>
+											<th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -71,7 +70,7 @@ global $conn_admin_db;
                                             $sql_result = mysqli_query($conn_admin_db, $sql_query)or die(mysqli_error($conn_admin_db));
                                                 while($row = mysqli_fetch_array($sql_result)){ 
                                                     $count++;
-                                                    $department = itemName("SELECT department_code FROM stationary_department WHERE department_id='".$row['department_id']."'");
+                                                    $department = itemName("SELECT department_name FROM stationary_department WHERE department_id='".$row['department_id']."'");
                                                     $item = itemName("SELECT item_name FROM om_stock_item WHERE id='".$row['item_id']."'")
                                                     ?>
                                                     <tr>
@@ -81,7 +80,7 @@ global $conn_admin_db;
                                                         <td><?=$item?></td>
                                                         <td><?=$row['quantity']?></td>
                                                         <td><?=dateFormatRev($row['date_taken'])?></td>                                                        
-                                                        <td>
+                                                        <td class="text-center">
                                                         	<span id="<?=$row['id']?>" data-toggle="modal" class="edit_data" data-target="#editItem"><i class="fa fa-edit"></i></span>
                                                         	<span id="<?=$row['id']?>" data-toggle="modal" class="delete_data" data-target="#deleteItem"><i class="fas fa-trash-alt"></i></span>
                                                         </td>

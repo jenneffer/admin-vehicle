@@ -261,7 +261,7 @@ $html_year_select = ob_get_clean();
        				    $(this.footer()).html(numFormat(sum));
        				}); 
         			},
-             'columnDefs': [
+             "columnDefs": [
            	  {
            	      "targets": [3,4,5,6,7,8,9,10,11,12,13,14,15], // your case first column
            	      "className": "text-right", 

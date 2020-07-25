@@ -46,7 +46,7 @@
                                 <strong class="card-title">Add deposit</strong>
                             </div>     
                            <div class="card-body">                          
-                            <button type="button" class="btn btn-primary mb-1 col-md-2" data-toggle="modal" data-target="#addItem">
+                            <button type="button" class="btn btn-sm btn-primary mb-1 col-md-2" data-toggle="modal" data-target="#addItem">
                                Add New 
 							</button>
                                 <table id="item-data-table" class="table table-striped table-bordered">

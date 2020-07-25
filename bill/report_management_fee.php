@@ -4,19 +4,16 @@ require_once('../function.php');
 require_once('../check_login.php');
 global $conn_admin_db;
 
-$select_account = isset($_POST['acc_no']) ? $_POST['acc_no'] : "";
+$select_company = isset($_POST['company']) ? $_POST['company'] : "";
 $year_select = isset($_POST['year_select']) ? $_POST['year_select'] : date("Y");
 ob_start();
-selectYear('year_select',$year_select,'','','form-control','','');
+selectYear('year_select',$year_select,'submit()','','form-control form-control-sm','','');
 $html_year_select = ob_get_clean();
 
 ?>
 
 <!doctype html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang=""> <!--<![endif]-->
+<html class="no-js" lang="">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -51,7 +48,7 @@ $html_year_select = ob_get_clean();
                 <div class="row">
 
                     <div class="col-md-12">
-                        <div class="card">
+                        <div class="card" id="printableArea">
                             <div class="card-header">
                                 <strong class="card-title">Management Fee</strong>
                             </div>
@@ -59,10 +56,10 @@ $html_year_select = ob_get_clean();
                                 <form id="myform" enctype="multipart/form-data" method="post" action="">                	                   
                     	            <div class="form-group row col-sm-12">
                                         <div class="col-sm-3">
-                                            <label for="acc_no" class="form-control-label"><small class="form-text text-muted">Account No.</small></label>
+                                            <label for="acc_no" class="form-control-label"><small class="form-text text-muted">Company</small></label>
                                             <?php
-                                                $management_acc = mysqli_query ( $conn_admin_db, "SELECT acc_id , CONCAT((SELECT c.code FROM company c WHERE c.id = bill_account_setup.company_id),' - ',bill_account_setup.owner_ref, bill_account_setup.unit_no) AS comp_acc FROM bill_account_setup WHERE bill_type='6'");
-                                                db_select ($management_acc, 'acc_no', $select_account,'','-select-','form-control','');
+                                                $company = mysqli_query ( $conn_admin_db, "SELECT id , UPPER(name) FROM company WHERE status='1' ORDER BY name");
+                                                db_select ($company, 'company', $select_company,'submit()','All','form-control form-control-sm','');
                                             ?>                           
                                         </div>
                                         <div class="col-sm-2">
@@ -70,30 +67,54 @@ $html_year_select = ob_get_clean();
                                         	<?=$html_year_select;?>
                                         </div>
                                         <div class="col-sm-4">                                    	
-                                        	<button type="submit" class="btn btn-primary button_search ">Submit</button>
+                                        	<button type="submit" class="btn btn-sm btn-primary button_search ">View</button>
                                         </div>
                                      </div>    
                                 </form>   
                             </div>
                             <hr>
                             <div class="card-body">
-                                <table id="sesb_table" class="table table-striped table-bordered">
+                                <table id="management_fee" class="table table-striped table-bordered">
                                     <thead>
                                         <tr>
-                                        	<th>Month</th>
-                                        	<th>Reference No.</th>
-                                        	<th>Description</th>
-                                        	<th>Payment (RM)</th>
-                                        	<th>Insurance Premium</th>
-                                        	<th>Interest Charge</th>    
-                                        	<th>Payment Date</th>
-                                        	<th>Payment Mode</th>
-                                        	<th> OR No.</th>
-                                        	<th>Recieved Date</th>                                     	
-                                        </tr>										
+                                       		<th>Account No.</th>
+                                       		<th>Company</th>
+                                       		<th>Owner</th>
+                        					<th scope='col'>Jan</th>
+                                            <th scope='col'>Feb</th>
+                                            <th scope='col'>Mar</th>
+                                            <th scope='col'>Apr</th>
+                                            <th scope='col'>May</th>
+                                            <th scope='col'>Jun</th>
+                                            <th scope='col'>Jul</th>
+                                            <th scope='col'>Aug</th>
+                                            <th scope='col'>Sep</th>
+                                            <th scope='col'>Oct</th>
+                                            <th scope='col'>Nov</th>
+                                            <th scope='col'>Dec</th>
+											<th scope='col'>TOTAL</th>                                            
+                                        </tr>                                        									
                                     </thead>
                                     <tbody>                                      
-                                    </tbody>                                   
+                                    </tbody>  
+                                    <tfoot>
+                                    	<tr>
+                                            <th colspan="3" class="text-right">Grand Total</th>
+                                            <th class="text-right"></th>
+                                            <th class="text-right"></th>
+                                            <th class="text-right"></th>
+                                            <th class="text-right"></th>
+                                            <th class="text-right"></th>
+                                            <th class="text-right"></th>
+                                            <th class="text-right"></th>
+                                            <th class="text-right"></th>
+                                            <th class="text-right"></th>
+                                            <th class="text-right"></th>
+                                            <th class="text-right"></th>
+                                            <th class="text-right"></th>
+                                            <th class="text-right"></th>
+                                        </tr>
+                                    </tfoot>                                 
                                 </table>
                             </div>
                         </div>
@@ -126,46 +147,62 @@ $html_year_select = ob_get_clean();
 	
 	<script type="text/javascript">
       $(document).ready(function() {
-          $('#sesb_table').DataTable({
+          $('#management_fee').DataTable({
               "searching": true,
-              "order" : [[ 9, "asc" ]],          
-        	  "dom": 'Bfrtip',
-              "buttons": [ 
-               { 
-              	extend: 'excelHtml5', 
-              	messageTop: 'Vehicle Summon ',
-              	footer: true 
-               },
-               {
-              	extend: 'print',
-              	messageTop: 'Vehicle Summon ',
-              	footer: true,
-              	customize: function ( win ) {
-                      $(win.document.body)
-                          .css( 'font-size', '10pt' );
+//               "order" : [[ 9, "asc" ]],          
+//         	  "dom": 'Bfrtip',
+//               "buttons": [ 
+//                { 
+//               	extend: 'excelHtml5', 
+//               	messageTop: 'Vehicle Summon ',
+//               	footer: true 
+//                },
+//                {
+//               	extend: 'print',
+//               	messageTop: 'Vehicle Summon ',
+//               	footer: true,
+//               	customize: function ( win ) {
+//                       $(win.document.body)
+//                           .css( 'font-size', '10pt' );
               
-                      $(win.document.body).find( 'table' )
-                          .addClass( 'compact' )
-                          .css( 'font-size', 'inherit' );
-                  }
-               }
-              ],
+//                       $(win.document.body).find( 'table' )
+//                           .addClass( 'compact' )
+//                           .css( 'font-size', 'inherit' );
+//                   }
+//                }
+//               ],
               "ajax":{
                   "url": "report_all.ajax.php",  
                   "type":"POST",       	        	
              	 	"data" : function ( data ) {
       					data.action = 'report_management_fee';	
-      					data.filter = '<?=$select_account?>';	
+      					data.filter = '<?=$select_company?>';	
       					data.year = '<?=$year_select?>';				
          	        }         	                 
                  },
-  			'columnDefs': [
-            	  {
-            	      "targets": [3,4,5], // your case first column
-            	      "className": "text-right", 
-            	      "render": $.fn.dataTable.render.number(',', '.', 2, '')               	                      	        	     
-            	 }
-  			],
+             "footerCallback": function( tfoot, data, start, end, display ) {
+ 				var api = this.api(), data;
+ 				var numFormat = $.fn.dataTable.render.number( '\,', '.', 2, '' ).display;
+
+				api.columns([3,4,5,6,7,8,9,10,11,12,13,14,15], { page: 'current'}).every(function() {
+					var sum = this
+				    .data()
+				    .reduce(function(a, b) {
+				    var x = parseFloat(a) || 0;
+				    var y = parseFloat(b) || 0;
+				    	return x + y;
+				    }, 0);			
+				       
+				    $(this.footer()).html(numFormat(sum));
+				}); 
+ 			},
+ 			"columnDefs": [
+ 	           	  {
+ 	           	      "targets": [3,4,5,6,7,8,9,10,11,12,13,14,15], // your case first column
+ 	           	      "className": "text-right", 
+ 	           	      "render": $.fn.dataTable.render.number(',', '.', 2, '')               	                      	        	     
+ 	           	 }
+ 	 			],
            });
 //           $('#date_start, #date_end').datepicker({
 //               format: "dd-mm-yyyy",

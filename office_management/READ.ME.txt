@@ -1,0 +1,14 @@
+PETTY CASH FLOW
+
+Steps
+1. Create cash voucher
+2. Confirm cash voucher (print, Verify & authorize)
+3. Generate Staff Claim Form from the CV list
+4. Generate Payment Requisition Form based on the staff claim form.
+5. Update the RQ form status once it is processed 
+6. Violaaa.. its DONE!!
+
+Cash voucher form - fill by admin or requester - need to be confirmed before print for verification and authorization from HOD
+Cash Voucher list - the list of cash voucher requested. needed for staff claim generation. Admin able to tick or choose which CV they want to insert in the staff claim
+Staff claim list - completed staff claim form. Admin able to view staff claim and generate a Payment Requisition from here by completing the pre generated form.
+Requisition List - summary of the staff claim list( the amount is a lump sum) - the last things to be created

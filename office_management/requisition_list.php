@@ -75,23 +75,22 @@
                                                     $count++;
                                                     $status = $row['status'];
                                                     $comp_name = itemName("SELECT code FROM company WHERE id='".$row['company_id']."'");
-                                                    $color="";
                                                     if( $status == 0 ) {
                                                         $status = "Pending";
-                                                        $color = "orange";
                                                     }
                                                     else if( $status == 1 ) {
                                                         $status = "Confirm";
-                                                        $color = "green";
                                                     }
                                                     else if( $status == 2 ) {
-                                                        $status = "Rejected";
-                                                        $color = "red";
+                                                        $status = "Processed"; //sent to account
                                                     }
+                                                    
+                                                    $display = ( $row['status'] == 2 ) ? "none" : "block";
+                                                    
                                                     ?>
                                                     <tr>
                                                         <td><?=$count?>.</td>
-                                                        <td><?=$row['date']?></td>
+                                                        <td><?=dateFormatRev($row['date'])?></td>
                                                         <td><?=$row['recipient']?></td>
                                                         <td><?=$comp_name?></td>
                                                         <td><?=$row['serial_no']?></td>
@@ -99,8 +98,8 @@
                                                         <td><?=$row['total']?></td>                                                        
                                                         <td><?=$status?></td>
                                                         <td>
-                                                        <span id="view_data" onclick="window.open('requisition_preview.php?status=<?=$row['status']?>&rq_id=<?=$row['id']?>');"><i class="fas fa-eye"></i></span>&nbsp;&nbsp;                                            	
-                                            			<span id="edit_rq_status" style="display:<?=$display?>;" onclick="window.open('requisition_form.php?company_id=<?=$data['company_id']?>&total_amount=<?=$data['amount']?>&staff_claim_id=<?=$data['id']?>');" ><i class="fas fa-edit"></i></span>                                                        	                                                      	
+                                                        <span onclick="window.open('requisition_preview.php?status=<?=$row['status']?>&rq_id=<?=$row['id']?>');"><i class="fas fa-eye"></i></span>&nbsp;&nbsp;                                            	
+                                            			<span id=<?=$row['id']?> style="display:<?=$display?>;" data-toggle="modal" class="update_status" data-target="#updateStatus"><i class="fas fa-edit"></i></span>                                                        	                                                      	
                                                         </td>
                                                     </tr>
                                     <?php
@@ -116,180 +115,18 @@
             </div><!-- .animated -->
         </div><!-- .content -->
         </div>
-        
-        <!-- Modal Add new request -->
-        <div id="addItem" class="modal fade">
-            <div class="modal-dialog modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title">New Request</h4>
-                    </div>
-                    <div class="modal-body">
-                    <form role="form" method="POST" action="" id="add_form">                    
-                    <div class="form-group row col-sm-12">
-                    	<div class="col-sm-12">
-                            <label for="company" class=" form-control-label"><small class="form-text text-muted">Company</small></label>
-                            <div>
-                                <?php
-                                    $company = mysqli_query ( $conn_admin_db, "SELECT id, name FROM company");
-                                    db_select ($company, 'company', '','','-select-','form-control','');
-                                ?>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group row col-sm-12">
-                    	<div class="col-sm-12">
-                            <label for="request_date" class=" form-control-label"><small class="form-text text-muted">Request Date</small></label>
-                            <div class="input-group">
-                                <input id="request_date" name="request_date" class="form-control" autocomplete="off">
-                                <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
-                            </div>   
-                        </div>
-                    </div> 
-                    <div class="form-group row col-sm-12">
-                    	<div class="col-sm-12">
-                            <label for="title" class=" form-control-label"><small class="form-text text-muted">Title</small></label>
-                            <input type="text" id="title" name="title" class="form-control">
-                        </div>
-                    </div> 
-                    <div class="form-group row col-sm-12">
-                    	<div class="col-sm-12">
-                            <label for="description" class=" form-control-label"><small class="form-text text-muted">Description</small></label>
-                            <textarea rows="3" id="description" name="description" class="form-control"></textarea>
-                        </div>
-                    </div> 
-                    <div class="form-group row col-sm-12">
-                    	<div class="col-sm-12">
-                            <label for="quantity" class=" form-control-label"><small class="form-text text-muted">Quantity</small></label>
-                            <input type="text" id="quantity" name="quantity" class="form-control">
-                        </div>
-                    </div> 
-                    <div class="form-group row col-sm-12">
-                    	<div class="col-sm-12">
-                            <label for="cost_per_unit" class=" form-control-label"><small class="form-text text-muted">Cost per Unit</small></label>
-                            <input type="text" id="cost_per_unit" name="cost_per_unit" class="form-control">
-                        </div>
-                    </div> 
-                    <div class="form-group row col-sm-12">
-                    	<div class="col-sm-12">
-                            <label for="total_cost" class=" form-control-label"><small class="form-text text-muted">Total Cost</small></label>
-                            <input type="text" id="total_cost" name="total_cost" class="form-control">
-                        </div>
-                    </div>                    
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary save_data ">Save</button>
-                    </div>
-                    </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Modal edit department  -->
-        <div id="editItem" class="modal fade">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Edit Request</h4>
-                </div>
-                <div class="modal-body">
-                    <form role="form" method="POST" action="" id="update_form">
-                        <input type="hidden" name="_token" value="">
-                        <input type="hidden" id="id" name="id" value="">
-                        <div class="form-group row col-sm-12">
-                    	<div class="col-sm-12">
-                            <label for="item" class=" form-control-label"><small class="form-text text-muted">Company</small></label>
-                            <div>
-                                <?php
-                                    $company = mysqli_query ( $conn_admin_db, "SELECT id, name FROM company");
-                                    db_select ($company, 'company_id', '','','-select-','form-control','');
-                                ?>
-                            </div>
-                        </div>
-                        </div>
-                        <div class="form-group row col-sm-12">
-                        	<div class="col-sm-12">
-                                <label for="date" class=" form-control-label"><small class="form-text text-muted">Request Date</small></label>
-                                <div class="input-group">
-                                    <input id="date" name="date" class="form-control" autocomplete="off">
-                                    <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
-                                </div>   
-                            </div>
-                        </div> 
-                        <div class="form-group row col-sm-12">
-                        	<div class="col-sm-12">
-                                <label for="item_title" class=" form-control-label"><small class="form-text text-muted">Title</small></label>
-                                <input type="text" id="item_title" name="item_title" class="form-control">
-                            </div>
-                        </div> 
-                        <div class="form-group row col-sm-12">
-                        	<div class="col-sm-12">
-                                <label for="desc" class=" form-control-label"><small class="form-text text-muted">Description</small></label>
-                                <textarea id="desc" row="3" name="desc" class="form-control"></textarea>
-                            </div>
-                        </div> 
-                        <div class="form-group row col-sm-12">
-                        	<div class="col-sm-12">
-                                <label for="qty" class=" form-control-label"><small class="form-text text-muted">Quantity</small></label>
-                                <input type="text" id="qty" name="qty" class="form-control">
-                            </div>
-                        </div> 
-                        <div class="form-group row col-sm-12">
-                        	<div class="col-sm-12">
-                                <label for="unit_cost" class=" form-control-label"><small class="form-text text-muted">Cost per Unit</small></label>
-                                <input type="text" id="unit_cost" name="unit_cost" class="form-control">
-                            </div>
-                        </div> 
-                        <div class="form-group row col-sm-12">
-                        	<div class="col-sm-12">
-                                <label for="total" class=" form-control-label"><small class="form-text text-muted">Total Cost</small></label>
-                                <input type="text" id="total" name="total" class="form-control">
-                            </div>
-                        </div> 
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn btn-primary update_data ">Update</button>
-                        </div>
-                    </form>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
-    
-    <div class="modal fade" id="deleteItem">
-        <div class="modal-dialog modal-sm" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="staticModalLabel">Delete Item</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <p>
-                       Are you sure you want to delete?
-                   </p>
-               </div>
-               <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="button" id="delete_record" class="btn btn-primary">Confirm</button>
-            	</div>
-        	</div>
-    	</div>
-    </div>
     <!-- confirm request -->
-    <div class="modal fade" id="confirmItem">
+    <div class="modal fade" id="updateStatus">
         <div class="modal-dialog modal-sm" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="staticModalLabel">Confirm Request</h5>
+                <div class="modal-header">                    
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
                     <p>
-                       Are you sure you want to confirm this request?
+                       Payment request have been processed by Accounts?
                    </p>
                </div>
                <div class="modal-footer">
@@ -324,7 +161,7 @@
 	
 	<script type="text/javascript">
     $(document).ready(function() {
-
+    	$('[data-toggle="modal"]').tooltip();   
     	// Initialize select2
 //     	var select2 = $("#item").select2({
 //     		placeholder: "select option",
@@ -378,7 +215,7 @@
         
         });
 
-        $(document).on('click', '.confirm_data', function(){
+        $(document).on('click', '.update_status', function(){
         	var id = $(this).attr("id");
         	$('#confirm_record').data('id', id); //set the data attribute on the modal button
         
@@ -389,10 +226,12 @@
     		$.ajax({
     			url:"request.ajax.php",
     			method:"POST",    
-    			data:{action:'confirm_request', id:ID},
-    			success:function(data){	  						
-    				$('#confirmItem').modal('hide');		
-    				location.reload();		
+    			data:{action:'update_rq_status', id:ID},
+    			success:function(data){	
+        			if(data){
+        				$('#confirmItem').modal('hide');		
+        				location.reload();	
+        			}  							
     			}
     		});
     	});

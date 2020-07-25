@@ -402,7 +402,7 @@
             
             //alert("My favourite sports are: " + cv_id.join(", "));
         	if(select_company != '' && cv_id.length != 0){
-        		window.open('staff_claim_form.php?company_id=<?=$select_c?>&date_start=<?=$date_start?>&date_end=<?=$date_end?>&cv_id='+cv_id);
+        		window.open('staff_claim_print.php?company_id=<?=$select_c?>&date_start=<?=$date_start?>&date_end=<?=$date_end?>&cv_id='+cv_id);
             }
         	else if (cv_id === undefined || cv_id.length == 0) {
                 // array empty or does not exist
