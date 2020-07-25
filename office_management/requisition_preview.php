@@ -115,15 +115,13 @@
                                 	<div class="col-sm-4">
                                         <label for="date" class=" form-control-label"><small class="form-text text-muted">Date</small></label>
                                         <div class="input-group">
-                                            <input id="date" name="date" class="form-control form-control-sm" value="<?=$date?>" autocomplete="off" <?=$disabled?>>
-                                            <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
+                                            <input id="date" name="date" class="form-control form-control-sm" value="<?=$date?>" autocomplete="off" <?=$disabled?>>                                           
                                         </div>   
                                     </div>
                                     <div class="col-sm-4">
                                         <label for="paid_date" class=" form-control-label"><small class="form-text text-muted">Required to be paid on</small></label>
                                         <div class="input-group">
-                                            <input id="paid_date" name="paid_date" class="form-control form-control-sm" value="<?=$payment_date?>" autocomplete="off" <?=$disabled?>>
-                                            <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
+                                            <input id="paid_date" name="paid_date" class="form-control form-control-sm" value="<?=$payment_date?>" autocomplete="off" <?=$disabled?>>                                            
                                         </div>   
                                     </div>
                                 </div>      

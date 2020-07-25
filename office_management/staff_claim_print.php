@@ -9,7 +9,10 @@ $date_start = isset($_GET['date_start']) ? $_GET['date_start'] :"";
 $date_end = isset($_GET['date_end']) ? $_GET['date_end'] :"";
 $company_name = itemName("SELECT name FROM company WHERE id='$company_id'");
 $position = itemName("SELECT cr_position FROM credential WHERE cr_id='".$_SESSION['cr_id']."'");
+$staff_claim_id = isset($_GET['staff_claim_id']) ? $_GET['staff_claim_id'] : "";
+$sc_date_added = isset($_GET['date_added']) ? $_GET['date_added'] : "";
 
+$date_added = !empty($sc_date_added) ? $sc_date_added : date("Y-m-d");
 //get cv_id
 $str_cv_id = isset($_GET['cv_id']) ? $_GET['cv_id'] : "";
 $arr_cv_id = [];
@@ -19,10 +22,17 @@ if(!empty($str_cv_id)){
 
 $cv_id = implode("','", $arr_cv_id);
 
-$query = "SELECT * FROM om_pcash_voucher 
+if(!empty($staff_claim_id)){
+    $query = "SELECT * FROM om_pcash_voucher
+            INNER JOIN om_pcash_voucher_item ON om_pcash_voucher.id = om_pcash_voucher_item.cv_id
+            WHERE staff_claim_id='$staff_claim_id'";
+}
+else{
+    $query = "SELECT * FROM om_pcash_voucher
             INNER JOIN om_pcash_voucher_item ON om_pcash_voucher_item.cv_id = om_pcash_voucher.id
-            WHERE cv_date BETWEEN '".dateFormat($date_start)."' AND '".dateFormat($date_end)."' AND company_id='$company_id' 
+            WHERE cv_date BETWEEN '".dateFormat($date_start)."' AND '".dateFormat($date_end)."' AND company_id='$company_id'
             AND om_pcash_voucher.id IN ('".$cv_id."')";
+}
 
 $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
 $cv_item_data = [];
@@ -74,7 +84,7 @@ while ($row = mysqli_fetch_assoc($result)){
 <tr>
    <td width="30%" class="text-left"><b>Name &nbsp;:&nbsp;&nbsp; <?=ucwords($_SESSION['cr_name'])?></b></td> 
    <td width="30%" class="text-center"><b>Position &nbsp;:&nbsp;&nbsp; <?=ucwords($position)?></b></td> 
-   <td width="30%" class="text-right"><b>Date &nbsp;:&nbsp;&nbsp; <?=date('d-m-Y')?></b></td> 
+   <td width="30%" class="text-right"><b>Date &nbsp;:&nbsp;&nbsp; <?=dateFormatRev($date_added)?></b></td> 
 </tr>
 </table>
 <br>
@@ -143,7 +153,7 @@ while ($row = mysqli_fetch_assoc($result)){
     <td class="table-1 text-left">Accountant/Directors</td>
 </tr>
 <tr>
-    <td class="table-1 text-left">Date : <?=date('d-m-Y')?></td>
+    <td class="table-1 text-left">Date : <?=dateFormatRev($date_added)?></td>
     <td class="table-1 text-left">Date :</td>
     <td class="table-1 text-left">Date :</td>
     <td class="table-1 text-left">Date :</td>
@@ -155,7 +165,7 @@ while ($row = mysqli_fetch_assoc($result)){
 <br><br>
 <div style="text-align: center;" class="exclude_print">	
 	<button type="button" name='print' id="print" class="btn btn-success">Print</button>	
-	<input type="checkbox" name="confirm" value="">&nbsp;&nbsp;Confirm?
+	<span class="checkbox"><input type="checkbox" name="confirm" value="">&nbsp;&nbsp;Confirm?</span>
 </div>
 </html>
 <!-- link to the script-->
@@ -178,6 +188,10 @@ while ($row = mysqli_fetch_assoc($result)){
     $(document).ready(function() {
         var str_cv_id = '<?=$str_cv_id?>'; //string of cv_id
         var total_cv = '<?=$total?>'; //total of cv
+        var staff_claim_id = '<?=$staff_claim_id?>';
+        if(staff_claim_id !=''){
+            $('.checkbox').hide();
+        }
     	$('#print').on("click", function(event){
     		if($('input[type="checkbox"]').prop("checked") == true){       
         		//save data into database 	
@@ -196,6 +210,8 @@ while ($row = mysqli_fetch_assoc($result)){
         			}
         		});	
         		
+    		}else if(staff_claim_id !=''){
+    			window.print();window.close();       
     		}
     		else{
 				alert('Please Confirmed before printing!');

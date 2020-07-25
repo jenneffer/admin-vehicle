@@ -91,37 +91,39 @@ function get_report_monthly_sesb($filter, $year){
     $arr_data = array();
     $count = 0;
     foreach ($arr_bills_monthly as $id => $data){
-        $count++;
-        $total_found_rows++;
-        $acc_no = itemName("SELECT account_no FROM bill_sesb_account  WHERE id='$id'");
-        $owner = itemName("SELECT owner FROM bill_sesb_account  WHERE id='$id'");
-        $location = itemName("SELECT location FROM bill_sesb_account  WHERE id='$id'");
-        $code = itemName("SELECT code FROM company WHERE id IN(SELECT company_id FROM bill_sesb_account  WHERE id='$id')");
-        $total = 0;
-        for( $i=1; $i<=$monthto; $i++){
-            $total += $data[$i];
-        }
-        
-        $datas = array(            
-            $acc_no."<br>(".$code.")",
-            $owner,
-            $location,
-            $data[1],
-            $data[2],
-            $data[3],
-            $data[4],
-            $data[5],
-            $data[6],
-            $data[7],
-            $data[8],
-            $data[9],
-            $data[10],
-            $data[11],
-            $data[12],
-            $total
+        if( array_sum($data) !=0 ){
+            $count++;
+            $total_found_rows++;
+            $acc_no = itemName("SELECT account_no FROM bill_sesb_account  WHERE id='$id'");
+            $owner = itemName("SELECT owner FROM bill_sesb_account  WHERE id='$id'");
+            $location = itemName("SELECT location FROM bill_sesb_account  WHERE id='$id'");
+            $code = itemName("SELECT code FROM company WHERE id IN(SELECT company_id FROM bill_sesb_account  WHERE id='$id')");
+            $total = 0;
+            for( $i=1; $i<=$monthto; $i++){
+                $total += $data[$i];
+            }
             
-        );
-        $arr_data[] = $datas;
+            $datas = array(
+                $acc_no."<br>(".$code.")",
+                $owner,
+                $location,
+                $data[1],
+                $data[2],
+                $data[3],
+                $data[4],
+                $data[5],
+                $data[6],
+                $data[7],
+                $data[8],
+                $data[9],
+                $data[10],
+                $data[11],
+                $data[12],
+                $total
+                
+            );
+            $arr_data[] = $datas;
+        }        
     }
     $arr_result = array(
         'sEcho' => 0,
@@ -158,36 +160,38 @@ function get_monthly_jabatan_air($filter, $year){
     $arr_data = array();
     $count = 0;
     foreach ($arr_bills_monthly as $id => $data){
-        $count++;
-        $total_found_rows++;
-        $acc_no = itemName("SELECT account_no FROM bill_jabatan_air_account  WHERE id='$id'");
-        $owner = itemName("SELECT owner FROM bill_jabatan_air_account  WHERE id='$id'");
-        $location = itemName("SELECT location FROM bill_jabatan_air_account  WHERE id='$id'");
-        $total = 0;
-        for( $i=1; $i<=$monthto; $i++){
-            $total += $data[$i];
-        }
-        
-        $datas = array(
-            $acc_no,
-            $owner,
-            $location,
-            $data[1],
-            $data[2],
-            $data[3],
-            $data[4],
-            $data[5],
-            $data[6],
-            $data[7],
-            $data[8],
-            $data[9],
-            $data[10],
-            $data[11],
-            $data[12],
-            $total
+        if( array_sum($data) !=0 ){
+            $count++;
+            $total_found_rows++;
+            $acc_no = itemName("SELECT account_no FROM bill_jabatan_air_account  WHERE id='$id'");
+            $owner = itemName("SELECT owner FROM bill_jabatan_air_account  WHERE id='$id'");
+            $location = itemName("SELECT location FROM bill_jabatan_air_account  WHERE id='$id'");
+            $total = 0;
+            for( $i=1; $i<=$monthto; $i++){
+                $total += $data[$i];
+            }
             
-        );
-        $arr_data[] = $datas;
+            $datas = array(
+                $acc_no,
+                $owner,
+                $location,
+                $data[1],
+                $data[2],
+                $data[3],
+                $data[4],
+                $data[5],
+                $data[6],
+                $data[7],
+                $data[8],
+                $data[9],
+                $data[10],
+                $data[11],
+                $data[12],
+                $total
+                
+            );
+            $arr_data[] = $datas;            
+        }        
     }
     $arr_result = array(
         'sEcho' => 0,
@@ -224,34 +228,37 @@ function get_monthly_bill_photocopy($filter, $year){
     $arr_data = array();
     $count = 0;
     foreach ($arr_bills_monthly as $id => $data){
-        $count++;
-        $total_found_rows++;
-        $serial_no = itemName("SELECT serial_no FROM bill_fuji_xerox_account  WHERE id='$id'");
-        $location = itemName("SELECT location FROM bill_fuji_xerox_account  WHERE id='$id'");        
-        $total = 0;
-        for( $i=1; $i<=$monthto; $i++){
-            $total += $data[$i];
-        }
-        
-        $datas = array(
-            $serial_no,            
-            $location,
-            $data[1],
-            $data[2],
-            $data[3],
-            $data[4],
-            $data[5],
-            $data[6],
-            $data[7],
-            $data[8],
-            $data[9],
-            $data[10],
-            $data[11],
-            $data[12],
-            $total
+        if( array_sum($data) !=0 ){
+            $count++;
+            $total_found_rows++;
+            $serial_no = itemName("SELECT serial_no FROM bill_fuji_xerox_account  WHERE id='$id'");
+            $location = itemName("SELECT location FROM bill_fuji_xerox_account  WHERE id='$id'");
+            $total = 0;
+            for( $i=1; $i<=$monthto; $i++){
+                $total += $data[$i];
+            }
             
-        );
-        $arr_data[] = $datas;
+            $datas = array(
+                $serial_no,
+                $location,
+                $data[1],
+                $data[2],
+                $data[3],
+                $data[4],
+                $data[5],
+                $data[6],
+                $data[7],
+                $data[8],
+                $data[9],
+                $data[10],
+                $data[11],
+                $data[12],
+                $total
+                
+            );
+            $arr_data[] = $datas;
+            
+        }        
     }
     $arr_result = array(
         'sEcho' => 0,
@@ -479,46 +486,88 @@ function get_report_telekom($filter, $year){
     echo json_encode($arr_result);
 }
 
+function get_management_monthly_bill($acc_id, $year, $monthto){
+    $result = array();
+    
+    for($m = 1; $m <= $monthto; $m++){
+        //management_fee
+        $amount_mf = itemName("SELECT SUM(payment_amount) FROM bill_management_fee WHERE acc_id='$acc_id' AND YEAR(received_date)='$year' AND MONTH(received_date)='$m'");
+        //water bill
+        $amount_wb = itemName("SELECT SUM(total) FROM bill_management_water WHERE acc_id='$acc_id' AND YEAR(received_date)='$year' AND MONTH(received_date)='$m'");
+        //late interest charge
+        $amount_li = itemName("SELECT SUM(amount) FROM bill_management_late_interest_charge WHERE acc_id='$acc_id' AND YEAR(bill_date)='$year' AND MONTH(bill_date)='$m'");
+        //quit rent
+        $amount_qr = itemName("SELECT SUM(payment) FROM bill_management_quit_rent WHERE acc_id='$acc_id' AND YEAR(date_received)='$year' AND MONTH(date_received)='$m'");
+        //insurance premium        
+        $amount_ip = itemName("SELECT SUM(payment) FROM bill_management_insurance WHERE acc_id='$acc_id' AND YEAR(date_from)='$year' AND MONTH(date_from)='$m'");
+        
+        $total_amount = $amount_mf + $amount_wb + $amount_li + $amount_qr + $amount_ip;
+        
+        $result[$m] = $total_amount;
+    }
+    
+    return $result;
+}
+
 function get_report_management_fee($filter, $year){
     global $conn_admin_db;
-    $query = "SELECT (DATE_FORMAT(payment_date,'%M')) month_name,bill_inv_no,description,payment_amount, 
-            insurance_premium,interest_charge, payment_date,payment_mode,
-            official_receipt_no,received_date  FROM bill_management_fee
-            INNER JOIN bill_account_setup ON bill_account_setup.acc_id = bill_management_fee.acc_id WHERE bill_management_fee.acc_id = '$filter'
-            AND DATE_FORMAT(payment_date,'%Y') = '$year'";
-    
-    $rst  = mysqli_query($conn_admin_db, $query)or die(mysqli_error($conn_admin_db));
+    $monthto = 12;
     $arr_result = array(
         'sEcho' => 0,
         'iTotalRecords' => 0,
         'iTotalDisplayRecords' => 0,
         'aaData' => array()
     );
+    $sql_query = "SELECT id,account_no,owner FROM bill_management_account";
+    if(!empty($filter)){
+        $sql_query .= " WHERE company_id = '".$filter."' ";
+    }
+    $rst  = mysqli_query($conn_admin_db, $sql_query)or die(mysqli_error($conn_admin_db));
+    
+    while ($row = mysqli_fetch_assoc($rst)) {
+        $acc_id = $row['id'];
+        $arr_bills = get_management_monthly_bill($acc_id, $year, $monthto);        
+        $arr_bills_monthly[$acc_id] = $arr_bills;
+    }
     $total_found_rows = 0;
     $arr_data = array();
-    if ( mysqli_num_rows($rst) ){
-        while( $row = mysqli_fetch_assoc( $rst ) ){
-            $row_found = mysqli_fetch_row(mysqli_query($conn_admin_db,"SELECT FOUND_ROWS()"));
-            $total_found_rows = $row_found[0];
+    $count = 0;    
+    foreach ($arr_bills_monthly as $id => $data){
+        if(array_sum($data) !=0){
             
-            $data = array(
-                $row['month_name'],
-                $row['bill_inv_no'],
-                $row['description'],
-                $row['payment_amount'],
-                $row['insurance_premium'],
-                $row['interest_charge'],
-                $row['payment_date'],
-                strtoupper($row['payment_mode']),
-                $row['official_receipt_no'],
-                $row['received_date']
+            $count++;
+            $total_found_rows++;
+            $acc_no = itemName("SELECT account_no FROM bill_management_account WHERE id='$id'");
+            $owner = itemName("SELECT owner FROM bill_management_account WHERE id='$id'");
+            $company = itemName("SELECT code FROM company WHERE id IN (SELECT company_id FROM bill_management_account WHERE bill_management_account.id='$id' )");
+            $total = 0;
+            for( $i=1; $i<=$monthto; $i++){
+                $total += $data[$i];
+            }
+            
+            $datas = array(
+                $acc_no,
+                $company,
+                $owner,
+                $data[1],
+                $data[2],
+                $data[3],
+                $data[4],
+                $data[5],
+                $data[6],
+                $data[7],
+                $data[8],
+                $data[9],
+                $data[10],
+                $data[11],
+                $data[12],
+                $total
+                
             );
+            $arr_data[] = $datas;
             
-            $arr_data[] = $data;
-        }
-        
+        }        
     }
-    
     $arr_result = array(
         'sEcho' => 0,
         'iTotalRecords' => $total_found_rows,
@@ -527,6 +576,7 @@ function get_report_management_fee($filter, $year){
     );
     
     echo json_encode($arr_result);
+
 }
 
 // function get_report_photocopy_machine($filter, $year){
@@ -604,36 +654,38 @@ function get_report_celcom($filter, $year){
     $arr_data = array();
     $count = 0;
     foreach ($arr_bills_monthly as $id => $data){
-        $count++;
-        $total_found_rows++;
-        $user = itemName("SELECT user FROM bill_telco_account  WHERE id='$id'");
-        $position = itemName("SELECT position FROM bill_telco_account  WHERE id='$id'");
-        $acc_no = itemName("SELECT account_no FROM bill_telco_account  WHERE id='$id'");
-        $total = 0;
-        for( $i=1; $i<=$monthto; $i++){
-            $total += $data[$i];
-        }
-        
-        $datas = array(
-            $user,
-            $position,
-            $acc_no,
-            $data[1],
-            $data[2],
-            $data[3],
-            $data[4],
-            $data[5],
-            $data[6],
-            $data[7],
-            $data[8],
-            $data[9],
-            $data[10],
-            $data[11],
-            $data[12],
-            $total
+        if(array_sum($data)){
+            $count++;
+            $total_found_rows++;
+            $user = itemName("SELECT user FROM bill_telco_account  WHERE id='$id'");
+            $position = itemName("SELECT position FROM bill_telco_account  WHERE id='$id'");
+            $acc_no = itemName("SELECT account_no FROM bill_telco_account  WHERE id='$id'");
+            $total = 0;
+            for( $i=1; $i<=$monthto; $i++){
+                $total += $data[$i];
+            }
             
-        );
-        $arr_data[] = $datas;
+            $datas = array(
+                $user,
+                $position,
+                $acc_no,
+                $data[1],
+                $data[2],
+                $data[3],
+                $data[4],
+                $data[5],
+                $data[6],
+                $data[7],
+                $data[8],
+                $data[9],
+                $data[10],
+                $data[11],
+                $data[12],
+                $total
+                
+            );
+            $arr_data[] = $datas;
+        }        
     }
     $arr_result = array(
         'sEcho' => 0,
@@ -781,36 +833,38 @@ function get_monthly_bill_telekom($filter, $year){
     $arr_data = array();
     $count = 0;
     foreach ($arr_bills_monthly as $id => $data){
-        $count++;
-        $total_found_rows++;
-        $acc_no = itemName("SELECT account_no FROM bill_telekom_account  WHERE id='$id'");
-        $owner = itemName("SELECT owner FROM bill_telekom_account WHERE id='$id'");
-        $company = itemName("SELECT code FROM company WHERE id IN (SELECT company_id FROM bill_telekom_account WHERE bill_telekom_account.id='$id' )");
-        $total = 0;
-        for( $i=1; $i<=$monthto; $i++){
-            $total += $data[$i];
-        }
-        
-        $datas = array(
-            $acc_no,
-            $company,
-            $owner,
-            $data[1],
-            $data[2],
-            $data[3],
-            $data[4],
-            $data[5],
-            $data[6],
-            $data[7],
-            $data[8],
-            $data[9],
-            $data[10],
-            $data[11],
-            $data[12],
-            $total
+        if(array_sum($data) !=0){
+            $count++;
+            $total_found_rows++;
+            $acc_no = itemName("SELECT account_no FROM bill_telekom_account  WHERE id='$id'");
+            $owner = itemName("SELECT owner FROM bill_telekom_account WHERE id='$id'");
+            $company = itemName("SELECT code FROM company WHERE id IN (SELECT company_id FROM bill_telekom_account WHERE bill_telekom_account.id='$id' )");
+            $total = 0;
+            for( $i=1; $i<=$monthto; $i++){
+                $total += $data[$i];
+            }
             
-        );
-        $arr_data[] = $datas;
+            $datas = array(
+                $acc_no,
+                $company,
+                $owner,
+                $data[1],
+                $data[2],
+                $data[3],
+                $data[4],
+                $data[5],
+                $data[6],
+                $data[7],
+                $data[8],
+                $data[9],
+                $data[10],
+                $data[11],
+                $data[12],
+                $total
+                
+            );
+            $arr_data[] = $datas;            
+        }        
     }
     $arr_result = array(
         'sEcho' => 0,

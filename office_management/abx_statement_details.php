@@ -160,7 +160,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                         <br>
                         <div class="row col-sm-12 text-right">                    	
                         	<div class="col-sm-6">&nbsp;</div>
-                        	<div class=" row col-sm-6">
+                        	<div class="form-group row col-sm-6">
                         		<div class="col-sm-6">
                                 	<label class=" form-control-label"><b>GRAND TOTAL</b></label>                            
                                 </div>

@@ -47,6 +47,11 @@
     .select2-container{ 
         width: 100% !important; 
     }
+    .button_search{
+        position: absolute;
+        left:    0;
+        bottom:   0;
+    }
    </style>
 </head>
 
@@ -62,7 +67,7 @@
             <div class="animated fadeIn">
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="card">
+                        <div class="card" id="printableArea">
                         <form id="myform" enctype="multipart/form-data" method="post" action="">
                             <div class="card-header">
                                 <strong class="card-title">Staff Claim List</strong>
@@ -73,30 +78,26 @@
                         	            <label for="select_company" class="form-control-label"><small class="form-text text-muted">Company</small></label>                                       
                                             <?php
                                                 $select_company = mysqli_query ( $conn_admin_db, "SELECT DISTINCT(company.id), code FROM company INNER JOIN om_pcash_voucher ON om_pcash_voucher.company_id = company.id WHERE status='1'");
-                                                db_select ($select_company, 'select_company', $select_c,'submit()','All Company','form-control','');
+                                                db_select ($select_company, 'select_company', $select_c,'submit()','All Company','form-control form-control-sm','');
                                             ?>                              
                                         </div>
                                         <div class="col-sm-3">
                                             <label for="date_start" class="form-control-label"><small class="form-text text-muted">Date Start</small></label>
                                             <div class="input-group">
-                                              <input type="text" id="date_start" name="date_start" class="form-control" value="<?=$date_start?>" autocomplete="off">
-                                              <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
+                                              <input type="text" id="date_start" name="date_start" class="form-control form-control-sm" value="<?=$date_start?>" autocomplete="off">                                              
                                             </div>                            
                                         </div>
                                         <div class="col-sm-3">
                                             <label for="date_end" class="form-control-label"><small class="form-text text-muted">Date End</small></label>
                                             <div class="input-group">
-                                              <input type="text" id="date_end" name="date_end" class="form-control" value="<?=$date_end?>" autocomplete="off">
-                                              <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
+                                              <input type="text" id="date_end" name="date_end" class="form-control form-control-sm" value="<?=$date_end?>" autocomplete="off">                                              
                                             </div>                             
                                         </div>
-                                        
+                                     	<div class="col-sm-3">                                    	
+                                        	<button type="submit" class="btn btn-sm btn-primary button_search ">View</button>
+                                        </div>   
                                      </div> 
-                                     <div class="form-group row col-sm-12 btn-group">
-                                     	<div class="col-sm-1">                                    	
-                                        	<button type="submit" class="btn btn-primary button_search ">Submit</button>
-                                        </div>
-                                     </div>   
+                                        
                                 
                             </div>
                            <div class="card-body">                         
@@ -120,6 +121,7 @@
                                         //check if staff_claim_id exist in requisition table
                                         $check = mysqli_num_rows(mysqli_query($conn_admin_db, "SELECT * FROM om_requisition WHERE staff_claim_id='".$data['id']."'"));
                                         $display = $check != 0 ? "none" : "block"; //show button generate form if has not been generated
+                                        $d = date('Y-m-d', strtotime($data['date_added']));
                                         ?>
                                         <tr>
                                             <td><?=$count?>.</td>
@@ -129,12 +131,11 @@
                                             <td><?=ucfirst($data['add_by'])?></td>                                            
                                             <td><?=$data['amount']?></td>                                                                                            
                                             <td>
-                                            	<span id="view_data"><i class="fas fa-eye"></i></span>
-                                            	<span id="generate_form" style="display:<?=$display?>;" onclick="window.open('requisition_form.php?company_id=<?=$data['company_id']?>&total_amount=<?=$data['amount']?>&staff_claim_id=<?=$data['id']?>');" ><i class="fab fa-wpforms"></i></span>
+                                            	<span id="view_data" onclick="window.open('staff_claim_print.php?company_id=<?=$data['company_id']?>&staff_claim_id=<?=$data['id']?>&date_added=<?=$d?>');"><i class="fas fa-eye"></i></span>                                            	
                                             </td>
                                         </tr>
                                     <?php
-                                                }
+                                    }
                                     ?>
                                     </tbody>
                                     <tfoot>
