@@ -121,14 +121,14 @@ global $conn_admin_db;
                             <div>
                                 <?php
                                     $company = mysqli_query ( $conn_admin_db, "SELECT id, UPPER(name) FROM company WHERE status='1' ORDER BY name");
-                                    db_select ($company, 'company', '','','-select-','form-control','');
+                                    db_select ($company, 'company', '','','-select-','form-control','', 'required');
                                 ?>
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <label for="telco_type" class=" form-control-label"><small class="form-text text-muted">Telco</small></label>
                             <div>
-                                <select id="telco_type" name="telco_type" class="form-control">
+                                <select id="telco_type" name="telco_type" class="form-control" required>
                                   <option value="">-Select</option>
                                   <option value="celcom">Celcom</option>
                                   <option value="maxis">Maxis</option>
@@ -140,21 +140,21 @@ global $conn_admin_db;
                     <div class="form-group row col-sm-12">
                     	<div class="col-sm-6">
                             <label for="acc_no" class=" form-control-label"><small class="form-text text-muted">Account No.</small></label>
-                            <input type="text" id="acc_no" name="acc_no" placeholder="Enter Account number" class="form-control">
+                            <input type="text" id="acc_no" name="acc_no" placeholder="Enter Account number" class="form-control" required>
                         </div>
                 		<div class="col-sm-6">
                             <label for="position" class=" form-control-label"><small class="form-text text-muted">Position/Department</small></label>
-                            <input type="text" id="position" name="position" class="form-control">
+                            <input type="text" id="position" name="position" class="form-control" required>
                     	</div>                    	
                 	</div> 
                 	<div class="form-group row col-sm-12">
                 		<div class="col-sm-6">
                             <label for="user" class=" form-control-label"><small class="form-text text-muted">User</small></label>
-                            <input type="text" id="user" name="user" class="form-control">
+                            <input type="text" id="user" name="user" class="form-control" required>
                     	</div>
                     	<div class="col-sm-6">
                             <label for="hp_no" class=" form-control-label"><small class="form-text text-muted">Telephone No.</small></label>
-                            <input type="text" id="hp_no" name="hp_no" class="form-control">
+                            <input type="text" id="hp_no" name="hp_no" class="form-control" required>
                     	</div>
                 	</div>     
                 	<div class="form-group row col-sm-12">
@@ -214,14 +214,14 @@ global $conn_admin_db;
                             <div>
                                 <?php
                                     $company = mysqli_query ( $conn_admin_db, "SELECT id, UPPER(name) FROM company WHERE status='1' ORDER BY name");
-                                    db_select ($company, 'company_edit', '','','-select-','form-control','');
+                                    db_select ($company, 'company_edit', '','','-select-','form-control','','required');
                                 ?>
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <label for="telco_type_edit" class=" form-control-label"><small class="form-text text-muted">Telco</small></label>
                             <div>
-                                <select id="telco_type_edit" name="telco_type_edit" class="form-control">
+                                <select id="telco_type_edit" name="telco_type_edit" class="form-control" required>
                                   <option value="">-Select</option>
                                   <option value="celcom">Celcom</option>
                                   <option value="maxis">Maxis</option>
@@ -233,21 +233,21 @@ global $conn_admin_db;
                         <div class="form-group row col-sm-12">
                         	<div class="col-sm-6">
                                 <label for="acc_no_edit" class=" form-control-label"><small class="form-text text-muted">Account No.</small></label>
-                                <input type="text" id="acc_no_edit" name="acc_no_edit" placeholder="Enter Account number" class="form-control">
+                                <input type="text" id="acc_no_edit" name="acc_no_edit" placeholder="Enter Account number" class="form-control" required>
                             </div>
                     		<div class="col-sm-6">
                                 <label for="position_edit" class=" form-control-label"><small class="form-text text-muted">Position/Department</small></label>
-                                <input type="text" id="position_edit" name="position_edit" class="form-control">
+                                <input type="text" id="position_edit" name="position_edit" class="form-control" required>
                         	</div>                    	
                     	</div> 
                     	<div class="form-group row col-sm-12">
                     		<div class="col-sm-6">
                                 <label for="user_edit" class=" form-control-label"><small class="form-text text-muted">User</small></label>
-                                <input type="text" id="user_edit" name="user_edit" class="form-control">
+                                <input type="text" id="user_edit" name="user_edit" class="form-control" required>
                         	</div>
                         	<div class="col-sm-6">
                                 <label for="hp_no_edit" class=" form-control-label"><small class="form-text text-muted">Telephone No.</small></label>
-                                <input type="text" id="hp_no_edit" name="hp_no_edit" class="form-control">
+                                <input type="text" id="hp_no_edit" name="hp_no_edit" class="form-control" required>
                         	</div>
                     	</div>     
                     	<div class="form-group row col-sm-12">
@@ -386,7 +386,7 @@ global $conn_admin_db;
   	  	});
         
         $(document).on('click', '.edit_data', function(){
-        	var id = $(this).attr("id");        	
+        	var id = $(this).attr("id");         	       	
         	$.ajax({
         			url:"telco_bill.ajax.php",
         			method:"POST",
@@ -401,7 +401,7 @@ global $conn_admin_db;
                         $('#position_edit').val(data.position);    
                         $('#user_edit').val(data.user); 
                         $('#hp_no_edit').val(data.hp_no);   
-                        $('#limit_edit').val(data.limit);                         
+                        $('#limit_edit').val(data.limit_data);                         
                         $('#package_edit').val(data.package); 
                         $('#latest_package_edit').val(data.latest_package); 
                         $('#limit_rm_edit').val(data.limit_rm); 
@@ -421,7 +421,7 @@ global $conn_admin_db;
     	$( "#delete_record" ).click( function() {
     		var ID = $(this).data('id');
     		$.ajax({
-    			url:"telekom_bill.ajax.php",
+    			url:"telco_bill.ajax.php",
     			method:"POST",    
     			data:{action:'delete_account', id:ID},
     			success:function(data){	  						
@@ -432,68 +432,37 @@ global $conn_admin_db;
     	});
     
         $('#update_form').on("submit", function(event){  
-          event.preventDefault();  
-          if($('#stk_in').val() == ""){  
-              alert("Stock in is required");  
-          }    
-          else{  
-               $.ajax({  
-                    url:"stock.ajax.php",  
-                    method:"POST",  
-                    data:{action:'update_stock', data: $('#update_form').serialize()},  
-                    success:function(data){   
-                         $('#editItem').modal('hide');  
-                         $('#bootstrap-data-table').html(data);
-                         location.reload();  
-                    }  
-               });  
-          }  
+            event.preventDefault();  
+            $.ajax({  
+              url:"telco_bill.ajax.php",  
+              method:"POST",  
+              data:{action:'update_account', data: $('#update_form').serialize()},  
+              success:function(data){  
+                  if(data){ 
+                      alert("Successfully updated account!");
+                       $('#editItem').modal('hide');  
+                       location.reload();
+                  }  
+              }  
+            });  
         }); 
         
         $('#add_form').on("submit", function(event){  
             event.preventDefault();  
-            if($('#company').val() == ""){  
-                 alert("Company is required");  
-            } 
-            else if($('#acc_no').val() == ""){  
-                 alert("Account number is required");  
-            }    
-            else if($('#location').val() == ""){  
-                alert("Location is required");  
-           	}             
-            else if($('#tariff').val() == ""){  
-                alert("Tariff is required");  
-           	}                           
-            else{  
-                 $.ajax({  
-                      url:"telekom_bill.ajax.php",  
-                      method:"POST",  
-                      data:{action:'add_new_account', data: $('#add_form').serialize(), telefon_list:TELEPHONE_LIST},  
-                      success:function(data){   
-                           $('#editItem').modal('hide');  
-                           $('#bootstrap-data-table').html(data);
-                           location.reload();  
-                      }  
-                 });  
-            }  
+            $.ajax({  
+                url:"telco_bill.ajax.php",  
+                method:"POST",  
+                data:{action:'add_new_account', data: $('#add_form').serialize()},  
+                success:function(data){   
+                    if(data){
+                  	  alert("Successfully added!");
+                  	  $('#editItem').modal('hide');  
+                        location.reload();  
+                    }                           
+                }  
+           });
           });
-
-        $('#telefon_bill').on("submit", function(e){ 
-            e.preventDefault();
-            var telefon = $("input[name='telefon']").val();
-            var type = $("input[name='type']").val();
-         	
-            $(".data-table tbody").append("<tr data-telefon='"+telefon+"' data-type='"+type+"'><td>"+telefon+"</td><td>"+type+"</td></td></tr>");
-
-            //push data into array
-            TELEPHONE_LIST.push({
-				telefon: telefon,
-				type: type,
-            });
-            console.log(TELEPHONE_LIST);
-            $("input[name='telefon']").val('');
-            $("input[name='type']").val('');
-        });
+        
         function isNumberKey(evt){
         	var charCode = (evt.which) ? evt.which : evt.keyCode;
         	if (charCode != 46 && charCode > 31 

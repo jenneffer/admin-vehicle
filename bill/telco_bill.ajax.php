@@ -31,6 +31,10 @@ if( $action != "" ){
             add_new_account($data, $telefon_list);
             break;
             
+        case 'update_account':
+            update_account($data);
+            break;
+            
         case 'retrieve_account':
             retrieve_account($id);
             break;
@@ -55,6 +59,45 @@ if( $action != "" ){
             break;
     }
 }
+
+function update_account($data){
+    global $conn_admin_db;
+    if(!empty($data)){
+        $param = array();
+        parse_str($data, $param); //unserialize jquery string data  
+        
+        $id = $param['id'];
+        $company =  mysqli_real_escape_string( $conn_admin_db,$param['company_edit']);
+        $telco_type =  mysqli_real_escape_string( $conn_admin_db,$param['telco_type_edit']);
+        $acc_no =  mysqli_real_escape_string( $conn_admin_db,$param['acc_no_edit']);
+        $position =  mysqli_real_escape_string( $conn_admin_db,$param['position_edit']);
+        $remark =  mysqli_real_escape_string( $conn_admin_db,$param['remark_edit']);
+        $user =  mysqli_real_escape_string( $conn_admin_db,$param['user_edit']);
+        $hp_no =  mysqli_real_escape_string( $conn_admin_db,$param['hp_no_edit']);
+        $limit =  mysqli_real_escape_string( $conn_admin_db,$param['limit_edit']);
+        $package =  mysqli_real_escape_string( $conn_admin_db,$param['package_edit']);
+        $latest_package =  mysqli_real_escape_string( $conn_admin_db,$param['latest_package_edit']);
+        $limit_rm =  mysqli_real_escape_string( $conn_admin_db,$param['limit_rm_edit']);
+        $data =  mysqli_real_escape_string( $conn_admin_db,$param['data_edit']);
+        
+        $query = "UPDATE bill_telco_account SET
+                        company_id='$company',
+                        account_no='$acc_no',
+                        position='$position',
+                        remark='$remark',
+                        hp_no='$hp_no',
+                        telco_type='$telco_type',
+                        package='$package',
+                        latest_package='$latest_package',
+                        limit_rm='$limit_rm',
+                        data='$data',
+                        user='$user',
+                        limit_data='$limit' WHERE id='$id'";
+        $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
+        echo json_encode($result);
+    }
+}
+
 function get_telco_data_monthly_compare($year, $company, $account_no){
     global $conn_admin_db;
     global $month_map;
@@ -211,42 +254,35 @@ function add_new_account($data, $telefon_list){
     global $conn_admin_db;
     if (!empty($data)) {
         $param = array();
-        parse_str($data, $param); //unserialize jquery string data        
-        $company =  mysqli_real_escape_string( $conn_admin_db,$param['company']);
-        $acc_no =  mysqli_real_escape_string( $conn_admin_db,$param['acc_no']);
-        $location =  mysqli_real_escape_string( $conn_admin_db,$param['location']);
-        $owner =  mysqli_real_escape_string( $conn_admin_db,$param['owner']);
-        $remark =  mysqli_real_escape_string( $conn_admin_db,$param['remark']);
-        $ref_no =  mysqli_real_escape_string( $conn_admin_db,$param['ref_no']);
-        $service_no =  mysqli_real_escape_string( $conn_admin_db,$param['service_no']);
+        parse_str($data, $param); //unserialize jquery string data     
+        $company =  isset($param['company']) ? $param['company'] : "";
+        $telco_type =  isset($param['telco_type']) ? $param['telco_type'] : "";
+        $acc_no =  isset($param['acc_no']) ? $param['acc_no'] : "";
+        $position =  isset($param['position']) ? $param['position'] : "";
+        $remark =  isset($param['remark']) ? $param['remark'] : "";
+        $user =  isset($param['user']) ? $param['user'] : "";
+        $hp_no =  isset($param['hp_no']) ? $param['hp_no'] : "";
+        $limit =  isset($param['limit']) ? $param['limit'] : "";
+        $package =  isset($param['package']) ? $param['package'] :"";
+        $latest_package =  isset($param['latest_package']) ? $param['latest_package'] : "";
+        $limit_rm =  isset($param['limit_rm']) ? $param['limit_rm'] : 0;
+        $data =  isset($param['data']) ? $param['data'] : "";
         
-        $query_insert_telekom = "INSERT INTO bill_telekom_account SET
-                        company='$company',
+        $query = "INSERT INTO bill_telco_account SET
+                        company_id='$company',
                         account_no='$acc_no',
-                        owner='$owner',
+                        position='$position',
                         remark='$remark',
-                        ref_no='$ref_no',
-                        location='$location',
-                        service_no='$service_no'";
-        
-        mysqli_query($conn_admin_db, $query_insert_telekom) or die(mysqli_error($conn_admin_db));
-        
-        $last_insert_id = mysqli_insert_id($conn_admin_db);
-        
-        $values = [];
-        if(!empty($telefon_list)){
-            foreach ($telefon_list as $tel){
-                $telefon = $tel['telefon'];
-                $type = $tel['type'];                
-                
-                $values[] = "('$last_insert_id', '$telefon', '$type')";
-                
-            }
-            
-            $values = implode(",", $values);
-            $query = "INSERT INTO bill_telefon_list (bt_id, tel_no, phone_type) VALUES" .$values;
-            mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
-        }        
+                        hp_no='$hp_no',
+                        telco_type='$telco_type',
+                        package='$package',
+                        latest_package='$latest_package',
+                        limit_rm='$limit_rm',
+                        data='$data',
+                        user='$user',
+                        limit_data='$limit'";
+        $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
+        echo json_encode($result);
     }    
 }
 function retrieve_account($id){
@@ -263,7 +299,7 @@ function retrieve_account($id){
 function delete_account($id){
     global $conn_admin_db;
     if (!empty($id)) {
-        $query = "UPDATE bill_telekom_account SET status = 0 WHERE id = '".$id."' ";
+        $query = "UPDATE bill_telco_account SET status = 0 WHERE id = '".$id."' ";
         $result = mysqli_query($conn_admin_db, $query);
         if ($result) {
             alert ("Deleted successfully", "telekom_setup.php");
