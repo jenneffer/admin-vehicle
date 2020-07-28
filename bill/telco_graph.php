@@ -126,20 +126,20 @@ function get_telco_data_monthly($year, $company, $account_no){
                 $sesb_m = $telco_month["month"];
                 for ( $m=1; $m<=$month; $m++ ){
                     if($m == $sesb_m){
-                        if(!empty($account_no)){
+//                         if(!empty($account_no)){
                             if (isset($data_monthly[$code][$acc_no][$m])){
                                 $data_monthly[$code][$acc_no][$m] += (double)$v['amount_rm'];
                             }else{
                                 $data_monthly[$code][$acc_no][$m] = (double)$v['amount_rm'];
                             }
-                        }
-                        else{
-                            if (isset($data_monthly[$code][$m])){
-                                $data_monthly[$code][$m] += (double)$v['amount_rm'];
-                            }else{
-                                $data_monthly[$code][$m] = (double)$v['amount_rm'];
-                            }
-                        }
+//                         }
+//                         else{
+//                             if (isset($data_monthly[$code][$m])){
+//                                 $data_monthly[$code][$m] += (double)$v['amount_rm'];
+//                             }else{
+//                                 $data_monthly[$code][$m] = (double)$v['amount_rm'];
+//                             }
+//                         }
                         
                     }
                 }
@@ -150,7 +150,7 @@ function get_telco_data_monthly($year, $company, $account_no){
     //telco monthly
     $datasets_telco_monthly = [];
     foreach ($data_monthly as $code => $data){
-        if(!empty($account_no)){
+//         if(!empty($account_no)){
             foreach ($data as $location => $val){
                 $month_data = array_replace($month_map, $val);
                 $datasets_telco_monthly[] = array(
@@ -162,18 +162,18 @@ function get_telco_data_monthly($year, $company, $account_no){
                     'data' => array_values($month_data)
                 );
             }
-        }
-        else{
-            $month_data = array_replace($month_map, $data);
-            $datasets_telco_monthly[] = array(
-                'label' => $code,
-                'backgroundColor' => 'transparent',
-                'borderColor' => randomColor(),
-                'lineTension' => 0,
-                'borderWidth' => 3,
-                'data' => array_values($month_data)
-            );            
-        }        
+//         }
+//         else{
+//             $month_data = array_replace($month_map, $data);
+//             $datasets_telco_monthly[] = array(
+//                 'label' => $code,
+//                 'backgroundColor' => 'transparent',
+//                 'borderColor' => randomColor(),
+//                 'lineTension' => 0,
+//                 'borderWidth' => 3,
+//                 'data' => array_values($month_data)
+//             );            
+//         }        
     }
    
     return array(

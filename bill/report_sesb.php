@@ -25,7 +25,7 @@ if(!empty($select_company)){
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Eng Peng Vehicle</title>
+    <title>Report SESB</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	<!-- link to css -->
@@ -160,7 +160,7 @@ if(!empty($select_company)){
           
           var table = $('#sesb_table').DataTable({
               "searching": true,
-              "lengthMenu": [[10, 25, 50, -1], [ 10, 25, 50, "All"]],
+              "paging": false,
               "order": [[ 15, "desc" ]],
               "ajax":{
                   "url": "report_all.ajax.php",  
@@ -194,90 +194,51 @@ if(!empty($select_company)){
                 	      "render": $.fn.dataTable.render.number(',', '.', 2, '')               	                      	        	     
                 	 }
       			],
-//         	  "dom": 'Bfrtip',
-//               "buttons": [ 
-//                { 
-//               	extend: 'excelHtml5', 
-//               	title: 'Celcom Mobile_' + res,
-//               	footer: true,
-//               	customize: function ( xlsx ) {
-//               		console.log(xlsx);
-//                     var sheet = xlsx.xl.worksheets['sheet1.xml'];
-//                     var downrows = 2;
-//                     var clRow = $('row', sheet);
-//                     //update Row
-//                     clRow.each(function () {
-//                         var attr = $(this).attr('r');
-//                         var ind = parseInt(attr);
-//                         ind = ind + downrows;
-//                         $(this).attr("r",ind);
-//                     });
+                "dom": "Bfrtip",
+                "buttons": {
+                  "buttons": [
+                    {
+                      text: "Export to Excel",
+                      extend: 'excelHtml5', 
+                    },
+                    {
+                        text: "Print",
+                        extend: 'print',
+                        customize: function(win){             
+                            var last = null;
+                            var current = null;
+                            var bod = [];
              
-//                     // Update  row > c
-//                     $('row c ', sheet).each(function () {
-//                         var attr = $(this).attr('r');
-//                         var pre = attr.substring(0, 1);
-//                         var ind = parseInt(attr.substring(1, attr.length));
-//                         ind = ind + downrows;
-//                         $(this).attr("r", pre + ind);
-//                     });
+                            var css = '@page { size: landscape; }',
+                                head = win.document.head || win.document.getElementsByTagName('head')[0],
+                                style = win.document.createElement('style');
              
-//                     function Addrow(index,data) {
-//                         msg='<row r="'+index+'">'
-//                         for(i=0;i<data.length;i++){
-//                             var key=data[i].k;
-//                             var value=data[i].v;
-//                             msg += '<c t="inlineStr" r="' + key + index + '" s="42">';
-//                             msg += '<is>';
-//                             msg +=  '<t>'+value+'</t>';
-//                             msg+=  '</is>';
-//                             msg+='</c>';
-//                         }
-//                         msg += '</row>';
-//                         return msg;
-//                     }
+                            style.type = 'text/css';
+                            style.media = 'print';
              
-//                     //insert
-//                     var r1 = Addrow(1, [{ k: 'A', v: 'Company' }, { k: 'B', v: company_name }]);
-                     
-//                     sheet.childNodes[0].childNodes[1].innerHTML = r1 + sheet.childNodes[0].childNodes[1].innerHTML;                
-//                }
-//                },
-//                {
-//               	extend: 'print',
-//               	text: 'Print',
-//               	title: company_name,
-//               	footer: true,
-//               	customize: function ( win ) {
-//               		  $(win.document.body).find('h1').css('font-size', '12pt');              	     
-//                       $(win.document.body).css( 'font-size', '10pt' );              
-//                       $(win.document.body).find( 'table' ).addClass( 'compact' )
-//                           .css( 'font-size', 'inherit' );
-
-//                       var last = null;
-//                       var current = null;
-//                       var bod = [];
-       
-//                       var css = '@page { size: landscape; }',
-//                           head = win.document.head || win.document.getElementsByTagName('head')[0],
-//                           style = win.document.createElement('style');
-       
-//                       style.type = 'text/css';
-//                       style.media = 'print';
-       
-//                       if (style.styleSheet)
-//                       {
-//                         style.styleSheet.cssText = css;
-//                       }
-//                       else
-//                       {
-//                         style.appendChild(win.document.createTextNode(css));
-//                       }
-       
-//                       head.appendChild(style);
-//                   }
-//                }
-//               ],              
+                            if (style.styleSheet)
+                            {
+                              style.styleSheet.cssText = css;
+                            }
+                            else
+                            {
+                              style.appendChild(win.document.createTextNode(css));
+                            }
+             
+                            head.appendChild(style);
+                     	}    
+					}
+                  ],
+                  "dom": {
+                    "button": {
+                      tag: "button",
+                      className: "btn btn-sm btn-info"
+                    },
+                    "buttonLiner": {
+                      tag: null
+                    }
+                  }
+                },          
            });
           $.fn.dataTable.Api.register( 'sum()', function () {
               return this.flatten().reduce( function ( a, b ) {

@@ -25,7 +25,7 @@ if(!empty($select_company)){
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Eng Peng Vehicle</title>
+    <title>Report Jabatan Air</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	<!-- link to css -->
@@ -160,7 +160,7 @@ if(!empty($select_company)){
           
           var table = $('#jabatan_air_table').DataTable({
               "searching": true,
-              "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+              "paging": false,
               "order": [[ 15, "desc" ]],
               "ajax":{
                   "url": "report_all.ajax.php",  
@@ -194,6 +194,51 @@ if(!empty($select_company)){
                 	      "render": $.fn.dataTable.render.number(',', '.', 2, '')               	                      	        	     
                 	 }
       			],
+                "dom": "Bfrtip",
+                "buttons": {
+                  "buttons": [
+                    {
+                      text: "Export to Excel",
+                      extend: 'excelHtml5', 
+                    },
+                    {
+                        text: "Print",
+                        extend: 'print',
+                        customize: function(win){             
+                            var last = null;
+                            var current = null;
+                            var bod = [];
+             
+                            var css = '@page { size: landscape; }',
+                                head = win.document.head || win.document.getElementsByTagName('head')[0],
+                                style = win.document.createElement('style');
+             
+                            style.type = 'text/css';
+                            style.media = 'print';
+             
+                            if (style.styleSheet)
+                            {
+                              style.styleSheet.cssText = css;
+                            }
+                            else
+                            {
+                              style.appendChild(win.document.createTextNode(css));
+                            }
+             
+                            head.appendChild(style);
+                     	}
+                      }
+                  ],
+                  "dom": {
+                    "button": {
+                      tag: "button",
+                      className: "btn btn-sm btn-info"
+                    },
+                    "buttonLiner": {
+                      tag: null
+                    }
+                  }
+                },
 //         	  "dom": 'Bfrtip',
 //               "buttons": [ 
 //                { 

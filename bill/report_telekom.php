@@ -20,7 +20,7 @@ $html_year_select = ob_get_clean();
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Eng Peng Vehicle</title>
+    <title>Report Telekom</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	<!-- link to css -->
@@ -155,126 +155,89 @@ $html_year_select = ob_get_clean();
           var res = company_name.concat('_'+year);
           var acc_no = '';
           var ref_no = '';
-
-//           if ( config.header) {
-//               var tablecaption = [config.message];
-//        			addRow( tablecaption, rowPos );
-//               //addRow( "testing", "0" );
-//                addRow( "", rowPos );
-//              addRow( data.header, rowPos );
-//              //$('row c', rels).attr( 's', '2' ); // bold
-//          }
-          
           $('#telekom_table').DataTable({
-              "searching": true,
-              "order": [[ 15, "desc" ]],
-//         	  "dom": 'Bfrtip',
-			  "paging": false,
-//               "buttons": [ 
-//                { 
-//               	extend: 'excelHtml5', 
-//               	title: 'Telekom_'+res,
-//               	footer: true,
-//               	customize: function ( xlsx ) {
-//               		console.log(xlsx);
-//                     var sheet = xlsx.xl.worksheets['sheet1.xml'];
-//                     var downrows = 3;
-//                     var clRow = $('row', sheet);
-//                     //update Row
-//                     clRow.each(function () {
-//                         var attr = $(this).attr('r');
-//                         var ind = parseInt(attr);
-//                         ind = ind + downrows;
-//                         $(this).attr("r",ind);
-//                     });
-             
-//                     // Update  row > c
-//                     $('row c ', sheet).each(function () {
-//                         var attr = $(this).attr('r');
-//                         var pre = attr.substring(0, 1);
-//                         var ind = parseInt(attr.substring(1, attr.length));
-//                         ind = ind + downrows;
-//                         $(this).attr("r", pre + ind);
-//                     });
-             
-//                     function Addrow(index,data) {
-//                         msg='<row r="'+index+'">'
-//                         for(i=0;i<data.length;i++){
-//                             var key=data[i].k;
-//                             var value=data[i].v;
-//                             msg += '<c t="inlineStr" r="' + key + index + '" s="42">';
-//                             msg += '<is>';
-//                             msg +=  '<t>'+value+'</t>';
-//                             msg+=  '</is>';
-//                             msg+='</c>';
-//                         }
-//                         msg += '</row>';
-//                         return msg;
-//                     }
-             
-//                     //insert
-//                     var r1 = Addrow(1, [{ k: 'A', v: 'Company' }, { k: 'B', v: company_name }]);
-//                     var r2 = Addrow(2, [{ k: 'A', v: 'Account No.' }, { k: 'B', v: acc_no }]);
-//                     var r3 = Addrow(3, [{ k: 'A', v: 'Reference' }, { k: 'B', v: ref_no }]);
-                    
-//                     sheet.childNodes[0].childNodes[1].innerHTML = r1 + r2 + r3 + sheet.childNodes[0].childNodes[1].innerHTML;
-                
-//                }
-//                },
-//                {
-//               	extend: 'print',
-//               	title: 'Telekom <br>Company : '+company_name+'<br>'+'Account No. : '+acc_no+'<br>Year : '+year,
-//               	footer: true,
-//               	customize: function ( win ) {
-//               		$(win.document.body).find('h1').css('font-size', '12pt'); 
-//                     $(win.document.body)
-//                           .css( 'font-size', '10pt' );
-              
-//                     $(win.document.body).find( 'table' )
-//                           .addClass( 'compact' )
-//                           .css( 'font-size', 'inherit' );
-//                   }
-//                }
-//               ],
-              "ajax":{
-                  "url": "report_all.ajax.php",  
-                  "type":"POST",       	        	
-             	 	"data" : function ( data ) {
-      					data.action = 'report_monthly_telekom';		
-      					data.filter = '<?=$select_company?>';
-      					data.year = '<?=$year_select?>';		
-         	        }         	                 
+            "searching": true,
+            "order": [[ 15, "desc" ]],
+            "paging": false,
+            "dom": "Bfrtip",
+            "buttons": {
+              "buttons": [
+                {
+                  text: "Export to Excel",
+                  extend: 'excelHtml5', 
+                },
+                {
+                    text: "Print",
+                    extend: 'print',
+                    customize: function(win){             
+                        var last = null;
+                        var current = null;
+                        var bod = [];
+         
+                        var css = '@page { size: landscape; }',
+                            head = win.document.head || win.document.getElementsByTagName('head')[0],
+                            style = win.document.createElement('style');
+         
+                        style.type = 'text/css';
+                        style.media = 'print';
+         
+                        if (style.styleSheet)
+                        {
+                          style.styleSheet.cssText = css;
+                        }
+                        else
+                        {
+                          style.appendChild(win.document.createTextNode(css));
+                        }
+         
+                        head.appendChild(style);
+                 	}
+                  }
+              ],
+              "dom": {
+                "button": {
+                  tag: "button",
+                  className: "btn btn-sm btn-info"
+                },
+                "buttonLiner": {
+                  tag: null
+                }
+              }
+            },
+            "ajax":{
+              "url": "report_all.ajax.php",  
+              "type":"POST",       	        	
+             	"data" : function ( data ) {
+            		data.action = 'report_monthly_telekom';		
+            		data.filter = '<?=$select_company?>';
+            		data.year = '<?=$year_select?>';		
+                    }         	                 
                  },
                  "footerCallback": function( tfoot, data, start, end, display ) {
-        				var api = this.api(), data;
-        				var numFormat = $.fn.dataTable.render.number( '\,', '.', 2, '' ).display;
-
-       				api.columns([3,4,5,6,7,8,9,10,11,12,13,14,15], { page: 'current'}).every(function() {
-       					var sum = this
-       				    .data()
-       				    .reduce(function(a, b) {
-       				    var x = parseFloat(a) || 0;
-       				    var y = parseFloat(b) || 0;
-       				    	return x + y;
-       				    }, 0);			
-       				       
-       				    $(this.footer()).html(numFormat(sum));
-       				}); 
-        			},
+            			var api = this.api(), data;
+            			var numFormat = $.fn.dataTable.render.number( '\,', '.', 2, '' ).display;
+            
+            		api.columns([3,4,5,6,7,8,9,10,11,12,13,14,15], { page: 'current'}).every(function() {
+            			var sum = this
+            		    .data()
+            		    .reduce(function(a, b) {
+            		    var x = parseFloat(a) || 0;
+            		    var y = parseFloat(b) || 0;
+            		    	return x + y;
+            		    }, 0);			
+            		       
+            		    $(this.footer()).html(numFormat(sum));
+            		}); 
+            		},
              "columnDefs": [
-           	  {
-           	      "targets": [3,4,5,6,7,8,9,10,11,12,13,14,15], // your case first column
-           	      "className": "text-right", 
-           	      "render": $.fn.dataTable.render.number(',', '.', 2, '')               	                      	        	     
-           	 }
- 			],
-           });
-//           $('#date_start, #date_end').datepicker({
-//               format: "dd-mm-yyyy",
-//               autoclose: true,
-//               orientation: "top left",
-//               todayHighlight: true
-//           });
+              {
+                  "targets": [3,4,5,6,7,8,9,10,11,12,13,14,15], // your case first column
+                  "className": "text-right", 
+                  "render": $.fn.dataTable.render.number(',', '.', 2, '')               	                      	        	     
+             }
+            ],
+            });
+
       });
   </script>
 </body>

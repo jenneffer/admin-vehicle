@@ -125,20 +125,20 @@ function get_fx_data_monthly($year, $company, $account_no){
             $sesb_m = $telco_month["month"];
             for ( $m=1; $m<=$month; $m++ ){
                 if($m == $sesb_m){
-                    if(!empty($account_no)){
+//                     if(!empty($account_no)){
                         if (isset($data_monthly[$code][$location][$m])){
                             $data_monthly[$code][$location][$m] += (double)$v['amount'];
                         }else{
                             $data_monthly[$code][$location][$m] = (double)$v['amount'];
                         }
-                    }
-                    else{
-                        if (isset($data_monthly[$code][$m])){
-                            $data_monthly[$code][$m] += (double)$v['amount'];
-                        }else{
-                            $data_monthly[$code][$m] = (double)$v['amount'];
-                        }
-                    }                    
+//                     }
+//                     else{
+//                         if (isset($data_monthly[$code][$m])){
+//                             $data_monthly[$code][$m] += (double)$v['amount'];
+//                         }else{
+//                             $data_monthly[$code][$m] = (double)$v['amount'];
+//                         }
+//                     }                    
                 }
             }
         }
@@ -147,7 +147,7 @@ function get_fx_data_monthly($year, $company, $account_no){
     //sesb monthly
     $datasets_fx_monthly = [];
     foreach ($data_monthly as $code => $data){
-        if(!empty($account_no)){
+//         if(!empty($account_no)){
             foreach ($data as $location => $val){
                 $month_data = array_replace($month_map, $val);
                 $datasets_fx_monthly[] = array(
@@ -159,18 +159,18 @@ function get_fx_data_monthly($year, $company, $account_no){
                     'data' => array_values($month_data)
                 );
             }
-        }
-        else{
-            $month_data = array_replace($month_map, $data);
-            $datasets_fx_monthly[] = array(
-                'label' => $code,
-                'backgroundColor' => 'transparent',
-                'borderColor' => randomColor(),
-                'lineTension' => 0,
-                'borderWidth' => 3,
-                'data' => array_values($month_data)
-            );
-        }
+//         }
+//         else{
+//             $month_data = array_replace($month_map, $data);
+//             $datasets_fx_monthly[] = array(
+//                 'label' => $code,
+//                 'backgroundColor' => 'transparent',
+//                 'borderColor' => randomColor(),
+//                 'lineTension' => 0,
+//                 'borderWidth' => 3,
+//                 'data' => array_values($month_data)
+//             );
+//         }
         
     }
    

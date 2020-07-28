@@ -17,7 +17,7 @@ $html_year_select = ob_get_clean();
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Eng Peng Vehicle</title>
+    <title>Report Management</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	<!-- link to css -->
@@ -149,28 +149,52 @@ $html_year_select = ob_get_clean();
       $(document).ready(function() {
           $('#management_fee').DataTable({
               "searching": true,
-//               "order" : [[ 9, "asc" ]],          
-//         	  "dom": 'Bfrtip',
-//               "buttons": [ 
-//                { 
-//               	extend: 'excelHtml5', 
-//               	messageTop: 'Vehicle Summon ',
-//               	footer: true 
-//                },
-//                {
-//               	extend: 'print',
-//               	messageTop: 'Vehicle Summon ',
-//               	footer: true,
-//               	customize: function ( win ) {
-//                       $(win.document.body)
-//                           .css( 'font-size', '10pt' );
-              
-//                       $(win.document.body).find( 'table' )
-//                           .addClass( 'compact' )
-//                           .css( 'font-size', 'inherit' );
-//                   }
-//                }
-//               ],
+              "paging": false,
+              "dom": "Bfrtip",
+              "buttons": {
+                "buttons": [
+                  {
+                    text: "Export to Excel",
+                    extend: 'excelHtml5', 
+                  },
+                  {
+                      text: "Print",
+                      extend: 'print',
+                      customize: function(win){             
+                          var last = null;
+                          var current = null;
+                          var bod = [];
+           
+                          var css = '@page { size: landscape; }',
+                              head = win.document.head || win.document.getElementsByTagName('head')[0],
+                              style = win.document.createElement('style');
+           
+                          style.type = 'text/css';
+                          style.media = 'print';
+           
+                          if (style.styleSheet)
+                          {
+                            style.styleSheet.cssText = css;
+                          }
+                          else
+                          {
+                            style.appendChild(win.document.createTextNode(css));
+                          }
+           
+                          head.appendChild(style);
+                   	}
+                    }
+                ],
+                "dom": {
+                  "button": {
+                    tag: "button",
+                    className: "btn btn-sm btn-info"
+                  },
+                  "buttonLiner": {
+                    tag: null
+                  }
+                }
+              },
               "ajax":{
                   "url": "report_all.ajax.php",  
                   "type":"POST",       	        	

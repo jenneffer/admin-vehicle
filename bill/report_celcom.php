@@ -25,7 +25,7 @@ if(!empty($select_company)){
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Eng Peng Vehicle</title>
+    <title>Report Telco</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	<!-- link to css -->
@@ -87,6 +87,7 @@ if(!empty($select_company)){
                                         <tr>
                                         	<th>User</th>	
 											<th>Position/Dept</th>
+											<th>HP No.</th>
 											<th>Acc No.</th>
                         					<th class='sum' scope='col'>Jan</th>
                                             <th class='sum' scope='col'>Feb</th>
@@ -160,9 +161,9 @@ if(!empty($select_company)){
           var res = company_name.concat('_'+year);
           
           var table = $('#telco_table').DataTable({
-              "searching": true,
-              "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
-              "order": [[ 15, "desc" ]],
+              "searching": true,              
+              "order": [[ 16, "desc" ]],
+              "paging": false,
               "ajax":{
                   "url": "report_all.ajax.php",  
                   "type":"POST",       	        	
@@ -174,11 +175,56 @@ if(!empty($select_company)){
                  },
       			"columnDefs": [
                 	  {
-                	      "targets": [3,4,5,6,7,8,9,10,11,12,13,14,15], // your case first column
+                	      "targets": [4,5,6,7,8,9,10,11,12,13,14,15,16], // your case first column
                 	      "className": "text-right", 
                 	      "render": $.fn.dataTable.render.number(',', '.', 2, '')               	                      	        	     
                 	 }
       			],
+                "dom": "Bfrtip",
+                "buttons": {
+                  "buttons": [
+                    {
+                      text: "Export to Excel",
+                      extend: 'excelHtml5', 
+                    },
+                    {
+                        text: "Print",
+                        extend: 'print',
+                        customize: function(win){             
+                            var last = null;
+                            var current = null;
+                            var bod = [];
+             
+                            var css = '@page { size: landscape; }',
+                                head = win.document.head || win.document.getElementsByTagName('head')[0],
+                                style = win.document.createElement('style');
+             
+                            style.type = 'text/css';
+                            style.media = 'print';
+             
+                            if (style.styleSheet)
+                            {
+                              style.styleSheet.cssText = css;
+                            }
+                            else
+                            {
+                              style.appendChild(win.document.createTextNode(css));
+                            }
+             
+                            head.appendChild(style);
+                     	}
+                      }
+                  ],
+                  "dom": {
+                    "button": {
+                      tag: "button",
+                      className: "btn btn-sm btn-info"
+                    },
+                    "buttonLiner": {
+                      tag: null
+                    }
+                  }
+                },
 //         	  "dom": 'Blfrtip',
 //               "buttons": [ 
 //                { 

@@ -660,6 +660,7 @@ function get_report_celcom($filter, $year){
             $user = itemName("SELECT user FROM bill_telco_account  WHERE id='$id'");
             $position = itemName("SELECT position FROM bill_telco_account  WHERE id='$id'");
             $acc_no = itemName("SELECT account_no FROM bill_telco_account  WHERE id='$id'");
+            $hp_no = itemName("SELECT hp_no FROM bill_telco_account  WHERE id='$id'");
             $total = 0;
             for( $i=1; $i<=$monthto; $i++){
                 $total += $data[$i];
@@ -668,6 +669,7 @@ function get_report_celcom($filter, $year){
             $datas = array(
                 $user,
                 $position,
+                $hp_no,
                 $acc_no,
                 $data[1],
                 $data[2],
