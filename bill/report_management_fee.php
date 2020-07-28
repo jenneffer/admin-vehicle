@@ -77,7 +77,7 @@ $html_year_select = ob_get_clean();
                                 <table id="management_fee" class="table table-striped table-bordered">
                                     <thead>
                                         <tr>
-                                       		<th>Account No.</th>
+                                       		<th>Location</th>
                                        		<th>Company</th>
                                        		<th>Owner</th>
                         					<th scope='col'>Jan</th>

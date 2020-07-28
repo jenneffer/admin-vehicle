@@ -181,6 +181,9 @@
                             	<div class="col-sm-2">
                                 	<button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#add_phone">Add telephone bill</button>
                                 </div>
+                                <div class="col-sm-2 text-right">
+                                	<button type="button" class="btn btn-sm btn btn-info" onClick="window.close();">Back</button>
+                                </div>
                         	</div>
                     	</form>                            	
                     	<div>     

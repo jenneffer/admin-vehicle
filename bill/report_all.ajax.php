@@ -537,8 +537,8 @@ function get_report_management_fee($filter, $year){
             
             $count++;
             $total_found_rows++;
-            $acc_no = itemName("SELECT account_no FROM bill_management_account WHERE id='$id'");
-            $owner = itemName("SELECT owner FROM bill_management_account WHERE id='$id'");
+            $location = itemName("SELECT location FROM bill_management_account WHERE id='$id'");
+            $owner = itemName("SELECT IFNULL(owner,owner_ref) FROM bill_management_account WHERE id='$id'");
             $company = itemName("SELECT code FROM company WHERE id IN (SELECT company_id FROM bill_management_account WHERE bill_management_account.id='$id' )");
             $total = 0;
             for( $i=1; $i<=$monthto; $i++){
@@ -546,7 +546,7 @@ function get_report_management_fee($filter, $year){
             }
             
             $datas = array(
-                $acc_no,
+                $location,
                 $company,
                 $owner,
                 $data[1],

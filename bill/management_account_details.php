@@ -137,6 +137,9 @@
                                     	<div class="col-sm-4">
                                     		<?=$html_year_select?>
                                     	</div>
+                                    	<div class="col-sm-4">
+                                    		<button type="button" class="btn btn-sm btn btn-info" onClick="window.close();">Back</button>
+                                    	</div>
                                 	</div>
                             	</form> 
                             	<div class="tabs">

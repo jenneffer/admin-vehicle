@@ -309,7 +309,7 @@ while($row = mysqli_fetch_assoc($result)){
     	});
 
     	$('.btn-goback').on("click",function(){
-    		window.close();	
+    		goBack();	
             return false;
         });
 	});
