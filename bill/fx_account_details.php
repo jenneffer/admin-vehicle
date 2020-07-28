@@ -107,12 +107,14 @@
                             	</div>
                             	<div class="col-sm-2">&nbsp;</div>
                             	<div class="col-sm-2">&nbsp;</div>
-                            	<div class="col-sm-2">
-                            		<button type="button" class="btn-sm btn btn-primary button_add" data-toggle="modal" data-target="#addItem">Add New Meter Reading</button>
-                            	</div>                                    	
-<!--                             	<div class="col-sm-2 text-right"> -->
-<!--                             		<button type="button" class="btn-sm btn btn-primary button_add_invoice" data-toggle="modal" data-target="#addInvoice">Add New Invoice</button> -->
-<!--                             	</div> -->
+                            	<div class="row col-sm-4">
+                            		<div  class="col-sm-6">
+                            			<button type="button" class="btn-sm btn btn-primary button_add" data-toggle="modal" data-target="#addItem">Add New Meter Reading</button>
+                            		</div>
+                            		<div  class="col-sm-4">
+                            			<button type="button" class="btn btn-sm btn btn-info" onClick="window.close();">Back</button>
+                            		</div> 
+                            	</div>                            	                               	
                         	</div>
                     	</form> 
                     	<table id="fj_meter_reading_table" class="table table-striped table-bordered">

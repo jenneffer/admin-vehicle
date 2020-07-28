@@ -113,8 +113,13 @@
                                     	<div class="col-sm-4">
                                     		<?=$html_year_select?>
                                     	</div>
-                                    	<div class="col-sm-4">
-                                    		<button type="button" class="btn btn-sm btn-primary button_add" data-toggle="modal" data-target="#addItem">Add New Record</button>
+                                    	<div class="row col-sm-4">
+                                    		<div  class="col-sm-4">
+                                    			<button type="button" class="btn btn-sm btn-primary button_add" data-toggle="modal" data-target="#addItem">Add New Record</button>
+                                    		</div>
+                                    		<div  class="col-sm-6">
+                                    			<button type="button" class="btn btn-sm btn btn-info" onClick="window.close();">Back</button>
+                                    		</div> 
                                     	</div>
                                 	</div>
                             	</form>                            	
