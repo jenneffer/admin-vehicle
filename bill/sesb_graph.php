@@ -123,19 +123,19 @@ function get_sesb_data_monthly($year, $company, $location){
             $sesb_m = $sesb_month["month"];
             for ( $m=1; $m<=$month; $m++ ){
                 if($m == $sesb_m){
-                    if(!empty($location)){                        
+//                     if(!empty($location)){                        
                         if (isset($data_monthly[$code][$loc][$m])){
                             $data_monthly[$code][$loc][$m] += (double)$v['amount'];
                         }else{
                             $data_monthly[$code][$loc][$m] = (double)$v['amount'];
                         }
-                    }else{
-                        if (isset($data_monthly[$code][$m])){
-                            $data_monthly[$code][$m] += (double)$v['amount'];
-                        }else{
-                            $data_monthly[$code][$m] = (double)$v['amount'];
-                        }
-                    }
+//                     }else{
+//                         if (isset($data_monthly[$code][$m])){
+//                             $data_monthly[$code][$m] += (double)$v['amount'];
+//                         }else{
+//                             $data_monthly[$code][$m] = (double)$v['amount'];
+//                         }
+//                     }
                     
                 }
             }
@@ -146,7 +146,7 @@ function get_sesb_data_monthly($year, $company, $location){
     $datasets_sesb_monthly = [];
 
     foreach ($data_monthly as $code => $data){
-        if(!empty($location)){
+//         if(!empty($location)){
             foreach ($data as $location => $val){               
                 $month_data = array_replace($month_map, $val);
                 $datasets_sesb_monthly[] = array(
@@ -158,17 +158,17 @@ function get_sesb_data_monthly($year, $company, $location){
                     'data' => array_values($month_data)
                 );
             }
-        }else{
-            $month_data = array_replace($month_map, $data);
-            $datasets_sesb_monthly[] = array(
-                'label' => $code,
-                'backgroundColor' => 'transparent',
-                'borderColor' => randomColor(),
-                'lineTension' => 0,
-                'borderWidth' => 3,
-                'data' => array_values($month_data)
-            );
-        }
+//         }else{
+//             $month_data = array_replace($month_map, $data);
+//             $datasets_sesb_monthly[] = array(
+//                 'label' => $code,
+//                 'backgroundColor' => 'transparent',
+//                 'borderColor' => randomColor(),
+//                 'lineTension' => 0,
+//                 'borderWidth' => 3,
+//                 'data' => array_values($month_data)
+//             );
+//         }
     }
    
     return array(
