@@ -206,6 +206,10 @@ td, th {
 tr:nth-child(even) {
   background-color: #dddddd;
 }
+.center {
+  margin: auto;
+  text-align: center;
+}
 </style>
 <?php require_once('../allCSS1.php')?>
 <link href="https://cdn.jsdelivr.net/npm/chartist@0.11.0/dist/chartist.min.css" rel="stylesheet">
@@ -241,15 +245,6 @@ tr:nth-child(even) {
                               		<label for="year_select" class="form-control-label"><small class="form-text text-muted">Year</small></label>
                               		<?=$html_year_select?>
                               	</div>
-            <!--                   	<div class="col-sm-2"> -->
-            <!--             			<label for="tariff" class="form-control-label"><small class="form-text text-muted">Tariff</small></label> -->
-            <!--                 		<select name="tariff" id="tariff" class="form-control" onchange="this.form.submit()"> -->
-            <!--                			<option value="CM1" <?php if($tariff=="CM1") echo "selected"; else echo ""; ?>>CM1</option>
-            <!--                			<option value="DM" <?php if($tariff=="DM") echo "selected"; else echo ""; ?>>DM</option>
-            <!--                			<option value="ID1" <?php if($tariff=="ID1") echo "selected"; else echo ""; ?>>ID1</option>
-            <!--                			<option value="ID2" <?php if($tariff=="ID2") echo "selected"; else echo ""; ?>>ID2</option>
-            <!--                 		</select> -->
-            <!--                   	</div> -->
                               	<div class="col-sm-4 monthly-div">
                         		<label for="company" class="form-control-label"><small class="form-text text-muted">Company</small></label>
                         		<?php                                            
@@ -269,18 +264,13 @@ tr:nth-child(even) {
                     	<br>
                         <div class="row">
                             <div class="col-sm-12 sesb-yearly">            	
-            <!--                     <div class="card">                	 -->
-            <!--                         <div class="card-body">                         -->
-                                        <canvas id="sesb-yearly"></canvas>                        
-            <!--                         </div> -->
-            <!--                     </div> -->
+								<canvas id="sesb-yearly"></canvas>                        
                             </div>           
                             <div class="col-sm-12 sesb-monthly">            	
-            <!--                     <div class="card">                	 -->
-            <!--                         <div class="card-body">                         -->
-                                        <canvas id="sesb-monthly"></canvas>                        
-            <!--                         </div> -->
-            <!--                     </div> -->
+								<canvas id="sesb-monthly"></canvas>  
+								<div class="center">
+									<button class="btn btn-sm btn-info" id="btn_print">Print</button>
+								</div>                      
                             </div>     
                 		</div>  
     				</div>
@@ -305,11 +295,14 @@ tr:nth-child(even) {
     <script src="../assets/js/lib/data-table/buttons.colVis.min.js"></script>
     <script src="../assets/js/init/datatables-init.js"></script>
     <script src="../assets/js/script/bootstrap-datepicker.min.js"></script>
+    <script src="../assets/js/script/jspdf.min.js"></script>
 	<script type="text/javascript">
         $(document).ready(function() {
             var select_company = '<?=$comp_name?>'; 
             var report_type = '<?=$report_type?>';
             var year = '<?=$year_select?>';
+            var location = '<?=$select_location?>';
+
             $('.monthly-div').hide();
             $('.sesb-monthly').hide();
             $('.sesb-yearly').show();
@@ -386,10 +379,22 @@ tr:nth-child(even) {
                     },
                     title: {
                         display: true,
-                        text: 'MONTHLY USAGE FOR YEAR '+year
+                        text: ['MONTHLY USAGE FOR YEAR '+year,select_company+" - "+location]                        
                     }
                 }
             } );
+
+            //render chart before printing
+            myChart.render();
+            $("#btn_print").on("click", function(){
+            	var canvas = document.querySelector("#sesb-monthly");
+                var canvas_img = canvas.toDataURL("image/png",1.0); //JPEG will not match background color
+                var pdf = new jsPDF('landscape','in', 'a4'); //orientation, units, page size
+                pdf.addImage(canvas_img, 'png', .5, .5, 10, 4); //image, type, padding left, padding top, width, height
+                pdf.autoPrint(); //print window automatically opened with pdf
+                var blob = pdf.output("bloburl");
+                window.open(blob);
+            });
             
 			//SESB yearly
             var ctx = document.getElementById( "sesb-yearly" );        	
@@ -461,7 +466,15 @@ tr:nth-child(even) {
                         }
                     } );
 
-        });            
+        });  
+        function PrintImage() {
+            var canvas = document.getElementById("sesb-monthly");
+            var win = window.open();
+            win.document.write("<br><img src='" + canvas.toDataURL() + "'/>");
+            win.print();
+            win.location.reload();
+
+        }          
 </script>
 </body>
 </html>
