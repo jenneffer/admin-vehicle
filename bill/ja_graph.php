@@ -208,6 +208,10 @@ td, th {
 tr:nth-child(even) {
   background-color: #dddddd;
 }
+.center {
+  margin: auto;
+  text-align: center;
+}
 </style>
 <?php require_once('../allCSS1.php')?>
 <link href="https://cdn.jsdelivr.net/npm/chartist@0.11.0/dist/chartist.min.css" rel="stylesheet">
@@ -271,7 +275,10 @@ tr:nth-child(even) {
                     <div class="col-sm-12 ja-monthly">            	
 <!--                         <div class="card">                	 -->
 <!--                             <div class="card-body">                         -->
-                                <canvas id="ja-monthly"></canvas>                        
+                                <canvas id="ja-monthly"></canvas>  
+                                <div class="center">
+									<button class="btn btn-sm btn-info" id="btn_print">Print</button>
+								</div>                      
 <!--                             </div> -->
 <!--                         </div> -->
                     </div>     
@@ -298,11 +305,13 @@ tr:nth-child(even) {
     <script src="../assets/js/lib/data-table/buttons.colVis.min.js"></script>
     <script src="../assets/js/init/datatables-init.js"></script>
     <script src="../assets/js/script/bootstrap-datepicker.min.js"></script>
+    <script src="../assets/js/script/jspdf.min.js"></script>
 	<script type="text/javascript">
         $(document).ready(function() {
             var select_company = '<?=$comp_name?>'; 
             var report_type = '<?=$report_type?>';
             var year = '<?=$year_select?>';
+            var location = '<?=$select_location?>';
             $('.monthly-div').hide();
             $('.ja-monthly').hide();
             $('.ja-yearly').show();
@@ -374,10 +383,22 @@ tr:nth-child(even) {
                     },
                     title: {
                         display: true,
-                        text: 'MONTHLY USAGE FOR YEAR '+year
+                        text: ['MONTHLY USAGE FOR YEAR '+year,select_company+" - "+location]
                     }
                 }
             } );
+
+          //render chart before printing
+            myChart.render();
+            $("#btn_print").on("click", function(){
+            	var canvas = document.querySelector("#ja-monthly");
+                var canvas_img = canvas.toDataURL("image/png",1.0); //JPEG will not match background color
+                var pdf = new jsPDF('landscape','in', 'a4'); //orientation, units, page size
+                pdf.addImage(canvas_img, 'png', .5, .5, 10, 4); //image, type, padding left, padding top, width, height
+                pdf.autoPrint(); //print window automatically opened with pdf
+                var blob = pdf.output("bloburl");
+                window.open(blob);
+            });
             
 			//JA yearly
             var ctx = document.getElementById( "ja-yearly" );        	
