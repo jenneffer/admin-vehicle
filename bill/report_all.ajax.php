@@ -654,8 +654,8 @@ function get_report_celcom($filter, $year){
     $arr_data = array();
     $count = 0;
     foreach ($arr_bills_monthly as $id => $data){
-        if(array_sum($data)){
-            $count++;
+//         if(array_sum($data)){
+//             $count++;
             $total_found_rows++;
             $user = itemName("SELECT user FROM bill_telco_account  WHERE id='$id'");
             $position = itemName("SELECT position FROM bill_telco_account  WHERE id='$id'");
@@ -687,7 +687,7 @@ function get_report_celcom($filter, $year){
                 
             );
             $arr_data[] = $datas;
-        }        
+//         }        
     }
     $arr_result = array(
         'sEcho' => 0,
