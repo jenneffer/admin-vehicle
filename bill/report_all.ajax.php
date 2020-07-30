@@ -6,6 +6,7 @@ session_start();
 $action = isset($_POST['action']) && $_POST['action'] !="" ? $_POST['action'] : ""; 
 $filter = isset($_POST['filter']) ? $_POST['filter'] : "";
 $year = isset($_POST['year']) ? $_POST['year'] : date('Y');
+$telco_type = isset($_POST['telco_type']) ? $_POST['telco_type'] : "";
 
 if( $action != "" ){
     switch ($action){
@@ -18,7 +19,7 @@ if( $action != "" ){
 //             break;
             
         case 'report_celcom':
-            get_report_celcom($filter, $year);
+            get_report_celcom($filter, $year, $telco_type);
             break;
             
 //         case 'report_photocopy_machine':
@@ -629,7 +630,7 @@ function get_report_management_fee($filter, $year){
 //     echo json_encode($arr_result);
 // }
 
-function get_report_celcom($filter, $year){
+function get_report_celcom($filter, $year, $telco_type){
     global $conn_admin_db;
     $monthto = 12;
     $arr_result = array(
@@ -643,6 +644,10 @@ function get_report_celcom($filter, $year){
     if(!empty($filter)){
         $sql_query .= " WHERE company_id = '".$filter."' ";
     }
+    if(!empty($telco_type)){
+        $sql_query .=" AND telco_type='$telco_type'";
+    }
+        
     $rst  = mysqli_query($conn_admin_db, $sql_query)or die(mysqli_error($conn_admin_db));
     
     while ($row = mysqli_fetch_assoc($rst)) {

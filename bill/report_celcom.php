@@ -10,6 +10,8 @@ ob_start();
 selectYear('year_select',$year_select,'submit()','','form-control form-control-sm','','');
 $html_year_select = ob_get_clean();
 
+$telco_type = isset($_POST['telco_type']) ? $_POST['telco_type'] : "";
+
 $company_name = "";
 if(!empty($select_company)){
     $company_name = itemName("SELECT name FROM company WHERE id = '$select_company'");
@@ -69,10 +71,19 @@ if(!empty($select_company)){
                                                 $company = mysqli_query ( $conn_admin_db, "SELECT company_id,(SELECT UPPER(name) FROM company WHERE id=bill_telco_account.company_id)company_name FROM bill_telco_account GROUP BY company_id");
                                                 db_select ($company, 'company', $select_company,'submit()','ALL','form-control form-control-sm','');
                                             ?>                           
-                                        </div>
+                                        </div>                                        
                                         <div class="col-sm-2">
                                         	<label for="acc_no" class="form-control-label"><small class="form-text text-muted">Year</small></label>
                                         	<?=$html_year_select;?>
+                                        </div>
+                                        <div class="col-sm-2">
+                                        	<label for="date_start" class="form-control-label"><small class="form-text text-muted">Service Provider</small></label>
+                                            <select id="telco_type" name="telco_type" class="form-control form-control-sm" onchange="this.form.submit()">
+                                              <option value="">All</option>
+                                              <option value="celcom" <?php if($telco_type=='celcom') echo "selected"?>>Celcom</option>
+                                              <option value="maxis" <?php if($telco_type=='maxis') echo "selected"?>>Maxis</option>
+                                              <option value="digi" <?php if($telco_type=='digi') echo "selected"?>>Digi</option>
+                                            </select>
                                         </div>
                                         <div class="col-sm-4">                                    	
                                         	<button type="submit" class="btn btn-sm btn-primary button_search ">View</button>
@@ -170,7 +181,8 @@ if(!empty($select_company)){
              	 	"data" : function ( data ) {
       					data.action = 'report_celcom';
       					data.filter = '<?=$select_company?>';		
-      					data.year = '<?=$year_select?>';		
+      					data.year = '<?=$year_select?>';
+      					data.telco_type = '<?=$telco_type?>';		
          	        }         	                 
                  },
       			"columnDefs": [
@@ -312,25 +324,23 @@ if(!empty($select_company)){
            });
           
         $.fn.dataTable.Api.register( 'sum()', function () {
-            return this.flatten().reduce( function ( a, b ) {
-                return (a*1) + (b*1); 
-        	});
+            return this.flatten().reduce((a, b) => (a*1)+(b*1), 0);
         });
         $("#telco_table").on('search.dt', function() {
             var numFormat = $.fn.dataTable.render.number( '\,', '.', 2, '' ).display;
-            var jan = table.column( 3, {page:'current'} ).data().sum();
-            var feb = table.column( 4, {page:'current'} ).data().sum();
-            var mar = table.column( 5, {page:'current'} ).data().sum();
-            var apr = table.column( 6, {page:'current'} ).data().sum();
-            var may = table.column( 7, {page:'current'} ).data().sum();
-            var jun = table.column( 8, {page:'current'} ).data().sum();
-            var jul = table.column( 9, {page:'current'} ).data().sum();
-            var aug = table.column( 10, {page:'current'} ).data().sum();
-            var sep = table.column( 11, {page:'current'} ).data().sum();
-            var oct = table.column( 12, {page:'current'} ).data().sum();
-            var nov = table.column( 13, {page:'current'} ).data().sum();
-            var dec = table.column( 14, {page:'current'} ).data().sum();
-            var total = table.column( 15, {page:'current'} ).data().sum();
+            var jan = table.column( 4, {page:'current'} ).data().sum();
+            var feb = table.column( 5, {page:'current'} ).data().sum();
+            var mar = table.column( 6, {page:'current'} ).data().sum();
+            var apr = table.column( 7, {page:'current'} ).data().sum();
+            var may = table.column( 8, {page:'current'} ).data().sum();
+            var jun = table.column( 9, {page:'current'} ).data().sum();
+            var jul = table.column( 10, {page:'current'} ).data().sum();
+            var aug = table.column( 11, {page:'current'} ).data().sum();
+            var sep = table.column( 12, {page:'current'} ).data().sum();
+            var oct = table.column( 13, {page:'current'} ).data().sum();
+            var nov = table.column( 14, {page:'current'} ).data().sum();
+            var dec = table.column( 15, {page:'current'} ).data().sum();
+            var total = table.column( 16, {page:'current'} ).data().sum();
                      		
             jan = (jan == null) ? '&nbsp;' : numFormat(jan);        		
             feb = (feb == null) ? '&nbsp;' : numFormat(feb);
@@ -346,7 +356,7 @@ if(!empty($select_company)){
             dec = (dec == null) ? '&nbsp;' : numFormat(dec);
             total = (total == null) ? '&nbsp;' : numFormat(total);           		        	
              	 
-            var data = "<tr><th colspan='3' class='text-right'>Grand Total</th>";
+            var data = "<tr><th colspan='4' class='text-right'>Grand Total</th>";
             data += "<th class='text-right'>"+jan+"</th>";
             data +="<th class='text-right'>"+feb+"</th>";
             data +="<th class='text-right'>"+mar+"</th>";
@@ -359,9 +369,10 @@ if(!empty($select_company)){
             data +="<th class='text-right'>"+oct+"</th>";
             data +="<th class='text-right'>"+nov+"</th>";
             data +="<th class='text-right'>"+dec+"</th>";
-            data +="<th class='text-right'>"+total+"</th></tr>";
-            
-			$("#tfoot").html(data);
+            data +="<th class='text-right'>"+total+"</th></tr>";            
+
+            $("#tfoot").html(data);
+
         });
 //           $('#date_start, #date_end').datepicker({
 //               format: "dd-mm-yyyy",
