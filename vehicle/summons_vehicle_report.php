@@ -29,7 +29,6 @@
                 INNER JOIN vehicle_vehicle ON vehicle_vehicle.vv_id = vehicle_summons.vv_id
                 INNER JOIN company ON company.id = vehicle_vehicle.company_id
                 WHERE vehicle_summons.vs_summon_date BETWEEN '".dateFormat($date_start)."' AND '".dateFormat($date_end)."' AND vehicle_summons.status='1'";
-	
 	$rst  = mysqli_query($conn_admin_db, $sql_query)or die(mysqli_error($conn_admin_db));
 	$arr_data = array();
 	if ( mysqli_num_rows($rst) ){
@@ -75,12 +74,15 @@
 	}
 	$max_value = !empty($payment_count) ? max($payment_count) : 0;
 	
-	$html_th = "<tr>";
-	for ($i = 1; $i <= $max_value; $i++) {
-	    $html_th .= "<td style='text-align:center'><strong>".addOrdinalNumberSuffix($i)."</strong></td>";
-	}
 	
-
+	if( $max_value !=0 ){
+	    $html_th = "<tr>"; 
+	    for ($i = 1; $i <= $max_value; $i++) {
+	        $html_th .= "<td style='text-align:center'><strong>".addOrdinalNumberSuffix($i)."</strong></td>";
+	    }
+	    $html_th .="</tr>";
+	}	
+	
 	function arr_payment($summon_id){
 	    global $conn_admin_db;
 	    $query = "SELECT * FROM vehicle_summon_payment WHERE summon_id='".$summon_id."'";
@@ -125,7 +127,7 @@
 
 <body>
     <!--Left Panel -->
-	<?php  include('../assets/nav/leftNav.php')?>
+	<?php include('../assets/nav/leftNav.php')?>
     <!-- Right Panel -->
     <?php include('../assets/nav/rightNav.php')?>
     <!-- /#header -->
@@ -164,8 +166,23 @@
                             </div>
                             <hr>
                             <div class="card-body">
-                                <table id="vehicle_summon" class="table table-striped table-bordered">
+                                <table id="vehicle_summon_table" class="table table-striped table-bordered">
                                     <thead>
+                                    <?php if($max_value == 0){?>
+                                        <tr>
+                                        	<th>No.</th>
+											<th>Vehicle No.</th>
+                                            <th>Summon's No.</th>
+                                            <th>Summon's date</th>
+											<th>Driver's name</th>
+											<th>Company</th>
+											<th>Summon Type</th>
+											<th>PV No.</th>
+											<th>Reimburse Amount (RM)</th>  
+											<th>Balance</th>
+                                            <th>Remarks</th>                                      	
+                                        </tr>	
+                                        <?php }else{?>
                                         <tr>
                                         	<th rowspan="2">No.</th>
 											<th rowspan="2">Vehicle No.</th>
@@ -176,51 +193,44 @@
 											<th rowspan="2">Summon Type</th>
 											<th rowspan="2">PV No.</th>
 											<th rowspan="2">Reimburse Amount (RM)</th>
-											<th id="payment_records" style="text-align: center" colspan='<?=$max_value?>'>Payment Records</th>											
+											<th id="payment_records" style="text-align: center" colspan='<?=$max_value?>'>Payment Records</th>									
                                             <th rowspan="2">Balance</th>
                                             <th rowspan="2">Remarks</th>
                                         </tr>
-										<?=$html_th;?>
+                                        <?=$html_th?>
+                                        <?php }?>			
                                     </thead>
-                                    <tbody>  
-                                    <?php 
-                                    
-                                    foreach ($arr_data as $summon_data){
-                                        echo "<tr>";
-                                        echo "<td>".$summon_data['count'].".</td>";
-                                        echo "<td>".strtoupper($summon_data['vehicle_no'])."</td>";
-                                        echo "<td>".strtoupper($summon_data['vs_summon_no'])."</td>";
-                                        echo "<td>".strtoupper($summon_data['vs_summon_date'])."</td>";
-                                        echo "<td>".strtoupper($summon_data['vs_driver_name'])."</td>";
-                                        echo "<td>".$summon_data['code']."</td>";
-                                        echo "<td>".$summon_data['vs_summon_type']."</td>";
-                                        echo "<td>".strtoupper($summon_data['vs_pv_no'])."</td>";
-                                        echo "<td class='text-right'>".number_format($summon_data['vs_reimbursement_amt'],2)."</td>";
-                                        
-                                        //itterate summon payment                                     
-                                        $html_td = "";
-                                        foreach ($summon_data['payment_data'] as $payment){
-                                            $html_td .= "<td><span style='font-size:12px'>".dateFormatRev($payment['payment_date'])."</span><br><span>".number_format($payment['payment_amount'],2)."</span></td>";
-                                        }                                        
-                                        //itterating empty td
-                                        for ($i = 0; $i < ($max_value - count($summon_data['payment_data'])); $i++) {
-                                            $html_td .= "<td>&nbsp;</td>";
+									<tbody>
+									<?php                                     
+                                        foreach ($arr_data as $summon_data){
+                                        	echo "<tr>";
+                                        	echo "<td>".$summon_data['count'].".</td>";
+                                        	echo "<td>".strtoupper($summon_data['vehicle_no'])."</td>";
+                                        	echo "<td>".strtoupper($summon_data['vs_summon_no'])."</td>";
+                                        	echo "<td>".strtoupper($summon_data['vs_summon_date'])."</td>";
+                                        	echo "<td>".strtoupper($summon_data['vs_driver_name'])."</td>";
+                                        	echo "<td>".$summon_data['code']."</td>";
+                                        	echo "<td>".$summon_data['vs_summon_type']."</td>";
+                                        	echo "<td>".strtoupper($summon_data['vs_pv_no'])."</td>";
+                                        	echo "<td class='text-right'>".number_format($summon_data['vs_reimbursement_amt'],2)."</td>";
+                                        	
+                                        	//itterate summon payment                                     
+                                        	$html_td = "";
+                                        	foreach ($summon_data['payment_data'] as $payment){
+                                        		$html_td .= "<td><span style='font-size:12px'>".dateFormatRev($payment['payment_date'])."</span><br><span>".number_format($payment['payment_amount'],2)."</span></td>";
+                                        	}                                        
+                                        	//itterating empty td
+                                        	for ($i = 0; $i < ($max_value - count($summon_data['payment_data'])); $i++) {
+                                        		$html_td .= "<td>&nbsp;</td>";
+                                        	}
+                                        	
+                                        	echo $html_td;
+                                        	echo "<td class='text-right'>".number_format($summon_data['vs_balance'],2)."</td>";
+                                        	echo "<td>".$summon_data['vs_remarks']."</td>";
+                                        	echo "</tr>";
                                         }
-                                        
-                                        echo $html_td;
-                                        echo "<td class='text-right'>".number_format($summon_data['vs_balance'],2)."</td>";
-                                        echo "<td>".$summon_data['vs_remarks']."</td>";
-                                        echo "</tr>";
-                                    }
-                                    ?>                                                  
-                                    </tbody>   
-                                    <?php if(empty($arr_data)){?>
-                                    	<tfoot>
-                                    		<tr>
-                                    			<td colspan="13" style="text-align: center">No records found...</td>
-                                    		</tr>
-                                    	</tfoot>    
-                                    <?php }?>                                 
+                                    ?>
+									</tbody>                                                                 
                                 </table>
                             </div>
                         </div>
@@ -253,30 +263,8 @@
 	
 	<script type="text/javascript">
       $(document).ready(function() {
-          $('#vehicle_summon').DataTable({
-              "searching": false,
-        	  "dom": 'Bfrtip',
-              "buttons": [ 
-               { 
-              	extend: 'excelHtml5', 
-              	messageTop: 'Vehicle Summon ',
-              	footer: true 
-               },
-               {
-              	extend: 'print',
-              	messageTop: 'Vehicle Summon ',
-              	footer: true,
-              	customize: function ( win ) {
-                      $(win.document.body)
-                          .css( 'font-size', '10pt' );
-              
-                      $(win.document.body).find( 'table' )
-                          .addClass( 'compact' )
-                          .css( 'font-size', 'inherit' );
-                  }
-               }
-              ],
-           });
+          $('#vehicle_summon_table').DataTable();
+          
           $('#date_start, #date_end').datepicker({
               format: "dd-mm-yyyy",
               autoclose: true,

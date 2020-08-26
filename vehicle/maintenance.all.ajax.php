@@ -82,11 +82,12 @@
         global $conn_admin_db;
         if(!empty($id)){            
             $query = "UPDATE vehicle_maintenance SET vm_status = 0 WHERE vm_id = '".$id."' ";
-            $result = mysqli_query($conn_admin_db, $query);
             
-            if ($result) {
-                alert ("Deleted successfully", "maintenance.php");
-            }            
+            $result = mysqli_query($conn_admin_db, $query);
+            echo $result;
+//             if ($result) {
+//                 alert ("Deleted successfully", "maintenance.php");
+//             }            
         }
     }
     

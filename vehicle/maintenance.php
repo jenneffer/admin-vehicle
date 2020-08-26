@@ -96,7 +96,7 @@
 										<?php 
                                         $sql_query = "SELECT vm_id, vm.vv_id,vv_vehicleNo, vm_date, vm_description, vm_amount, vm_invoice_no, vm_irf_no, vm_po_no, vm_po_date, vm_irf_date, vm_workshop, vm_user,
                                                 (SELECT code FROM company WHERE id=vv.company_id) AS company_name FROM vehicle_maintenance vm
-                                                INNER JOIN vehicle_vehicle vv ON vv.vv_id = vm.vv_id ";
+                                                INNER JOIN vehicle_vehicle vv ON vv.vv_id = vm.vv_id WHERE vm.vm_status='1' ";
                                         
                                         if(mysqli_num_rows(mysqli_query($conn_admin_db,$sql_query)) > 0){
                                             $count = 0;
@@ -346,8 +346,11 @@
     			method:"POST",    
     			data:{action:'delete_data', vm_id:ID},
     			success:function(data){	  						
-    				$('#deleteItem').modal('hide');		
-    				location.reload();		
+					if(data){
+						$('#deleteItem').modal('hide');	
+						location.reload();		
+						alert("Deleted Successfully!!");
+					}	
     			}
     		});
     	});

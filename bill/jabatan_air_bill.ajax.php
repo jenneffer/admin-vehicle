@@ -333,7 +333,7 @@ function add_new_account($data){
         $jenis_premis =  mysqli_real_escape_string( $conn_admin_db,$param['jenis_premis']);
         
         $query = "INSERT INTO bill_jabatan_air_account
-                    SET company='$company',
+                    SET company_id='$company',
                     account_no='$acc_no',
                     owner='$owner',
                     location='$location',
