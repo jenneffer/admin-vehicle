@@ -176,15 +176,26 @@
                             		<?=$html_year_select?>
                             	</div>
                             	<div class="col-sm-2">
-                            		<button type="button" class="btn btn-sm btn-primary button_add" data-toggle="modal" data-target="#addItem">Add New Record</button>
+                            		<button type="button" class="btn btn-sm btn-primary button_add" data-toggle="modal" data-target="#addItem">Add New Record</button>                            		
                             	</div>
                             	<div class="col-sm-2">
-                                	<button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#add_phone">Add telephone bill</button>
+                                	<button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#add_phone">Add telephone list</button>
                                 </div>
-                                <div class="col-sm-2 text-right">
+                                <div class="col-sm-2 text-right">                                	
                                 	<button type="button" class="btn btn-sm btn btn-info" onClick="window.close();">Back</button>
                                 </div>
                         	</div>
+                        	<div class="form-group row col-sm-12">           
+                            	<div class="col-sm-3">
+                            		&nbsp;
+                            	</div>                                    	
+                            	<div class="col-sm-3">
+                            		&nbsp;
+                            	</div>
+                            	<div class="col-sm-6">
+									<span class="color-red">** Please add all the telephone list associated with this account before adding new bill.</span>
+                            	</div>                            	
+                        	</div>                        	
                     	</form>                            	
                     	<div>     
                             <table id="telekom_table" class="table table-striped table-bordered">
@@ -463,15 +474,13 @@ $(document).ready(function() {
     $('#add_form').on("submit", function(event){  
         event.preventDefault();                        
         $('#acc_id').val(acc_id);
-        
         $.ajax({  
             url:"telekom_bill.ajax.php",  
             method:"POST",  
             data:{action:'add_new_bill', data: $('#add_form').serialize()},  
             success:function(data){   
                  $('#editItem').modal('hide');  
-                 $('#bootstrap-data-table').html(data);
-//                  location.reload();  
+                 location.reload();  
             }  
        });
         
@@ -547,10 +556,9 @@ $(document).ready(function() {
                     count++;   
                     var tbody = "<tr data-telefon_id='"+item.id+"' data-telefon_no='"+item.tel_no+"'><td>"+item.tel_no+"</td><td><input type='hidden' class='txtedit form-control form-control-sm' name='phone_"+count+"' id='phone_"+count+"' value='"+item.id+"'><input type='text' class='txtedit form-control form-control-sm' name='name_"+count+"' id='name_"+count+"'></td></tr>";             
                     $('#telefon_usage').DataTable().row.add($(tbody).get(0)).draw();
-                });                                                     	 
+                });                                                                     	 
             }  
-       	});
-       	
+       	});       	
     });
       
     function isNumberKey(evt){
