@@ -62,11 +62,60 @@ if( $action != "" ){
             compare_data($data);
             break;
             
+        case 'retrieve_item_data':
+            retrieve_item_data($id);
+            break;
+            
+        case 'update_bill':
+            update_bill($data);
+            break;
+            
+        case 'delete_item_data':
+            delete_item_data($id);
+            
         default:
             break;
     }
 }
 
+function delete_item_data($id){
+    global $conn_admin_db;
+    if (!empty($id)) {
+        $query = "UPDATE bill_telekom SET status = 0 WHERE id = '".$id."' ";
+        $result = mysqli_query($conn_admin_db, $query);
+        echo json_encode($result);        
+    }
+}
+
+function retrieve_item_data($id){
+    global $conn_admin_db;
+    $query = "SELECT * FROM bill_telekom WHERE id='$id'";
+    $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
+    $row = mysqli_fetch_assoc($result);    
+    //retrieve telephone usage
+    $tel_usage = get_telefon_usage($row['id']);
+
+    $arr_data = array(
+        'row_data' => $row,
+        'tel_usage' => $tel_usage
+    );
+    echo json_encode($arr_data);
+}
+
+function get_telefon_usage($bt_id){
+    global $conn_admin_db;
+    $query = "SELECT bill_telefon_usage.id, usage_rm, tel_no, phone_type FROM bill_telefon_usage 
+            INNER JOIN bill_telefon_list ON bill_telefon_list.id = bill_telefon_usage.telefon_id
+            WHERE bill_telefon_usage.bt_id='".$bt_id."'";  
+
+    $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
+    $data = [];
+    while($row = mysqli_fetch_assoc($result)){
+        $data[] = $row;
+    }
+    
+    return $data;
+}
 function get_telekom_data_monthly_compare($year, $company, $account_no){
     global $conn_admin_db;
     global $month_map;
@@ -221,6 +270,63 @@ function update_account($data){
     $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
     echo json_encode($result);
 }
+
+function update_bill($data){
+    global $conn_admin_db;
+    $param = array();
+    parse_str($data, $param); //unserialize jquery string data 
+    
+    $id = $param['id'];
+    $tel_count = $param['tel_count_edit'];
+    $from_date = dateFormat($param['from_date_edit']);
+    $to_date = dateFormat($param['to_date_edit']);
+    $paid_date = dateFormat($param['paid_date_edit']);
+    $due_date = dateFormat($param['due_date_edit']);
+    $bill_no = $param['bill_no_edit'];
+    $monthly_fee = $param['monthly_fee_edit'];
+    $cr_adj = $param['cr_adjustment_edit'];
+    $rebate = $param['rebate_edit'];
+    $cheque_no = $param['cheque_no_edit'];
+    $other_charges = $param['other_charges_edit'];
+    $phone_data = [];
+    $total_phone_usage = 0;
+    for ($i=1; $i <= $tel_count; $i++){
+        $total_phone_usage += $param['name_'.$i];
+        $phone_data[$param['phone_'.$i]] = $param['name_'.$i];
+    }
+    
+    $gst_sst = number_format(($monthly_fee + $other_charges + $total_phone_usage) * 6/100, 2);
+    $amount = $monthly_fee + $other_charges + $total_phone_usage + $gst_sst + $rebate + $cr_adj;
+    $rounded = round_up($amount);
+    $adjustment = number_format(($rounded-$amount), 2);
+    $total_amt = $amount + $adjustment;
+    $query = "UPDATE bill_telekom SET 
+            bill_no='$bill_no',
+            cheque_no='$cheque_no', 
+            date_start='$from_date', 
+            date_end='$to_date', 
+            paid_date='$paid_date', 
+            due_date='$due_date', 
+            monthly_bill='$monthly_fee', 
+            credit_adjustment='$cr_adj',
+            gst_sst='$gst_sst', 
+            amount='$total_amt', 
+            rebate='$rebate', 
+            adjustment='$adjustment', 
+            other_charges='$other_charges' WHERE id='$id'";
+             
+    
+    $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
+    if(!empty($phone_data) && $result){
+        foreach ($phone_data as $key => $value){
+            $qry = "UPDATE bill_telefon_usage SET usage_rm='$value' WHERE id='$key'";
+            $rst = mysqli_query($conn_admin_db, $qry) or die(mysqli_error($conn_admin_db));
+        }
+        
+        echo json_encode($rst);
+    }
+}
+
 function add_new_bill($data){
     global $conn_admin_db;
     $param = array();
@@ -254,14 +360,14 @@ function add_new_bill($data){
              VALUES('$acc_id','$bill_no', '$cheque_no','$from_date', '$to_date','$paid_date', '$due_date', '$monthly_fee', '$cr_adj','$gst_sst','$total_amt', '$rebate', '$adjustment','$other_charges')";
 
     $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
-    
+    $last_insert_id = mysqli_insert_id($conn_admin_db);
     if(!empty($phone_usage) && $result){
         $value = [];
         foreach ($phone_usage as $telefon_id => $telefon_usage){
-            $value[] = "('$telefon_id', '$acc_id', '$to_date',now(), '$telefon_usage')";
+            $value[] = "('$telefon_id', '$last_insert_id', '$to_date',now(), '$telefon_usage')";
         }
         $values = implode(",", $value);
-        $qry = "INSERT INTO bill_telefon_usage (telefon_id, acc_id, date, date_added, usage_rm) VALUES".$values;
+        $qry = "INSERT INTO bill_telefon_usage (telefon_id, bt_id, date, date_added, usage_rm) VALUES".$values;
         
         $rst = mysqli_query($conn_admin_db, $qry) or die(mysqli_error($conn_admin_db));
         
@@ -272,7 +378,7 @@ function add_new_bill($data){
 
 function retrieve_telefon_list($acc_id){
     global $conn_admin_db;
-    $query = "SELECT * FROM bill_telefon_list WHERE bt_id='$acc_id' AND status='1'";
+    $query = "SELECT * FROM bill_telefon_list WHERE acc_id='$acc_id' AND status='1'";
     $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
     $data = [];
     while ($row = mysqli_fetch_assoc($result)) {
@@ -293,7 +399,7 @@ function add_new_telefon($acc_id, $telefon_list){
     }
     
     $values = implode(",", $values);
-    $query = "INSERT INTO bill_telefon_list (bt_id, tel_no, phone_type) VALUES" .$values;
+    $query = "INSERT INTO bill_telefon_list (acc_id, tel_no, phone_type) VALUES" .$values;
     $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
     echo json_encode($result);
 }

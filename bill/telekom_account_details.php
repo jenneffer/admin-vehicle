@@ -20,20 +20,18 @@
     $ref_no = $row['ref_no'];
     $account_no = $row['account_no'];
     
-    //get the telefon_list
-    
-    $details_query = "SELECT bill_telekom.id, acc_id, MONTH(date_end) As month, MONTHNAME(date_end) AS month_name, date_start, date_end, due_date,paid_date, 
+    $details_query = "SELECT bill_telekom.id AS bt_id, acc_id, MONTH(date_end) As month, MONTHNAME(date_end) AS month_name, date_start, date_end, due_date,paid_date, 
                     credit_adjustment, rebate, gst_sst, adjustment, cheque_no, bill_no, amount, monthly_bill FROM bill_telekom                     
-                    WHERE acc_id = '$acc_id' AND YEAR(date_end) = '$year_select' ORDER BY date_end";
+                    WHERE acc_id = '$acc_id' AND YEAR(date_end) = '$year_select' AND bill_telekom.status='1' ORDER BY date_end";
     $result2 = mysqli_query($conn_admin_db, $details_query) or die(mysqli_error($conn_admin_db));
     $arr_data = [];      
     $t_list = [];    
     while ($rows = mysqli_fetch_assoc($result2)){   
         $t_list = get_active_tel_list($acc_id);
-        $tel_list = get_tel_list_usage($acc_id, $rows['month']);
+        $tel_list = get_tel_list_usage($rows['bt_id'], $rows['month']);
         $tel_list = array_replace($t_list,$tel_list);
         $arr_data[] = array(
-            'id' => $rows['id'],
+            'id' => $rows['bt_id'],
             'acc_id' => $rows['acc_id'],
             'monthly_bill' => $rows['monthly_bill'],
             'month_name' => $rows['month_name'],
@@ -55,10 +53,12 @@
     $th = "";
     $count = 0;
     $tel_arr = [];    
-    foreach ($t_list as $tel_no => $val){    
+    foreach ($t_list as $key => $val){ 
+		$tel_no = itemName("SELECT tel_no FROM bill_telefon_list WHERE id='$key'");	
+		$type = itemName("SELECT phone_type FROM bill_telefon_list WHERE id='$key'");	
         $count++;
         $tel_arr[] = $count;
-        $th .="<th scope='col' class='text-center'>".$tel_no."</th>";
+        $th .="<th scope='col' class='text-center'>".$tel_no."<br><span style='font-size:10px;'>(".$type.")</span></th>";
     }       
     //populate next column after tel list - 8 column
     $tel_count = [];
@@ -68,28 +68,28 @@
     
     $tel_column_str = implode(",", $tel_count);
     
-    function get_tel_list_usage($acc_id, $month){
+    function get_tel_list_usage($bt_id, $month){
         global $conn_admin_db;
         //get the telefon list
-        $qry = "SELECT MONTHNAME(date_added) AS month_name, bill_telefon_list.*, bill_telefon_usage.* FROM bill_telefon_list
+        $qry = "SELECT MONTHNAME(date) AS month_name, bill_telefon_list.*, bill_telefon_usage.* FROM bill_telefon_list
             LEFT JOIN bill_telefon_usage ON bill_telefon_usage.telefon_id = bill_telefon_list.id
-            WHERE bt_id='".$acc_id."' AND bill_telefon_list.status='1' AND MONTH(date_added)='$month'";
-        
+            WHERE bill_telefon_usage.bt_id='".$bt_id."' AND bill_telefon_list.status='1' AND MONTH(date)='$month'";
+
         $rst = mysqli_query($conn_admin_db, $qry);
         $tel_list = [];
         while ($row = mysqli_fetch_assoc($rst)) {
-            $tel_list[$row['tel_no']] = $row['usage_rm'];
+            $tel_list[$row['telefon_id']] = $row['usage_rm'];
         }
         return $tel_list;
     }
     
     function get_active_tel_list($acc_id){ // to populate the header
         global $conn_admin_db;
-        $query = "SELECT tel_no FROM bill_telefon_list WHERE bt_id = '$acc_id' AND status='1'";
+        $query = "SELECT id, tel_no FROM bill_telefon_list WHERE acc_id = '$acc_id' AND status='1'";
         $rst = mysqli_query($conn_admin_db, $query);
         $t_list = [];
         while ($row = mysqli_fetch_assoc($rst)) {
-            $t_list[$row['tel_no']] = 0;
+            $t_list[$row['id']] = 0;
         }
         return $t_list;
     }
@@ -214,6 +214,7 @@
                                     <th scope="col" class="text-center">Due date</th>
                                     <th scope="col" class="text-center">Cheque No.</th>
                                     <th scope="col" class="text-center">Payment date</th>
+                                    <th scope="col" class="text-center">Action</th>
                                 </tr>  
                                 </thead>
                                 <tbody>
@@ -240,7 +241,11 @@
                                 		<td><?=$data['amount']?></td>
                                 		<td><?=$data['due_date']?></td>
                                 		<td><?=$data['cheque_no']?></td>
-                                		<td><?=$data['paid_date']?></td>                           		
+                                		<td><?=$data['paid_date']?></td>    
+                                		<td>
+                                			<span id="<?=$data['id']?>" data-toggle="modal" class="edit_data" data-target="#editItem"><i class="fa fa-edit"></i></span>
+                                            <span id="<?=$data['id']?>" data-toggle="modal" class="delete_data" data-target="#deleteItem"><i class="fas fa-trash-alt"></i></span>
+                                		</td>                       		
                                 	</tr>
 								<?php }?>
                                 </tbody>
@@ -259,7 +264,8 @@
                                 	<th></th>
                                 	<th></th>
                                 	<th></th>
-                                	<th></th>                                	
+                                	<th></th>  
+                                	<th></th>                              	
                                 </tr>
                                 </tfoot>                                                                                                          
                             </table>
@@ -355,7 +361,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="submit" class="btn btn-sm btn-primary save_data ">Save</button>
+                <button type="submit" class="btn btn-primary save_data ">Save</button>
             </div>
             </form>
         </div>
@@ -409,6 +415,118 @@
 </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 <div class="clearfix"></div>
+
+<!-- Modal edit telekom account  -->
+<div id="editItem" class="modal fade">
+<div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title">Edit Data</h4>
+        </div>
+        <div class="modal-body">
+            <form role="form" method="POST" action="" id="update_form">                        
+                <input type="hidden" id="id" name="id" value="">
+                <input type="hidden" id="tel_count_edit" name="tel_count_edit">   
+                <div class="form-group row col-sm-12">            	
+                	<div class="col-sm-4">
+                        <label for="from_date_edit" class=" form-control-label"><small class="form-text text-muted">From date <span class="color-red">*</span></small></label>                                            
+                        <div class="input-group">
+                            <input id="from_date_edit" name="from_date_edit" class="form-control form-control-sm" autocomplete="off" required>
+                        </div>  
+                    </div>       
+                    <div class="col-sm-4">
+                        <label for="to_date_edit" class=" form-control-label"><small class="form-text text-muted">To date <span class="color-red">*</span></small></label>                                            
+                        <div class="input-group">
+                            <input id="to_date_edit" name="to_date_edit" class="form-control form-control-sm" autocomplete="off" required>
+                        </div>  
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="monthly_fee_edit" class=" form-control-label"><small class="form-text text-muted">Monthly (RM) <span class="color-red">*</span></small></label>
+                        <input type="text" id="monthly_fee_edit" name="monthly_fee_edit" class="form-control form-control-sm" required>
+                    </div>                
+                </div> 
+                <div class="form-group row col-sm-12">                        
+                    <div class="col-sm-4">
+                        <label for="due_date_edit" class=" form-control-label"><small class="form-text text-muted">Due date</small></label>                                            
+                        <div class="input-group">
+                            <input id="due_date_edit" name="due_date_edit" class="form-control form-control-sm" autocomplete="off">                        
+                        </div>  
+                    </div> 
+                    <div class="col-sm-4">
+                        <label for="paid_date_edit" class=" form-control-label"><small class="form-text text-muted">Paid date</small></label>                                            
+                        <div class="input-group">
+                            <input id="paid_date_edit" name="paid_date_edit" class="form-control form-control-sm" autocomplete="off">                        
+                        </div>  
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="bill_no_edit" class=" form-control-label"><small class="form-text text-muted">Bill No. <span class="color-red">*</span></small></label>
+                        <input type="text" id="bill_no_edit" name="bill_no_edit" class="form-control form-control-sm" required>
+                    </div>  	                                    
+                </div>
+                <div class="row form-group col-sm-12">
+                    <div class="col-sm-4">
+                        <label for="rebate_edit" class=" form-control-label"><small class="form-text text-muted">Rebate (RM)</small></label>
+                        <input type="text" id="rebate_edit" name="rebate_edit" class="form-control form-control-sm">
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="cr_adjustment_edit" class=" form-control-label"><small class="form-text text-muted">Credit Adjustment (RM)</small></label>
+                        <input type="text" id="cr_adjustment_edit" name="cr_adjustment_edit" class="form-control form-control-sm">
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="cheque_no_edit" class=" form-control-label"><small class="form-text text-muted">Cheque No. <span class="color-red">*</span></small></label>
+                        <input type="text" id="cheque_no_edit" name="cheque_no_edit" class="form-control form-control-sm" required>
+                    </div>      
+                </div>   
+                <div class="row form-group col-sm-12">
+                	<div class="col-sm-4">
+                        <label for="other_charges_edit" class=" form-control-label"><small class="form-text text-muted">Other Charges (RM)</small></label>
+                        <input type="text" id="other_charges_edit" name="other_charges_edit" class="form-control form-control-sm">
+                    </div>
+                </div> 
+                <div class="row form-group col-sm-12">
+                	<table id="telefon_usage_edit" class="table table-bordered data-table wrap">
+                	<thead>
+                    	<tr>
+                            <th>Telephone No.</th>
+                            <th>Type</th>
+                            <th>Usage (RM)</th>                                                
+                      	</tr>
+                    </thead>
+                    <tbody>
+                    
+                    </tbody>
+                	</table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary update_data ">Update</button>
+                </div>
+            </form>
+        </div>
+    </div><!-- /.modal-content -->
+</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<div class="modal fade" id="deleteItem">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticModalLabel">Delete Item</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>
+                   Are you sure you want to delete?
+               </p>
+           </div>
+           <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            <button type="button" id="delete_record" class="btn btn-primary">Confirm</button>
+        	</div>
+    	</div>
+	</div>
+</div>
 <!-- Footer -->
 <?PHP include('../footer.php')?>
     <!-- /.site-footer -->
@@ -470,6 +588,85 @@ $(document).ready(function() {
 				}); 
 			},
 	});
+
+    $(document).on('click', '.edit_data', function(){
+    	var id = $(this).attr("id");      	
+    	$.ajax({
+    			url:"telekom_bill.ajax.php",
+    			method:"POST",
+    			data:{action:'retrieve_item_data', id:id},
+    			dataType:"json",
+    			success:function(data){      
+        			var row_data = data.row_data;  
+        			var tel_usage = data.tel_usage; 
+        			console.log(tel_usage);
+        			$("#tel_count_edit").val(tel_usage.length);
+        			var count = 0;	
+                    var dataTable = $('#telefon_usage_edit').DataTable({
+                    	fixedHeader: true,
+                    	paging: false,
+                    	searching: false,
+                    	ordering: false,
+                    	bInfo : false              		
+    				});
+                    dataTable.clear();	                           
+    				$('#id').val(id);					
+                    $('#from_date_edit').val(dateFormat(row_data.date_start));      
+                    $('#to_date_edit').val(dateFormat(row_data.date_end));  
+                    $('#monthly_fee_edit').val(row_data.monthly_bill);          
+                    $('#due_date_edit').val(dateFormat(row_data.due_date));    
+                    $('#paid_date_edit').val(dateFormat(row_data.paid_date)); 
+                    $('#bill_no_edit').val(row_data.bill_no);   
+                    $('#rebate_edit').val(row_data.rebate);  
+                    $('#cr_adjustment_edit').val(row_data.credit_adjustment); 
+                    $('#cheque_no_edit').val(row_data.cheque_no);   
+                    $('#other_charges_edit').val(row_data.other_charges);
+
+                    //tel usage
+                    $.each(tel_usage, function(i, item) { 
+                    
+                    count++;   
+                    var tbody = "<tr data-telefon_id='"+item.id+"' data-telefon_no='"+item.tel_no+"'><td>"+item.tel_no+"</td><td>"+item.phone_type+"</td><td><input type='hidden' class='txtedit form-control form-control-sm' name='phone_"+count+"' id='phone_"+count+"' value='"+item.id+"'><input type='text' class='txtedit form-control form-control-sm' name='name_"+count+"' id='name_"+count+"' value='"+item.usage_rm+"'></td></tr>";             
+                    $('#telefon_usage_edit').DataTable().row.add($(tbody).get(0)).draw();
+                });
+                                          
+                    $('#editItem').modal('show');
+    			}
+    		});
+    });
+
+    $(document).on('click', '.delete_data', function(){
+    	var id = $(this).attr("id");
+    	$('#delete_record').data('id', id); //set the data attribute on the modal button
+    
+    });
+  	
+	$( "#delete_record" ).click( function() {
+		var ID = $(this).data('id');
+		$.ajax({
+			url:"telekom_bill.ajax.php",
+			method:"POST",    
+			data:{action:'delete_item_data', id:ID},
+			success:function(data){	  						
+				$('#deleteItem').modal('hide');		
+				location.reload();		
+			}
+		});
+	});
+
+    $('#update_form').on("submit", function(event){  
+        event.preventDefault();   
+        console.log($("#tel_count").val())                   
+        $.ajax({  
+            url:"telekom_bill.ajax.php",  
+            method:"POST",  
+            data:{action:'update_bill', data: $('#update_form').serialize()},  
+            success:function(data){   
+                 $('#editItem').modal('hide');  	
+				 location.reload();  
+            }  
+       });  
+    });
 			
     $('#add_form').on("submit", function(event){  
         event.preventDefault();                        
@@ -486,7 +683,7 @@ $(document).ready(function() {
         
 	});
 
-    $('#from_date, #to_date, #paid_date, #due_date').datepicker({
+    $('#from_date, #to_date, #paid_date, #due_date,#from_date_edit, #to_date_edit, #paid_date_edit, #due_date_edit').datepicker({
           format: "dd-mm-yyyy",
           autoclose: true,
           orientation: "top left",
@@ -560,7 +757,24 @@ $(document).ready(function() {
             }  
        	});       	
     });
-      
+    //format to dd-mm-yy
+    function dateFormat(dates){
+        var date = new Date(dates);
+    	var day = date.getDate();
+	  	var monthIndex = date.getMonth()+1;
+	  	var year = date.getFullYear();
+
+	  	return (day <= 9 ? '0' + day : day) + '-' + (monthIndex<=9 ? '0' + monthIndex : monthIndex) + '-' + year ;
+    }
+    //yy-mm-dd
+    function dateFormatRev(dates){
+        var date = dates.split("-");
+        var day = date[0];
+        var month = date[1];
+        var year = date[2];
+
+        return year + '-' + month + '-' + day ;
+    }
     function isNumberKey(evt){
     	var charCode = (evt.which) ? evt.which : evt.keyCode;
     	if (charCode != 46 && charCode > 31 
@@ -580,7 +794,7 @@ $(document).ready(function() {
   </script>
 </body>
 <style>
-#telefon_usage,#telefon_list{
+#telefon_usage,#telefon_list,#telefon_usage_edit{
     font-size:12px; 
     margin:0px; 
     padding:.5rem; 
