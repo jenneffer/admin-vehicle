@@ -38,7 +38,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Eng Peng Vehicle</title>
+    <title>Eng Peng Utilities - SESB</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	<!-- link to css -->
@@ -157,45 +157,20 @@
                                     foreach ($arr_data as $data){
                                     ?>
                                     <tr>
-                                        <td><?php 
-                                        if($data['month_to_name'] == '1') {
-                                        	echo "<span style='display:none'>1</span> January";
-                                        } else if($data['month_to_name'] == '2') {
-                                        	echo "<span style='display:none'>2</span> February";
-                                        } else if($data['month_to_name'] == '3') {
-                                        	echo "<span style='display:none'>3</span> March";
-                                        } else if($data['month_to_name'] == '4') {
-                                        	echo "<span style='display:none'>4</span> April";
-                                        } else if($data['month_to_name'] == '5') {
-                                        	echo "<span style='display:none'>5</span> May";
-                                        } else if($data['month_to_name'] == '6') {
-                                        	echo "<span style='display:none'>6</span> June";
-                                        } else if($data['month_to_name'] == '7') {
-                                        	echo "<span style='display:none'>7</span> Jully";
-                                        } else if($data['month_to_name'] == '8') {
-                                        	echo "<span style='display:none'>8</span> August";
-                                        } else if($data['month_to_name'] == '9') {
-                                        	echo "<span style='display:none'>9</span> September";
-                                        } else if($data['month_to_name'] == '10') {
-                                        	echo "<span style='display:none'>10</span> October";
-                                        } else if($data['month_to_name'] == '11') {
-                                        	echo "<span style='display:none'>11</span> November";
-                                        } else {
-                                        	echo "<span style='display:none'>12</span> December";
-                                        }
-                                        /*echo $data['month_name']*/?></td>
+                                        <td><?= get_month_name($data['month_to_name']);?>
+                                        </td>
                                         <td><?=$data['meter_reading_from']?></td>
 										<td><?=$data['meter_reading_to']?></td>
                                         <td><?=$data['total_usage']?></td>
-                                        <td><?=$data['current_usage']?></td>
-                                        <td><?=$data['kwtbb']?></td>
-                                        <td><?=$data['penalty']?></td>
-                                        <td><?=$data['additional_deposit']?></td>
+                                        <td><?=number_format($data['current_usage'],2)?></td>
+                                        <td><?=number_format($data['kwtbb'],2)?></td>
+                                        <td><?=number_format($data['penalty'],2)?></td>
+                                        <td><?=number_format($data['additional_deposit'],2)?></td>
                                         <td><?=number_format($data['other_charges'],2)?></td>
                                         <td><?=number_format($data['adjustment'],2)?></td>
                                         <td><?=$data['date_start']?></td>
                                         <td><?=$data['date_end']?></td>
-                                        <td><?=$data['amount']?></td>     
+                                        <td><?=number_format($data['amount'],2)?></td>     
                                         <td><?=$data['due_date']?></td> 
                                         <td><?=$data['cheque_no']?></td>                                            
                                         <td><?=$data['paid_date']?></td>      
@@ -489,11 +464,56 @@
             "searching": false,
             "ordering": false,
             "paging" : false,
+            "dom": "Bfrtip",
+            "buttons": {
+              "buttons": [
+                {
+                  text: "Export to Excel",
+                  extend: 'excelHtml5', 
+                },
+                {
+                    text: "Print",
+                    extend: 'print',
+                    customize: function(win){             
+                        var last = null;
+                        var current = null;
+                        var bod = [];
+         
+                        var css = '@page { size: landscape; }',
+                            head = win.document.head || win.document.getElementsByTagName('head')[0],
+                            style = win.document.createElement('style');
+         
+                        style.type = 'text/css';
+                        style.media = 'print';
+         
+                        if (style.styleSheet)
+                        {
+                          style.styleSheet.cssText = css;
+                        }
+                        else
+                        {
+                          style.appendChild(win.document.createTextNode(css));
+                        }
+         
+                        head.appendChild(style);
+                 	}
+                  }
+              ],
+              "dom": {
+                "button": {
+                  tag: "button",
+                  className: "btn btn-sm btn-info"
+                },
+                "buttonLiner": {
+                  tag: null
+                }
+              }
+            },
             "footerCallback": function( tfoot, data, start, end, display ) {
             	var api = this.api(), data;
             	var numFormat = $.fn.dataTable.render.number( '\,', '.', 2, '' ).display;
             
-            	api.columns([4,5,6,7,8,9,12], { page: 'current'}).every(function() {
+            	api.columns([4,5,6,7,8,12], { page: 'current'}).every(function() {
             		var sum = this
             	    .data()
             	    .reduce(function(a, b) {

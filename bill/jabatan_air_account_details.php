@@ -22,10 +22,11 @@
     $account_no = $row['account_no'];
     $total_deposit = $row['deposit'] + $row['additional_deposit'];
 
-    $details_query = "SELECT id, MONTHNAME(date_end) AS month_name, meter_reading_from, meter_reading_to, 
+    $details_query = "SELECT id, MONTH(date_end) AS month_name, meter_reading_from, meter_reading_to, 
             (meter_reading_to - meter_reading_from) AS total_usage, usage_70, rate_70,usage_71, rate_71,credit_adjustment, 
             adjustment,date_start, date_end,amount,due_date, cheque_no,paid_date
-            FROM bill_jabatan_air WHERE acc_id = '$jabatan_air_acc_id' AND YEAR(date_end) = '$year_select'";
+            FROM bill_jabatan_air WHERE acc_id = '$jabatan_air_acc_id' AND YEAR(date_end) = '$year_select' ORDER BY month_name ASC";
+    
     $result2 = mysqli_query($conn_admin_db, $details_query) or die(mysqli_error($conn_admin_db));
     $arr_data = [];
     while ($rows = mysqli_fetch_assoc($result2)){
@@ -38,7 +39,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Eng Peng Vehicle</title>
+    <title>Eng Peng Utilities - Jabatan Air</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	<!-- link to css -->
@@ -124,7 +125,7 @@
                                 	</div>
                             	</form>                            	
                             	<div>     
-                                    <table class="table table-striped table-bordered">
+                                    <table id="jabatan-air-table" class="table table-striped table-bordered">
                                         <thead>
                                             <tr>
                                             	<th>Description</th>
@@ -161,15 +162,15 @@
                                     	$sum_adjustment = 0;
                                     	$sum_amount = 0;
                                     	foreach ($arr_data as $data){
-                                    	$sum_total_usage += $data['total_usage'];
-                                    	$sum_rate1 += $data['rate_70'];
-                                    	$sum_rate2 += $data['rate_71'];
-                                    	$sum_credit_adjustment += $data['credit_adjustment'];
-                                    	$sum_adjustment += $data['adjustment'];
-                                    	$sum_amount += $data['amount']
+                                        	$sum_total_usage += $data['total_usage'];
+                                        	$sum_rate1 += $data['rate_70'];
+                                        	$sum_rate2 += $data['rate_71'];
+                                        	$sum_credit_adjustment += $data['credit_adjustment'];
+                                        	$sum_adjustment += $data['adjustment'];
+                                        	$sum_amount += $data['amount']
                                     	    ?>
                                     	<tr>
-                                            <td class="text-left"><?=$data['month_name']?></td>
+                                            <td class="text-left"><?=get_month_name($data['month_name'])?></td>
                                             <td class="text-right"><?=$data['meter_reading_from']?></td>
 											<td class="text-center"><?=$data['meter_reading_to']?></td>
                                             <td class="text-right"><?=$data['total_usage']?></td>
@@ -466,12 +467,57 @@
 		
 		var acc_id = '<?=$id?>';
 			
-        $('#item-data-table').DataTable({
-        	"columnDefs": [
-//         	    { "width": "10%", "targets": 0 },
-//         	    { "width": "80%", "targets": 1 },
-//         	    { "width": "10%", "targets": 2 }
-        	  ]
+        $('#jabatan-air-table').DataTable({
+            "bInfo" : false,
+            "bLengthChange": false,
+            "searching": false,
+            "ordering": false,
+            "paging" : false,
+    		"dom": "Bfrtip",
+            "buttons": {
+              "buttons": [
+                {
+                  text: "Export to Excel",
+                  extend: 'excelHtml5', 
+                },
+                {
+                    text: "Print",
+                    extend: 'print',
+                    customize: function(win){             
+                        var last = null;
+                        var current = null;
+                        var bod = [];
+         
+                        var css = '@page { size: landscape; }',
+                            head = win.document.head || win.document.getElementsByTagName('head')[0],
+                            style = win.document.createElement('style');
+         
+                        style.type = 'text/css';
+                        style.media = 'print';
+         
+                        if (style.styleSheet)
+                        {
+                          style.styleSheet.cssText = css;
+                        }
+                        else
+                        {
+                          style.appendChild(win.document.createTextNode(css));
+                        }
+         
+                        head.appendChild(style);
+                 	}
+                  }
+              ],
+              "dom": {
+                "button": {
+                  tag: "button",
+                  className: "btn btn-sm btn-info"
+                },
+                "buttonLiner": {
+                  tag: null
+                }
+              }
+            },
   	  	});
         $('#add_form').on("submit", function(event){  
             event.preventDefault();              

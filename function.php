@@ -155,4 +155,46 @@ error_reporting(0);
         $rgbColor = "rgb(".implode(",", $rgbColor).")";
         return $rgbColor;
     }
+    
+    function get_month_name($month){
+        $month_name = "";
+        if($month == '1') {
+            //                                         	echo "<span style='display:none'>1</span> January";
+            $month_name = "January";
+        } else if($month == '2') {
+            //                                         	echo "<span style='display:none'>2</span> February";
+            $month_name = "February";
+        } else if($month == '3') {
+            //                                         	echo "<span style='display:none'>3</span> March";
+            $month_name = "March";
+        } else if($month == '4') {
+            //                                         	echo "<span style='display:none'>4</span> April";
+            $month_name = "April";
+        } else if($month == '5') {
+            //                                         	echo "<span style='display:none'>5</span> May";
+            $month_name = "May";
+        } else if($month == '6') {
+            //                                         	echo "<span style='display:none'>6</span> June";
+            $month_name = "June";
+        } else if($month == '7') {
+            //                                         	echo "<span style='display:none'>7</span> Jully";
+            $month_name = "July";
+        } else if($month == '8') {
+            //                                         	echo "<span style='display:none'>8</span> August";
+            $month_name = "August";
+        } else if($month == '9') {
+            //                                         	echo "<span style='display:none'>9</span> September";
+            $month_name = "September";
+        } else if($month == '10') {
+            //                                         	echo "<span style='display:none'>10</span> October";
+            $month_name = "October";
+        } else if($month == '11') {
+            //                                         	echo "<span style='display:none'>11</span> November";
+            $month_name = "November";
+        } else {
+            //                                         	echo "<span style='display:none'>12</span> December";
+            $month_name = "December";
+        }
+        return $month_name;        
+    }
 ?>
