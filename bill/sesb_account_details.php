@@ -154,7 +154,21 @@
                                     </thead>  
                                     <tbody>
                                     <?php 
+//                                     $current_usage = 0;
+//                                     $kwtbb = 0;
+//                                     $penalty = 0;
+//                                     $add_depo = 0;
+//                                     $other_charge = 0;
+//                                     $adj = 0;
+//                                     $amount = 0;
                                     foreach ($arr_data as $data){
+//                                         $current_usage += $data['current_usage'];
+//                                         $kwtbb += $data['kwtbb'];
+//                                         $penalty += $data['penalty'];
+//                                         $add_depo += $data['additional_deposit'];
+//                                         $other_charge += $data['other_charges'];
+//                                         $adj += $data['adjustment'];
+//                                         $amount += $data['amount'];
                                     ?>
                                     <tr>
                                         <td><?= get_month_name($data['month_to_name']);?>
@@ -470,10 +484,12 @@
                 {
                   text: "Export to Excel",
                   extend: 'excelHtml5', 
+                  footer: true
                 },
                 {
                     text: "Print",
                     extend: 'print',
+                    footer: true,
                     customize: function(win){             
                         var last = null;
                         var current = null;
@@ -509,23 +525,47 @@
                 }
               }
             },
-            "footerCallback": function( tfoot, data, start, end, display ) {
-            	var api = this.api(), data;
-            	var numFormat = $.fn.dataTable.render.number( '\,', '.', 2, '' ).display;
-            
-            	api.columns([4,5,6,7,8,12], { page: 'current'}).every(function() {
-            		var sum = this
-            	    .data()
-            	    .reduce(function(a, b) {
-            	    var x = parseFloat(a) || 0;
-            	    var y = parseFloat(b) || 0;
-            	    	return x + y;
-            	    }, 0);			
-            	       
-            	    $(this.footer()).html(numFormat(sum));
-            	}); 
-            },
-            
+            "footerCallback": function ( row, data, start, end, display ) {
+                var api = this.api(), data;
+                var numFormat = $.fn.dataTable.render.number( '\,', '.', 2, '' ).display;
+             // Remove the formatting to get integer data for summation
+                var floatVal = function (i) {
+                    if (typeof i === "number") {
+                        return i;
+                    } else if (typeof i === "string") {
+                        i = i.replace("$", "")
+                        i = i.replace(",", "")
+                        var result = parseFloat(i);
+                        if (isNaN(result)) {
+                            try {
+                                var result = $(i).text();
+                                result = parseFloat(result);
+                                if (isNaN(result)) { result = 0 };
+                                return result * 1;
+                            } catch (error) {
+                                return 0;
+                            }
+                        } else {
+                            return result * 1;
+                        }
+                    } else {
+                        alert("Unhandled type for totals [" + (typeof i) + "]");
+                        return 0
+                    }
+                };
+                
+                api.columns([4,5,6,7,8,9,12]).every(function() {
+    				var sum = this
+    			    .data()
+    			    .reduce(function(a, b) {
+    			    var x = floatVal(a) || 0;
+    			    var y = floatVal(b) || 0;
+    			    	return x + y;
+    			    }, 0);			
+    				
+    			    $(this.footer()).html(numFormat(sum));
+    			});
+            }                       
   	  	});
         $('#add_form').on("submit", function(event){  
             event.preventDefault();  
