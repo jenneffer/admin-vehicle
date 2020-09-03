@@ -100,7 +100,7 @@ function get_sesb_data_monthly($year, $company, $location){
         $query .=" AND company_id='$company'";
     }
     if(!empty($location)){
-        $query .=" AND bill_sesb_account.location = '$location'";
+        $query .=" AND bill_sesb_account.id = '$location'";
     }
     
     $query .= " ORDER BY date_end ASC";
@@ -255,7 +255,7 @@ tr:nth-child(even) {
                         		<div class="col-sm-4 monthly-div">
                         		<label for="location" class="form-control-label"><small class="form-text text-muted">Account No./Location</small></label>
                         		<?php                                            
-                                    $location = mysqli_query ( $conn_admin_db, "SELECT location,UPPER(location) FROM bill_sesb_account WHERE company_id='$select_company' AND status='1' GROUP BY location");
+                                    $location = mysqli_query ( $conn_admin_db, "SELECT id,UPPER(location) FROM bill_sesb_account WHERE company_id='$select_company' AND status='1' GROUP BY location");
                                     db_select ($location, 'location',$select_location,'submit()','All','form-control form-control-sm','');
                                 ?>
                         		</div>
