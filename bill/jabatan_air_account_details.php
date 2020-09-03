@@ -155,19 +155,19 @@
                                     	</thead>   
                                     	<tbody>
                                     	<?php 
-                                    	$sum_total_usage = 0;
-                                    	$sum_rate1 = 0;
-                                    	$sum_rate2 = 0;
-                                    	$sum_credit_adjustment = 0;
-                                    	$sum_adjustment = 0;
-                                    	$sum_amount = 0;
+//                                     	$sum_total_usage = 0;
+//                                     	$sum_rate1 = 0;
+//                                     	$sum_rate2 = 0;
+//                                     	$sum_credit_adjustment = 0;
+//                                     	$sum_adjustment = 0;
+//                                     	$sum_amount = 0;
                                     	foreach ($arr_data as $data){
-                                        	$sum_total_usage += $data['total_usage'];
-                                        	$sum_rate1 += $data['rate_70'];
-                                        	$sum_rate2 += $data['rate_71'];
-                                        	$sum_credit_adjustment += $data['credit_adjustment'];
-                                        	$sum_adjustment += $data['adjustment'];
-                                        	$sum_amount += $data['amount']
+//                                         	$sum_total_usage += $data['total_usage'];
+//                                         	$sum_rate1 += $data['rate_70'];
+//                                         	$sum_rate2 += $data['rate_71'];
+//                                         	$sum_credit_adjustment += $data['credit_adjustment'];
+//                                         	$sum_adjustment += $data['adjustment'];
+//                                         	$sum_amount += $data['amount'];
                                     	    ?>
                                     	<tr>
                                             <td class="text-left"><?=get_month_name($data['month_name'])?></td>
@@ -175,7 +175,7 @@
 											<td class="text-center"><?=$data['meter_reading_to']?></td>
                                             <td class="text-right"><?=$data['total_usage']?></td>
                                             <td class="text-center"><?=$data['usage_70']?></td>
-                                            <td class="text-right"><?=$data['rate_70']?></td>
+                                            <td class="text-right"><?=number_format($data['rate_70'],2)?></td>
                                             <td class="text-center"><?=$data['usage_71']?></td>
                                             <td class="text-right"><?=number_format($data['rate_71'],2)?></td>
                                             <td class="text-center"><?=number_format($data['credit_adjustment'],2)?></td>
@@ -194,21 +194,21 @@
                                     	</tbody>  
                                     	<tfoot>
                                     	<tr>
-                                            <th class="text-center">&nbsp;</th>
+                                            <th class="text-center">TOTAL</th>
                                             <th class="text-center">&nbsp;</th>
 											<th class="text-center">&nbsp;</th>
-                                            <th class="text-right"><?=$sum_total_usage?></th>
+                                            <th class="text-right"></th>
                                             <th class="text-center">&nbsp;</th>
-                                            <th class="text-right"><?=number_format($sum_rate1,2)?></th>
+                                            <th class="text-right"></th>
                                             <th class="text-center">&nbsp;</th>
-                                            <th class="text-right"><?=number_format($sum_rate2,2)?></th>
-                                            <th class="text-center"><?=number_format($sum_credit_adjustment,2)?></th>
-                                            <th class="text-right"><?=number_format($sum_adjustment,2)?></th>
+                                            <th class="text-right"></th>
+                                            <th class="text-center"></th>
+                                            <th class="text-right"></th>
                                             <th class="text-center">&nbsp;</th>
                                             <th class="text-right">&nbsp;</th>
                                             <th class="text-center">&nbsp;</th>                                            
                                             <th class="text-right">&nbsp;</th>
-                                            <th class="text-center"><?=number_format($sum_amount,2)?></th>
+                                            <th class="text-center"></th>
                                             <th class="text-right">&nbsp;</th>
                                         </tr>
                                     	</tfoot>                                                                                                       
@@ -479,10 +479,12 @@
                 {
                   text: "Export to Excel",
                   extend: 'excelHtml5', 
+                  footer: true
                 },
                 {
                     text: "Print",
                     extend: 'print',
+                    footer: true,
                     customize: function(win){             
                         var last = null;
                         var current = null;
@@ -518,6 +520,47 @@
                 }
               }
             },
+            "footerCallback": function ( row, data, start, end, display ) {
+                var api = this.api(), data;
+                var numFormat = $.fn.dataTable.render.number( '\,', '.', 2, '' ).display;
+             // Remove the formatting to get integer data for summation
+                var floatVal = function (i) {
+                    if (typeof i === "number") {
+                        return i;
+                    } else if (typeof i === "string") {
+                        i = i.replace("$", "")
+                        i = i.replace(",", "")
+                        var result = parseFloat(i);
+                        if (isNaN(result)) {
+                            try {
+                                var result = $(i).text();
+                                result = parseFloat(result);
+                                if (isNaN(result)) { result = 0 };
+                                return result * 1;
+                            } catch (error) {
+                                return 0;
+                            }
+                        } else {
+                            return result * 1;
+                        }
+                    } else {
+                        alert("Unhandled type for totals [" + (typeof i) + "]");
+                        return 0
+                    }
+                };
+                
+                api.columns([5,7,8,9,14]).every(function() {
+    				var sum = this
+    			    .data()
+    			    .reduce(function(a, b) {
+    			    var x = floatVal(a) || 0;
+    			    var y = floatVal(b) || 0;
+    			    	return x + y;
+    			    }, 0);			
+    				
+    			    $(this.footer()).html(numFormat(sum));
+    			});
+            } 
   	  	});
         $('#add_form').on("submit", function(event){  
             event.preventDefault();              
