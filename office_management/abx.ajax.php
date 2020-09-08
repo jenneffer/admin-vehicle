@@ -58,9 +58,9 @@ function display_abx_statement_list(){
             $row_found = mysqli_fetch_row(mysqli_query($conn_admin_db,"SELECT FOUND_ROWS()"));
             $total_found_rows = $row_found[0];            
             $count++;
-            
-            $action = '<span id='.$row['abx_id'].' data-toggle="modal" class="edit_data" data-target="#editItem"><i class="menu-icon fa fa-edit"></i>
-                        </span><span id='.$row['abx_id'].' data-toggle="modal" class="delete_data" data-target="#deleteItem"><i class="menu-icon fa fa-trash-alt"></i>
+//             <span id='.$row['abx_id'].' data-toggle="modal" class="edit_data" data-target="#editItem"><i class="menu-icon fa fa-edit"></i>
+//             </span>
+            $action = '<span id='.$row['abx_id'].' data-toggle="modal" class="delete_data" data-target="#deleteItem"><i class="menu-icon fa fa-trash-alt"></i>
                         </span>';
             
             $invoice_no = '<a href="abx_statement_details.php?abx_id='.$row['abx_id'].'">'.$row['invoice_no'].'</a>';

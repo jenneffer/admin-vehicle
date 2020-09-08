@@ -7,7 +7,7 @@
 	$username = itemName("SELECT cr_name FROM credential WHERE cr_id='".$_SESSION['cr_id']."'");
 	$company_id = isset($_GET['company_id']) ? $_GET['company_id'] : "";
 	$company_name = itemName("SELECT name FROM company WHERE id='".$company_id."'");
-	$total = isset($_GET['total_amount']) ? $_GET['total_amount'] : 0;
+	$total = isset($_GET['amount']) ? $_GET['amount'] : 0;
 	$staff_claim_id = isset($_GET['staff_claim_id']) ? $_GET['staff_claim_id'] : "";
 ?>
 

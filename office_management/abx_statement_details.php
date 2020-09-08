@@ -79,8 +79,9 @@ while ($row = mysqli_fetch_assoc($result)) {
       border-bottom: 2px outset black;      
     }
     @media print {
-    .btn-print{
-        display:none;
+        .btn-print{
+            display:none !important;
+        }               
     }
 
    </style>
@@ -196,7 +197,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                         </div>
                         <br><br><br>
                         <div class="card-text text-sm-center">
-                        	<button class="btn-info btn" onclick="goBack()">Back</button>
+                        	<button class="btn-info btn btn-print" onclick="goBack()">Back</button>
                         	&nbsp;&nbsp;
                         	<button class="btn-primary btn btn-print" onclick="printDiv('printStatement')">Print</button>  
                         </div>                                       

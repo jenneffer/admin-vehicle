@@ -119,7 +119,7 @@
     <div class="modal fade" id="updateStatus">
         <div class="modal-dialog modal-sm" role="document">
             <div class="modal-content">
-                <div class="modal-header">                    
+                <div class="modal-header">                 	               
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
