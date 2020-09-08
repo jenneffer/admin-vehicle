@@ -119,7 +119,7 @@
                                     foreach ($arr_data as $data){
                                         $count++;
                                         //check if staff_claim_id exist in requisition table
-                                        $check = mysqli_num_rows(mysqli_query($conn_admin_db, "SELECT * FROM om_requisition WHERE staff_claim_id='".$data['id']."'"));
+                                        $check = mysqli_num_rows(mysqli_query($conn_admin_db, "SELECT * FROM om_requisition WHERE staff_claim_id='".$data['id']."'"));                                        
                                         $display = $check != 0 ? "none" : "block"; //show button generate form if has not been generated
                                         $d = date('Y-m-d', strtotime($data['date_added']));
                                         ?>
@@ -131,7 +131,8 @@
                                             <td><?=ucfirst($data['add_by'])?></td>                                            
                                             <td><?=$data['amount']?></td>                                                                                            
                                             <td>
-                                            	<span id="view_data" onclick="window.open('staff_claim_print.php?company_id=<?=$data['company_id']?>&staff_claim_id=<?=$data['id']?>&date_added=<?=$d?>');"><i class="fas fa-eye"></i></span>                                            	
+                                            	<span id="view_data" onclick="window.open('staff_claim_print.php?company_id=<?=$data['company_id']?>&staff_claim_id=<?=$data['id']?>&date_added=<?=$d?>');"><i class="fas fa-eye"></i></span>
+                                            	<span onclick="window.open('requisition_form.php?company_id=<?=$data['company_id']?>&staff_claim_id=<?=$data['id']?>&date_added=<?=$d?>&amount=<?=$data['amount']?>');" style="display: <?=$display?>"><i class="fas fa-plus-circle"></i></span>                                            	
                                             </td>
                                         </tr>
                                     <?php
