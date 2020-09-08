@@ -134,9 +134,12 @@
                             <label for="item" class=" form-control-label"><small class="form-text text-muted">Item <span class="color-red">*</span></small></label>
                             <div>
                                 <?php
-//                                 $item = mysqli_query ( $conn_admin_db, "SELECT si.id AS id, item_name FROM stationary_stock ss
-//                                                               INNER JOIN stationary_item si ON si.id = ss.item_id GROUP BY si.id");IFNULL(B.Info,''
-                                $item = mysqli_query ( $conn_admin_db, "SELECT a.`id`, CONCAT(a.`item_name`, ' ', '(', IFNULL(a.`unit`, '-'), ')') AS itemss FROM `stationary_item`a LEFT JOIN `stationary_category`b ON a.`category_id` = b.`id` WHERE a.`status`='1'");
+                                $item = mysqli_query ( $conn_admin_db, "SELECT item_id, (SELECT CONCAT(item_name, ' ', '(', IFNULL(unit, '-'), ')') FROM stationary_item WHERE id=stationary_stock.item_id) AS item_name, stock_in - (SELECT IF(SUM(quantity) IS NULL, 0, SUM(quantity)) FROM stationary_stock_take WHERE item_id = stationary_stock.item_id AND date_taken >= stationary_stock.date_stock_in) AS stock_balance FROM stationary_stock
+HAVING stock_balance > 0");
+//                                 $item = mysqli_query ( $conn_admin_db, "SELECT a.`id`, CONCAT(a.`item_name`, ' ', '(', IFNULL(a.`unit`, '-'), ')') AS itemss FROM `stationary_item`a LEFT JOIN `stationary_category`b ON a.`category_id` = b.`id` WHERE a.`status`='1'");
+                                
+                                
+                                
                                 db_select ($item, 'item', '','','-select-','form-control','');
                                 ?>
                             </div>
