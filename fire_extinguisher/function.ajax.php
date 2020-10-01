@@ -91,7 +91,7 @@
             $id = $param['id'];
             $serial_no = $param['serial_no'];
             $expiry_date = $param['expiry_date'];
-            $company = $param['company'];
+            $company = $param['company_edit'];
             $pic = $param['pic'];
             $remark = $param['remark'];
             $location = $param['location'];

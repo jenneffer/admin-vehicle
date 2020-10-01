@@ -3,8 +3,8 @@
 	require_once('../function.php');
 	require_once('../check_login.php');
 	global $conn_admin_db;
-	$date_start = isset($_POST['date_start']) ? $_POST['date_start'] : date('01-m-Y');
-	$date_end = isset($_POST['date_end']) ? $_POST['date_end'] : date('t-m-Y');
+	$date_start = isset($_POST['date_start']) ? $_POST['date_start'] : date('01-01-Y');
+	$date_end = isset($_POST['date_end']) ? $_POST['date_end'] : date('t-12-Y');
 	$status = isset($_POST['status']) ? $_POST['status'] : "";
 	$select_pic = isset($_POST['person_incharge']) ? $_POST['person_incharge'] : "";
 	$select_company = isset($_POST['company']) ? $_POST['company'] : "";
@@ -99,12 +99,12 @@
                             <div class="card-body">
                             <form id="myform" enctype="multipart/form-data" method="post" action="">       
                             	<div class="form-group row col-sm-12">       
-                                	<div class="col-sm-2">
+                                	<div class="col-sm-3">
                                         <label for="company" class=" form-control-label"><small class="form-text text-muted">Company</small></label>
                                         <div>
                                             <?php
-                                                $company = mysqli_query ( $conn_admin_db, "SELECT id, UPPER(code) FROM company");
-                                                db_select ($company, 'company', $select_company,'submit()','-select-','form-control','');
+                                                $company = mysqli_query ( $conn_admin_db, "SELECT id, UPPER(name) FROM company WHERE status='1' ORDER BY name");
+                                                db_select ($company, 'company', $select_company,'submit()','-select-','form-control form-control-sm','');
                                             ?>
                                         </div>
                                     </div> 
@@ -113,27 +113,25 @@
                                         <div>
                                             <?php
                                                 $pic = mysqli_query ( $conn_admin_db, "SELECT pic_id, UPPER(pic_name) FROM fe_person_incharge");
-                                                db_select ($pic, 'person_incharge', $select_pic,'submit()','-select-','form-control','');
+                                                db_select ($pic, 'person_incharge', $select_pic,'submit()','-select-','form-control form-control-sm','');
                                             ?>
                                         </div>
                                     </div>
                                     <div class="col-sm-2">
                                         <label for="date_start" class="form-control-label"><small class="form-text text-muted">Date Start</small></label>
                                         <div class="input-group">
-                                          <input type="text" id="date_start" name="date_start" class="form-control" value="<?=$date_start?>" autocomplete="off">
-                                          <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
+                                          <input type="text" id="date_start" name="date_start" class="form-control form-control-sm" value="<?=$date_start?>" autocomplete="off">                                          
                                         </div>                            
                                     </div>
                                     <div class="col-sm-2">
                                         <label for="date_end" class="form-control-label"><small class="form-text text-muted">Date End</small></label>
                                         <div class="input-group">
-                                        <input type="text" id="date_end" name="date_end" class="form-control" value="<?=$date_end?>" autocomplete="off">
-                                          <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
+                                        <input type="text" id="date_end" name="date_end" class="form-control form-control-sm" value="<?=$date_end?>" autocomplete="off">                                          
                                         </div>                             
                                     </div>
                                     <div class="col-sm-2">
                                         <label for="status" class="form-control-label"><small class="form-text text-muted">Status</small></label>
-                                        <select name="status" id="status" class="form-control">
+                                        <select name="status" id="status" class="form-control form-control-sm">
                                         	<?php foreach($arr_status as $key => $value) {
                                         	    
                                         	    $selected = ($status == $key) ? 'selected' : '';
@@ -141,8 +139,8 @@
                                         	}?>
                                         </select>                              
                                     </div>
-                                    <div class="col-sm-2">                                    	
-                                    	<button type="submit" class="btn btn-primary button_search ">Submit</button>
+                                    <div class="col-sm-1">                                    	
+                                    	<button type="submit" class="btn btn-sm btn-primary button_search ">Submit</button>
                                     </div>
                             	</div> 	                                   	               
                             </form>
@@ -250,7 +248,7 @@
                                 <div>
                                     <?php
                                         $company = mysqli_query ( $conn_admin_db, "SELECT id, code FROM company");
-                                        db_select ($company, 'company', '','','-select-','form-control','');
+                                        db_select ($company, 'company_edit','','','-select-','form-control','');
                                     ?>
                                 </div>
                             </div> 
@@ -348,9 +346,11 @@
 
     	var table = $('#master_listing').DataTable({
          	"processing": true,
-         	"serverSide": true,
-         	"searching": true,  
-         	"paging": true,       	
+         	"serverSide": true,   
+         	"searching": false,
+         	"bPaginate": false,
+            "bLengthChange": false,
+            "bInfo": false,  	
             "ajax":{
                 "url": "function.ajax.php",    
                 "type":"POST",       	
@@ -363,27 +363,6 @@
                     data.pic = '<?=$select_pic?>';	
        	        }
        	    },
-//             "dom": 'Bfrtip',
-//             "buttons": [ 
-//                 { 
-//                     extend: 'excelHtml5', 
-//                     messageTop: 'Fire Extinguisher Master Listing',
-//                     footer: true 
-//                 },
-//                 {
-//                     extend: 'print',
-//                     messageTop: 'Fire Extinguisher Master Listing',
-//                     footer: true,
-//                     customize: function ( win ) {
-//                          $(win.document.body)
-//                              .css( 'font-size', '10pt' );
-                    
-//                          $(win.document.body).find( 'table' )
-//                              .addClass( 'compact' )
-//                              .css( 'font-size', 'inherit' );
-//                      }
-//                  }
-//             ],
        		"rowCallback": function(row, data, index){
        			var new_date = dateFormatRev(data[6]);
        			var numDays = calcDay( new Date(), new_date);
@@ -416,7 +395,7 @@
                         $('#remark').val(data.remark); 
                         $('#status').val(data.status); 
                         $('#location').val(data.location_id); 
-                        $('#company').val(data.company_id); 
+                        $('#company_edit').val(data.company_id); 
                         $('#pic').val(data.person_incharge_id);   
 //                         $('#fe_status').val(data.fe_status);                       
                         $('#editItem').modal('show');
@@ -458,7 +437,7 @@
           else if($('#expiry_date').val() == ''){  
                alert("Expiry date is required");  
           }  
-          else if($('#company').val() == ''){  
+          else if($('#company_edit').val() == ''){  
                alert("Company is required");  
           }  
           else if($('#pic').val() == ''){  
