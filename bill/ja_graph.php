@@ -256,7 +256,7 @@ tr:nth-child(even) {
                 		</div>
                 		<div class="col-sm-4 monthly-div">
                 		<label for="location" class="form-control-label"><small class="form-text text-muted">Account No./Location</small></label>
-                		<?php                                            
+                		<?php                  		
                     		$location = mysqli_query ( $conn_admin_db, "SELECT id,UPPER(location) FROM bill_jabatan_air_account WHERE company_id='$select_company' AND status='1' GROUP BY location");
                     		db_select ($location, 'location',$select_location,'submit()','All','form-control form-control-sm','');
                         ?>

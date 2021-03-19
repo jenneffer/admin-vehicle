@@ -160,7 +160,7 @@
     
     function master_listing( $date_start, $date_end, $status, $company, $pic ){
         global $conn_admin_db;
-        $query = "SELECT fli.id, serial_no, expiry_date, fli.`status`, remark, location_name,c.code,pic_name, pic_contact_no, fm.name  FROM fe_master_listing fli
+        $query = "SELECT fli.id, serial_no, expiry_date, fli.`status`, remark, location_name,c.code,pic_name, pic_contact_no, fm.name, fli.action  FROM fe_master_listing fli
                 INNER JOIN fe_location flo ON flo.location_id = fli.location_id
                 INNER JOIN company c ON c.id = fli.company_id
                 INNER JOIN fe_person_incharge fpi ON fli.person_incharge_id = fpi.pic_id 
@@ -218,7 +218,8 @@
                     $serial_no,
                     dateFormatRev($row['expiry_date']), 
                     $status,
-                    $row['remark'],                    
+                    $row['remark'],     
+                    $row['action'],   
                     $action
                     
                 );

@@ -18,7 +18,6 @@
                 if( !empty($data) ){                    
                     $params = array();
                     parse_str($data, $params); //unserialize jquery string data   
-                    
                     $vv_id = $params['vv_id'];
                     $vehicle_reg_no = $params['vehicle_reg_no'];
                     $category = $params['category'];
@@ -136,9 +135,187 @@
             case 'delete_permit':
                 delete_permit($id);
                 break;
+                
+            case 'add_new_runner':
+                add_new_runner($data);
+                break;
+                
+            case 'retrieve_runner':
+                retrieve_runner($id);
+                break;
+            case 'update_runner':
+                update_runner($data);
+                break;
+            case 'delete_runner':
+                delete_runner($id);
+                break;
+            case 'add_new_claim':
+                add_new_claim($data);
+                break;
+            case 'retrieve_runner_claim':
+                retrieve_runner_claim($id);
+                break;
+            case 'update_runner_claim':
+                update_runner_claim($data);
+                break;
+            case 'delete_runner_claim';
+                delete_runner_claim($id);
+                break;
             default:
                 break;
         }
+    }
+    
+    function delete_runner_claim($id){
+        global $conn_admin_db;
+        if(!empty($id)){
+            //update runner claim table
+            $query = "UPDATE vehicle_runner_claim SET status = 0 WHERE id = '".$id."' ";
+            $result = mysqli_query($conn_admin_db, $query);
+            
+            echo json_encode($result);
+        }
+    }
+    
+    function retrieve_runner_claim($id){
+        global $conn_admin_db;
+        if(!empty($id)){
+            $query = "SELECT * FROM vehicle_runner_claim WHERE id = '".$id."' AND status='1'";
+            
+            $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
+            $row = mysqli_fetch_array($result);          
+            echo json_encode($row);
+        }
+    }
+    
+    function update_runner_claim($data){
+        global $conn_admin_db;
+        $params = array();
+        parse_str($data, $params); //unserialize jquery string data
+        $claim_id = isset($params['claim_id']) ? $params['claim_id'] : "";
+        $runner_id = isset($params['runner_up']) ? $params['runner_up'] : "";
+        $vehicle_id = isset( $params['vehicle_reg_no_up'] ) ? $params['vehicle_reg_no_up'] : "";
+        $bill_no = isset( $params['bill_no_up'] ) ? $params['bill_no_up'] : "";
+        $invoice_no = isset($params['invoice_no_up']) ? $params['invoice_no_up'] : "";
+        $invoice_amount = isset( $params['invoice_amount_up'] ) ? $params['invoice_amount_up'] : "";
+        $invoice_date = isset( $params['invoice_date_up'] ) ? $params['invoice_date_up'] : "";
+        $inspection_charge = isset($params['inspection_charge_up']) ? $params['inspection_charge_up'] : "";
+        $service_charge = isset( $params['service_charge_up'] ) ? $params['service_charge_up'] : "";
+        $puspakom_from = isset( $params['puspakom_from_up'] ) ? $params['puspakom_from_up'] : "";
+        $puspakom_to = isset($params['puspakom_to_up']) ? $params['puspakom_to_up'] : "";
+        $other_misc = isset( $params['other_misc_up'] ) ? $params['other_misc_up'] : "";
+        $remark = isset( $params['remark_up'] ) ? $params['remark_up'] : "";
+        
+        //add new runner claim
+        $query = "UPDATE vehicle_runner_claim SET
+                vehicle_id='$vehicle_id',
+                runner_id='$runner_id',
+                bill_no='$bill_no',
+                invoice_no='$invoice_no',
+                invoice_amount='$invoice_amount',
+                inspection_charge='$inspection_charge',
+                service_charge='$service_charge',
+                other_misc='$other_misc',
+                remark='$remark',
+                puspakom_from='".dateFormat($puspakom_from)."',
+                puspakom_to='".dateFormat($puspakom_to)."',
+                invoice_date='".dateFormat($invoice_date)."' WHERE id='$claim_id'";
+
+        $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
+        echo json_encode($result);
+        
+    }
+    
+    function add_new_claim($data){
+        global $conn_admin_db;
+        $params = array();
+        parse_str($data, $params); //unserialize jquery string data
+        $runner_id = isset($params['runner']) ? $params['runner'] : "";
+        $vehicle_id = isset( $params['vehicle_reg_no'] ) ? $params['vehicle_reg_no'] : "";
+        $bill_no = isset( $params['bill_no'] ) ? $params['bill_no'] : "";
+        $invoice_no = isset($params['invoice_no']) ? $params['invoice_no'] : "";
+        $invoice_amount = isset( $params['invoice_amount'] ) ? $params['invoice_amount'] : "";
+        $invoice_date = isset( $params['invoice_date'] ) ? $params['invoice_date'] : "";
+        $inspection_charge = isset($params['inspection_charge']) ? $params['inspection_charge'] : "";
+        $service_charge = isset( $params['service_charge'] ) ? $params['service_charge'] : "";
+        $puspakom_from = isset( $params['puspakom_from'] ) ? $params['puspakom_from'] : "";
+        $puspakom_to = isset($params['puspakom_to']) ? $params['puspakom_to'] : "";
+        $other_misc = isset( $params['other_misc'] ) ? $params['other_misc'] : "";
+        $remark = isset( $params['remark'] ) ? $params['remark'] : "";
+        
+        //add new runner claim
+        $query = "INSERT INTO vehicle_runner_claim SET
+                vehicle_id='$vehicle_id',
+                runner_id='$runner_id',
+                bill_no='$bill_no',
+                invoice_no='$invoice_no',
+                invoice_amount='$invoice_amount',
+                inspection_charge='$inspection_charge',
+                service_charge='$service_charge',
+                other_misc='$other_misc',
+                remark='$remark',
+                puspakom_from='".dateFormat($puspakom_from)."',
+                puspakom_to='".dateFormat($puspakom_to)."',
+                invoice_date='".dateFormat($invoice_date)."'";
+        
+        $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
+        echo json_encode($result);
+    }
+    
+    function delete_runner($id){
+        global $conn_admin_db;
+        if(!empty($id)){
+            //update vehicle permit table
+            $query = "UPDATE vehicle_runner SET r_status = 0 WHERE r_id = '".$id."' ";
+            $result = mysqli_query($conn_admin_db, $query);
+            
+            echo json_encode($result);
+        }
+    }
+    
+    function update_runner($data){
+        global $conn_admin_db;
+        $params = array();
+        parse_str($data, $params); //unserialize jquery string data
+        $runner_id = isset($params['runner_id']) ? $params['runner_id'] : "";
+        $runner_name = isset( $params['r_name'] ) ? $params['r_name'] : "";
+        $runner_status = isset( $params['r_status'] ) ? $params['r_status'] : "";
+        
+        //update runner
+        $query = "UPDATE vehicle_runner SET
+                r_name='$runner_name',
+                r_status='$runner_status' WHERE r_id='$runner_id'";
+        
+        $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
+        echo json_encode($result);
+    }
+    
+    function retrieve_runner($id){
+        global $conn_admin_db;
+        if(!empty($id)){
+            $query = "SELECT * FROM vehicle_runner WHERE r_id = '".$id."'";
+            
+            $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
+            $row = mysqli_fetch_array($result);
+            
+            echo json_encode($row);
+        }
+    }
+    function add_new_runner($data){
+        global $conn_admin_db;
+        $params = array();
+        parse_str($data, $params); //unserialize jquery string data
+        $runner_name = isset( $params['runner_name'] ) ? $params['runner_name'] : "";
+        $runner_status = isset( $params['runner_status'] ) ? $params['runner_status'] : "";
+
+        //add new runner
+        $query = "INSERT INTO vehicle_runner SET
+                r_name='$runner_name',
+                r_status='$runner_status'";
+        
+        $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
+        echo json_encode($result);
+        
     }
     
     function delete_permit($id){

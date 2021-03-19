@@ -1,28 +1,28 @@
 <?php
-	require_once('../assets/config/database.php');
-	require_once('../function.php');	
-	require_once('../check_login.php');
-	global $conn_admin_db;
+require_once('../assets/config/database.php');
+require_once('../function.php');
+require_once('../check_login.php');
+global $conn_admin_db;
 // 	session_start();
 // 	if(isset($_SESSION['cr_id'])) {
 // 		$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
 // 		$url = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 // 		$query = parse_url($url, PHP_URL_QUERY);
 // 		parse_str($query, $params);
-		
+
 // 		// get id
 // 		$userId = $_SESSION['cr_id'];
 // 		$name = $_SESSION['cr_name'];
-		
+
 // 	} else {
 // 		$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
 // 		$url = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 // 		$PrevURL= $url;
 // 		header("Location: ../login.php?RecLock=".$PrevURL);
 // 	}
-	
-	$select_c = isset($_POST['select_company']) ? $_POST['select_company'] : "";
-	
+
+$select_c = isset($_POST['select_company']) ? $_POST['select_company'] : "";
+
 ?>
 
 <!doctype html><html class="no-js" lang="">
@@ -87,6 +87,8 @@
 											<th width="25%">Details</th>		
 											<th>Finance</th>		
 											<th width="20%" style="text-align: center;">LPKP Permit</th>
+											<th>Driver</th>
+											<th>Vehicle Status</th>
 											<th>Remarks</th>
 											<th>&nbsp;</th>
                                         </tr>
@@ -101,7 +103,7 @@
 
                                     <?php 
                                         $sql_query = "SELECT vv.vv_id,vv_vehicleNo,code,vv_category,vv_brand,vv_model,vv_engine_no,vv_chasis_no,vv_bdm,
-                                                    vv_btm,vv_capacity,vv_yearMade,vv_finance,vpr_type, vpr_no,vpr_license_ref_no,vpr_due_date, 
+                                                    vv_btm,vv_capacity,vv_yearMade,vv_finance,vpr_type, vpr_no,vpr_license_ref_no,vpr_due_date, vv_driver,vv_status,
                                                     vv_remark FROM vehicle_vehicle vv
                                                     INNER JOIN company ON company.id = vv.company_id 
                                                     LEFT JOIN vehicle_permit vp ON vp.vv_id = vv.vv_id
@@ -138,6 +140,11 @@
                                                             <span><b>License Ref. No.</b> : ".$row['vpr_license_ref_no']."</span><br>
                                                             <span><b>Due date.</b> : ".$vpr_due_date."</span><br>";
                                                     }
+													$vv_status = "";
+													if($row['vv_status'] == 'total_loss') $vv_status = "Total Loss";
+													else if($row['vv_status'] == 'active') $vv_status = "Active";
+													else if($row['vv_status'] == 'inactive') $vv_status = "Inactive";
+													else if($row['vv_status'] == 'not_sure') $vv_status = "Not sure";
                                                     ?>
                                                     <tr>
                                                         <td><?=$count?>.</td>
@@ -147,6 +154,8 @@
                                                         <td><?=$vehicle_details?></td>                                                        
                                                         <td><?=strtoupper($row['vv_finance'])?></td>
                                                         <td><?=$permit_details?></td>
+                                                        <td><?=$row['vv_driver']?></td>
+														<td><?=$vv_status?></td>
                                                         <td><?=$row['vv_remark']?></td>
                                                          <td> 
                                                         	<span id="<?=$row['vv_id']?>" data-toggle="modal" class="edit_data" data-target="#editItem"><i class="fa fa-edit"></i></span>
@@ -251,7 +260,8 @@
                                         </div>
                                         <div class="col-sm-4">
                                             <label for="finance" class="form-control-label"><small class="form-text text-muted">Vehicle Status</small></label>
-                                            <select id="vehicle_status" name="" class="form-control">
+                                            <select id="vehicle_status" name="vehicle_status" class="form-control">
+                                              <option value="">-</option>
                                               <option value="active">Active</option>
                                               <option value="inactive">Inactive</option>
                                               <option value="not_sure">Not Sure</option>
@@ -366,6 +376,7 @@
         $('.lkpk_permit').hide();
         $('.edit_data').on('click', function(){
         	var vehicle_id = $(this).attr("id");
+        	$('#vv_id').val(vehicle_id);		
         	$.ajax({
         			url:"vehicle.all.ajax.php",
         			method:"POST",
@@ -373,8 +384,7 @@
         			dataType:"json",
         			success:function(data){	
             			console.log(data);
-            			//vehicle
-        				$('#vv_id').val(data.vv_id);					
+            			//vehicle        							
                         $('#vehicle_reg_no').val(data.vv_vehicleNo);  
                         $('#category').val(data.vv_category);  
                         $('#company').val(data.company_id);  
@@ -456,7 +466,7 @@
                     success:function(data){   
                          $('#editItem').modal('hide');  
                          $('#bootstrap-data-table').html(data);
-//                          location.reload();  
+                         location.reload();  
                     }  
                });  
           }  

@@ -158,7 +158,8 @@
                                             <th>Serial No.</th>											
 											<th>Expiry Date</th>
 											<th>Status</th>
-											<th>Remark</th>											
+											<th>Remark</th>			
+											<th>Action</th>											
 											<th>&nbsp;</th>
                                         </tr>                                        
                                     </thead>

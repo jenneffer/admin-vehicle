@@ -13,7 +13,7 @@ $select_company = isset($_POST['company']) ? $_POST['company'] : "";
 
 $company_name = itemName("SELECT code FROM company WHERE id='$select_company'");
 ob_start();
-selectYear('year_select',$year_select,'submit()','','form-control form-control-sm','','');
+selectYear('year_select[]',$year_select,'','','form-control form-control-sm js-example-basic-multiple','','');
 $html_year_select = ob_get_clean();
 
 $arr_report_type = array(
@@ -140,6 +140,7 @@ tr:nth-child(even) {
 <?php require_once('../allCSS1.php')?>
 <link href="https://cdn.jsdelivr.net/npm/chartist@0.11.0/dist/chartist.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/jqvmap@1.5.1/dist/jqvmap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 </head>
 <body>
     <!--Left Panel -->
@@ -153,7 +154,7 @@ tr:nth-child(even) {
         <div class="col-md-12">
             <div class="card" id="printableArea">
                 <div class="card-header text-center">
-                    <strong class="card-title">WATER USAGE</strong>
+                    <strong class="card-title">VEHICLE EXPENSES</strong>
                 </div>     
                 <div class="card-body">
             	<form action="" method="post">
@@ -249,6 +250,7 @@ tr:nth-child(even) {
 <script src="../assets/js/lib/data-table/buttons.colVis.min.js"></script>
 <script src="../assets/js/init/datatables-init.js"></script>
 <script src="../assets/js/script/bootstrap-datepicker.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script type="text/javascript">
 function getDataset(index, data) { 
 	return { 
@@ -283,6 +285,8 @@ $(document).ready(function() {
     	$('.company-monthly').hide();
     	$('.premium, .sum_insured, .roadtax').hide();
     }
+
+    $('.js-example-basic-multiple').select2();
 	//company expenses yearly - premium
 	var ctx = document.getElementById( "premium-yearly" );        	
     ctx.height = 150;

@@ -95,7 +95,7 @@ function get_chart_data($item_id, $date_start, $date_end){
     $query = "SELECT department_id, SUM(quantity) AS quantity from stationary_stock_take
         WHERE date_taken BETWEEN '".dateFormat($date_start)."' AND '".dateFormat($date_end)."' AND item_id='$item_id'
         GROUP BY department_id";
-    // echo $query;
+
     $item_name = itemName("SELECT item_name FROM stationary_item WHERE id='$item_id'");
     $result = mysqli_query($conn_admin_db, $query);    
     $arr_data = [];    
