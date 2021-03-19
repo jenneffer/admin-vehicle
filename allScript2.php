@@ -1,5 +1,5 @@
 <!-- Scripts -->
-<!--     <script src="../assets/js/script/jquery.min.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
 	<script src="../assets/js/jquery-3.3.1.min.js"></script>
     <script src="../assets/js/script/popper.min.js"></script>
     <script src="../assets/js/script/bootstrap.min.js"></script>

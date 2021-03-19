@@ -28,7 +28,7 @@ $upcoming_renewal = date( 'Y-m-d', strtotime( "+30 days" ) );
 $query = "SELECT * FROM fe_master_listing fli
         INNER JOIN fe_location flo ON flo.location_id = fli.location_id
         INNER JOIN company c ON c.id = fli.company_id        
-        WHERE expiry_date BETWEEN '".$today."' AND '".$upcoming_renewal."'";
+        WHERE expiry_date BETWEEN '".$today."' AND '".$upcoming_renewal."' AND action='1'";
 
 $rst  = mysqli_query($conn_admin_db, $query)or die(mysqli_error($conn_admin_db));
 if ( mysqli_num_rows($rst) > 0 ){

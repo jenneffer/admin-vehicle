@@ -20,12 +20,13 @@ global $conn_admin_db;
             UNION ALL 
             SELECT stationary_item.id, stationary_item.item_name, '' AS department_id, 0 AS quantity, '' AS date_taken FROM stationary_item  WHERE stationary_item.id NOT IN (SELECT item_id FROM stationary_stock_take WHERE date_taken BETWEEN '".dateFormat($date_start)."' AND '".dateFormat($date_end)."'))t
             ORDER BY t.quantity DESC";
-    
+//     echo $query;
     $result = mysqli_query ( $conn_admin_db,$query);
     $arr_data = [];
     while($row = mysqli_fetch_assoc($result)){
         $arr_data[$row['id']] = $row;
     }
+    
     
     //department
     $dept_rst = mysqli_query($conn_admin_db, "SELECT * FROM stationary_department WHERE status='1' ORDER BY department_id");
@@ -94,7 +95,7 @@ global $conn_admin_db;
 
 <body>
 <!--Left Panel -->
-<?php  include('../assets/nav/leftNav.php')?>
+<?php include('../assets/nav/leftNav.php')?>
 <!-- Right Panel -->
 <?php include('../assets/nav/rightNav.php')?>
 <!-- /#header -->
@@ -288,7 +289,6 @@ $(document).ready(function() {
 			dataType:"json",
 			cache: false,			
 			success:function(response){  
-				console.log(response);
 				var chart_data = response.chart_data;
 				var item_summary = response.item_summary;
 				var label = [];   
@@ -296,10 +296,10 @@ $(document).ready(function() {
 				var backgroundColor = [];
 				var item_name = "";
 				chart_data.forEach(function (item) {
-				label.push(item.label);
-                  datas.push(item.data);
-                  backgroundColor.push(item.backgroundColor);
-                  item_name = item.item_name +" From "+date_start+" - "+date_end;
+					label.push(item.label);
+                    datas.push(item.data);
+                    backgroundColor.push(item.backgroundColor);
+					item_name = item.item_name +" From "+date_start+" - "+date_end;
                 });  
 
 				var i_name = '';

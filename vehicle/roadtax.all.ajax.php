@@ -66,7 +66,7 @@
                 INNER JOIN company ON company.id = vehicle_vehicle.company_id
                 LEFT JOIN vehicle_puspakom ON vehicle_puspakom.vv_id = vehicle_vehicle.vv_id AND vehicle_puspakom.status='1'
                 LEFT JOIN vehicle_insurance ON vehicle_insurance.vv_id = vehicle_vehicle.vv_id
-                WHERE vrt_roadTax_dueDate BETWEEN '".dateFormat($date_start)."' AND '".dateFormat($date_end)."' ";
+                WHERE vrt_roadTax_fromDate BETWEEN '".dateFormat($date_start)."' AND '".dateFormat($date_end)."' ";
         
         if(!empty($company)){
             $sql_query .=" AND vehicle_vehicle.company_id = '$company'";    
