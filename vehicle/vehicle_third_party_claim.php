@@ -45,7 +45,7 @@
                     <div class="col-md-12">
                         <div class="card" id="printableArea">
                             <div class="card-header">
-                                <strong class="card-title">Vehicle Total Loss</strong>
+                                <strong class="card-title">Vehicle 3rd Party Claim</strong>
                             </div>
                             <!-- Filter -->
                             <div class="card-body">
@@ -95,8 +95,8 @@
 
                                     <?php 
                                         $sql_query = "SELECT * FROM vehicle_vehicle vv 
-                                                    INNER JOIN vehicle_total_loss vtl ON vtl.vt_vv_id = vv.vv_id AND vtl.status = 1
-                                                    INNER JOIN company ON company.id = vv.company_id WHERE YEAR(vt_payment_advice_date)='$year'"; //only show active vehicle 
+                                                    INNER JOIN vehicle_third_party_claim vtp ON vtp.vv_id = vv.vv_id AND vtp.status = 1
+                                                    INNER JOIN company ON company.id = vv.company_id WHERE YEAR(vtp_payment_advice_date)='$year'"; //only show active vehicle 
                                         
                                         if(!empty($select_c)){
                                             $sql_query .= " AND company.id = '$select_c'";
@@ -113,19 +113,19 @@
                                                     ?>
                                                     <tr>
                                                         <td><?=$count?>.</td>
-                                                        <td><?=$row['vt_insurance']?></td>                                                        
-                                                        <td><?=dateFormatRev($row['vt_offer_letter_date'])?></td>
+                                                        <td><?=$row['vtp_insurance']?></td>                                                        
+                                                        <td><?=dateFormatRev($row['vtp_offer_letter_date'])?></td>
                                                         <td><?=$row['vv_vehicleNo']?></td>
                                                         <td><?=$company?></td>
-                                                        <td class="text-right"><?=number_format($row['vt_amount'],2)?></td>
-                                                        <td><?=dateFormatRev($row['vt_payment_advice_date'])?></td>
-                                                        <td><?=$row['vt_beneficiary_bank']?></td>
-                                                        <td><?=$row['vt_trans_ref_no']?></td>
-                                                        <td><?=$row['vt_driver']?></td>
-                                                        <td><?=$row['vt_remark']?></td>
+                                                        <td class="text-right"><?=number_format($row['vtp_amount'],2)?></td>
+                                                        <td><?=dateFormatRev($row['vtp_payment_advice_date'])?></td>
+                                                        <td><?=$row['vtp_beneficiary_bank']?></td>
+                                                        <td><?=$row['vtp_trans_ref_no']?></td>
+                                                        <td><?=$row['vtp_driver']?></td>
+                                                        <td><?=$row['vtp_remark']?></td>
                                                         <td>
-                                                        	<span id="<?=$row['vt_id']?>" data-toggle="modal" class="edit_data" data-target="#editItem"><i class="fa fa-edit"></i></span>
-                                                        	<span id="<?=$row['vt_id']?>" data-toggle="modal" class="delete_data" data-target="#deleteItem"><i class="fas fa-trash-alt"></i></span>
+                                                        	<span id="<?=$row['vtp_id']?>" data-toggle="modal" class="edit_data" data-target="#editItem"><i class="fa fa-edit"></i></span>
+                                                        	<span id="<?=$row['vtp_id']?>" data-toggle="modal" class="delete_data" data-target="#deleteItem"><i class="fas fa-trash-alt"></i></span>
                                                         </td>
                                                     </tr>
                                     <?php
@@ -159,12 +159,12 @@
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Edit Vehicle Total Loss</h4>
+                    <h4 class="modal-title">Edit Vehicle Third Party Claim</h4>
                 </div>
                 <div class="modal-body">
                     <form role="form" method="POST" action="" id="update_form">
                         <input type="hidden" name="_token" value="">
-                        <input type="hidden" id="vt_id" name="vt_id" value="">
+                        <input type="hidden" id="vtp_id" name="vtp_id" value="">
 						<div class="form-group row col-sm-12">
                             <div class="col-sm-4">
                                 <label for="vehicle_reg_no" class=" form-control-label"><small class="form-text text-muted">Vehicle Reg No.</small></label>
@@ -173,14 +173,11 @@
                                     db_select ($vehicle, 'vehicle_reg_no', '','','-select-','form-control','');
                                 ?>
                             </div>
-                            <div class="col-sm-4">
+                            <div class="col-sm-8">
                                 <label for="insurance" class=" form-control-label"><small class="form-text text-muted">Insurance</small></label>
                                 <input type="text" id="insurance" name="insurance" placeholder="Enter insurance name" class="form-control">
                             </div>
-                            <div class="col-sm-4">
-                                <label for="amount" class=" form-control-label"><small class="form-text text-muted">Amount (RM)</small></label>
-                        		<input type="text" id="amount" name="amount" onkeypress="return isNumberKey(event)" placeholder="e.g 50.00" class="form-control">
-                            </div>
+                            
                         </div>
                         <div class="form-group row col-sm-12">                                        
                             <div class="col-sm-4">
@@ -196,6 +193,10 @@
                                     <input id="payment_advice_date" name="payment_advice_date" class="form-control" autocomplete="off">
                                     <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
                                 </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <label for="amount" class=" form-control-label"><small class="form-text text-muted">Amount (RM)</small></label>
+                        		<input type="text" id="amount" name="amount" onkeypress="return isNumberKey(event)" placeholder="e.g 50.00" class="form-control">
                             </div>
                             
                         </div>                                    
@@ -322,29 +323,29 @@
          });
         
         $(document).on('click', '.edit_data', function(){
-        	var vt_id = $(this).attr("id");
+        	var vtp_id = $(this).attr("id");
         	$.ajax({
         			url:"vehicle.all.ajax.php",
         			method:"POST",
-        			data:{action:'retrive_vehicle_total_lost', id:vt_id},
+        			data:{action:'retrive_vehicle_third_party', id:vtp_id},
         			dataType:"json",
         			success:function(data){	
             			console.log(data);
             			//vehicle total loss
             			
-            			var pa_date = dateFormat(data.vt_payment_advice_date); 
-            			var ol_date = dateFormat(data.vt_offer_letter_date);
+            			var pa_date = dateFormat(data.vtp_payment_advice_date); 
+            			var ol_date = dateFormat(data.vtp_offer_letter_date);
             			
-        				$('#vt_id').val(vt_id);					
+        				$('#vtp_id').val(vtp_id);					
                         $('#vehicle_reg_no').val(data.vv_id);  
-                        $('#insurance').val(data.vt_insurance);  
-                        $('#amount').val(data.vt_amount);  
+                        $('#insurance').val(data.vtp_insurance);  
+                        $('#amount').val(data.vtp_amount);  
                         $('#offer_letter_date').val(ol_date);  
                         $('#payment_advice_date').val(pa_date);  
-                        $('#beneficiary_bank').val(data.vt_beneficiary_bank);  
-                        $('#transaction_ref_no').val(data.vt_trans_ref_no);    
-                        $('#driver').val(data.vt_driver);  
-                        $('#v_remark').val(data.vt_remark);                          
+                        $('#beneficiary_bank').val(data.vtp_beneficiary_bank);  
+                        $('#transaction_ref_no').val(data.vtp_trans_ref_no);    
+                        $('#driver').val(data.vtp_driver);  
+                        $('#v_remark').val(data.vtp_remark);                          
                         $('#editItem').modal('show');
         			}
         		});
@@ -361,7 +362,7 @@
     		$.ajax({
     			url:"vehicle.all.ajax.php",
     			method:"POST",    
-    			data:{action:'delete_vehicle_total_loss', id:ID},
+    			data:{action:'delete_vehicle_third_party', id:ID},
     			success:function(data){	  						
     				$('#deleteItem').modal('hide');		
     				location.reload();		
@@ -371,36 +372,15 @@
     
         $('#update_form').on("submit", function(event){  
           event.preventDefault();  
-          if($('#vehicle_reg_no').val() == ""){  
-               alert("Vehicle Reg. number is required");  
-          }  
-          else if($('#category').val() == ''){  
-               alert("Category is required");  
-          }  
-          else if($('#company').val() == ''){  
-               alert("Company is required");  
-          }  
-          else if($('#brand').val() == ''){  
-               alert("Make is required");  
-          }  
-          else if($('#model').val() == ''){  
-               alert("Vehicle model is required");  
-          }  
-          else if($('#yearMade').val() == ''){  
-               alert("Purchased year is required");  
-          }   
-          else{  
-               $.ajax({  
-                    url:"vehicle.all.ajax.php",  
-                    method:"POST",  
-                    data:{action:'update_vehicle', data: $('#update_form').serialize()},  
-                    success:function(data){   
-                         $('#editItem').modal('hide');  
-                         $('#bootstrap-data-table').html(data);
-//                          location.reload();  
-                    }  
-               });  
-          }  
+          $.ajax({  
+              url:"vehicle.all.ajax.php",  
+              method:"POST",  
+              data:{action:'update_vehicle_third_party', data: $('#update_form').serialize()},  
+              success:function(data){   
+                   $('#editItem').modal('hide');                     
+                   location.reload();  
+              }  
+         });    
         }); 
 
         $('#payment_advice_date,#offer_letter_date').datepicker({

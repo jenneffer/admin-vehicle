@@ -103,6 +103,7 @@
                                             $sql_result = mysqli_query($conn_admin_db, $sql_query)or die(mysqli_error($conn_admin_db));
                                                 while($row = mysqli_fetch_array($sql_result)){ 
                                                     $count++;   
+                                                    
                                                     $workshop = itemName("SELECT name FROM vehicle_workshop WHERE id='".$row['vm_workshop']."'");
                                                     ?>
                                                     <tr>
@@ -111,9 +112,9 @@
                                                         <td><?=$row['company_name']?></td>  
                                                         <td><?=$workshop?></td>                                                        
                                                         <td><?=$row['vm_irf_no']?></td>
-                                                        <td><?=$row['vm_irf_date']?></td>
+                                                        <td><?=(!empty($row['vm_irf_date'])) ? $row['vm_irf_date'] : '-'  ?></td>
                                                         <td><?=$row['vm_po_no']?></td>
-                                                        <td><?=$row['vm_po_date']?></td>
+                                                        <td><?=(!empty($row['vm_po_date'])) ? $row['vm_po_date'] : '-'?></td>
                                                         <td><?=$row['vm_invoice_no']?></td>                                        
                                                         <td><?=$row['vm_amount']?></td>
                                                         <td><?=$row['vm_date']?></td>

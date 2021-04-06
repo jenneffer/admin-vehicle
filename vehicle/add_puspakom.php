@@ -91,7 +91,7 @@
                                             ?>
                                     	</div>
                                     	<div class="col-sm-6">
-                                            <label for="fitness_date" class="form-control-label"><small class="form-text text-muted">Fitness due date <span class="color-red">*</span></small></label>
+                                            <label for="fitness_date" class="form-control-label"><small class="form-text text-muted">Fitness due date</small></label>
                                             <div class="input-group">
                                                 <input id="fitness_date" name="fitness_date" class="form-control" autocomplete="off" >                                            
                                             </div>                                            
@@ -171,9 +171,6 @@
                 if($('#vehicle_reg_no').val() == ""){  
                      alert("Vehicle number is required");  
                 } 
-                else if($('#fitness_date').val() == ""){  
-                    alert("Fitness date is required");  
-               	} 
                 else if($('#roadtax_due_date').val() == ""){  
                     alert("Roadtax due date is required");  
                	}     

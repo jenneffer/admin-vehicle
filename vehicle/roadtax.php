@@ -226,37 +226,31 @@
                         <div class="form-group row col-sm-12">
                             <div class="col-sm-6">
                                 <label for="premium_amount" class=" form-control-label"><small class="form-text text-muted">Premium (RM)</small></label>
-                                <input type="text" id="premium_amount" name="premium_amount" onkeypress="return isNumberKey(event)" placeholder="e.g 1000.00" class="form-control">
+                                <input type="text" id="premium_amount" name="premium_amount" onkeypress="return isNumberKey(event)" class="form-control">
                             </div>
                             <div class="col-sm-6">
                                 <label for="ncd" class=" form-control-label"><small class="form-text text-muted">NCD (%)</small></label>
-                                <input type="text" id="ncd" name="ncd" onkeypress="return isNumberKey(event)" placeholder="e.g 25" class="form-control">
+                                <input type="text" id="ncd" name="ncd" onkeypress="return isNumberKey(event)" class="form-control">
                             </div>
                         </div>
 
                         <div class="form-group row col-sm-12">
                             <div class="col-sm-6">
                                 <label for="sum_insured" class=" form-control-label"><small class="form-text text-muted">Sum Insured (RM)</small></label>
-                                <input type="text" id="sum_insured" name="sum_insured" onkeypress="return isNumberKey(event)" placeholder="e.g 750.00" class="form-control">
+                                <input type="text" id="sum_insured" name="sum_insured" onkeypress="return isNumberKey(event)" class="form-control">
                             </div>
                             <div class="col-sm-6">
                                 <label for="excess_paid" class=" form-control-label"><small class="form-text text-muted">Excess Paid (RM)</small></label>
-                                <input type="text" id="excess_paid" name="excess_paid" onkeypress="return isNumberKey(event)" placeholder="e.g 750.00" class="form-control">
+                                <input type="text" id="excess_paid" name="excess_paid" onkeypress="return isNumberKey(event)" class="form-control">
                             </div>
                         </div>
                         
                         <div class="form-group row col-sm-12">
                             <div class="col-sm-6">
                                 <label for="roadtax_amount" class=" form-control-label"><small class="form-text text-muted">Roadtax Amount(RM)</small></label>
-                                <input type="text" id="roadtax_amount" name="roadtax_amount" onkeypress="return isNumberKey(event)" placeholder="e.g 50.00" class="form-control">
+                                <input type="text" id="roadtax_amount" name="roadtax_amount" onkeypress="return isNumberKey(event)" class="form-control">
                             </div>
-                            <div class="col-sm-6">
-                                <label for="insurance_amount" class=" form-control-label"><small class="form-text text-muted">Insurance Amount(RM)</small></label>
-                                <input type="text" id="insurance_amount" name="insurance_amount" onkeypress="return isNumberKey(event)" placeholder="e.g 50.00" class="form-control">
-                            </div>                            
-                        </div>
-                        <div class="form-group row col-sm-12">
-                        <div class="col-sm-6 ">
+                            <div class="col-sm-6 ">
                                 <label for="insurance_status" class=" form-control-label"><small class="form-text text-muted">Insurance Status</small></label>
                                 <select name="insurance_status" id="insurance_status" class="form-control col-sm-4">
                                     <option value="1">Active</option>
@@ -264,6 +258,7 @@
                                 </select>
                             </div>
                          </div>
+                        
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                         <button type="submit" class="btn btn-primary update_data ">Update</button>
@@ -368,8 +363,7 @@
                         $('#insurance_due_date').val(insurance_due_date);  
                         $('#roadtax_from_date').val(roadtax_from_date);  
                         $('#roadtax_due_date').val(roadtax_due_date);  
-                        $('#premium_amount').val(data.vi_premium_amount);   
-                        $('#insurance_amount').val(data.vi_amount);   
+                        $('#premium_amount').val(data.vi_premium_amount);    
                         $('#ncd').val(data.vi_ncd);  
                         $('#sum_insured').val(data.vi_sum_insured);  
                         $('#excess_paid').val(data.vi_excess);  
@@ -403,40 +397,40 @@
 		//update form
         $('#update_form').on("submit", function(event){  
             event.preventDefault();  
-            if($('#vehicle_reg_no').val() == ""){  
-                 alert("Vehicle number is required");  
-            }  
-            else if($('#lpkp_date').val() == ''){  
-                 alert("LPKP date is required");  
-            }  
-            else if($('#insurance_from_date').val() == ''){  
-                 alert("Insurance from date is required");  
-            }  
-            else if($('#insurance_due_date').val() == ''){  
-                 alert("Insurance due date is required");  
-            }  
-            else if($('#roadtax_from_date').val() == ''){  
-                 alert("Roadtax from date is required");  
-            }  
-            else if($('#roadtax_due_date').val() == ''){  
-                 alert("Roadtax due date is required");  
-            }   
-            else if($('#premium_amount').val() == ''){  
-                 alert("Premium amount is required");  
-            } 
-            else if($('#ncd').val() == ''){  
-                 alert("NCD % is required");  
-            } 
-            else if($('#sum_insured').val() == ''){  
-                 alert("Sum insured amount is required");  
-            } 
-            else if($('#excess_paid').val() == ''){  
-                 alert("Excess paid amount is required");  
-            } 
-            else if($('#roadtax_amount').val() == ''){  
-                 alert("Roadtax amount is required");  
-            } 
-            else{  
+//             if($('#vehicle_reg_no').val() == ""){  
+//                  alert("Vehicle number is required");  
+//             }  
+//             else if($('#lpkp_date').val() == ''){  
+//                  alert("LPKP date is required");  
+//             }  
+//             else if($('#insurance_from_date').val() == ''){  
+//                  alert("Insurance from date is required");  
+//             }  
+//             else if($('#insurance_due_date').val() == ''){  
+//                  alert("Insurance due date is required");  
+//             }  
+//             else if($('#roadtax_from_date').val() == ''){  
+//                  alert("Roadtax from date is required");  
+//             }  
+//             else if($('#roadtax_due_date').val() == ''){  
+//                  alert("Roadtax due date is required");  
+//             }   
+//             else if($('#premium_amount').val() == ''){  
+//                  alert("Premium amount is required");  
+//             } 
+//             else if($('#ncd').val() == ''){  
+//                  alert("NCD % is required");  
+//             } 
+//             else if($('#sum_insured').val() == ''){  
+//                  alert("Sum insured amount is required");  
+//             } 
+//             else if($('#excess_paid').val() == ''){  
+//                  alert("Excess paid amount is required");  
+//             } 
+//             else if($('#roadtax_amount').val() == ''){  
+//                  alert("Roadtax amount is required");  
+//             } 
+//             else{  
                  $.ajax({  
                       url:"roadtax.all.ajax.php",  
                       method:"POST",  
@@ -447,7 +441,7 @@
                            location.reload();		 
                       }  
                  });  
-            }  
+//             }  
        }); 
 
        $('#lpkp_date,#insurance_from_date,#insurance_due_date,#roadtax_from_date,#roadtax_due_date,#date_start, #date_end').datepicker({

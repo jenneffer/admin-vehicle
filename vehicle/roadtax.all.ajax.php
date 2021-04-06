@@ -10,7 +10,9 @@
     $company = isset($_POST['select_company']) ? $_POST['select_company'] : "";
     if( $action != "" ){
         switch ($action){
-            
+            case 'create_roadtax':
+                create_roadtax($_POST['data']);
+                break;
             case 'update_roadtax':                
                 update_roadtax($_POST);
                 break;
@@ -33,6 +35,31 @@
             default:
                 break;
         }
+    }
+    
+    function create_roadtax($data){
+        global $conn_admin_db;
+        $params = array();
+        parse_str($data, $params); //unserialize jquery string data
+        
+        $vehicle_reg_no = $params['vehicle_reg_no'];
+        $roadtax_from_date = dateFormat($params['roadtax_from_date']);
+        $roadtax_due_date = dateFormat($params['roadtax_due_date']);
+        $roadtax_amount = $params['roadtax_amount'];
+        $period = $params['roadtax_period'];
+        
+        //insert into roadtax table
+        $sql_insert = mysqli_query($conn_admin_db, "INSERT INTO vehicle_roadtax SET
+                            vv_id = '".$vehicle_reg_no."',
+                            vrt_roadTax_fromDate = '".$roadtax_from_date."',
+                            vrt_roadTax_dueDate = '".$roadtax_due_date."',
+                            vrt_amount = '".$roadtax_amount."',
+                            vrt_roadTax_period = '".$period."',
+                            vrt_updatedBy = '".$_SESSION['cr_id']."',
+                            vrt_lastUpdated = now()") or  die(mysqli_error($conn_admin_db));
+        
+        echo json_encode($sql_insert);
+        
     }
     
     function delete_roadtax($args){

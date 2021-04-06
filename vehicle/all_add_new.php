@@ -205,10 +205,6 @@
                                 </div>
                                 <div class="form-group row col-sm-12">
                                     <div class="col-sm-6">
-                                        <label for="insurance_amount" class=" form-control-label"><small class="form-text text-muted">Insurance Amount(RM)</small></label>
-                                        <input type="text" id="insurance_amount" name="insurance_amount" onkeypress="return isNumberKey(event)" placeholder="e.g 150.00" class="form-control">
-                                    </div>
-                                    <div class="col-sm-6">
                                         <label for="insurance_status" class=" form-control-label"><small class="form-text text-muted">Insurance Status</small></label>
                                         <select name="insurance_status" id="insurance_status" class="form-control">
                                             <option value="1">Active</option>
@@ -265,12 +261,6 @@
             });
         	select2.data('select2').$selection.css('height', '38px');
         	select2.data('select2').$selection.css('border', '1px solid #ced4da');
-
-        	$('#lpkp_date, #fitness_date').datepicker({
-            	format: 'dd-mm-yyyy',
-            	autoclose: true,
-            	todayHighlight: true,
-             });
             
             $('#insurance_from_date').datepicker({
             	format: 'dd-mm-yyyy',
@@ -282,17 +272,7 @@
             	autoclose: true,
             	todayHighlight: true,
              });
-            
-            $('#roadtax_from_date').datepicker({
-            	format: 'dd-mm-yyyy',
-            	autoclose: true,
-            	todayHighlight: true,
-             });
-            $('#roadtax_due_date').datepicker({
-            	format: 'dd-mm-yyyy',
-            	autoclose: true,
-            	todayHighlight: true,
-             });                       
+                                   
         });
 
         function isNumberKey(evt){

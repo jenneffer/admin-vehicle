@@ -86,7 +86,7 @@
                     	            	<div class="col-sm-3">
                                 			<label for="company_dd" class="form-control-label"><small class="form-text text-muted">Company</small></label>
                                     		<?php
-                                                $select_company = mysqli_query ( $conn_admin_db, "SELECT id, UPPER(name) FROM company WHERE vehicle_used='1' ORDER BY name ASC");
+                                                $select_company = mysqli_query ( $conn_admin_db, "SELECT id, UPPER(name) FROM company WHERE vehicle_used='1' AND status='1' ORDER BY name ASC");
                                                 db_select ($select_company, 'select_company', $select_c,'submit()','All','form-control form-control-sm','');                        
                                             ?>
                                       	</div>

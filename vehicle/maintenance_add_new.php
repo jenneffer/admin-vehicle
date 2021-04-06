@@ -90,14 +90,14 @@
                                             ?>
                                         </div>
                                         <div class="col-sm-4">
-                                            <label for="vehicle_reg_no" class=" form-control-label"><small class="form-text text-muted">Vehicle Reg No.<span class="color-red">*</span></small></label>
+                                            <label for="workshop" class=" form-control-label"><small class="form-text text-muted">Workshop<span class="color-red">*</span></small></label>
                                             <?php
                                                 $workshop = mysqli_query ( $conn_admin_db, "SELECT id, UPPER(name) FROM vehicle_workshop");
                                                 db_select ($workshop, 'workshop', '','','-select-','form-control','','required');
                                             ?>
                                         </div>
                                         <div class="col-sm-4"> 
-                                    		<label for="date" class=" form-control-label"><small class="form-text text-muted">Date<span class="color-red">*</span></small></label>
+                                    		<label for="date" class=" form-control-label"><small class="form-text text-muted">Invoice Date<span class="color-red">*</span></small></label>
                                             <div class="input-group">
                                                 <input id="date" name="date" class="form-control" autocomplete="off" required>
                                                 <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
@@ -111,8 +111,8 @@
                                             <input type="text" id="irf_no" name="irf_no" class="form-control" required>
                                     	</div>
                                     	<div class="col-sm-6"> 
-                                            <label for="irf_date" class=" form-control-label"><small class="form-text text-muted">IRF Date<span class="color-red">*</span></small></label>
-                                            <input type="text" id="irf_date" name="irf_date" class="form-control" required>
+                                            <label for="irf_date" class=" form-control-label"><small class="form-text text-muted">IRF Date</small></label>
+                                            <input type="text" id="irf_date" name="irf_date" class="form-control">
                                     	</div>
                                     </div>
                                     <div class="form-group row col-sm-12">
@@ -121,8 +121,8 @@
                                             <input type="text" id="po_no" name="po_no" class="form-control" required>
                                     	</div>
                                     	<div class="col-sm-6"> 
-                                            <label for="po_date" class=" form-control-label"><small class="form-text text-muted">P.O Date<span class="color-red">*</span></small></label>
-                                            <input type="text" id="po_date" name="po_date" class="form-control" required>
+                                            <label for="po_date" class=" form-control-label"><small class="form-text text-muted">P.O Date</small></label>
+                                            <input type="text" id="po_date" name="po_date" class="form-control">
                                     	</div>                                    	                                    	
                                     </div>
                                      <div class="form-group row col-sm-12">
