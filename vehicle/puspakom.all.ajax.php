@@ -70,10 +70,15 @@
     
     function display_puspakom($date_start, $date_end){
         global $conn_admin_db;
+//         $sql_query = "SELECT * FROM vehicle_puspakom
+//                                     INNER JOIN vehicle_vehicle ON vehicle_vehicle.vv_id = vehicle_puspakom.vv_id
+//                                     INNER JOIN company ON company.id = vehicle_vehicle.company_id
+//                                     WHERE vp_fitnessDate BETWEEN '".dateFormat($date_start)."' AND '".dateFormat($date_end)."' AND vehicle_puspakom.status='1'";
+        
         $sql_query = "SELECT * FROM vehicle_puspakom
                                     INNER JOIN vehicle_vehicle ON vehicle_vehicle.vv_id = vehicle_puspakom.vv_id
                                     INNER JOIN company ON company.id = vehicle_vehicle.company_id
-                                    WHERE vp_fitnessDate BETWEEN '".dateFormat($date_start)."' AND '".dateFormat($date_end)."' AND vehicle_puspakom.status='1'";
+                                    WHERE vehicle_puspakom.status='1'";
         
         $rst  = mysqli_query($conn_admin_db, $sql_query)or die(mysqli_error($conn_admin_db));
         
@@ -96,7 +101,7 @@
                                 <span id='.$row['vp_id'].' data-toggle="modal" class="delete_data" data-target="#deleteItem"><i class="menu-icon fa fa-trash-alt"></i>
                                 </span>';
                 $data = array(
-                    $count,
+                    $count.".",
                     $row['vv_vehicleNo'],
                     $row['code'],
                     dateFormatRev($row['vp_fitnessDate']),

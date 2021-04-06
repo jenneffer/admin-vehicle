@@ -16,7 +16,7 @@ if(isset($_SESSION['cr_id'])) {
     $protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
     $url = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
     $PrevURL= $url;
-    header("Location: /login.php?RecLock=".$PrevURL);
+    header("Location: /admin/login.php?RecLock=".$PrevURL);
 	exit();
 }
 ?>

@@ -5,6 +5,7 @@
 	global $conn_admin_db;
 	$date_start = isset($_POST['date_start']) ? $_POST['date_start'] : date('01-m-Y');
 	$date_end = isset($_POST['date_end']) ? $_POST['date_end'] : date('t-m-Y');
+
 ?>
 
 <!doctype html>
@@ -80,27 +81,27 @@
                                 <strong class="card-title">Puspakom</strong>
                             </div>
                             <!-- Filter -->
-                            <div class="card-body">
-                            <form id="myform" enctype="multipart/form-data" method="post" action="">                	                   
-                	            <div class="form-group row col-sm-12">
-                                    <div class="col-sm-3">
-                                        <label for="date_start" class="form-control-label"><small class="form-text text-muted">Date Start</small></label>
-                                        <div class="input-group">
-                                          <input type="text" id="date_start" name="date_start" class="form-control form-control-sm" value="<?=$date_start?>" autocomplete="off">                                          
-                                        </div>                            
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <label for="date_end" class="form-control-label"><small class="form-text text-muted">Date End</small></label>
-                                        <div class="input-group">
-                                          <input type="text" id="date_end" name="date_end" class="form-control form-control-sm " value="<?=$date_end?>" autocomplete="off">                                          
-                                        </div>                             
-                                    </div>
-                                    <div class="col-sm-4">                                    	
-                                    	<button type="submit" class="btn btn-sm btn-primary button_search ">View</button>
-                                    </div>
-                                 </div>    
-                            </form>
-                            </div>
+<!--                             <div class="card-body"> -->
+<!--                             <form id="myform" enctype="multipart/form-data" method="post" action="">                	                    -->
+<!--                 	            <div class="form-group row col-sm-12"> -->
+<!--                                     <div class="col-sm-3"> -->
+<!--                                         <label for="date_start" class="form-control-label"><small class="form-text text-muted">Date Start</small></label> -->
+<!--                                         <div class="input-group"> -->
+<!--                                          <input type="text" id="date_start" name="date_start" class="form-control form-control-sm" value="<?=$date_start?>" autocomplete="off">                                          
+<!--                                         </div>                             -->
+<!--                                     </div> -->
+<!--                                     <div class="col-sm-3"> -->
+<!--                                         <label for="date_end" class="form-control-label"><small class="form-text text-muted">Date End</small></label> -->
+<!--                                         <div class="input-group"> -->
+<!--                                          <input type="text" id="date_end" name="date_end" class="form-control form-control-sm " value="<?=$date_end?>" autocomplete="off">                                          
+<!--                                         </div>                              -->
+<!--                                     </div>                                     -->
+<!--                                     <div class="col-sm-3">                                    	 -->
+<!--                                     	<button type="submit" class="btn btn-sm btn-primary button_search ">View</button> -->
+<!--                                     </div> -->
+<!--                                  </div>     -->
+<!--                             </form> -->
+<!--                             </div> -->
                             <hr>
                             <div class="card-body">
                                 <table id="puspakom_datatable" class="table table-striped table-bordered">
@@ -144,7 +145,7 @@
                                 <label for="vehicle_reg_no" class=" form-control-label"><small class="form-text text-muted">Vehicle Reg No.</small></label>
                                 <?php
                                     $vehicle = mysqli_query ( $conn_admin_db, "SELECT vv_id, UPPER(vv_vehicleNo) FROM vehicle_vehicle WHERE status='1' AND vv_category='2'"); //display lorry only
-                                    db_select ($vehicle, 'vehicle_reg_no', '','','-select-','form-control','');
+                                    db_select ($vehicle, 'vehicle_reg_no', $select_company,'submit()','-select-','form-control','');
                                 ?>
                             </div>  
                             <div class="col-sm-6">
@@ -220,10 +221,19 @@
     <script src="../assets/js/lib/data-table/buttons.colVis.min.js"></script>
     <script src="../assets/js/init/datatables-init.js"></script>
     <script src="../assets/js/script/bootstrap-datepicker.min.js"></script>
+	<script src="../assets/js/select2.min.js"></script>
 
 	<script type="text/javascript">
     $(document).ready(function() {
 
+    	// Initialize select2
+    	var select2 = $("#vehicle_reg_no").select2({
+//     		placeholder: "select option",
+    	    selectOnClose: true
+        });
+    	select2.data('select2').$selection.css('height', '30px');
+    	select2.data('select2').$selection.css('border', '1px solid #ced4da');
+    	
         $("#month").change(function () {
             var month = this.value;           
             $('#month').val(month);
@@ -234,15 +244,14 @@
             $('#company').val(company);
         });
     	var table = $('#puspakom_datatable').DataTable({
-         	"processing": true,
-         	"serverSide": true,
-         	"searching": false,
+    		"paging": false,
+        	"pageLength": 1,
             "ajax":{
            	 "url": "puspakom.all.ajax.php",    
            	 "type":"POST",       	
            	 "data" : function ( data ) {
-           		data.date_start = '<?=$date_start?>';
-				data.date_end = '<?=$date_end?>';  
+//           		data.date_start = '<?=$date_start?>';
+//				data.date_end = '<?=$date_end?>';  				
 				data.action = 'display_puspakom';				
    	        }
    	      },

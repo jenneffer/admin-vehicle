@@ -1,28 +1,28 @@
 <?php
-require_once('../assets/config/database.php');
-require_once('../function.php');
-require_once('../check_login.php');
-global $conn_admin_db;
+	require_once('../assets/config/database.php');
+	require_once('../function.php');	
+	require_once('../check_login.php');
+	global $conn_admin_db;
 // 	session_start();
 // 	if(isset($_SESSION['cr_id'])) {
 // 		$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
 // 		$url = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 // 		$query = parse_url($url, PHP_URL_QUERY);
 // 		parse_str($query, $params);
-
+		
 // 		// get id
 // 		$userId = $_SESSION['cr_id'];
 // 		$name = $_SESSION['cr_name'];
-
+		
 // 	} else {
 // 		$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
 // 		$url = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 // 		$PrevURL= $url;
 // 		header("Location: ../login.php?RecLock=".$PrevURL);
 // 	}
-
-$select_c = isset($_POST['select_company']) ? $_POST['select_company'] : "";
-
+	
+	$select_c = isset($_POST['select_company']) ? $_POST['select_company'] : "";
+	
 ?>
 
 <!doctype html><html class="no-js" lang="">
@@ -60,7 +60,7 @@ $select_c = isset($_POST['select_company']) ? $_POST['select_company'] : "";
                             	<div class="form-group row col-sm-12">
                             	    <div class="col-sm-3">                                        
                                         <?php
-                                            $select_company = mysqli_query ( $conn_admin_db, "SELECT id, UPPER(name) FROM company WHERE vehicle_used='1' ORDER BY name ASC");
+                                            $select_company = mysqli_query ( $conn_admin_db, "SELECT id, UPPER(name) FROM company WHERE vehicle_used='1' AND status='1' ORDER BY name ASC");
                                             db_select ($select_company, 'select_company', $select_c,'submit()','All Company','form-control form-control-sm','');
                                         ?>                              
                                     </div>
@@ -202,7 +202,7 @@ $select_c = isset($_POST['select_company']) ? $_POST['select_company'] : "";
                                         <div class="col-sm-4">
                                             <label for="company" class=" form-control-label"><small class="form-text text-muted">Company</small></label>
                                             <?php
-                                                $company = mysqli_query ( $conn_admin_db, "SELECT id, code FROM company");
+                                                $company = mysqli_query ( $conn_admin_db, "SELECT id, name FROM company WHERE vehicle_used='1' AND status='1'");
                                                 db_select ($company, 'company', '','','-select-','form-control','');
                                             ?>
                                         </div>
