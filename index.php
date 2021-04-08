@@ -83,6 +83,9 @@
             text-align: center;
             
         }
+        .gray{
+            color : gray;
+        }
     </style>
 </head>
 
@@ -104,8 +107,12 @@
 									<div class="typo-articles">
 										<h3 style="color:#f7c208; text-decoration: underline; text-align:center"><b>Categories</b></h3><br>
 										<div class="row">
-										<?php foreach ($data as $item){?>
-										    <div class="homeHover offset-lg-1 btn" onclick="onClickSystem('<?=$item['sid']?>', '<?=$item['first_page_url']?>')"><i class="<?=$item['icon']?>"></i><br><span><strong><?=$item['sname']?></strong></span></div>
+										<?php foreach ($data as $item){
+										    $class = "";
+										    if($item['sid'] == 7 || $item['sid'] == 8)
+										        $class = "gray";
+										    ?>
+										    <div class="<?=$class?> homeHover offset-lg-1 btn" onclick="onClickSystem('<?=$item['sid']?>', '<?=$item['first_page_url']?>')"><i class="<?=$item['icon']?>"></i><br><span><strong><?=$item['sname']?></strong></span></div>
 										<?php }?>										
 										</div>
 																			 
@@ -159,7 +166,13 @@
 	        }
 	    }).done(function(res) {
             if (res.valid) {
-                document.location.href = first_page;                
+                if(system_id == 7 || system_id == 8){
+                    alert('System under construction');
+                    return false;
+                }
+                else{
+                	document.location.href = first_page;                
+                }                
             }
         });
     }
