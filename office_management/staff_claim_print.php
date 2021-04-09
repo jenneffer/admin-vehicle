@@ -203,7 +203,8 @@ while ($row = mysqli_fetch_assoc($result)){
         			data:{action:'save_staff_claim', str_cv_id:str_cv_id, total_cv:total_cv },
         			success:function(data){	    
             			if(data){
-            				window.print();window.close();       
+            				window.print();window.close(); 
+                            
                 		}else{
 							alert(data);
                     	}    												
@@ -211,7 +212,7 @@ while ($row = mysqli_fetch_assoc($result)){
         		});	
         		
     		}else if(staff_claim_id !=''){
-    			window.print();window.close();       
+    			window.print();window.close();                                    
     		}
     		else{
 				alert('Please Confirmed before printing!');

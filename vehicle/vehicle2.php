@@ -188,135 +188,127 @@
                         <input type="hidden" name="_token" value="">
                         <input type="hidden" id="vv_id" name="vv_id" value="">                         
                             <div class="form-group row col-sm-12">
-                                        <div class="col-sm-4">
-                                            <label for="vehicle_reg_no" class=" form-control-label"><small class="form-text text-muted">Vehicle Reg No.</small></label>
-                                            <input type="text" id="vehicle_reg_no" name="vehicle_reg_no" placeholder="Enter vehicle registration no." class="form-control">
-                                        </div>
-                                        <div class="col-sm-4">
-                                            <label for="category" class=" form-control-label"><small class="form-text text-muted">Vehicle Category</small></label>
-                                            <?php
-                                                $cat = mysqli_query ( $conn_admin_db, "SELECT vc_id, vc_type FROM vehicle_category");
-                                                db_select ($cat, 'category', '','','-select-','form-control','');
-                                            ?>
-                                        </div>
-                                        <div class="col-sm-4">
-                                            <label for="company" class=" form-control-label"><small class="form-text text-muted">Company</small></label>
-                                            <?php
-                                                $company = mysqli_query ( $conn_admin_db, "SELECT id, name FROM company WHERE vehicle_used='1' AND status='1'");
-                                                db_select ($company, 'company', '','','-select-','form-control','');
-                                            ?>
-                                        </div>
-                                    </div>
-                                    <div class="form-group row col-sm-12">
-                                        <div class="col-sm-4">
-                                            <label for="brand" class=" form-control-label"><small class="form-text text-muted">Make</small></label>
-                                            <input type="text" id="brand" name="brand" placeholder="Enter vehicle brand" class="form-control">
-                                        </div>
-                                        <div class="col-sm-4">
-                                            <label for="model" class=" form-control-label"><small class="form-text text-muted">Model</small></label>
-                                            <input type="text" id="model" name="model" placeholder="Enter vehicle model" class="form-control">
-                                        </div>
-                                        <div class="col-sm-4">
-                                            <label for="yearMade" class=" form-control-label"><small class="form-text text-muted">Year Made</small></label>
-                                    		<input type="text" id="yearMade" name="yearMade" onkeypress="return isNumberKey(event)" placeholder="e.g 2010" class="form-control">
-                                        </div>
-                                    </div>                                    
-                                    <div class="form-group row col-sm-12">
-                                        <div class="col-sm-4">
-                                            <label for="engine_no" class=" form-control-label"><small class="form-text text-muted">Engine No.</small></label>
-                                            <input type="text" id="engine_no" name="engine_no" placeholder="Enter engine no." class="form-control">
-                                        </div>
-                                        <div class="col-sm-4">
-                                            <label for="chasis_no" class=" form-control-label"><small class="form-text text-muted">Chasis No.</small></label>
-                                            <input type="text" id="chasis_no" name="chasis_no" placeholder="Enter chasis no." class="form-control">
-                                        </div>
-                                        <div class="col-sm-4">
-                                            <label for="capacity" class=" form-control-label"><small class="form-text text-muted">Goods Capacity (CC)</small></label>
-                                            <input type="text" id="capacity" name="capacity" class="form-control">
-                                        </div>
-                                    </div>      
-                                    <div class="form-group row col-sm-12">
-                                        <div class="col-sm-4">
-                                            <label for="bdm" class=" form-control-label"><small class="form-text text-muted">B.D.M/B.G.K</small></label>
-                                            <input type="text" id="bdm" name="bdm" class="form-control">
-                                        </div>
-                                        <div class="col-sm-4">
-                                            <label for="btm" class=" form-control-label"><small class="form-text text-muted">B.T.M</small></label>
-                                            <input type="text" id="btm" name="btm" class="form-control">
-                                        </div>
-                                        <div class="col-sm-4">
-                                            <label for="dispose" class=" form-control-label"><small class="form-text text-muted">Dispose</small></label>
-                                            <input type="text" id="dispose" name="dispose" class="form-control">
-                                        </div> 
-                                    </div>  
-                                    <div class="form-group row col-sm-12">
-                                        <div class="col-sm-4">
-                                            <label for="driver" class=" form-control-label"><small class="form-text text-muted">Driver</small></label>
-                                            <input type="text" id="driver" name="driver" class="form-control">
-                                        </div>
-                                        <div class="col-sm-4">
-                                            <label for="finance" class=" form-control-label"><small class="form-text text-muted">Finance</small></label>
-                                            <input type="text" id="finance" name="finance" class="form-control">
-                                        </div>
-                                        <div class="col-sm-4">
-                                            <label for="finance" class="form-control-label"><small class="form-text text-muted">Vehicle Status</small></label>
-                                            <select id="vehicle_status" name="vehicle_status" class="form-control">
-                                              <option value="">-</option>
-                                              <option value="active">Active</option>
-                                              <option value="inactive">Inactive</option>
-                                              <option value="not_sure">Not Sure</option>
-                                              <option value="total_loss">Total Loss</option>
-                                            </select>
-                                        </div>
-                                    </div>                              
-                                    <div class="form-group row col-sm-12">
-                                        <div class="col-sm-8">
-                                            <label for="v_remark" class=" form-control-label"><small class="form-text text-muted">Remark</small></label>                                             
-                                            <textarea id="v_remark" name="v_remark" rows="3" class="form-control"></textarea>
-                                        </div>                                                                              
-                                    </div>
-<!--                          <div class="form-group">  -->
-<!--                              <div>  -->
-<!--                                  <div class="checkbox">  -->
-<!--                                      <label>  -->
-<!--                                          <input type="checkbox" name="remember"> Remember Me  -->
-<!--                                      </label>  -->
-<!--                                  </div>  -->
-<!--                              </div>  -->
-<!--                          </div>  -->
-					<div class="lkpk_permit">
- 						<hr> 
-                        <h5 style="text-align: center"><strong>LPKP Permit</strong></h5>
-                         <hr> 
-                         <div class="form-group row col-sm-12"> 
-                     		<div class="col-sm-6">  
-                                 <label for="permit_type" class=" form-control-label"><small class="form-text text-muted">Type</small></label> 
-                                 <input type="text" id="permit_type" name="permit_type" placeholder="Enter permit type" class="form-control"> 
-                             </div> 
- 							<div class="col-sm-6">                                         
-                                 <label for="permit_no" class=" form-control-label"><small class="form-text text-muted">No.</small></label> 
-                        		<input type="text" id="permit_no" name="permit_no" onkeypress="return isNumberKey(event)" class="form-control">
-                         	</div> 
-                         </div> 
+                                <div class="col-sm-4">
+                                    <label for="vehicle_reg_no" class=" form-control-label"><small class="form-text text-muted">Vehicle Reg No.</small></label>
+                                    <input type="text" id="vehicle_reg_no" name="vehicle_reg_no" placeholder="Enter vehicle registration no." class="form-control">
+                                </div>
+                                <div class="col-sm-4">
+                                    <label for="category" class=" form-control-label"><small class="form-text text-muted">Vehicle Category</small></label>
+                                    <?php
+                                        $cat = mysqli_query ( $conn_admin_db, "SELECT vc_id, vc_type FROM vehicle_category");
+                                        db_select ($cat, 'category', '','','-select-','form-control','');
+                                    ?>
+                                </div>
+                                <div class="col-sm-4">
+                                    <label for="company" class=" form-control-label"><small class="form-text text-muted">Company</small></label>
+                                    <?php
+                                        $company = mysqli_query ( $conn_admin_db, "SELECT id, name FROM company WHERE vehicle_used='1' AND status='1'");
+                                        db_select ($company, 'company', '','','-select-','form-control','');
+                                    ?>
+                                </div>
+                            </div>
+                            <div class="form-group row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label for="brand" class=" form-control-label"><small class="form-text text-muted">Make</small></label>
+                                    <input type="text" id="brand" name="brand" placeholder="Enter vehicle brand" class="form-control">
+                                </div>
+                                <div class="col-sm-4">
+                                    <label for="model" class=" form-control-label"><small class="form-text text-muted">Model</small></label>
+                                    <input type="text" id="model" name="model" placeholder="Enter vehicle model" class="form-control">
+                                </div>
+                                <div class="col-sm-4">
+                                    <label for="yearMade" class=" form-control-label"><small class="form-text text-muted">Year Made</small></label>
+                                    <input type="text" id="yearMade" name="yearMade" onkeypress="return isNumberKey(event)" placeholder="e.g 2010" class="form-control">
+                                </div>
+                            </div>                                    
+                            <div class="form-group row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label for="engine_no" class=" form-control-label"><small class="form-text text-muted">Engine No.</small></label>
+                                    <input type="text" id="engine_no" name="engine_no" placeholder="Enter engine no." class="form-control">
+                                </div>
+                                <div class="col-sm-4">
+                                    <label for="chasis_no" class=" form-control-label"><small class="form-text text-muted">Chasis No.</small></label>
+                                    <input type="text" id="chasis_no" name="chasis_no" placeholder="Enter chasis no." class="form-control">
+                                </div>
+                                <div class="col-sm-4">
+                                    <label for="capacity" class=" form-control-label"><small class="form-text text-muted">Goods Capacity (CC)</small></label>
+                                    <input type="text" id="capacity" name="capacity" class="form-control">
+                                </div>
+                            </div>      
+                            <div class="form-group row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label for="bdm" class=" form-control-label"><small class="form-text text-muted">B.D.M/B.G.K</small></label>
+                                    <input type="text" id="bdm" name="bdm" class="form-control">
+                                </div>
+                                <div class="col-sm-4">
+                                    <label for="btm" class=" form-control-label"><small class="form-text text-muted">B.T.M</small></label>
+                                    <input type="text" id="btm" name="btm" class="form-control">
+                                </div>
+                                <div class="col-sm-4">
+                                    <label for="dispose" class=" form-control-label"><small class="form-text text-muted">Dispose</small></label>
+                                    <input type="text" id="dispose" name="dispose" class="form-control">
+                                </div> 
+                            </div>  
+                            <div class="form-group row col-sm-12">
+                                <div class="col-sm-4">
+                                    <label for="driver" class=" form-control-label"><small class="form-text text-muted">Driver</small></label>
+                                    <input type="text" id="driver" name="driver" class="form-control">
+                                </div>
+                                <div class="col-sm-4">
+                                    <label for="finance" class=" form-control-label"><small class="form-text text-muted">Finance</small></label>
+                                    <input type="text" id="finance" name="finance" class="form-control">
+                                </div>
+                                <div class="col-sm-4">
+                                    <label for="finance" class="form-control-label"><small class="form-text text-muted">Vehicle Status</small></label>
+                                    <select id="vehicle_status" name="vehicle_status" class="form-control">
+                                        <option value="">-</option>
+                                        <option value="active">Active</option>
+                                        <option value="inactive">Inactive</option>
+                                        <option value="not_sure">Not Sure</option>
+                                        <option value="total_loss">Total Loss</option>
+                                    </select>
+                                </div>
+                            </div>                              
+                            <div class="form-group row col-sm-12">
+                                <div class="col-sm-8">
+                                    <label for="v_remark" class=" form-control-label"><small class="form-text text-muted">Remark</small></label>                                             
+                                    <textarea id="v_remark" name="v_remark" rows="3" class="form-control"></textarea>
+                                </div>                                                                              
+                            </div>
+
+                            <div class="lkpk_permit">
+                                <hr> 
+                                <h5 style="text-align: center"><strong>LPKP Permit</strong></h5>
+                                <hr> 
+                                <div class="form-group row col-sm-12"> 
+                                    <div class="col-sm-6">  
+                                        <label for="permit_type" class=" form-control-label"><small class="form-text text-muted">Type</small></label> 
+                                        <input type="text" id="permit_type" name="permit_type" placeholder="Enter permit type" class="form-control"> 
+                                    </div> 
+                                    <div class="col-sm-6">                                         
+                                        <label for="permit_no" class=" form-control-label"><small class="form-text text-muted">No.</small></label> 
+                                        <input type="text" id="permit_no" name="permit_no" onkeypress="return isNumberKey(event)" class="form-control">
+                                    </div> 
+                                </div> 
                         
-                         <div class="form-group row col-sm-12"> 
-                         	<div class="col-sm-6">  
-                                 <label for="license_ref_no" class=" form-control-label"><small class="form-text text-muted">License Ref No.</small></label> 
-                                 <input type="text" id="license_ref_no" name="license_ref_no" placeholder="Enter license ref no." class="form-control"> 
-                         	</div> 
-                         	<div class="col-sm-6">  
-                         		<label for="lpkp_permit_due_date" class=" form-control-label"><small class="form-text text-muted">Due Date</small></label> 
-                                 <div class="input-group"> 
-                                     <input id="lpkp_permit_due_date" name="lpkp_permit_due_date" class="form-control" autocomplete="off"> 
-                                     <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div> 
-                                 </div> 
-                         	</div> 
-                         </div> 
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn btn-primary update_data ">Update</button>
-                        </div>
+                                <div class="form-group row col-sm-12"> 
+                                    <div class="col-sm-6">  
+                                        <label for="license_ref_no" class=" form-control-label"><small class="form-text text-muted">License Ref No.</small></label> 
+                                        <input type="text" id="license_ref_no" name="license_ref_no" placeholder="Enter license ref no." class="form-control"> 
+                                    </div> 
+                                    <div class="col-sm-6">  
+                                        <label for="lpkp_permit_due_date" class=" form-control-label"><small class="form-text text-muted">Due Date</small></label> 
+                                        <div class="input-group"> 
+                                            <input id="lpkp_permit_due_date" name="lpkp_permit_due_date" class="form-control" autocomplete="off"> 
+                                            <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div> 
+                                        </div> 
+                                    </div> 
+                                </div> 
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                    <button type="submit" class="btn btn-primary update_data ">Update</button>
+                                </div>
+                            </div>
                     </form>
                 </div>
             </div><!-- /.modal-content -->
@@ -373,14 +365,14 @@
         	"pageLength": 1,
         	"responsive": true
          });
-        $('.lkpk_permit').hide();
+        // $('.lkpk_permit').hide();
         $('.edit_data').on('click', function(){
-        	var vehicle_id = $(this).attr("id");
+        	var vehicle_id = $(this).attr("id");           
         	$('#vv_id').val(vehicle_id);		
         	$.ajax({
         			url:"vehicle.all.ajax.php",
         			method:"POST",
-        			data:{action:'retrive_vehicle', vehicle_id:vehicle_id},
+        			data:{action:'retrive_vehicle', id:vehicle_id},
         			dataType:"json",
         			success:function(data){	
             			console.log(data);
@@ -411,9 +403,9 @@
                         $('#editItem').modal('show');
                         
                         //hide permit section if permit empty
-                        if(data.vpr_no != "" && data.vpr_no != null){
-							$('.lkpk_permit').show();
-                        }
+                        // if(data.vpr_no != "" && data.vpr_no != null){
+						// 	$('.lkpk_permit').show();
+                        // }
                         
         			}
         		});
@@ -438,7 +430,7 @@
     		});
     	});
     
-        $('#update_form').on("submit", function(event){  
+        $('#update_form').on("submit", function(event){              
           event.preventDefault();  
           if($('#vehicle_reg_no').val() == ""){  
                alert("Vehicle Reg. number is required");  
@@ -463,10 +455,10 @@
                     url:"vehicle.all.ajax.php",  
                     method:"POST",  
                     data:{action:'update_vehicle', data: $('#update_form').serialize()},  
-                    success:function(data){   
-                         $('#editItem').modal('hide');  
-                         $('#bootstrap-data-table').html(data);
-                         location.reload();  
+                    success:function(data){  
+                        alert("Successfully updated!");
+                        $('#editItem').modal('hide');  
+                        location.reload();                           
                     }  
                });  
           }  

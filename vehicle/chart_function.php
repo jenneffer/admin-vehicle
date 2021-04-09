@@ -3,6 +3,25 @@ require_once('../assets/config/database.php');
 require_once('../function.php');
 require_once('../check_login.php');
 global $conn_admin_db;
+//vehicle company map - initialize each company value to 0
+//company_id => value
+$company_map = array(
+    1 => 0,
+    3 => 0,
+    4 => 0,
+    6 => 0,
+    7 => 0,
+    8 => 0,
+    12 => 0,
+    13 => 0,
+    16 => 0,
+    19 => 0,
+    20 => 0,
+    22 => 0,
+    28 => 0,
+    33 => 0,
+);
+
 $month_map = array(
     1 => 0,
     2 => 0,
@@ -139,15 +158,18 @@ function get_roadtax_byCompany($year, $category, $company){ // monthly by compan
     return $datasets_roadtax_monthly;
 }
 
-function get_sum_insured($category){ //compare with 3 years before
+function get_sum_insured($year_to, $category){ //compare existing years
+    //get 3 years comparison
+    $year_from = $year - 2;
     global $conn_admin_db;
     $query = "SELECT YEAR(vi_insurance_dueDate)AS v_year,vehicle_vehicle.vv_id, company_id, (SELECT code FROM company WHERE id=vehicle_vehicle.company_id) AS code, vv_vehicleNo, vi_insurance_fromDate,
         vi_insurance_dueDate, vi_premium_amount, vi_ncd, vi_sum_insured, vi_excess
         FROM vehicle_vehicle
-        INNER JOIN vehicle_insurance ON vehicle_vehicle.vv_id = vehicle_insurance.vv_id";
-    
+        INNER JOIN vehicle_insurance ON vehicle_vehicle.vv_id = vehicle_insurance.vv_id
+        WHERE YEAR(vi_insurance_dueDate) BETWEEN '$year_from' AND '$year_to'";
+
     if(!empty($category)){
-        $query .=" WHERE vv_category='$category'";
+        $query .=" AND vv_category='$category'";
     }
     $sql_result = mysqli_query($conn_admin_db, $query)or die(mysqli_error($conn_admin_db));
     $data_yearly = []; //show all company
@@ -155,38 +177,53 @@ function get_sum_insured($category){ //compare with 3 years before
     $month = 12;
     while($row = mysqli_fetch_assoc($sql_result)){
         
-        $data_yearly[$row['code']][$row['v_year']][] = $row['vi_sum_insured'];
-        
-//         $data_monthly[$row['code']][] = $row;
-    }
-    //yearly
-    $arr_sum_insured = [];
-    $ins_company = [];
-    foreach ($data_yearly as $key => $value) {
-        
-
-        foreach ($value as $year => $data){
-//         foreach ($value as $val) {
-//             if(isset($arr_sum_insured[$key])){
-//                 $arr_sum_insured[$key] += $val['yearly_sum_insured'];
-//             }else{
-//                 $arr_sum_insured[$key] = $val['yearly_sum_insured'];
-//             }
-            
-//         }
-//             $datasets[$key][] = array(
-//                 'label' => $year,
-//                 'data' => [ 65, 59, 80, 81, 56, 55, 45 ],
-//                 'borderColor' => randomColor(),
-//                 'borderWidth' => "0",
-//                 'backgroundColor' => randomColor()
-//             );
-            
-        }
+        $data_yearly[$row['v_year']][$row['company_id']][] = $row['vi_sum_insured'];
     }
     
+    //yearly
+    $ins_company = [];
+    $arr_sum_insured = [];
+    foreach ($data_yearly as $year => $value) {
+        foreach ($value as $company => $data){
+            $ins_company[] = $company;
+            foreach ($data as $val) {                
+                if(isset($arr_sum_insured[$year][$company])){
+                    $arr_sum_insured[$year][$company] += (double)$val;
+                }else{
+                    $arr_sum_insured[$year][$company] = (double)$val;
+                }
+                
+            }
+        }
+    }
+
+    return $arr_sum_insured;
+ 
+    
+}
+function get_sum_insured_monthly($year, $category){
+    global $conn_admin_db;
+    $query = "SELECT vehicle_vehicle.vv_id, company_id, (SELECT code FROM company WHERE id=vehicle_vehicle.company_id) AS code, vv_vehicleNo, vi_insurance_fromDate,
+        vi_insurance_dueDate, vi_premium_amount, vi_ncd, vi_sum_insured, vi_excess
+        FROM vehicle_vehicle
+        INNER JOIN vehicle_insurance ON vehicle_vehicle.vv_id = vehicle_insurance.vv_id
+        WHERE YEAR(vi_insurance_dueDate)='".$year."'";
+    
+    if(!empty($category)){
+        $query .=" AND vv_category='$category'";
+    }
+
+    $sql_result = mysqli_query($conn_admin_db, $query)or die(mysqli_error($conn_admin_db));
+    $data_monthly = [];
+    $month = 12;
+    while($row = mysqli_fetch_assoc($sql_result)){
+        $data_yearly[$row['code']][] = array(            
+            'yearly_sum_insured' => $row['vi_sum_insured']
+        );
+        
+        $data_monthly[$row['code']][] = $row;
+    }
     //monthly
-    $data_monthly_premium = [];
     $data_monthly_sum_insured = [];
     foreach ($data_monthly as $code => $val){
         foreach ($val as $v){
@@ -195,13 +232,6 @@ function get_sum_insured($category){ //compare with 3 years before
             $ins_m = $ins_month["month"];
             for ( $m=1; $m<=$month; $m++ ){
                 if($m == $ins_m){
-                    //premium
-                    if (isset($data_monthly_premium[$code][$m])){
-                        $data_monthly_premium[$code][$m] += (double)$v['vi_premium_amount'];
-                    }else{
-                        $data_monthly_premium[$code][$m] = (double)$v['vi_premium_amount'];
-                    }
-                    
                     //sum  insured
                     if (isset($data_monthly_sum_insured[$code][$m])){
                         $data_monthly_sum_insured[$code][$m] += (double)$v['vi_sum_insured'];
@@ -213,17 +243,10 @@ function get_sum_insured($category){ //compare with 3 years before
             
         }
     }
-    return array(
-        'premium_yearly' => $arr_premium,
-        'sum_insured_yearly' => $data_yearly,
-        'premium_monthly' => $data_monthly_premium,
-        'sum_insured_monthly' => $data_monthly_sum_insured,
-        'company_label' => $ins_company
-    );
-    
+    return $data_monthly_sum_insured;
 }
 
-function get_premium_sum_insured($year, $category){ //yearly & monthly
+function get_premium($year, $category){ //yearly & monthly
     global $conn_admin_db;
     $query = "SELECT vehicle_vehicle.vv_id, company_id, (SELECT code FROM company WHERE id=vehicle_vehicle.company_id) AS code, vv_vehicleNo, vi_insurance_fromDate,
         vi_insurance_dueDate, vi_premium_amount, vi_ncd, vi_sum_insured, vi_excess
@@ -240,8 +263,7 @@ function get_premium_sum_insured($year, $category){ //yearly & monthly
     $month = 12;
     while($row = mysqli_fetch_assoc($sql_result)){
         $data_yearly[$row['code']][] = array(
-            'yearly_premium' => $row['vi_premium_amount'],
-            'yearly_sum_insured' => $row['vi_sum_insured']
+            'yearly_premium' => $row['vi_premium_amount'],            
         );
         
         $data_monthly[$row['code']][] = $row;
@@ -249,7 +271,6 @@ function get_premium_sum_insured($year, $category){ //yearly & monthly
     
     //yearly
     $arr_premium = [];
-    $arr_sum_insured = [];
     $ins_company = [];
     foreach ($data_yearly as $key => $value) {
         $ins_company[] = $key;
@@ -260,18 +281,11 @@ function get_premium_sum_insured($year, $category){ //yearly & monthly
             }else{
                 $arr_premium[$key] = $val['yearly_premium'];
             }
-            //sum insured
-            if(isset($arr_sum_insured[$key])){
-                $arr_sum_insured[$key] += $val['yearly_sum_insured'];
-            }else{
-                $arr_sum_insured[$key] = $val['yearly_sum_insured'];
-            }
         }
     }
     
     //monthly
     $data_monthly_premium = [];
-    $data_monthly_sum_insured = [];
     foreach ($data_monthly as $code => $val){
         foreach ($val as $v){
             $ins_due_date = $v['vi_insurance_dueDate'];
@@ -284,14 +298,7 @@ function get_premium_sum_insured($year, $category){ //yearly & monthly
                         $data_monthly_premium[$code][$m] += (double)$v['vi_premium_amount'];
                     }else{
                         $data_monthly_premium[$code][$m] = (double)$v['vi_premium_amount'];
-                    }
-                    
-                    //sum  insured
-                    if (isset($data_monthly_sum_insured[$code][$m])){
-                        $data_monthly_sum_insured[$code][$m] += (double)$v['vi_sum_insured'];
-                    }else{
-                        $data_monthly_sum_insured[$code][$m] = (double)$v['vi_sum_insured'];
-                    }
+                    }                    
                 }
             }
             
@@ -299,9 +306,7 @@ function get_premium_sum_insured($year, $category){ //yearly & monthly
     }   
     return array(
         'premium_yearly' => $arr_premium,
-        'sum_insured_yearly' => $arr_sum_insured,
-        'premium_monthly' => $data_monthly_premium,
-        'sum_insured_monthly' => $data_monthly_sum_insured,
+        'premium_monthly' => $data_monthly_premium,        
         'company_label' => $ins_company
     );
 }
@@ -356,8 +361,6 @@ function get_premium_sum_insured_byCompany($year, $category, $company){
         $datasets_premium_monthly[] = array(
             'label' => $label,
             'backgroundColor' => randomColor(),
-//             'borderColor' => randomColor(),
-//             'lineTension' => 0,
             'borderWidth' => 0,
             'data' => array_values($month_data)
         );
@@ -369,10 +372,8 @@ function get_premium_sum_insured_byCompany($year, $category, $company){
         $month_data = array_replace($month_map, $data);
         $datasets_sum_insured_monthly[] = array(
             'label' => $label,
-            'backgroundColor' => 'transparent',
-            'borderColor' => randomColor(),
-            'lineTension' => 0,
-            'borderWidth' => 3,
+            'backgroundColor' => randomColor(),            
+            'borderWidth' => 0,
             'data' => array_values($month_data)
         );
     }
@@ -384,5 +385,6 @@ function get_premium_sum_insured_byCompany($year, $category, $company){
         'monthly_sum_insured_byCompany' => $datasets_sum_insured_monthly
     );
 }
+
 
 ?>
