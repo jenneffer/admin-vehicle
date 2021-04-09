@@ -121,7 +121,7 @@
         
         $sql_query = "SELECT * FROM vehicle_insurance vi 
                     INNER JOIN vehicle_vehicle vv on vv.vv_id = vi.vv_id
-                    WHERE vi.vi_status='1'";
+                    WHERE vi.vi_insuranceStatus='1'";
         
         $rst  = mysqli_query($conn_admin_db, $sql_query)or die(mysqli_error($conn_admin_db));
         

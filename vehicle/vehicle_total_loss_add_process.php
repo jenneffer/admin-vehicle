@@ -26,10 +26,11 @@
                                         vt_trans_ref_no = '".$transaction_ref_no."',
                                         vt_driver = '".$driver."',
                                         vt_remark = '".$v_remark."',
-                                        date_added = now()");
+                                        date_added = now()") or die (mysqli_error($conn_admin_db)); 
         
-        alert("Added successfully!", "vehicle_total_loss.php");
-
+        if($sql_insert){
+            alert("Added successfully!", "vehicle_total_loss.php");
+        }    
 	}
 
 ?>

@@ -38,8 +38,10 @@
                             vs_description = '".$offence_details."',
                             vs_driver_borne = '".$driver_b."',
                             vs_company_borne = '".$company_b."',
-                            vs_date_added = now()");
-                                   
-        alert ("Added successfully","summons.php");
+                            vs_date_added = now()") or die (mysqli_error($conn_admin_db));
+        
+        if($sql_insert){
+            alert ("Added successfully","summons.php");
+        }        
     }
 ?>

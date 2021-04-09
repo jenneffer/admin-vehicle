@@ -26,7 +26,7 @@
                 break;
                 
             case 'retrive_vehicle':                
-                retrive_vehicle($_POST);
+                retrive_vehicle($id);
                 break;  
             
             case 'retrive_vehicle_total_lost':
@@ -188,10 +188,13 @@
     }
     
     function update_vehicle($data){
+        
         global $conn_admin_db;
         if( !empty($data) ){
             $params = array();
             parse_str($data, $params); //unserialize jquery string data
+
+            //vehicle table
             $vv_id = $params['vv_id'];
             $vehicle_reg_no = $params['vehicle_reg_no'];
             $category = $params['category'];
@@ -209,6 +212,12 @@
             $finance = $params['finance'];
             $v_remark = $params['v_remark'];
             $vehicle_status = $params['vehicle_status'];
+
+            //permit table
+            $permit_type = $params['permit_type'];
+            $permit_no = $params['permit_no'];
+            $license_ref_no = $params['license_ref_no'];
+            $lpkp_permit_due_date = isset($params['lpkp_permit_due_date']) ? dateFormat($params['lpkp_permit_due_date']) : "";
             
             //update vehicle table
             $query = "UPDATE vehicle_vehicle
@@ -231,8 +240,29 @@
                         WHERE vv_id='".$vv_id."'";
             
             $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
+
+            //check if exist - insert new if not
+            $exist = mysqli_query($conn_admin_db, "SELECT * FROM vehicle_permit WHERE vv_id='$vv_id'");
+            if(mysqli_num_rows($exist) > 0){
+                //update exsiting permit
+                $query2 = "UPDATE vehicle_permit SET 
+                vpr_type = '$permit_type',
+                vpr_no = '$permit_no', 
+                vpr_license_ref_No = '$license_ref_no', 
+                vpr_due_date = '$lpkp_permit_due_date' WHERE vv_id = '$vv_id'";
             
-            json_encode($result);
+            }
+            else{
+                //insert new
+                if(!empty($permit_type)){
+                    $query2 = "INSERT INTO vehicle_permit(vv_id, vpr_type, vpr_no, vpr_license_ref_No, vpr_due_date)
+                    VALUES ($vv_id, '$permit_type', '$permit_no', '$license_ref_no', '$lpkp_permit_due_date')";
+                }
+                
+            }
+            
+            $result2 = mysqli_query($conn_admin_db, $query2) or die(mysqli_error($conn_admin_db));     
+            // json_encode($result2);
         } 
     }
     function retrive_vehilce($args){
@@ -600,6 +630,22 @@
             echo json_encode($row);
         }
         
+    }
+
+    function retrive_vehicle($id){
+        global $conn_admin_db;
+        
+        if(!empty($id)){
+            $query = "SELECT * FROM vehicle_vehicle vv                    
+                    INNER JOIN company ON company.id = vv.company_id
+                    LEFT JOIN vehicle_permit ON vehicle_permit.vv_id = vv.vv_id
+                    WHERE vv.vv_id='$id'";
+            
+            $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
+            $row = mysqli_fetch_array($result);
+            
+            echo json_encode($row);
+        }
     }
     
 

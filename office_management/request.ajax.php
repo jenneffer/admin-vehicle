@@ -39,10 +39,10 @@ if($action !=""){
 }
 
 function update_rq_status($id){
-    var_dump($id);
     global $conn_admin_db;
     if(!empty($id)){
         $query = "UPDATE om_requisition SET status='2' WHERE id='$id'";
+
         $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
         echo json_encode($result);
     }

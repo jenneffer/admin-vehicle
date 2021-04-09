@@ -6,6 +6,7 @@ require_once('chart_function.php');
 global $conn_admin_db;
 global $month_map;
 global $month;
+global $company_map;
 
 $year_select = isset($_POST['year_select']) ? $_POST['year_select'] : date("Y");
 $report_type = isset($_POST['report_type']) ? $_POST['report_type'] : "year";
@@ -29,63 +30,47 @@ $month_str = implode("','", $month);
 $rt_company_str = !empty($rt_company) ? implode("','",$rt_company) : "";
 
 //2. Sum insured
-$insurance_data = get_sum_insured($select_category);
-$company_label = $insurance_data['company_label'];
-$company_str = !empty($company_label) ? implode("','",$company_label) : "";
-
+$sum_insured_data_yearly = get_sum_insured($year_select, $select_category);
+$sum_insured_data_monthly = get_sum_insured_monthly($year_select, $select_category);
 
 //sum insured monthly
-$sum_insured_monthly = $insurance_data['sum_insured_monthly'];
 $datasets_sum_insured_monthly = [];
-foreach ($sum_insured_monthly as $label => $data){
+foreach ($sum_insured_data_monthly as $label => $data){
     $month_data = array_replace($month_map, $data);
     $datasets_sum_insured_monthly[] = array(
         'label' => $label,
-        'backgroundColor' => 'transparent',
-        'borderColor' => randomColor(),
-        'lineTension' => 0,
-        'borderWidth' => 3,
+        'backgroundColor' => randomColor(),
+        'borderWidth' => 0,
         'data' => array_values($month_data)
     );
 }
 $datasets_sum_insured_monthly = json_encode($datasets_sum_insured_monthly);
 
 //yearly sum insured
-// $data_sum_insured = array_values($insurance_data['sum_insured_yearly']);
-// var_dump($insurance_data['sum_insured_yearly']);
-$test = $insurance_data['sum_insured_yearly'];
+$datasets_si_yearly = [];
+//sort from low to high year
+ksort($sum_insured_data_yearly);
+foreach($sum_insured_data_yearly as $year => $comp_data){   
+    $company_data = array_replace($company_map, $comp_data);      
+    $datasets_si_yearly[] = array(            
+        'label' => $year,
+        'data' => array_values($company_data),
+        'backgroundColor' => randomColor(),
+        'borderWidth' => 0,
+    );
 
-foreach ($test as $key => $datas){
-    $arr_si = [];
-    $ins_company[] = $key;
-    foreach ($datas as $year => $val){
-        
-        if(isset($arr_si[$year])){
-            $arr_si[$year] += $val;            
-        }else{
-            $arr_si[$year] = $val;  
-        }
-        
-        $datasets[] = array(
-            'label' => $year,
-            'data' => $arr_si,
-            'borderColor' => randomColor(),
-            'borderWidth' => "0",
-            'backgroundColor' => randomColor()
-        );
-    }    
-
-    
 }
+//get the company name
+$comp_name = [];
+foreach($company_map as $comp_id => $val){
+    $comp_name[] = itemName("SELECT code FROM company WHERE id='$comp_id'");
 
+}
+$comp_str = implode("','",$comp_name);
+$comparison_datasets = json_encode($datasets_si_yearly);
 
-$company_str = !empty($ins_company) ? implode("','",$ins_company) : "";
-// $data_sum_insured_yearly = implode(",", $data_sum_insured);
-
-
-//get monthly data by company
+//get monthly sum insured data by company
 $data_byCompany = get_premium_sum_insured_byCompany($year_select, $select_category, $select_company);
-//3. Sum insured
 $sum_insured_byCompany = $data_byCompany['monthly_sum_insured_byCompany'];
 
 ?>
@@ -115,9 +100,9 @@ tr:nth-child(even) {
 </head>
 <body>
     <!--Left Panel -->
-	<?php // include('../assets/nav/leftNav.php')?>
+	<?php include('../assets/nav/leftNav.php')?>
     <!-- Right Panel -->
-    <?php // include('../assets/nav/rightNav.php')?>    
+    <?php include('../assets/nav/rightNav.php')?>    
     <div id="right-panel" class="right-panel">
     <div class="content">            
         <div class="animated fadeIn">
@@ -161,19 +146,19 @@ tr:nth-child(even) {
             	</form>
             	<br>
                 <div class="row">
-                    <div class="col-sm-6 sum_insured">
+                    <div class="col-sm-12 sum_insured">
                         <canvas id="sum-insured-yearly"></canvas>
                     </div>
         		</div>
 
         		<div class="row">
-                    <div class="col-sm-6 company-monthly">            	
+                    <div class="col-sm-12 company-monthly">            	
             			<canvas id="chart-sum-insured-monthly"></canvas>                        
                     </div>
         		</div>	
 
         		<div class="row">
-                    <div class="col-sm-6 monthly-by-company">            	
+                    <div class="col-sm-12 monthly-by-company">            	
             			<canvas id="chart-company-monthly-si"></canvas>                           
                     </div>
         		</div>	
@@ -237,81 +222,82 @@ $(document).ready(function() {
     }
 
     $('.js-example-basic-multiple').select2();
-	//company expenses yearly - premium
-	
-var arr = <?php json_encode($datasets)?>
-$.each(arr, function(index, value){
-	myChart.datasets.push({
-	label: value.label,
-    data: JSON.parse(value.data),
-    backgroundColor: value.backgroundColor,
-    borderColor: value.borderColor,
-    borderWidth: 0, 
-	}) 
-})
-          //company expenses yearly - sum-insured
-        var ctx = document.getElementById( "sum-insured-yearly" );
-        ctx.height = 150;
-        var myChart = new Chart( ctx, {
-            type: 'bar',
-            data: {            
-                labels: [ '<?php echo $company_str;?>' ], //Company                    
-                datasets: [
-                    
-                ]                
-        	},
-            options: {
-                responsive: true,
     
-                tooltips: {
-                    mode: 'index',
-                    titleFontSize: 12,
-                    titleFontColor: '#ffffff',
-                    bodyFontColor: '#ffffff',
-                    backgroundColor: '#000',
-                    cornerRadius: 3,
-                    intersect: false,
-                },
-                legend: {
-                    display: false,
-                    labels: {
-                        usePointStyle: true,
-                        fontFamily: 'Montserrat',
+    //company expenses yearly - sum-insured
+    var ctx = document.getElementById( "sum-insured-yearly" );
+    ctx.height = 150;
+    var myChart = new Chart( ctx, {
+        type: 'bar',
+        data: {
+            labels: [ '<?=$comp_str ?>'],
+            datasets: <?=$comparison_datasets?>
+        },
+        options: {
+            responsive: true,
+            tooltips: {
+                mode: 'label',
+                titleFontSize: 12,
+                titleFontColor: '#ffffff',
+                bodyFontColor: '#ffffff',
+                backgroundColor: '#000',
+                cornerRadius: 3,
+                intersect: false,
+                callbacks: {
+                    afterTitle: function() {
+                        window.total = 0;
                     },
-                },
-                scales: {
-                    xAxes: [ {
-                        display: true,
-                        gridLines: {
-                            display: false,
-                            drawBorder: false
-                        },
-                        scaleLabel: {
-                            display: false,
-                            labelString: 'Month'
-                        }
-                            } ],
-                    yAxes: [ {
-                        display: true,
-                        scaleLabel: {
-                            display: true,
-                            labelString: 'Amount (RM)'
-                        }
-                            } ]
-                },
-                title: {
-                    display: true,
-                    text: 'YEARLY SUM INSURED BY COMPANY '+year
+                    label: function(tooltipItem, data) {
+                        var corporation = data.datasets[tooltipItem.datasetIndex].label;
+                        var valor = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                        window.total += valor;
+                        return corporation + ": RM" + valor.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, " ");             
+                    },
+                    footer: function() {
+                        return "TOTAL: RM" + window.total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+                    }
                 }
+            },
+            legend: {
+                display: 'bottom',
+                display: true,
+                labels: {
+                    usePointStyle: true,
+                    fontFamily: 'Montserrat',
+                },
+            },
+            scales: {
+                xAxes: [ {
+                    display: true,
+                    gridLines: {
+                        display: false,
+                        drawBorder: false
+                    },
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Company'
+                    }
+                        } ],
+                yAxes: [ {
+                    display: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Amount (RM)'
+                    }
+                        } ]
+            },
+            title: {
+                display: true,
+                text: 'YEARLY COMPARISON OF SUM INSURED BY COMPANY'
             }
-        } );
+        }
+    } );
 
    
-  //company by month premium, sum insured
+  //company by month sum insured
     var ctx = document.getElementById( "chart-sum-insured-monthly" );
     ctx.height = 150;
     var myChart = new Chart( ctx, {           
-        type: 'line',        	            	
+        type: 'bar',        	            	
         data: {   
         	labels: [ '<?php echo $month_str;?>' ],
         	defaultFontFamily: 'Montserrat',         	
@@ -344,7 +330,8 @@ $.each(arr, function(index, value){
                 }
             },
             legend: {
-                display: false,
+                position: 'bottom',
+                display: true,
                 labels: {
                     usePointStyle: true,
                     fontFamily: 'Montserrat',
@@ -352,6 +339,7 @@ $.each(arr, function(index, value){
             },
             scales: {
                 xAxes: [ {
+                    stacked: true,
                     display: true,
                     gridLines: {
                         display: false,
@@ -361,21 +349,22 @@ $.each(arr, function(index, value){
                         display: false,
                         labelString: 'Month'
                     }
-                        } ],
+                } ],
                 yAxes: [ {
+                    stacked: true,
                 	ticks: {
                         beginAtZero: true,
                     },
                     display: true,
                     gridLines: {
-                        display: false,
+                        display: true,
                         drawBorder: false
                     },
                     scaleLabel: {
                         display: true,
                         labelString: 'Amount (RM)'
                     }
-                        } ]
+                } ]
             },
             title: {
                 display: true,
@@ -384,13 +373,11 @@ $.each(arr, function(index, value){
         }
     } );
 
-
-
   //monthly sum insured by company
     var ctx = document.getElementById( "chart-company-monthly-si" );
     ctx.height = 150;
     var myChart = new Chart( ctx, {           
-        type: 'line',        	            	
+        type: 'bar',        	            	
         data: {   
         	labels: [ '<?php echo $month_str;?>' ],
         	defaultFontFamily: 'Montserrat',         	
@@ -423,7 +410,8 @@ $.each(arr, function(index, value){
                 }
             },
             legend: {
-                display: false,
+                position:'bottom',
+                display: true,
                 labels: {
                     usePointStyle: true,
                     fontFamily: 'Montserrat',
@@ -431,6 +419,7 @@ $.each(arr, function(index, value){
             },
             scales: {
                 xAxes: [ {
+                    stacked: true,
                     display: true,
                     gridLines: {
                         display: false,
@@ -440,8 +429,9 @@ $.each(arr, function(index, value){
                         display: false,
                         labelString: 'Month'
                     }
-                        } ],
+                } ],
                 yAxes: [ {
+                    stacked: true,
                     display: true,
                     gridLines: {
                         display: false,
@@ -451,7 +441,7 @@ $.each(arr, function(index, value){
                         display: true,
                         labelString: 'Amount (RM)'
                     }
-                        } ]
+                } ]
             },
             title: {
                 display: true,

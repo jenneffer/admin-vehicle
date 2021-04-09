@@ -365,9 +365,12 @@ $select_c = isset($_POST['select_company']) ? $_POST['select_company'] : "";
                 method:"POST",  
                 data:{action:'update_insurance', data: $('#update_form').serialize()},
                 success:function(data){   
-                     $('#editItem').modal('hide');  
-                     $('#bootstrap-data-table').html(data);  
-                     location.reload();		 
+                    if(data){                        
+                        $('#editItem').modal('hide');
+                        alert('Successfully updated!');                         
+                        location.reload();
+                    }
+                     		 
                 }  
             });  
 

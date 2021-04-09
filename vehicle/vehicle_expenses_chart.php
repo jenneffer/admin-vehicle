@@ -38,8 +38,6 @@ foreach ($roadtax_monthly as $label => $data){
     $datasets_roadtax_monthly[] = array(
         'label' => $label,
         'backgroundColor' => randomColor(),
-//         'borderColor' => randomColor(),
-//         'lineTension' => 0,
         'borderWidth' => 0,
         'data' => array_values($month_data)
     );
@@ -64,8 +62,8 @@ $data_roadtax_yearly = implode(",", $data_roadtax);
 
 $rt_company_str = !empty($rt_company) ? implode("','",$rt_company) : "";
 
-//2. Sum insured & Premium
-$insurance_data = get_premium_sum_insured($year_select, $select_category);
+//2. Premium
+$insurance_data = get_premium($year_select, $select_category);
 $company_label = $insurance_data['company_label'];
 $company_str = !empty($company_label) ? implode("','",$company_label) : "";
 //premium monthly
@@ -76,37 +74,15 @@ foreach ($premium_monthly as $label => $data){
     $datasets_premium_monthly[] = array(
         'label' => $label,
         'backgroundColor' => randomColor(),
-//         'borderColor' => randomColor(),
-//         'lineTension' => 0,
         'borderWidth' => 0,
         'data' => array_values($month_data)
     );
 }
 $datasets_premium_monthly = json_encode($datasets_premium_monthly);
 
-//sum insured monthly
-$sum_insured_monthly = $insurance_data['sum_insured_monthly'];
-$datasets_sum_insured_monthly = [];
-foreach ($sum_insured_monthly as $label => $data){
-    $month_data = array_replace($month_map, $data);    
-    $datasets_sum_insured_monthly[] = array(
-        'label' => $label,
-        'backgroundColor' => 'transparent',
-        'borderColor' => randomColor(),
-        'lineTension' => 0,
-        'borderWidth' => 3,
-        'data' => array_values($month_data)
-    );
-}
-$datasets_sum_insured_monthly = json_encode($datasets_sum_insured_monthly);
-
 //yearly premium
 $data_premium = array_values($insurance_data['premium_yearly']);
 $data_premium_yearly = implode(",", $data_premium);
-//yearly sum insured
-// $data_sum_insured = array_values($insurance_data['sum_insured_yearly']);
-// $data_sum_insured_yearly = implode(",", $data_sum_insured);
-
 
 //get monthly data by company
 //1. Roadtax
@@ -114,8 +90,6 @@ $roadtax_byCompany = get_roadtax_byCompany($year_select, $select_category, $sele
 //2. Premium
 $data_byCompany = get_premium_sum_insured_byCompany($year_select, $select_category, $select_company);
 $premium_byCompany = $data_byCompany['monthly_premium_byCompany'];
-//3. Sum insured
-// $sum_insured_byCompany = $data_byCompany['monthly_sum_insured_byCompany'];
 
 ?>
 <html>
@@ -154,9 +128,9 @@ tr:nth-child(even) {
 </head>
 <body>
     <!--Left Panel -->
-	<?php include('../assets/nav/leftNav.php')?>
+	<?php  include('../assets/nav/leftNav.php')?>
     <!-- Right Panel -->
-    <?php include('../assets/nav/rightNav.php')?>    
+    <?php  include('../assets/nav/rightNav.php')?>    
     <div id="right-panel" class="right-panel">
     <div class="content">            
         <div class="animated fadeIn">
@@ -203,9 +177,6 @@ tr:nth-child(even) {
                     <div class="wrapper premium">            	
                         <canvas id="premium-yearly"></canvas>        
                     </div>
-<!--                     <div class="col-sm-6 sum_insured"> -->
-<!--                         <canvas id="sum-insured-yearly"></canvas> -->
-<!--                     </div> -->
         		</div>
         		<div class="row">
         			<div class="wrapper roadtax">           	
@@ -216,9 +187,6 @@ tr:nth-child(even) {
             		<div class="wrapper company-monthly">            	
             			<canvas id="chart-premium-monthly"></canvas>                      
                     </div>
-<!--                     <div class="col-sm-6 company-monthly">            	 -->
-<!--             			<canvas id="chart-sum-insured-monthly"></canvas>                         -->
-<!--                     </div> -->
         		</div>	
         		<div class="row">
         			<div class="wrapper company-monthly">            	
@@ -229,9 +197,6 @@ tr:nth-child(even) {
             		<div class="wrapper monthly-by-company">            	
             			<canvas id="chart-company-monthly-premium"></canvas>                            
                     </div>
-<!--                     <div class="col-sm-6 monthly-by-company">            	 -->
-<!--             			<canvas id="chart-company-monthly-si"></canvas>                            -->
-<!--                     </div> -->
         		</div>
         		<div class="row">
         			<div class="wrapper monthly-by-company">            	
@@ -359,70 +324,8 @@ $(document).ready(function() {
                     },
                     
                 }
-            } );
+    } );
 
-          //company expenses yearly - sum-insured
-//             var ctx = document.getElementById( "sum-insured-yearly" );
-//             ctx.height = 150;
-//             var myChart = new Chart( ctx, {
-//                 type: 'bar',
-//                 data: {
-//                    labels: [ '<?php echo $company_str;?>' ],                    
-//             defaultFontFamily: 'Montserrat',
-//             datasets: [ {
-//                     label: "Sum Insured (RM)",
-//                    data: [ <?php echo $data_sum_insured_yearly?> ],
-//                     backgroundColor: 'rgba(220,53,69,0.55)',
-//                     borderColor: 'rgba(220,53,69,0.75)',
-//                     borderWidth: 0,                            
-//                 }, 
-//             ]
-//         },
-//         options: {
-//             responsive: true,
-
-//             tooltips: {
-//                 mode: 'index',
-//                 titleFontSize: 12,
-//                 titleFontColor: '#ffffff',
-//                 bodyFontColor: '#ffffff',
-//                 backgroundColor: '#000',
-//                 cornerRadius: 3,
-//                 intersect: false,
-//             },
-//             legend: {
-//                 display: false,
-//                 labels: {
-//                     usePointStyle: true,
-//                     fontFamily: 'Montserrat',
-//                 },
-//             },
-//             scales: {
-//                 xAxes: [ {
-//                     display: true,
-//                     gridLines: {
-//                         display: false,
-//                         drawBorder: false
-//                     },
-//                     scaleLabel: {
-//                         display: false,
-//                         labelString: 'Month'
-//                     }
-//                         } ],
-//                 yAxes: [ {
-//                     display: true,
-//                     scaleLabel: {
-//                         display: true,
-//                         labelString: 'Amount (RM)'
-//                     }
-//                         } ]
-//             },
-//             title: {
-//                 display: true,
-//                 text: 'YEARLY SUM INSURED BY COMPANY '+year
-//             }
-//         }
-//     } );
 
    //company expenses yearly - road tax
     var ctx = document.getElementById( "roadtax-yearly" );
@@ -562,83 +465,6 @@ $(document).ready(function() {
             }
         }
     } );
-
-  //company by month premium, sum insured
-//     var ctx = document.getElementById( "chart-sum-insured-monthly" );
-//     ctx.height = 150;
-//     var myChart = new Chart( ctx, {           
-//         type: 'line',        	            	
-//         data: {   
-//        	labels: [ '<?php echo $month_str;?>' ],
-//         	defaultFontFamily: 'Montserrat',         	
-//            datasets: <?=$datasets_sum_insured_monthly?>
-                
-//         },
-//         options: {
-//             responsive: true,
-//             tooltips: {
-//                 mode: 'label',
-//                 titleFontSize: 12,
-//                 titleFontColor: '#ffffff',
-//                 bodyFontColor: '#ffffff',
-//                 backgroundColor: '#000',
-//                 cornerRadius: 3,
-//                 intersect: false,
-//                 callbacks: {
-//                     afterTitle: function() {
-//                         window.total = 0;
-//                     },
-//                     label: function(tooltipItem, data) {
-//                         var corporation = data.datasets[tooltipItem.datasetIndex].label;
-//                         var valor = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
-//                         window.total += valor;
-//                         return corporation + ": RM" + valor.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, " ");             
-//                     },
-//                     footer: function() {
-//                         return "TOTAL: RM" + window.total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, " ");
-//                     }
-//                 }
-//             },
-//             legend: {
-//                 display: false,
-//                 labels: {
-//                     usePointStyle: true,
-//                     fontFamily: 'Montserrat',
-//                 },
-//             },
-//             scales: {
-//                 xAxes: [ {
-//                     display: true,
-//                     gridLines: {
-//                         display: false,
-//                         drawBorder: false
-//                     },
-//                     scaleLabel: {
-//                         display: false,
-//                         labelString: 'Month'
-//                     }
-//                         } ],
-//                 yAxes: [ {
-//                 	ticks: {
-//                         beginAtZero: true,
-//                     },
-//                     display: true,
-//                     gridLines: {
-//                         display: false,
-//                         drawBorder: false
-//                     },
-//                     scaleLabel: {
-//                         display: true,
-//                         labelString: 'Amount (RM)'
-//                     }
-//                         } ]
-//             },
-//             title: {
-//                 display: true,
-//                 text: 'MONTHLY SUM-INSURED FOR YEAR '+year
-//             }
-//         }
-//     } );
 
     //roadtax monthly
     var ctx = document.getElementById( "chart-roadtax-monthly" );
@@ -787,79 +613,6 @@ $(document).ready(function() {
         }
     } );
 
-  //monthly premium, sum insured by company
-//     var ctx = document.getElementById( "chart-company-monthly-si" );
-//     ctx.height = 150;
-//     var myChart = new Chart( ctx, {           
-//         type: 'line',        	            	
-//         data: {   
-//        	labels: [ '<?php echo $month_str;?>' ],
-//         	defaultFontFamily: 'Montserrat',         	
-//            datasets: JSON.parse('<?=$sum_insured_byCompany?>')
-                
-//         },
-//         options: {
-//             responsive: true,
-//             tooltips: {
-//                 mode: 'index',
-//                 titleFontSize: 12,
-//                 titleFontColor: '#ffffff',
-//                 bodyFontColor: '#ffffff',
-//                 backgroundColor: '#000',
-//                 cornerRadius: 3,
-//                 intersect: false,
-//                 callbacks: {
-//                     afterTitle: function() {
-//                         window.total = 0;
-//                     },
-//                     label: function(tooltipItem, data) {
-//                         var corporation = data.datasets[tooltipItem.datasetIndex].label;
-//                         var valor = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
-//                         window.total += valor;
-//                         return corporation + ": RM" + valor.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, " ");             
-//                     },
-//                     footer: function() {
-//                         return "TOTAL: RM" + window.total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, " ");
-//                     }
-//                 }
-//             },
-//             legend: {
-//                 display: false,
-//                 labels: {
-//                     usePointStyle: true,
-//                     fontFamily: 'Montserrat',
-//                 },
-//             },
-//             scales: {
-//                 xAxes: [ {
-//                     display: true,
-//                     gridLines: {
-//                         display: false,
-//                         drawBorder: false
-//                     },
-//                     scaleLabel: {
-//                         display: false,
-//                         labelString: 'Month'
-//                     }
-//                         } ],
-//                 yAxes: [ {
-//                     display: true,
-//                     gridLines: {
-//                         display: false,
-//                         drawBorder: false
-//                     },
-//                     scaleLabel: {
-//                         display: true,
-//                         labelString: 'Amount (RM)'
-//                     }
-//                         } ]
-//             },
-//             title: {
-//                 display: true,
-//                 text: company_name+' MONTHLY SUM-INSURED FOR YEAR '+year
-//             }
-//         }
-//     } );
   //roadtax monthly - by company
     var ctx = document.getElementById( "chart-company-monthly-roadtax" );
     ctx.height = 150;

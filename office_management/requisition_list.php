@@ -98,8 +98,8 @@
                                                         <td><?=$row['total']?></td>                                                        
                                                         <td><?=$status?></td>
                                                         <td>
-                                                        <span onclick="window.open('requisition_preview.php?status=<?=$row['status']?>&rq_id=<?=$row['id']?>');"><i class="fas fa-eye"></i></span>&nbsp;&nbsp;                                            	
-                                            			<span id=<?=$row['id']?> style="display:<?=$display?>;" data-toggle="modal" class="update_status" data-target="#updateStatus"><i class="fas fa-edit"></i></span>                                                        	                                                      	
+                                                        <span onclick="window.open('requisition_preview.php?status=<?=$row['status']?>&rq_id=<?=$row['id']?>');"><button type="button" class="btn btn-info btn-sm">View</button></span><br></br>                                      	
+                                            			<span id=<?=$row['id']?> style="display:<?=$display?>;" data-toggle="modal" class="update_status" data-target="#updateStatus"><button type="button" class="btn btn-success btn-sm">Update RF Status</button></span>                                                        	                                                      	
                                                         </td>
                                                     </tr>
                                     <?php

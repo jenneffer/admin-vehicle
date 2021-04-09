@@ -35,15 +35,15 @@
             $workshop = isset($params['workshop']) ? $params['workshop'] : "";
             $date = isset($params['date']) ? dateFormat($params['date']) : "";
             $irf_no = isset($params['irf_no']) ? $params['irf_no'] : "";
-            $irf_date = $params['irf_date'] ? dateFormat($params['irf_date']) : "";
+            $irf_date = $params['irf_date'] == '' ? NULL : dateFormat($params['irf_date']);
             $po_no = isset($params['po_no']) ? $params['po_no'] : "";
-            $po_date = isset($params['po_date']) ? dateFormat($params['po_date']) : "";
+            $po_date = $params['po_date'] == '-' ? NULL : dateFormat($params['po_date']);
             $inv_no = isset($params['inv_no']) ? $params['inv_no'] : "";
             $user = isset($params['user']) ? $params['user'] : "";
             $amount = isset($params['amount']) ? $params['amount'] : 0;
             $desc = isset($params['desc']) ? $params['desc'] : "";
             $vm_id = $params['vm_id'];
-            
+
             $sql_insert = mysqli_query($conn_admin_db, "UPDATE vehicle_maintenance SET
                             vv_id = '".$vehicle_reg_no."',
                             vm_date = '".$date."',

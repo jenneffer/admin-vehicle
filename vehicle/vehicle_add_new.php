@@ -249,6 +249,12 @@
         });
     	select2.data('select2').$selection.css('height', '38px');
     	select2.data('select2').$selection.css('border', '1px solid #ced4da');
+
+        $('#lpkp_permit_due_date').datepicker({
+            format: 'dd-mm-yyyy',
+            autoclose: true,
+            todayHighlight: true,
+        });
     });
     
     function isNumberKey(evt){

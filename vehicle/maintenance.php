@@ -112,9 +112,9 @@
                                                         <td><?=$row['company_name']?></td>  
                                                         <td><?=$workshop?></td>                                                        
                                                         <td><?=$row['vm_irf_no']?></td>
-                                                        <td><?=(!empty($row['vm_irf_date'])) ? $row['vm_irf_date'] : '-'  ?></td>
+                                                        <td><?=(empty($row['vm_irf_date']) || $row['vm_irf_date'] === '0000-00-00') ? '-' : $row['vm_irf_date']  ?></td>
                                                         <td><?=$row['vm_po_no']?></td>
-                                                        <td><?=(!empty($row['vm_po_date'])) ? $row['vm_po_date'] : '-'?></td>
+                                                        <td><?=(empty($row['vm_po_date']) || $row['vm_po_date'] === '0000-00-00' ) ? '-' : $row['vm_po_date']?></td>
                                                         <td><?=$row['vm_invoice_no']?></td>                                        
                                                         <td><?=$row['vm_amount']?></td>
                                                         <td><?=$row['vm_date']?></td>
@@ -176,7 +176,7 @@
                                     ?>
                                 </div>
                                 <div class="col-sm-4"> 
-                            		<label for="date" class=" form-control-label"><small class="form-text text-muted">Date<span class="color-red">*</span></small></label>
+                            		<label for="date" class=" form-control-label"><small class="form-text text-muted">Invoice Date<span class="color-red">*</span></small></label>
                                     <div class="input-group">
                                         <input id="date" name="date" class="form-control form-control-sm" autocomplete="off" required>                                        
                                     </div>
@@ -189,8 +189,8 @@
                                     <input type="text" id="irf_no" name="irf_no" class="form-control form-control-sm" required>
                             	</div>
                             	<div class="col-sm-6"> 
-                                    <label for="irf_date" class=" form-control-label"><small class="form-text text-muted">IRF Date<span class="color-red">*</span></small></label>
-                                    <input type="text" id="irf_date" name="irf_date" class="form-control form-control-sm" required>
+                                    <label for="irf_date" class=" form-control-label"><small class="form-text text-muted">IRF Date</small></label>
+                                    <input type="text" id="irf_date" name="irf_date" class="form-control form-control-sm">
                             	</div>
                             </div>
                             <div class="form-group row col-sm-12">
@@ -199,8 +199,8 @@
                                     <input type="text" id="po_no" name="po_no" class="form-control form-control-sm" required>
                             	</div>
                             	<div class="col-sm-6"> 
-                                    <label for="po_date" class=" form-control-label"><small class="form-text text-muted">P.O Date<span class="color-red">*</span></small></label>
-                                    <input type="text" id="po_date" name="po_date" class="form-control form-control-sm" required>
+                                    <label for="po_date" class=" form-control-label"><small class="form-text text-muted">P.O Date</small></label>
+                                    <input type="text" id="po_date" name="po_date" class="form-control form-control-sm">
                             	</div>                                    	                                    	
                             </div>
                              <div class="form-group row col-sm-12">
@@ -315,8 +315,8 @@
 //   	  					console.log(data);   	  	  					
   						var vm_amount = parseFloat(data.vm_amount).toFixed(2);
   						var vm_date = dateFormat(data.vm_date);
-  						var vm_irf_date = dateFormat(data.vm_irf_date);
-  						var vm_po_date = dateFormat(data.vm_po_date);
+  						var vm_irf_date = ( data.vm_irf_date == null ) || (data.vm_irf_date == '0000-00-00')  ? '-' : dateFormat(data.vm_irf_date) ;
+  						var vm_po_date = ( data.vm_po_date ==null ) || (data.vm_po_date == '0000-00-00') ? '-' : dateFormat(data.vm_po_date);
 						  	  				 	
   						$('#vm_id').val(data.vm_id);					
                         $('#vehicle_reg_no').val(data.vv_id);                           
@@ -359,39 +359,16 @@
 		//update summon form submit
         $('#update_form').on("submit", function(event){  
             event.preventDefault();  
-            if($('#vehicle_reg_no').val() == ""){  
-                 alert("Vehicle number is required");  
-            }  
-            else if($('#date').val() == ''){  
-                 alert("Date is required");  
-            }  
-            else if($('#irf_no').val() == ''){  
-                 alert("IRF number is required");  
-            }
-            else if($('#po_no').val() == ''){  
-                alert("P.O number is required");  
-            }  
-            else if($('#inv_no').val() == ''){  
-                alert("Invoice number is required");  
-            }
-            else if($('#desc').val() == ''){  
-                 alert("Description is required");  
-            }  
-            else if($('#amount').val() == ''){  
-                 alert("Amount is required");  
-            }               
-            else{  
-                 $.ajax({  
-                      url:"maintenance.all.ajax.php",  
-                      method:"POST",  
-                      data:{action:'update_data', data:$('#update_form').serialize()},  
-                      success:function(data){   
-                           $('#editItem').modal('hide');  
-                           $('#maintenance-table').html(data);  
-                           location.reload();	
-                      }  
-                 });  
-            }  
+            $.ajax({  
+                url:"maintenance.all.ajax.php",  
+                method:"POST",  
+                data:{action:'update_data', data:$('#update_form').serialize()},  
+                success:function(data){   
+                    $('#editItem').modal('hide');  
+                    $('#maintenance-table').html(data);  
+                    location.reload();	
+                }  
+            }); 
        });
         
         $('#date, #irf_date, #po_date').datepicker({
