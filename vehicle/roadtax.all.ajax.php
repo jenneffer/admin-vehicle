@@ -116,9 +116,6 @@
                 $total_found_rows = $row_found[0];
                 $count++;
                 $insurance_status = $row['vi_insuranceStatus'] == 1 ? "Active" : "Inactive";
-//                 $year = !empty($row['vrt_roadtaxPeriodYear']) ? $row['vrt_roadtaxPeriodYear'] ." Year(s)" : "";
-//                 $month = !empty($row['vrt_roadtaxPeriodMonth']) ? $row['vrt_roadtaxPeriodMonth'] ." Month(s)" : "";
-//                 $days = !empty($row['vrt_roadtaxPeriodDay']) ? $row['vrt_roadtaxPeriodDay'] ." Day(s)" : "";
                 $period = $row['vrt_roadTax_period'];
                 
                 $fitness_date = !empty($row['vp_fitnessDate']) ? dateFormatRev($row['vp_fitnessDate']) : '-';
@@ -230,24 +227,24 @@
             $vrt_id = $params['vrt_id'];
             $vehicle_reg_no = $params['vehicle_reg_no'];
             $lpkp_date = dateFormat($params['lpkp_date']);
-            $insurance_from_date = dateFormat($params['insurance_from_date']);
-            $insurance_due_date = dateFormat($params['insurance_due_date']);
+            // $insurance_from_date = dateFormat($params['insurance_from_date']);
+            // $insurance_due_date = dateFormat($params['insurance_due_date']);
             $roadtax_from_date = $params['roadtax_from_date'];
             $roadtax_due_date = $params['roadtax_due_date'];
-            $premium_amount = $params['premium_amount'];
-            $ncd = $params['ncd'];
-            $sum_insured = $params['sum_insured'];
-            $excess_paid = $params['excess_paid'];
+            // $premium_amount = $params['premium_amount'];
+            // $ncd = $params['ncd'];
+            // $sum_insured = $params['sum_insured'];
+            // $excess_paid = $params['excess_paid'];
             $roadtax_amount = $params['roadtax_amount'];
-            $insurance_status = $params['insurance_status'];
-            $insurance_amount = $params['insurance_amount'];
+            // $insurance_status = $params['insurance_status'];
+            // $insurance_amount = $params['insurance_amount'];
             
             
             //calculate the roadtax period
-            $diff = abs(strtotime($roadtax_due_date) - strtotime($roadtax_from_date));
-            $years = floor($diff / (365*60*60*24));
-            $months = floor(($diff - $years * 365*60*60*24) / (30*60*60*24));
-            $days = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24)/ (60*60*24));
+            // $diff = abs(strtotime($roadtax_due_date) - strtotime($roadtax_from_date));
+            // $years = floor($diff / (365*60*60*24));
+            // $months = floor(($diff - $years * 365*60*60*24) / (30*60*60*24));
+            // $days = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24)/ (60*60*24));
             
             //update roadtax
             $query = "UPDATE vehicle_roadtax
@@ -255,9 +252,9 @@
                             vrt_lpkpPermit_dueDate = '$lpkp_date',
                             vrt_roadTax_fromDate = '".dateFormat($roadtax_from_date)."',
                             vrt_roadTax_dueDate = '".dateFormat($roadtax_due_date)."',
-                            vrt_roadtaxPeriodYear = '$years',
-                            vrt_roadtaxPeriodMonth = '$months',
-                            vrt_roadtaxPeriodDay = '$days',
+                            -- vrt_roadtaxPeriodYear = '$years',
+                            -- vrt_roadtaxPeriodMonth = '$months',
+                            -- vrt_roadtaxPeriodDay = '$days',
                             vrt_amount = '$roadtax_amount',
                             vrt_updatedBy = '".$_SESSION['cr_id']."',
                             vrt_lastUpdated = now()
@@ -266,22 +263,22 @@
             $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));
             
             //update insurance
-            $query2 = "UPDATE vehicle_insurance
-                            SET vv_id = '".$vehicle_reg_no."',
-                            vi_insurance_fromDate = '".$insurance_from_date."',
-                            vi_insurance_dueDate = '".$insurance_due_date."',
-                            vi_insuranceStatus = '".$insurance_status."',
-                            vi_amount = '".$insurance_amount."',
-                            vi_premium_amount='".$premium_amount."',
-                            vi_ncd='".$ncd."',
-                            vi_sum_insured='".$sum_insured."',
-                            vi_excess='".$excess_paid."',
-                            vi_lastUpdated = now(),
-                            vi_updatedBy = '".$_SESSION['cr_id']."'
-                            WHERE vi_vrt_id='".$vrt_id."'";
+            // $query2 = "UPDATE vehicle_insurance
+            //                 SET vv_id = '".$vehicle_reg_no."',
+            //                 vi_insurance_fromDate = '".$insurance_from_date."',
+            //                 vi_insurance_dueDate = '".$insurance_due_date."',
+            //                 vi_insuranceStatus = '".$insurance_status."',
+            //                 vi_amount = '".$insurance_amount."',
+            //                 vi_premium_amount='".$premium_amount."',
+            //                 vi_ncd='".$ncd."',
+            //                 vi_sum_insured='".$sum_insured."',
+            //                 vi_excess='".$excess_paid."',
+            //                 vi_lastUpdated = now(),
+            //                 vi_updatedBy = '".$_SESSION['cr_id']."'
+            //                 WHERE vi_vrt_id='".$vrt_id."'";
             
             
-            $result2 = mysqli_query($conn_admin_db, $query2) or die(mysqli_error($conn_admin_db));
+            // $result2 = mysqli_query($conn_admin_db, $query2) or die(mysqli_error($conn_admin_db));
             
             alert ("Updated successfully","roadtax.php");
         }
@@ -294,7 +291,7 @@
             $query = "SELECT vrt_id, vehicle_vehicle.vv_id,vi_premium_amount,vi_ncd,vi_sum_insured, vi_excess, vrt_amount,vi_insuranceStatus, vrt_lpkpPermit_dueDate,vi_insurance_fromDate,vi_insurance_dueDate,vrt_roadTax_fromDate,vrt_roadTax_dueDate 
                 FROM vehicle_roadtax
                 INNER JOIN vehicle_vehicle ON vehicle_vehicle.vv_id = vehicle_roadtax.vv_id
-                LEFT JOIN vehicle_insurance ON vehicle_insurance.vi_vrt_id = vehicle_roadtax.vrt_id
+                LEFT JOIN vehicle_insurance ON vehicle_insurance.vv_id = vehicle_roadtax.vv_id
                 WHERE vehicle_roadtax.vrt_id='".$args['vrt_id']."'";           
                             
             $result = mysqli_query($conn_admin_db, $query) or die(mysqli_error($conn_admin_db));

@@ -388,9 +388,9 @@ $date_end = isset($_POST['date_end']) ? $_POST['date_end'] : '';
         $( "#delete_record" ).click( function() {
         	var ID = $(this).data('id');
         	$.ajax({
-        		url:"roadtax.all.ajax.php",
+        		url:"insurance.ajax.php",
         		method:"POST",    
-        		data:{action:'delete_roadtax', id:ID},
+        		data:{action:'delete_insurance', id:ID},
         		success:function(data){	  						
         			$('#deleteItem').modal('hide');		
         			location.reload();		

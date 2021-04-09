@@ -3,29 +3,11 @@
 	require_once('../function.php');
 	require_once('../check_login.php');
 	global $conn_admin_db;
-// 	if(isset($_SESSION['cr_id'])) {
-// 		$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-// 		$url = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-// 		$query = parse_url($url, PHP_URL_QUERY);
-// 		parse_str($query, $params);
-		
-// 		// get id
-// 		$userId = $_SESSION['cr_id'];
-// 		$name = $_SESSION['cr_name'];
-		
-// 	} else {
-// 		$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-// 		$url = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-// 		$PrevURL= $url;
-// 		header("Location: ../login.php?RecLock=".$PrevURL);
-// 	}
+
 ?>
 
 <!doctype html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang=""> <!--<![endif]-->
+<html class="no-js" lang=""> 
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -303,32 +285,32 @@
                             </div>
                         </div>
                         <div id="payment_section">
-                        <div class="form-group row col-sm-12">
-                        	<div class="col-sm-6">
-                                <label class=" form-control-label"><small class="form-text text-muted">Payment Date</small></label>
-                                <div class="input-group input-inline">
-                                    <input class="form-control" id="payment_date" name="payment_date" value="" autocomplete="off">
-                                    <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
+                            <div class="form-group row col-sm-12">
+                                <div class="col-sm-6">
+                                    <label class=" form-control-label"><small class="form-text text-muted">Payment Date</small></label>
+                                    <div class="input-group input-inline">
+                                        <input class="form-control" id="payment_date" name="payment_date" value="" autocomplete="off">
+                                        <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
+                                    </div>
                                 </div>
+                                <div class="col-sm-6">
+                                    <label class=" form-control-label"><small class="form-text text-muted">Payment Amount(RM)</small></label>
+                                    <input type="text" id="payment_amount" name="payment_amount" placeholder="e.g 500.00" class="form-control">
+                                </div>                                        
                             </div>
-                            <div class="col-sm-6">
-                                <label class=" form-control-label"><small class="form-text text-muted">Payment Amount(RM)</small></label>
-                                <input type="text" id="payment_amount" name="payment_amount" placeholder="e.g 500.00" class="form-control">
-                            </div>                                        
-                        </div>
-						<div class="form-group row col-sm-12">
-                        	<div class="col-sm-6">
-                                <label class=" form-control-label"><small class="form-text text-muted">Bank-in Date</small></label>
-                                <div class="input-group input-inline">
-                                    <input class="form-control" id="bankin_date" name="bankin_date" value="" autocomplete="off">
-                                    <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
+                            <div class="form-group row col-sm-12">
+                                <div class="col-sm-6">
+                                    <label class=" form-control-label"><small class="form-text text-muted">Bank-in Date</small></label>
+                                    <div class="input-group input-inline">
+                                        <input class="form-control" id="bankin_date" name="bankin_date" value="" autocomplete="off">
+                                        <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
+                                    </div>
                                 </div>
+                                <div class="col-sm-6">
+                                    <label class=" form-control-label"><small class="form-text text-muted">Bank-in Amount(RM)</small></label>
+                                    <input type="text" id="bankin_amount" name="bankin_amount" placeholder="e.g 500.00" class="form-control">
+                                </div>                                        
                             </div>
-                            <div class="col-sm-6">
-                                <label class=" form-control-label"><small class="form-text text-muted">Bank-in Amount(RM)</small></label>
-                                <input type="text" id="bankin_amount" name="bankin_amount" placeholder="e.g 500.00" class="form-control">
-                            </div>                                        
-                        </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>

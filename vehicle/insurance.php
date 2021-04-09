@@ -5,14 +5,9 @@ global $conn_admin_db;
 $date_start = isset($_POST['date_start']) ? $_POST['date_start'] : date('01-m-Y');
 $date_end = isset($_POST['date_end']) ? $_POST['date_end'] : date('t-m-Y');
 $select_c = isset($_POST['select_company']) ? $_POST['select_company'] : "";
-
 ?>
-
 <!doctype html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang=""> <!--<![endif]-->
+<html class="no-js" lang=""> 
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -59,6 +54,9 @@ $select_c = isset($_POST['select_company']) ? $_POST['select_company'] : "";
             position: absolute;
             left:    0;
             bottom:   0;
+        }
+        span.btn_link {
+            cursor: pointer;
         }
 
    </style>
@@ -197,6 +195,60 @@ $select_c = isset($_POST['select_company']) ? $_POST['select_company'] : "";
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
     
+    <!-- Modal add summon's payment-->
+    <div id="addPayment" class="modal fade">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Add Insurance Payment</h4>
+                </div>
+                <div class="modal-body">
+                    <form role="form" method="POST" id="update_payment_form" class="form-horizontal">
+                        <input type="hidden" name="_token" value="">
+                        <input type="hidden" id="insurance_id" name="insurance_id" value=""> 
+                        <div class="form-group row col-sm-12">
+                            <div class="col-sm-6">
+                                <label class=" form-control-label"><small class="form-text text-muted">Insurer</small></label>
+                                <input type="text" class="form-control" id="insurer" name="insurer">
+                            </div>
+                            <div class="col-sm-6">
+                                <label class=" form-control-label"><small class="form-text text-muted">Cover Type</small></label>
+                                <input type="text" class="form-control" id="cover_type" name="cover_type">
+                            </div>                                                                   
+                        </div>                                           	
+                        <div class="form-group row col-sm-12">
+                            <div class="col-sm-6">
+                                <label class=" form-control-label"><small class="form-text text-muted">Payment Date</small></label>
+                                <div class="input-group input-inline">
+                                    <input class="form-control" id="payment_date" name="payment_date" autocomplete="off">
+                                    <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <label class=" form-control-label"><small class="form-text text-muted">Payment Method</small></label>
+                                <input type="text" id="payment_method" name="payment_method" class="form-control">
+                            </div>                                        
+                        </div>
+                        <div class="form-group row col-sm-12">
+                            <div class="col-sm-6">
+                                <label class=" form-control-label"><small class="form-text text-muted">PV No<span style="color:red;">*</span></small></label>
+                                <input type="text" class="form-control" id="pv_no" name="pv_no" required>
+                            </div>
+                            <div class="col-sm-6">
+                                <label class=" form-control-label"><small class="form-text text-muted">Policy No</small></label>
+                                <input type="text" class="form-control" id="policy_no" name="policy_no">
+                            </div>                                                                   
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary update_payment ">Update</button>
+                        </div>
+                    </form>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+        
     <div class="modal fade" id="deleteItem">
         <div class="modal-dialog modal-sm" role="document">
             <div class="modal-content">
@@ -221,7 +273,7 @@ $select_c = isset($_POST['select_company']) ? $_POST['select_company'] : "";
     <div class="clearfix"></div>
     <!-- Footer -->
     <?PHP include('../footer.php')?>
-        <!-- /.site-footer -->
+    <!-- /.site-footer -->
     <!-- from right panel page -->
     <!-- /#right-panel -->
 
@@ -240,107 +292,74 @@ $select_c = isset($_POST['select_company']) ? $_POST['select_company'] : "";
     <script src="../assets/js/init/datatables-init.js"></script>
     <script src="../assets/js/script/bootstrap-datepicker.min.js"></script>
 	<script type="text/javascript">
-        $(document).ready(function() {
-            var table = $('#insurance_table').DataTable({
-//                 "paging": true,
-//              	"processing": true,
-         		"searching": true,
-//          		"lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
-                "ajax":{
-                 "url": "insurance.ajax.php",     
-                 "type":"POST",      	
-                 "data" : function ( data ){	
-                	 		data.action = 'get_insurance_listing';		                	 							
-                     }
-                },
-                "footerCallback": function( tfoot, data, start, end, display ) {
-    				var api = this.api(), data;
-    				var numFormat = $.fn.dataTable.render.number( '\,', '.', 2, '' ).display;
+    $(document).ready(function() {
+        var table = $('#insurance_table').DataTable({
+            "searching": true,
+            "ajax":{
+                "url": "insurance.ajax.php",     
+                "type":"POST",      	
+                "data" : function ( data ){	
+                        data.action = 'get_insurance_listing';		                	 							
+                    }
+            },
+            "footerCallback": function( tfoot, data, start, end, display ) {
+                var api = this.api(), data;
+                var numFormat = $.fn.dataTable.render.number( '\,', '.', 2, '' ).display;
 
-					api.columns([6,8,9], { page: 'current'}).every(function() {
-							var sum = this
-						    .data()
-						    .reduce(function(a, b) {
-						    var x = parseFloat(a) || 0;
-						    var y = parseFloat(b) || 0;
-						    	return x + y;
-						    }, 0);			
-						       
-						    $(this.footer()).html(numFormat(sum));
-					});
- 
-    			},
-    			'columnDefs': [
-                	  {
-                	      "targets": [6,8,9], // your case first column
-                	      "className": "text-right", 
-                	      "render": $.fn.dataTable.render.number(',', '.', 2, '')               	                      	        	     
-                	 },
-                	 {
-               	      "targets": [7,9], // your case first column
-               	      "className": "text-center",                	                  	                      	        	     
-               	 	}
-				],
-// 				"dom": 'Bfrtip',
-// 	            "buttons": [ 
-// 	             { 
-// 	            	extend: 'excelHtml5', 
-// 	            	messageTop: 'General Table',
-// 	            	footer: true 
-// 	             },
-// 	             {
-// 	            	extend: 'print',
-// 	            	messageTop: 'General Table',
-// 	            	footer: true,
-// 	            	customize: function ( win ) {
-// 	                    $(win.document.body)
-// 	                        .css( 'font-size', '10pt' );
-	            
-// 	                    $(win.document.body).find( 'table' )
-// 	                        .addClass( 'compact' )
-// 	                        .css( 'font-size', 'inherit' );
-// 	                }
-// 	             }
-// 	            ],
+                api.columns([6,8,9], { page: 'current'}).every(function() {
+                        var sum = this
+                        .data()
+                        .reduce(function(a, b) {
+                        var x = parseFloat(a) || 0;
+                        var y = parseFloat(b) || 0;
+                            return x + y;
+                        }, 0);			
+                            
+                        $(this.footer()).html(numFormat(sum));
+                });
+
+            },
+            'columnDefs': [
+                    {
+                        "targets": [6,8,9], // your case first column
+                        "className": "text-right", 
+                        "render": $.fn.dataTable.render.number(',', '.', 2, '')               	                      	        	     
+                    },
+                    {
+                    "targets": [7,9], // your case first column
+                    "className": "text-center",                	                  	                      	        	     
+                }
+            ],
+        });
+        //retrieve data
+        $(document).on('click', '.edit_data', function(){
+            var vi_id = $(this).attr("id");
+            $.ajax({
+                    url:"insurance.ajax.php",
+                    method:"POST",
+                    data:{action:'retrive_insurance', vi_id:vi_id},
+                    dataType:"json",
+                    success:function(data){	    	  					
+                        var insurance_from_date = data.vi_insurance_fromDate != null ? dateFormat(data.vi_insurance_fromDate) : "";
+                        var insurance_due_date = data.vi_insurance_dueDate != null ? dateFormat(data.vi_insurance_dueDate) : "";    	  					
+                        $('#vi_id').val(data.vi_id);					
+                        $('#vehicle_reg_no').val(data.vv_id);  
+                        $('#insurance_from_date').val(insurance_from_date);  
+                        $('#insurance_due_date').val(insurance_due_date);    
+                        $('#premium_amount').val(data.vi_premium_amount);    
+                        $('#ncd').val(data.vi_ncd);  
+                        $('#sum_insured').val(data.vi_sum_insured);  
+                        $('#excess_paid').val(data.vi_excess);  
+                        $('#insurance_status').val(data.vi_insuranceStatus); 
+                        $('#editItem').modal('show');
+                }
             });
-          //retrieve data
-            $(document).on('click', '.edit_data', function(){
-    			var vi_id = $(this).attr("id");
-    			$.ajax({
-    					url:"insurance.ajax.php",
-    					method:"POST",
-    					data:{action:'retrive_insurance', vi_id:vi_id},
-    					dataType:"json",
-    					success:function(data){	
-    	  					console.log(data);
-//     	  					var lpkp_date = data.vrt_lpkpPermit_dueDate!= null ? dateFormat(data.vrt_lpkpPermit_dueDate) : "";
-    	  					var insurance_from_date = data.vi_insurance_fromDate != null ? dateFormat(data.vi_insurance_fromDate) : "";
-    	  					var insurance_due_date = data.vi_insurance_dueDate != null ? dateFormat(data.vi_insurance_dueDate) : "";
-//     	  					var roadtax_from_date = data.vrt_roadTax_fromDate != null ? dateFormat(data.vrt_roadTax_fromDate) : "";
-//     	  					var roadtax_due_date = data.vrt_roadTax_dueDate != null ? dateFormat(data.vrt_roadTax_dueDate) : "";
-    	  					
-                          $('#vi_id').val(data.vi_id);					
-                          $('#vehicle_reg_no').val(data.vv_id);  
-//                           $('#lpkp_date').val(lpkp_date);  
-                          $('#insurance_from_date').val(insurance_from_date);  
-                          $('#insurance_due_date').val(insurance_due_date);  
-//                           $('#roadtax_from_date').val(roadtax_from_date);  
-//                           $('#roadtax_due_date').val(roadtax_due_date);  
-                          $('#premium_amount').val(data.vi_premium_amount);    
-                          $('#ncd').val(data.vi_ncd);  
-                          $('#sum_insured').val(data.vi_sum_insured);  
-                          $('#excess_paid').val(data.vi_excess);  
-//                           $('#roadtax_amount').val(data.vrt_amount);  
-                          $('#insurance_status').val(data.vi_insuranceStatus); 
-                          $('#editItem').modal('show');
-  	  				}
-    				});
-          });
+        });
 
           //delete records
           $(document).on('click', '.delete_data', function(){
-          	var vrt_id = $(this).attr("id");
-          	$('#delete_record').data('id', vrt_id); //set the data attribute on the modal button
+          	var vi_id = $(this).attr("id");              
+          	$('#delete_record').data('id', vi_id); //set the data attribute on the modal button
           
           });
       	
@@ -382,22 +401,41 @@ $select_c = isset($_POST['select_company']) ? $_POST['select_company'] : "";
   			table.ajax.reload();
   			table.draw();     
         }); 
-        $('#insurance_from_date, #insurance_due_date').datepicker({
+
+        $('#insurance_from_date, #insurance_due_date, #payment_date').datepicker({
             format: "dd-mm-yyyy",
             autoclose: true,
             orientation: "top left",
             todayHighlight: true
         });
-      });
-        
-        function dateFormat(dates){
-            var date = new Date(dates);
-        	var day = date.getDate();
-          	var monthIndex = date.getMonth()+1;
-          	var year = date.getFullYear();
-        
-          	return (day <= 9 ? '0' + day : day) + '-' + (monthIndex<=9 ? '0' + monthIndex : monthIndex) + '-' + year ;
-        }
+        //add insurance payment - retrieve then update
+        $(document).on('click', '.add_payment', function(){
+            var vi_id = $(this).attr("id");
+            $('#insurance_id').val(vi_id);
+        });
+        //update add payment form submit
+        $('#update_payment_form').on("submit", function(event){  
+            event.preventDefault();  
+            $.ajax({  
+                url:"insurance.ajax.php",  
+                method:"POST",  
+                data:{action:'add_payment', data:$('#update_payment_form').serialize()},  
+                success:function(data){   
+                    $('#editItem').modal('hide');                      
+                    location.reload(); 
+                }  
+            });
+       });
+    });
+    
+    function dateFormat(dates){
+        var date = new Date(dates);
+        var day = date.getDate();
+        var monthIndex = date.getMonth()+1;
+        var year = date.getFullYear();
+    
+        return (day <= 9 ? '0' + day : day) + '-' + (monthIndex<=9 ? '0' + monthIndex : monthIndex) + '-' + year ;
+    }
   </script>
 </body>
 </html>

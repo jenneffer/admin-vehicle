@@ -9,7 +9,7 @@
     $company = isset($_POST['select_company']) ? $_POST['select_company'] : "";
     $action = isset($_POST['action']) ? $_POST['action'] : "";
     $data = isset($_POST['data']) ? $_POST['data'] : "";
-  
+    $id = isset($_POST['id']) ? $_POST['id'] : "";
     
     if( $action != "" ){
         switch ($action){
@@ -19,7 +19,7 @@
                 break;
                 
             case 'get_insurance_listing':
-                get_insurance_listing($id);
+                get_insurance_listing();
                 break;
                 
             case 'create_insurance':
@@ -33,9 +33,44 @@
             case 'update_insurance':
                 update_insurance($data);
                 break;
+
+            case 'add_payment':
+                add_payment($data);
+                break;
+
+            case 'delete_insurance':
+                delete_insurance($id);
+                break;
                 
             default:
                 break;
+        }
+    }
+
+    function add_payment($data){
+        global $conn_admin_db;
+        if( !empty($data) ){
+            $params = array();
+            parse_str($data, $params); //unserialize jquery string data
+            $vi_id = $params['insurance_id'];
+            $payment_date = dateFormat($params['payment_date']);            
+            $insurer = $params['insurer'];
+            $cover_type = $params['cover_type'];
+            $payment_method = $params['payment_method'];
+            $pv_no = $params['pv_no'];
+            $policy_no = $params['policy_no'];
+            
+            $result = mysqli_query($conn_admin_db,"UPDATE vehicle_insurance SET
+                                vi_payment_date = '".$payment_date."',
+                                vi_insurer = '".$insurer."',
+                                vi_cover_type = '".$cover_type."',
+                                vi_payment_method='".$payment_method."',
+                                vi_pv_no='".$pv_no."',
+                                vi_policy_no='".$policy_no."',                                
+                                vi_lastUpdated = now(),
+                                vi_updatedBy = '".$_SESSION['cr_id']."' WHERE vi_id='$vi_id'") or die(mysqli_error($conn_admin_db));
+            
+            echo json_encode($result);
         }
     }
     
@@ -121,7 +156,7 @@
         
         $sql_query = "SELECT * FROM vehicle_insurance vi 
                     INNER JOIN vehicle_vehicle vv on vv.vv_id = vi.vv_id
-                    WHERE vi.vi_insuranceStatus='1'";
+                    WHERE vi.vi_status='1'";
         
         $rst  = mysqli_query($conn_admin_db, $sql_query)or die(mysqli_error($conn_admin_db));
         
@@ -136,11 +171,15 @@
         if ( mysqli_num_rows($rst) ){
             $count = 0;
             while( $row = mysqli_fetch_assoc( $rst ) ){
+                $pv_no = $row['vi_pv_no'];
                 $row_found = mysqli_fetch_row(mysqli_query($conn_admin_db,"SELECT FOUND_ROWS()"));
                 $total_found_rows = $row_found[0];
                 $count++;
-                $action = '<span id='.$row['vi_id'].' data-toggle="modal" class="edit_data" data-target="#editItem"><i class="menu-icon fa fa-edit"></i>
-                        </span><br><span id='.$row['vi_id'].' data-toggle="modal" class="delete_data" data-target="#deleteItem"><i class="menu-icon fa fa-trash-alt"></i>
+                //check if pv no exist. if not show the button to add payment
+                $show_payment_icon = '';
+                if(empty($pv_no)) $show_payment_icon = '<span id='.$row['vi_id'].' data-toggle="modal" class="add_payment btn_link" data-target="#addPayment" style="color:#FFC107;"><i class="menu-icon fa fa-comments-dollar fa-2x"></i></span><br>';
+                $action = $show_payment_icon.'<span id='.$row['vi_id'].' data-toggle="modal" class="edit_data btn_link" data-target="#editItem" style="color:#17A2B8;"><i class="menu-icon fa fa-edit fa-2x"></i>
+                        </span><br><span id='.$row['vi_id'].' data-toggle="modal" class="delete_data btn_link" data-target="#deleteItem" style="color:#DC3545;"><i class="menu-icon fa fa-trash-alt fa-2x"></i>
                         </span>';
                 $comp_name = itemName("SELECT code FROM company WHERE id='".$row['company_id']."'");
                 
@@ -242,6 +281,17 @@
         
         echo json_encode($arr_result);
         
+    }
+
+    function delete_insurance($id){
+        global $conn_admin_db;
+
+        if(!empty($id)){            
+            //update insurance table
+            $query_ins = "UPDATE vehicle_insurance SET vi_status = 0 WHERE vi_id = '".$id."' ";
+            $result_ins = mysqli_query($conn_admin_db, $query_ins);
+            echo json_encode($result_ins);
+        }
     }
 	
 ?>

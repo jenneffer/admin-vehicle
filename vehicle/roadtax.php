@@ -190,7 +190,7 @@
                             </div>
                         </div>    
 
-                        <div class="form-group row col-sm-12">
+                        <!-- <div class="form-group row col-sm-12">
                             <div class="col-sm-6">
                                 <label for="insurance_from_date" class="form-control-label"><small class="form-text text-muted">Insurance from date</small></label>    
                                 <div class="input-group">
@@ -205,7 +205,7 @@
                                   <div class="input-group-addon"><i class="fas fa-calendar-alt"></i></div>
                                 </div>                                                                           
                             </div>
-                        </div>
+                        </div> -->
                         <div class="form-group row col-sm-12">
                             <div class="col-sm-6">
                                 <label for="roadtax_from_date" class="form-control-label"><small class="form-text text-muted">Roadtax from date</small></label>  
@@ -223,7 +223,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group row col-sm-12">
+                        <!-- <div class="form-group row col-sm-12">
                             <div class="col-sm-6">
                                 <label for="premium_amount" class=" form-control-label"><small class="form-text text-muted">Premium (RM)</small></label>
                                 <input type="text" id="premium_amount" name="premium_amount" onkeypress="return isNumberKey(event)" class="form-control">
@@ -232,9 +232,9 @@
                                 <label for="ncd" class=" form-control-label"><small class="form-text text-muted">NCD (%)</small></label>
                                 <input type="text" id="ncd" name="ncd" onkeypress="return isNumberKey(event)" class="form-control">
                             </div>
-                        </div>
+                        </div> -->
 
-                        <div class="form-group row col-sm-12">
+                        <!-- <div class="form-group row col-sm-12">
                             <div class="col-sm-6">
                                 <label for="sum_insured" class=" form-control-label"><small class="form-text text-muted">Sum Insured (RM)</small></label>
                                 <input type="text" id="sum_insured" name="sum_insured" onkeypress="return isNumberKey(event)" class="form-control">
@@ -243,20 +243,20 @@
                                 <label for="excess_paid" class=" form-control-label"><small class="form-text text-muted">Excess Paid (RM)</small></label>
                                 <input type="text" id="excess_paid" name="excess_paid" onkeypress="return isNumberKey(event)" class="form-control">
                             </div>
-                        </div>
+                        </div> -->
                         
                         <div class="form-group row col-sm-12">
                             <div class="col-sm-6">
                                 <label for="roadtax_amount" class=" form-control-label"><small class="form-text text-muted">Roadtax Amount(RM)</small></label>
                                 <input type="text" id="roadtax_amount" name="roadtax_amount" onkeypress="return isNumberKey(event)" class="form-control">
                             </div>
-                            <div class="col-sm-6 ">
+                            <!-- <div class="col-sm-6 ">
                                 <label for="insurance_status" class=" form-control-label"><small class="form-text text-muted">Insurance Status</small></label>
                                 <select name="insurance_status" id="insurance_status" class="form-control col-sm-4">
                                     <option value="1">Active</option>
                                     <option value="0">Inactive</option>
                                 </select>
-                            </div>
+                            </div> -->
                          </div>
                         
                     <div class="modal-footer">
